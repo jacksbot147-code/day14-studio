@@ -1,0 +1,149 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg: 248 246 241; /* paper */
+    --ink: 11 11 10;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+    /* Warm grain — subtle paper texture via a single radial gradient. */
+    background-image:
+      radial-gradient(at 0% 0%, rgba(255, 92, 40, 0.05) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(11, 11, 10, 0.03) 0px, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  ::selection {
+    background: theme("colors.ember.500");
+    color: white;
+  }
+
+  /* iOS auto-zoom prevention — 16px font-size floor on text inputs. */
+  input[type="text"],
+  input[type="email"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="url"],
+  input:not([type]),
+  textarea,
+  select {
+    font-size: max(16px, 1em);
+  }
+
+  a,
+  button,
+  [role="button"] {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Display headlines — tighter tracking, heavier weight, no rounding. */
+  h1, h2, h3 {
+    @apply font-display tracking-tightest;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
+  }
+
+  /* Primary CTA — flat, confident, builder-y. No bouncy shadows. */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded bg-ink px-5 py-3 text-sm font-semibold text-paper transition hover:bg-ink-700 active:translate-y-px focus:outline-none focus:ring-2 focus:ring-ember-500 focus:ring-offset-2 focus:ring-offset-paper disabled:opacity-50;
+  }
+
+  .btn-ember {
+    @apply inline-flex items-center justify-center gap-2 rounded bg-ember-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-ember-600 active:translate-y-px focus:outline-none focus:ring-2 focus:ring-ember-500 focus:ring-offset-2 focus:ring-offset-paper disabled:opacity-50;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded border border-ink-200 bg-transparent px-5 py-3 text-sm font-semibold text-ink transition hover:border-ink hover:bg-ink hover:text-paper active:translate-y-px focus:outline-none focus:ring-2 focus:ring-ember-500 focus:ring-offset-2 focus:ring-offset-paper;
+  }
+
+  /* Card — flat with a hairline border, lifts on hover. No drop shadow. */
+  .card {
+    @apply rounded-lg border border-ink-100 bg-paper-50 p-6 transition;
+  }
+
+  .card-pop {
+    @apply rounded-lg border border-ink-100 bg-paper-50 p-6 transition hover:border-ink-200 hover:shadow-lift;
+  }
+
+  /* Eyebrow — small uppercase label above section headings. */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 font-mono text-xs font-medium uppercase tracking-[0.18em] text-ember-600;
+  }
+
+  /* Marker — used to highlight key phrases in headlines. */
+  .marker {
+    @apply relative inline-block;
+    background-image: linear-gradient(
+      transparent 68%,
+      theme("colors.ember.200") 68%,
+      theme("colors.ember.200") 92%,
+      transparent 92%
+    );
+    background-repeat: no-repeat;
+  }
+
+  /* Rule — thin hairline divider used between sections. */
+  .rule {
+    @apply h-px w-full bg-ink-100;
+  }
+}
+
+@layer utilities {
+  /* Tabular numerals for prices, timelines, day counters. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Pause the deploy-strip marquee on hover so reading commits is possible. */
+  .animate-deploy-marquee:hover {
+    animation-play-state: paused;
+  }
+
+  /* Quietly luxurious text gradient — used sparingly on hero accent words. */
+  .text-aurora {
+    background-image: linear-gradient(
+      100deg,
+      theme("colors.ink") 20%,
+      theme("colors.ember.500") 50%,
+      theme("colors.ink") 80%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 100%;
+    animation: shimmer 7s linear infinite;
+  }
+
+  @keyframes shimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+  }
+
+  /* Honor reduced-motion globally — disable shimmer / marquee. */
+  @media (prefers-reduced-motion: reduce) {
+    .text-aurora,
+    .animate-deploy-marquee,
+    .animate-aurora-a,
+    .animate-aurora-b {
+      animation: none !important;
+    }
+  }
+}
