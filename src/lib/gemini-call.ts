@@ -88,18 +88,67 @@ export async function callGemini(opts: GeminiCallOptions): Promise<GeminiCallRes
       return { ok: true, text, sources, retries: attempt };
     }
 
-    if (res.status !== 429 || attempt === MAX_RETRIES) {
-      const errText = await res.text();
-      return {
-        ok: false,
-        error: `${res.status}: ${errText.slice(0, 200)}`,
-        retries: attempt,
-      };
+    if (res.status === 429 && attempt < MAX_RETRIES) {
+      // Backoff then retry
+      await new Promise((r) => setTimeout(r, RETRY_BASE_MS * Math.pow(2, attempt)));
+      continue;
     }
 
-    // 429 + retries available: backoff
-    await new Promise((r) => setTimeout(r, RETRY_BASE_MS * Math.pow(2, attempt)));
+    // Out of retries or non-429 error — try Anthropic fallback before giving up
+    const errText = await res.text();
+    if (process.env.ANTHROPIC_API_KEY) {
+      const fallback = await callAnthropicFallback(opts);
+      if (fallback.ok) return { ...fallback, retries: attempt + 1 };
+    }
+    return {
+      ok: false,
+      error: `gemini ${res.status}: ${errText.slice(0, 200)}`,
+      retries: attempt,
+    };
   }
 
   return { ok: false, error: "exhausted retries", retries: MAX_RETRIES + 1 };
+}
+
+/**
+ * Anthropic Claude fallback for when Gemini is quota-exhausted or down.
+ * Used automatically by callGemini() when GEMINI_API_KEY returns 429.
+ * No grounded search (Anthropic doesn't have native web search via API).
+ */
+async function callAnthropicFallback(opts: GeminiCallOptions): Promise<GeminiCallResult> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return { ok: false, error: "ANTHROPIC_API_KEY not set" };
+
+  const model = process.env.ANTHROPIC_FALLBACK_MODEL || "claude-haiku-4-5-20251001";
+  const messages = [{ role: "user", content: opts.prompt }];
+  const body: Record<string, unknown> = {
+    model,
+    max_tokens: opts.maxOutputTokens ?? 2048,
+    messages,
+  };
+  if (opts.systemPrompt) body.system = opts.systemPrompt;
+  if (opts.temperature !== undefined) body.temperature = opts.temperature;
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      const t = await res.text();
+      return { ok: false, error: `anthropic ${res.status}: ${t.slice(0, 200)}` };
+    }
+    const data = (await res.json()) as {
+      content?: Array<{ type: string; text?: string }>;
+    };
+    const text = (data.content || []).filter((b) => b.type === "text").map((b) => b.text || "").join("\n");
+    return { ok: true, text, sources: [] };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
+  }
 }
