@@ -1,4 +1,6 @@
 import { NewsletterSignup } from "@/components/NewsletterSignup";
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 
 export const metadata = {
   title: "Newsletter — Day14",
@@ -8,6 +10,8 @@ export const metadata = {
 
 export default function NewsletterPage() {
   return (
+    <>
+    <SiteHeader />
     <main style={{ maxWidth: 720, margin: "0 auto", padding: "80px 32px" }}>
       <h1 style={{ fontSize: 44, letterSpacing: "-0.02em", marginBottom: 16, lineHeight: 1.1 }}>The Day14 build log</h1>
       <p style={{ fontSize: 18, color: "#7A6F8F", marginBottom: 32, lineHeight: 1.6 }}>
@@ -28,5 +32,7 @@ export default function NewsletterPage() {
         <li><strong>Niche reports</strong> — markets we're scanning, opportunities we passed on, why.</li>
       </ul>
     </main>
+    <SiteFooter />
+    </>
   );
 }

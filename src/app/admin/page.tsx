@@ -59,7 +59,7 @@ export default async function AdminEmpire() {
       <h1>⚔️ Day14 Empire</h1>
       <div className="sub">
         {state.tenants.length} tenants · synced {rel(state.generated_at)} ·{" "}
-        <Link href="/admin/empire" prefetch={false} style={{ color: "var(--accent)" }}>refresh</Link>
+        <Link href="/admin" prefetch={false} style={{ color: "var(--accent)" }}>refresh</Link>
       </div>
 
       <div className="empire-bar">

@@ -84,14 +84,38 @@ export const ADMIN_CSS = `
 .admin-shell .opp-score-badge.high { background:linear-gradient(135deg,#10b981,#06b6d4); color:white; }
 .admin-shell .opp-score-badge.medium { background:var(--gold); color:#08070d; }
 .admin-shell .opp-score-badge.low { background:var(--surface-2); color:var(--muted); }
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .admin-shell { padding:16px; }
+  .admin-shell h1 { font-size:26px; }
+  .admin-shell .empire-row { grid-template-columns:1fr; gap:16px; }
+  .admin-shell .kpi-grid { grid-template-columns:repeat(2,1fr) !important; }
+  .admin-shell .tenant-grid { grid-template-columns:1fr; }
+  .admin-shell .daemon-grid { grid-template-columns:repeat(2,1fr); }
+  .admin-shell .nav { overflow-x:auto; flex-wrap:nowrap; -webkit-overflow-scrolling:touch; }
+  .admin-shell .nav a { flex-shrink:0; }
+  .admin-shell .battle-entry { grid-template-columns:60px 90px 1fr; font-size:11px; }
+  .admin-shell .content-grid { grid-template-columns:repeat(2,1fr); }
+  .admin-shell .queue-grid { grid-template-columns:repeat(2,1fr); }
+  .admin-shell .level-num { font-size:42px; }
+  .admin-shell table { font-size:11px; }
+}
+@media (max-width: 480px) {
+  .admin-shell .kpi-value { font-size:18px; }
+  .admin-shell .kpi-label { font-size:9px; }
+  .admin-shell .char-card { padding:14px; }
+}
 `;
 
 interface NavProps { active: string; }
 export function AdminNav({ active }: NavProps) {
   const pages = [
     { id: "empire", href: "/admin", label: "⚔ Empire" },
+    { id: "inbox", href: "/admin/inbox", label: "📬 Inbox" },
     { id: "opps", href: "/admin/opportunities", label: "💡 Ideas" },
     { id: "finance", href: "/admin/finance", label: "💼 Finance" },
+    { id: "health", href: "/admin/health", label: "🩺 Health" },
   ];
   return (
     <nav className="nav">

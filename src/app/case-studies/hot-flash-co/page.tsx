@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 
 export const metadata = {
   title: "Hot Flash Co — Day14 case study",
@@ -9,6 +11,8 @@ export const metadata = {
 
 export default function HotFlashCoCaseStudy() {
   return (
+    <>
+    <SiteHeader />
     <main style={{ maxWidth: 760, margin: "0 auto", padding: "60px 32px" }}>
       <div style={{ fontSize: 11, color: "#7A6F8F", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.1em" }}>
         Internal · POD · Autonomous
@@ -90,5 +94,7 @@ export default function HotFlashCoCaseStudy() {
         <NewsletterSignup source="case-study-hot-flash-co" />
       </div>
     </main>
+    <SiteFooter />
+    </>
   );
 }

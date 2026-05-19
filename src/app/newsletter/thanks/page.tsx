@@ -1,9 +1,13 @@
 import Link from "next/link";
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 
 export const metadata = { title: "Subscribed — Day14", robots: { index: false } };
 
 export default function ThanksPage() {
   return (
+    <>
+    <SiteHeader />
     <main style={{ maxWidth: 640, margin: "0 auto", padding: "120px 32px", textAlign: "center" }}>
       <div style={{ fontSize: 48, marginBottom: 16 }}>✉️</div>
       <h1 style={{ fontSize: 36, letterSpacing: "-0.02em", marginBottom: 16 }}>Check your inbox</h1>
@@ -12,5 +16,7 @@ export default function ThanksPage() {
       </p>
       <Link href="/" style={{ display: "inline-block", padding: "12px 24px", background: "#2F2A33", color: "white", borderRadius: 8, textDecoration: "none", fontSize: 14 }}>← Back to Day14</Link>
     </main>
+    <SiteFooter />
+    </>
   );
 }

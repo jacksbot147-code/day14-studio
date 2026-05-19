@@ -68,6 +68,24 @@ async function loadArchetypes() {
   return JSON.parse(await fs.readFile(ARCHETYPES_FILE, "utf8"));
 }
 
+/**
+ * Create a MailerLite group for this tenant so signups from the brand site
+ * route to a dedicated list instead of the empire-wide default.
+ */
+async function createMailerLiteGroup(env, displayName) {
+  if (!env.MAILERLITE_API_KEY) return null;
+  try {
+    const res = await fetch("https://connect.mailerlite.com/api/groups", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${env.MAILERLITE_API_KEY}`, "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({ name: displayName }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data?.data?.id || null;
+  } catch { return null; }
+}
+
 function runStep(label, cmd, args) {
   console.log(`\n━━━ ${label} ━━━`);
   const r = spawnSync(cmd, args, { stdio: "inherit", cwd: STUDIO });
@@ -153,6 +171,13 @@ async function main() {
   }
   await fs.mkdir(tenantDir, { recursive: true });
   await registerTenant(a.slug, a.display_name, a.archetype, a.niche);
+
+  // Create MailerLite group (best-effort; non-blocking)
+  const mlGroupId = await createMailerLiteGroup(env, a.display_name);
+  if (mlGroupId) {
+    await fs.writeFile(path.join(tenantDir, "mailerlite-group.json"), JSON.stringify({ group_id: mlGroupId, name: a.display_name, created_at: new Date().toISOString() }, null, 2));
+    console.log(`  ✓ MailerLite group created: ${mlGroupId}`);
+  }
 
   const results = [];
 

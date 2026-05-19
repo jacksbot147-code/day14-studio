@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 
 export const metadata = {
   title: "The Day14 Stack — how a one-operator studio ships in 14 days",
@@ -31,6 +33,8 @@ const ENGINES = [
 
 export default function StackPage() {
   return (
+    <>
+    <SiteHeader />
     <main style={{ maxWidth: 1100, margin: "0 auto", padding: "60px 32px" }}>
       <section style={{ textAlign: "center", marginBottom: 80 }}>
         <h1 style={{ fontSize: 52, letterSpacing: "-0.03em", lineHeight: 1.05, marginBottom: 20 }}>
@@ -101,5 +105,7 @@ export default function StackPage() {
         </div>
       </section>
     </main>
+    <SiteFooter />
+    </>
   );
 }

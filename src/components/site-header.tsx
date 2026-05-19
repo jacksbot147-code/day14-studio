@@ -12,13 +12,19 @@ export function SiteHeader() {
           <span className="text-[15px]">{SITE.brand}</span>
         </Link>
 
-        <nav className="hidden items-center gap-7 text-sm font-medium text-ink-500 sm:flex">
-          <a href="/#verticals" className="transition hover:text-ink">Verticals</a>
+        <nav className="hidden items-center gap-6 text-sm font-medium text-ink-500 lg:flex">
           <a href="/#sku" className="transition hover:text-ink">Pricing</a>
+          <Link href="/stack" className="transition hover:text-ink">Stack</Link>
           <Link href="/compare" className="transition hover:text-ink">Compare</Link>
-          <a href="/#how" className="transition hover:text-ink">How it works</a>
-          <a href="/#case-studies" className="transition hover:text-ink">Work</a>
           <Link href="/builds" className="transition hover:text-ink">Build log</Link>
+          <a href="/#case-studies" className="transition hover:text-ink">Work</a>
+          <Link href="/newsletter" className="transition hover:text-ink">Newsletter</Link>
+          <Link href="/about" className="transition hover:text-ink">About</Link>
+        </nav>
+        <nav className="hidden items-center gap-5 text-sm font-medium text-ink-500 sm:flex lg:hidden">
+          <a href="/#sku" className="transition hover:text-ink">Pricing</a>
+          <Link href="/stack" className="transition hover:text-ink">Stack</Link>
+          <Link href="/builds" className="transition hover:text-ink">Builds</Link>
           <Link href="/about" className="transition hover:text-ink">About</Link>
         </nav>
 

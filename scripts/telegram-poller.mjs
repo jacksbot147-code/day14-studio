@@ -204,6 +204,17 @@ async function processInbox() {
         reply = `✓ Logged energy ${args[0]}/10${args[1] ? `, mood ${args[1]}/5` : ''}`;
       } else if (command === '/status') {
         reply = 'Open the dashboard: http://localhost:3000/dashboard/system';
+      } else if (command === '/health') {
+        try {
+          const { spawnSync } = await import('node:child_process');
+          const scriptPath = path.join(homedir(), 'Documents/studio/scripts/health-check.mjs');
+          const r = spawnSync('node', [scriptPath], { encoding: 'utf8' });
+          reply = '*Empire health*\n\n```\n' + (r.stdout || 'check failed').slice(0, 3000) + '\n```';
+        } catch (e) {
+          reply = `health-check error: ${e.message}`;
+        }
+      } else if (command === '/inbox') {
+        reply = `📬 Operator inbox: https://day14.us/admin/inbox\n\nLog in with the admin password.`;
       } else if (command === '/empire' || command === '/dashboard' || command === '/quest') {
         try {
           const { spawnSync } = await import('node:child_process');

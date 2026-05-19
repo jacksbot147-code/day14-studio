@@ -146,6 +146,54 @@ fi
 launchctl load "$PLIST"
 echo "✓ loaded com.day14.priority-allocator"
 
+# ----- Auto-restart watchdog (every 5 min) -----
+PLIST="$LAUNCH_AGENTS_DIR/com.day14.auto-restart-watchdog.plist"
+cat > "$PLIST" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.day14.auto-restart-watchdog</string>
+  <key>ProgramArguments</key>
+  <array><string>$NODE_BIN</string><string>$STUDIO/scripts/auto-restart-watchdog.mjs</string></array>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><dict><key>SuccessfulExit</key><false/><key>Crashed</key><true/></dict>
+  <key>ThrottleInterval</key><integer>120</integer>
+  <key>StandardOutPath</key><string>$LOG_DIR/auto-restart-watchdog.stdout.log</string>
+  <key>StandardErrorPath</key><string>$LOG_DIR/auto-restart-watchdog.stderr.log</string>
+  <key>EnvironmentVariables</key>
+  <dict><key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string></dict>
+</dict>
+</plist>
+EOF
+if launchctl list 2>/dev/null | grep -q "com.day14.auto-restart-watchdog"; then launchctl unload "$PLIST" 2>/dev/null || true; fi
+launchctl load "$PLIST"
+echo "✓ loaded com.day14.auto-restart-watchdog"
+
+# ----- Outbox dead-letter (every 30 min) -----
+PLIST="$LAUNCH_AGENTS_DIR/com.day14.outbox-deadletter.plist"
+cat > "$PLIST" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.day14.outbox-deadletter</string>
+  <key>ProgramArguments</key>
+  <array><string>$NODE_BIN</string><string>$STUDIO/scripts/outbox-deadletter.mjs</string></array>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><dict><key>SuccessfulExit</key><false/><key>Crashed</key><true/></dict>
+  <key>ThrottleInterval</key><integer>300</integer>
+  <key>StandardOutPath</key><string>$LOG_DIR/outbox-deadletter.stdout.log</string>
+  <key>StandardErrorPath</key><string>$LOG_DIR/outbox-deadletter.stderr.log</string>
+  <key>EnvironmentVariables</key>
+  <dict><key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string></dict>
+</dict>
+</plist>
+EOF
+if launchctl list 2>/dev/null | grep -q "com.day14.outbox-deadletter"; then launchctl unload "$PLIST" 2>/dev/null || true; fi
+launchctl load "$PLIST"
+echo "✓ loaded com.day14.outbox-deadletter"
+
 # ----- Opportunity scanner (continuous) -----
 PLIST="$LAUNCH_AGENTS_DIR/com.day14.opportunity-scanner.plist"
 cat > "$PLIST" <<EOF
