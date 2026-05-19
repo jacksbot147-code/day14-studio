@@ -1,0 +1,121 @@
+/**
+ * admin-state.ts — server-side data layer for /admin pages.
+ *
+ * State is synced from Jack's Mac → studio/public/data/empire-state.json
+ * by scripts/sync-empire-state.mjs (LaunchAgent every 15 min, auto-commits + pushes).
+ *
+ * Live data (Printify products + orders) is fetched directly from APIs.
+ */
+
+import fs from "node:fs/promises";
+import path from "node:path";
+
+interface EmpireState {
+  generated_at: string;
+  tenants: Array<{
+    slug: string;
+    display_name: string;
+    type: string;
+    stage: string;
+    tagline?: string;
+    revenue_cents: number;
+    orders: number;
+    streak: number;
+    recent_audit: Array<{ ts: string; actor: string; action: string; [k: string]: unknown }>;
+    content_counts: {
+      pinterestPins: number;
+      tiktokScripts: number;
+      blogDrafts: number;
+      newsletterIssues: number;
+      aiVideos: number;
+      csDrafts: number;
+      marketingDrafts: number;
+      rawFootage: number;
+      redditDrafts: number;
+    };
+    queue: {
+      queued: number;
+      approved: number;
+      posted: number;
+      byPlatform: Record<string, { queued: number; approved: number; posted: number }>;
+    };
+  }>;
+  heartbeats: Array<{ name: string; status: "healthy" | "stale" | "error"; ageMin: number }>;
+  skill_counts: { live: number; drafts: number };
+  expansion_state: { skills_generated: number };
+  opportunities: Array<{
+    id: string;
+    niche: string;
+    total_score: number;
+    suggested_archetype: string;
+    rationale: string;
+    pitched: boolean;
+    status: string;
+  }>;
+  empire_battle_log: Array<{ ts: string; tenant: string; actor: string; action: string; [k: string]: unknown }>;
+}
+
+const FALLBACK: EmpireState = {
+  generated_at: new Date().toISOString(),
+  tenants: [],
+  heartbeats: [],
+  skill_counts: { live: 0, drafts: 0 },
+  expansion_state: { skills_generated: 0 },
+  opportunities: [],
+  empire_battle_log: [],
+};
+
+export async function loadEmpireState(): Promise<EmpireState> {
+  const f = path.join(process.cwd(), "public/data/empire-state.json");
+  try {
+    return JSON.parse(await fs.readFile(f, "utf8"));
+  } catch {
+    return FALLBACK;
+  }
+}
+
+const PRINTIFY_API = "https://api.printify.com/v1";
+
+export async function fetchPrintifyProducts() {
+  const apiKey = process.env.PRINTIFY_API_KEY;
+  if (!apiKey) return [];
+  try {
+    const sR = await fetch(`${PRINTIFY_API}/shops.json`, {
+      headers: { Authorization: `Bearer ${apiKey}` },
+      next: { revalidate: 300 },
+    });
+    if (!sR.ok) return [];
+    const shops = (await sR.json()) as Array<{ id: number }>;
+    if (!shops.length) return [];
+    const pR = await fetch(`${PRINTIFY_API}/shops/${shops[0]!.id}/products.json?limit=100`, {
+      headers: { Authorization: `Bearer ${apiKey}` },
+      next: { revalidate: 300 },
+    });
+    if (!pR.ok) return [];
+    const data = (await pR.json()) as { data?: Array<Record<string, unknown>> };
+    return data.data || [];
+  } catch {
+    return [];
+  }
+}
+
+// XP system
+const XP = {
+  product_created: 100, product_sold: 1000, skill_approved: 250,
+  draft_created: 25, daemon_running: 10, tenant_launched: 500, revenue_per_dollar: 10,
+};
+
+export function computeEmpireXp(state: EmpireState, totalProducts: number) {
+  const totalRevenue = state.tenants.reduce((s, t) => s + t.revenue_cents, 0);
+  const totalOrders = state.tenants.reduce((s, t) => s + t.orders, 0);
+  const healthy = state.heartbeats.filter((h) => h.status === "healthy").length;
+  return totalProducts * XP.product_created
+    + totalOrders * XP.product_sold
+    + (totalRevenue / 100) * XP.revenue_per_dollar
+    + state.skill_counts.live * XP.skill_approved
+    + healthy * XP.daemon_running
+    + state.tenants.length * XP.tenant_launched;
+}
+
+export function levelFromXp(xp: number) { return Math.floor(Math.sqrt(xp / 100)); }
+export function xpForLevel(l: number) { return l * l * 100; }

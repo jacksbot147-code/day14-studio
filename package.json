@@ -4,16 +4,27 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run registry:generate && npm run graph:generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "registry:generate": "node scripts/generate-skill-registry.mjs",
+    "graph:generate": "node scripts/generate-skill-graph.mjs",
+    "skill-audit": "node scripts/skill-audit.mjs",
+    "e2e": "node scripts/e2e-pipeline-test.mjs",
+    "briefing": "node scripts/morning-briefing.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
+    "@supabase/supabase-js": "^2.45.4",
     "clsx": "^2.1.1",
     "next": "^14.2.35",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "resend": "^4.0.1",
+    "stripe": "^17.3.1",
     "tailwind-merge": "^2.5.4"
   },
   "devDependencies": {
@@ -25,6 +36,7 @@
     "eslint-config-next": "^14.2.35",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.14",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.4"
   }
 }

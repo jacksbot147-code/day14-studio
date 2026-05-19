@@ -1,0 +1,17 @@
+# Master log — overnight 2026-05-16
+
+> Each scheduled task appends one timestamped line on completion.
+> Format: `[YYYY-MM-DD HH:MM ZONE] task-id STATUS → output-path, confidence: 0.0-1.0`
+
+[2026-05-16 00:30 ET] agenda-write COMPLETE → AGENDA-2026-05-16.md, confidence: 1.0
+[2026-05-16 00:30 ET] scheduled 4 overnight tasks — see Cowork "Scheduled" panel
+[2026-05-16 01:30 ET] runbook-preflight COMPLETE → 01-runbook-audit.md, confidence: 0.85
+[2026-05-16 03:30 ET] expand-empire-seeds COMPLETE → 5 new seeds + bootstrap updated, confidence: 0.88
+[2026-05-16 06:00 ET] customer-comms-pack COMPLETE → 03-customer-comms-pack.md, confidence: 0.9
+[2026-05-16 23:00 ET] nightly-polish COMPLETE → polish-2026-05-16.md, confidence: 0.85
+[2026-05-17 20:00 ET] weekly-council-review COMPLETE → council-review-2026-05-17.md, confidence: 0.85
+[2026-05-17 22:00 ET] weekly-skill-harvest COMPLETE → skill-harvest-findings-2026-05-17.md, confidence: 0.85
+[2026-05-17 23:00 ET] nightly-polish COMPLETE → polish-2026-05-17.md, confidence: 0.85
+[2026-05-18 09:00 ET] daily-kickoff COMPLETE → kickoff-2026-05-18.md, confidence: 0.85
+[2026-05-18 17:00 ET] daily-eod COMPLETE → eod-2026-05-18.md, confidence: 0.55
+[2026-05-18 23:00 ET] nightly-polish COMPLETE → polish-2026-05-18.md, confidence: 0.8

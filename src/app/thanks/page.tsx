@@ -79,12 +79,12 @@ export default function ThanksPage({
               title="Fill out the intake form"
               body="One page, ~25 min. Business name, services, pricing, brand colors, logo, 5 photos. That's the whole input."
               cta="Open intake form"
-              href="#" // TODO: replace with real Typeform / Notion URL
+              href={sku ? `/intake?sku=${sku}` : "/intake"}
             />
             <Step
               n={2}
               title="Check your inbox tomorrow"
-              body={`Preview URL on a *.${SITE.domain.replace(/^.*\./, "vercel.app")} subdomain by EOD tomorrow. You can watch the build progress on a public build-log.`}
+              body={`Preview URL on a *.vercel.app subdomain by EOD tomorrow. You can watch the build progress on a public build-log.`}
               cta="See an example build-log"
               href="/builds/splash-jacks-pools"
             />
@@ -92,8 +92,8 @@ export default function ThanksPage({
               n={3}
               title="Daily updates, no meetings"
               body="One-paragraph operator update every weekday. Reply with feedback any time. We launch on day 14 or your deposit refunds."
-              cta="Read the SOW"
-              href="#" // TODO: link to SOW once it's hosted
+              cta="About the build process"
+              href="/about"
             />
           </div>
 

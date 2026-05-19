@@ -4,6 +4,32 @@
 > memory of prior conversations. Each task's prompt is self-contained, but
 > they all share the same context. Read this file first.
 
+## ⚡ Recent additions (May 16, 2026)
+
+Day14 has evolved past "marketing site" into **Day14 OS** — the
+operating system that runs the productized agency. Key new artifacts:
+
+- `~/Documents/studio/docs/day14-os-vision.md` — architecture, 5 components, Supabase schema
+- `~/Documents/studio/docs/day14-os-skills-and-empire.md` — empire pattern, 8 skill packs
+- `~/Documents/studio/docs/day14-mac-mini-runbook.md` — 3-hour Mac mini setup runbook
+- `~/Documents/studio/docs/day14-mac-mini-day1-playbook.md` — what to do right after the mini boots
+- `~/Documents/studio/docs/seeds/` — SKILL.md and agent prompt seeds (bootstrap deploys these)
+- `~/Documents/studio/scripts/bootstrap-day14-os.sh` — one-shot empire scaffold
+- `~/Documents/studio/scripts/sanity-check-day14-os.sh` — post-bootstrap verification
+- `~/Documents/studio/docs/council-log/` — every LLM Council decision logged
+  (entry `0001-first-customer-acquisition.md` already exists)
+
+The **empire pattern** future-state: `~/Documents/businesses/` will hold
+one folder per business (day14, splash-jacks-pools, casamore, buildbridge,
+research-agent) plus `_shared/` (agents, skills, templates, sql, council-log).
+The Mac mini becomes the always-on runtime; right now everything still
+runs on Jack's laptop.
+
+**Tonight's overnight tasks (May 16) are PREP for tomorrow's Mac mini
+setup, not generic research.** See
+`~/Documents/studio/docs/overnight/AGENDA-2026-05-16.md` for the four
+tasks.
+
 ## What Day14 is
 
 A productized AI-leveraged build studio. One operator (Jack) + Claude-based

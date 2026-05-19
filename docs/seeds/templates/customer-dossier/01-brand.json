@@ -1,0 +1,88 @@
+{
+  "$schema": "../../sql/brand.schema.json",
+  "company": {
+    "name": "",
+    "legal_name": "",
+    "slug": "",
+    "tagline": "",
+    "description_short": "",
+    "description_long": ""
+  },
+  "contact": {
+    "phone": "",
+    "phone_pretty": "",
+    "email": "",
+    "address": {
+      "street": "",
+      "city": "",
+      "state": "",
+      "zip": ""
+    },
+    "service_radius_miles": null,
+    "hours": {
+      "mon": "",
+      "tue": "",
+      "wed": "",
+      "thu": "",
+      "fri": "",
+      "sat": "",
+      "sun": ""
+    }
+  },
+  "colors": {
+    "primary": "",
+    "ink": "#0B0B0A",
+    "paper": "#F8F6F1",
+    "accent": "",
+    "shipped": "#10B981"
+  },
+  "fonts": {
+    "display": "Inter",
+    "body": "Inter",
+    "mono": "JetBrains Mono"
+  },
+  "logo": {
+    "svg_path": "",
+    "png_path": "",
+    "favicon_path": ""
+  },
+  "social": {
+    "instagram": "",
+    "facebook": "",
+    "google_business": "",
+    "tiktok": "",
+    "youtube": ""
+  },
+  "sku": "site",
+  "vertical": "mobile-service",
+  "service_type": {
+    "singular": "service",
+    "plural": "services",
+    "verb": "service",
+    "verb_past": "serviced"
+  },
+  "payments": {
+    "stripe_account": "",
+    "accepts_online": false,
+    "deposit_required": false
+  },
+  "integrations": {
+    "google_business_id": "",
+    "calendar_url": "",
+    "review_url": ""
+  },
+  "feature_flags": {
+    "online_booking": false,
+    "online_payments": false,
+    "customer_portal": false,
+    "ai_chatbot": false,
+    "sms_notifications": false,
+    "spanish_toggle": false
+  },
+  "_meta": {
+    "intake_completed_at": null,
+    "kickoff_call_at": null,
+    "last_edited_by": "intake-form",
+    "version": 1
+  }
+}
