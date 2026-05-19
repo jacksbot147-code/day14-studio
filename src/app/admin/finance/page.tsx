@@ -5,7 +5,11 @@ import { AdminNav, ADMIN_CSS } from "../layout-bits";
 export const metadata = { title: "Finance — Day14 Admin", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 
-const COGS_BY_TYPE: Record<string, { per_order_cents: number; fixed_monthly_cents: number }> = {
+interface Cogs { per_order_cents: number; fixed_monthly_cents: number }
+
+const DEFAULT_COGS: Cogs = { per_order_cents: 800, fixed_monthly_cents: 0 };
+
+const COGS_BY_TYPE: Record<string, Cogs> = {
   "pod-store": { per_order_cents: 800, fixed_monthly_cents: 0 },
   "newsletter": { per_order_cents: 50, fixed_monthly_cents: 2900 },
   "course": { per_order_cents: 500, fixed_monthly_cents: 5900 },
@@ -20,7 +24,7 @@ const COGS_BY_TYPE: Record<string, { per_order_cents: number; fixed_monthly_cent
 export default async function FinancePage() {
   const state = await loadEmpireState();
   const rows = state.tenants.map((t) => {
-    const cogs = COGS_BY_TYPE[t.type] || COGS_BY_TYPE["pod-store"];
+    const cogs: Cogs = COGS_BY_TYPE[t.type] ?? DEFAULT_COGS;
     const rev = t.revenue_cents;
     const cogsTotal = t.orders * cogs.per_order_cents + cogs.fixed_monthly_cents;
     const gross = rev - cogsTotal;
