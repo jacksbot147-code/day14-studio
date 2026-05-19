@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-19T18:50:52.047Z",
+  "generated_at": "2026-05-19T19:05:53.985Z",
   "tenants": [
     {
       "slug": "day14",
@@ -92,6 +92,13 @@
       "orders": 0,
       "streak": 0,
       "recent_audit": [
+        {
+          "ts": "2026-05-19T19:02:00.906Z",
+          "tenant": "hot-flash-co",
+          "actor": "marketing-engine",
+          "action": "fatal_error",
+          "error": "fetch failed"
+        },
         {
           "ts": "2026-05-19T15:00:10.769Z",
           "tenant": "hot-flash-co",
@@ -283,7 +290,7 @@
     {
       "name": "growth-watcher",
       "status": "stale",
-      "ageMin": 3620
+      "ageMin": 3635
     },
     {
       "name": "hot-flash-co-orders",
@@ -302,8 +309,8 @@
     },
     {
       "name": "outbox-deadletter-cycle",
-      "status": "stale",
-      "ageMin": 16
+      "status": "healthy",
+      "ageMin": 1
     },
     {
       "name": "proactive-monitor",
@@ -509,6 +516,13 @@
   ],
   "empire_battle_log": [
     {
+      "ts": "2026-05-19T19:02:00.906Z",
+      "tenant": "hot-flash-co",
+      "actor": "marketing-engine",
+      "action": "fatal_error",
+      "error": "fetch failed"
+    },
+    {
       "ts": "2026-05-19T15:00:10.769Z",
       "tenant": "hot-flash-co",
       "actor": "marketing-engine",
@@ -629,16 +643,6 @@
       "slug": "personal-summer",
       "product_id": "6a0b8cf10b1d063f8e015f68",
       "title": "Personal Summer Mug | Hot Flash Humor Coffee Cup",
-      "image_model": "pollinations-flux"
-    },
-    {
-      "ts": "2026-05-18T22:16:42.379Z",
-      "tenant": "hot-flash-co",
-      "actor": "printify-product-creator",
-      "action": "product_created",
-      "slug": "perimenopausal-not-crazy",
-      "product_id": "6a0b8c9973e0ee82eb056531",
-      "title": "She Is Perimenopausal, Not Crazy Mug | Funny Menopause Gift",
       "image_model": "pollinations-flux"
     }
   ]
