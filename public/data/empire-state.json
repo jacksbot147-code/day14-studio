@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-19T22:38:17.573Z",
+  "generated_at": "2026-05-19T23:18:13.491Z",
   "tenants": [
     {
       "slug": "day14",
@@ -361,23 +361,28 @@
   "heartbeats": [
     {
       "name": "auto-restart-watchdog",
-      "status": "healthy",
-      "ageMin": 0
+      "status": "stale",
+      "ageMin": 40
     },
     {
       "name": "auto-restart-watchdog-cycle",
-      "status": "healthy",
-      "ageMin": 0
+      "status": "stale",
+      "ageMin": 40
     },
     {
       "name": "customer-success",
       "status": "healthy",
-      "ageMin": 0
+      "ageMin": 1
     },
     {
       "name": "expansion-prompter",
       "status": "healthy",
-      "ageMin": 0
+      "ageMin": 1
+    },
+    {
+      "name": "gmail-cs-triage",
+      "status": "stale",
+      "ageMin": 14
     },
     {
       "name": "growth-narrator",
@@ -387,57 +392,62 @@
     {
       "name": "growth-watcher",
       "status": "stale",
-      "ageMin": 3848
+      "ageMin": 3888
     },
     {
       "name": "hot-flash-co-orders",
-      "status": "stale",
-      "ageMin": 17
+      "status": "healthy",
+      "ageMin": 1
     },
     {
       "name": "opportunity-scanner",
       "status": "healthy",
-      "ageMin": 0
+      "ageMin": 1
     },
     {
       "name": "outbox-deadletter",
       "status": "healthy",
-      "ageMin": 0
+      "ageMin": 1
     },
     {
       "name": "outbox-deadletter-cycle",
       "status": "stale",
-      "ageMin": 29
+      "ageMin": 25
     },
     {
       "name": "proactive-monitor",
       "status": "healthy",
-      "ageMin": 0
+      "ageMin": 1
     },
     {
       "name": "recursive-expansion",
       "status": "healthy",
-      "ageMin": 0
+      "ageMin": 1
     },
     {
       "name": "skill-multiplier",
       "status": "stale",
-      "ageMin": 18
+      "ageMin": 58
     },
     {
       "name": "system-pulse",
       "status": "healthy",
-      "ageMin": 0
+      "ageMin": 1
     },
     {
       "name": "telegram-poller",
       "status": "healthy",
-      "ageMin": 0
+      "ageMin": 1
+    },
+    {
+      "name": "vercel-deploy-monitor",
+      "status": "stale",
+      "ageMin": 11
     },
     {
       "name": "video-pipeline",
       "status": "healthy",
-      "ageMin": 0
+      "ageMin": 1
     }
   ],
   "skill_counts": {
