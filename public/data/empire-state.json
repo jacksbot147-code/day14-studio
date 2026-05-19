@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-05-19T13:20:14.232Z",
+  "generated_at": "2026-05-19T13:35:11.150Z",
   "tenants": [
     {
       "slug": "day14",
       "display_name": "day14",
       "type": "productized-build-shop",
-      "stage": "unknown",
+      "stage": "active",
       "revenue_cents": 0,
       "orders": 0,
       "streak": 0,
@@ -32,7 +32,7 @@
       "slug": "etsy-store-1",
       "display_name": "etsy-store-1",
       "type": "niche-ecom",
-      "stage": "unknown",
+      "stage": "launching",
       "revenue_cents": 0,
       "orders": 0,
       "streak": 0,
@@ -59,7 +59,7 @@
       "slug": "pod-store-1",
       "display_name": "pod-store-1",
       "type": "pod-store",
-      "stage": "unknown",
+      "stage": "launching",
       "revenue_cents": 0,
       "orders": 0,
       "streak": 0,
@@ -249,6 +249,11 @@
   ],
   "heartbeats": [
     {
+      "name": "auto-restart-watchdog",
+      "status": "healthy",
+      "ageMin": 0
+    },
+    {
       "name": "customer-success",
       "status": "healthy",
       "ageMin": 1
@@ -261,12 +266,12 @@
     {
       "name": "growth-narrator",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "growth-watcher",
       "status": "stale",
-      "ageMin": 3290
+      "ageMin": 3305
     },
     {
       "name": "hot-flash-co-orders",
@@ -279,9 +284,14 @@
       "ageMin": 1
     },
     {
-      "name": "proactive-monitor",
+      "name": "outbox-deadletter",
       "status": "healthy",
       "ageMin": 0
+    },
+    {
+      "name": "proactive-monitor",
+      "status": "healthy",
+      "ageMin": 1
     },
     {
       "name": "recursive-expansion",
@@ -291,22 +301,22 @@
     {
       "name": "skill-multiplier",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "system-pulse",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "telegram-poller",
       "status": "healthy",
-      "ageMin": 0
+      "ageMin": 1
     },
     {
       "name": "video-pipeline",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     }
   ],
   "skill_counts": {
