@@ -124,7 +124,6 @@ async function runViaLLM(
   ctx: SkillInvocationContext
 ): Promise<SkillOutcome> {
   // Lazy import so a missing SDK doesn't break the module
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let sdk: any = null;
   try {
     // SDK was installed via npm; ts-ignore handles older snapshots where it wasn't.
@@ -171,9 +170,7 @@ async function runViaLLM(
         model: "claude-opus-4-6",
         max_tokens: 4096,
         system: systemPrompt,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         messages: messages as any,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         tools: tools as any,
       });
     } catch (err) {
