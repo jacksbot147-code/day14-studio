@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { loadEmpireState, fetchPrintifyProducts, computeEmpireXp, levelFromXp, xpForLevel } from "@/lib/admin-state";
-import { AdminNav, ADMIN_CSS } from "./layout-bits";
+import { AdminNav, ADMIN_CSS, SiteCta, SITE_URL } from "./layout-bits";
 
 export const metadata = {
   title: "Day14 — Empire",
@@ -61,6 +61,8 @@ export default async function AdminEmpire() {
         {state.tenants.length} tenants · synced {rel(state.generated_at)} ·{" "}
         <Link href="/admin" prefetch={false} style={{ color: "var(--accent)" }}>refresh</Link>
       </div>
+
+      <SiteCta url={SITE_URL} label="View day14.us live site" />
 
       <div className="empire-bar">
         <div className="empire-row">

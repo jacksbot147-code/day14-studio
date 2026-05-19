@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { loadEmpireState, fetchPrintifyProducts, levelFromXp, xpForLevel } from "@/lib/admin-state";
-import { AdminNav, ADMIN_CSS } from "../../layout-bits";
+import { AdminNav, ADMIN_CSS, SiteCta, tenantSiteUrl, tenantHasSite } from "../../layout-bits";
 
 export const dynamic = "force-dynamic";
 
@@ -34,6 +34,9 @@ export default async function TenantPage({ params }: Props) {
   const tenant = state.tenants.find((t) => t.slug === slug);
   if (!tenant) notFound();
 
+  const siteUrl = tenantSiteUrl(slug);
+  const hasSite = tenantHasSite(slug);
+
   const products = await fetchPrintifyProducts();
   const arch = ARCHETYPE_CLASSES[tenant.type] || { class: "Adventurer", icon: "🎯", color: "#6b7280" };
   const xp = tenant.orders * 1000 + (tenant.revenue_cents / 100) * 10 + 500 + tenant.streak * 50;
@@ -56,10 +59,15 @@ export default async function TenantPage({ params }: Props) {
   return (
     <div className="admin-shell">
       <style dangerouslySetInnerHTML={{ __html: ADMIN_CSS }} />
-      <AdminNav active="empire" />
+      <AdminNav active="empire" siteUrl={siteUrl} siteLabel={hasSite ? tenant.display_name : "day14.us"} />
       <div className="crumb"><Link href="/admin">← Empire</Link> / {slug}</div>
       <h1>{arch.icon} {tenant.display_name}</h1>
       <div className="sub" style={{ color: arch.color }}>{arch.class} · {tenant.type} · {tenant.stage} · {tenant.tagline || ""}</div>
+
+      <SiteCta
+        url={siteUrl}
+        label={hasSite ? `Visit ${tenant.display_name} website` : "View day14.us live site"}
+      />
 
       <div className="empire-bar">
         <div className="empire-row">

@@ -10,6 +10,10 @@ export const ADMIN_CSS = `
 .admin-shell .nav a { padding:8px 14px; background:var(--surface); border:1px solid var(--border); border-radius:8px; font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; transition:all 0.2s; }
 .admin-shell .nav a:hover { color:var(--text); border-color:var(--accent); }
 .admin-shell .nav a.active { background:linear-gradient(135deg,#a855f7,#06b6d4); color:white; border-color:transparent; }
+.admin-shell .nav a.nav-site { margin-left:auto; background:linear-gradient(135deg,rgba(108,214,108,0.14),rgba(6,182,212,0.14)); border-color:rgba(108,214,108,0.45); color:var(--green); }
+.admin-shell .nav a.nav-site:hover { border-color:var(--green); color:var(--green); }
+.admin-shell .site-cta { display:inline-flex; align-items:center; gap:8px; padding:11px 20px; background:linear-gradient(135deg,#a855f7,#06b6d4); color:#fff; border-radius:10px; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:24px; transition:transform 0.2s, box-shadow 0.2s; box-shadow:0 4px 14px rgba(168,85,247,0.25); }
+.admin-shell .site-cta:hover { transform:translateY(-2px); box-shadow:0 8px 22px rgba(168,85,247,0.4); }
 .admin-shell .crumb { font-size:11px; color:var(--muted); margin-bottom:16px; text-transform:uppercase; letter-spacing:0.1em; }
 .admin-shell .crumb a { color:var(--accent); }
 .admin-shell .empire-bar { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; margin-bottom:24px; }
@@ -108,8 +112,28 @@ export const ADMIN_CSS = `
 }
 `;
 
-interface NavProps { active: string; }
-export function AdminNav({ active }: NavProps) {
+// ── Public-facing websites ────────────────────────────────────────────────
+// The live empire site.
+export const SITE_URL = "https://day14.us";
+
+// Per-tenant public website. Add a tenant's brand site here as soon as it ships.
+const TENANT_SITES: Record<string, string> = {
+  "day14": "https://day14.us",
+  "hot-flash-co": "https://day14.us/brands/hot-flash-co",
+};
+
+/** Public website URL for a tenant — its own brand site if one exists, else day14.us. */
+export function tenantSiteUrl(slug: string): string {
+  return TENANT_SITES[slug] ?? SITE_URL;
+}
+
+/** True when the tenant has its own dedicated brand site (not just the day14.us fallback). */
+export function tenantHasSite(slug: string): boolean {
+  return slug in TENANT_SITES;
+}
+
+interface NavProps { active: string; siteUrl?: string; siteLabel?: string; }
+export function AdminNav({ active, siteUrl = SITE_URL, siteLabel = "day14.us" }: NavProps) {
   const pages = [
     { id: "empire", href: "/admin", label: "⚔ Empire" },
     { id: "inbox", href: "/admin/inbox", label: "📬 Inbox" },
@@ -124,6 +148,20 @@ export function AdminNav({ active }: NavProps) {
           {p.label}
         </Link>
       ))}
+      <a href={siteUrl} target="_blank" rel="noopener noreferrer" className="nav-site">
+        🌐 {siteLabel} ↗
+      </a>
     </nav>
+  );
+}
+
+/** Prominent "open the live website in a new tab" button for the top of a dashboard. */
+export function SiteCta({ url, label }: { url: string; label: string }) {
+  return (
+    <div>
+      <a href={url} target="_blank" rel="noopener noreferrer" className="site-cta">
+        🌐 {label} <span style={{ opacity: 0.7 }}>↗</span>
+      </a>
+    </div>
   );
 }
