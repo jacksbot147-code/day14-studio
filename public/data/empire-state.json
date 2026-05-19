@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-19T21:21:09.610Z",
+  "generated_at": "2026-05-19T22:38:17.573Z",
   "tenants": [
     {
       "slug": "day14",
@@ -92,6 +92,13 @@
       "orders": 0,
       "streak": 0,
       "recent_audit": [
+        {
+          "ts": "2026-05-19T21:58:31.737Z",
+          "tenant": "hot-flash-co",
+          "actor": "orders-watcher",
+          "action": "poll_error",
+          "error": "fetch failed"
+        },
         {
           "ts": "2026-05-19T20:06:55.000Z",
           "tenant": "hot-flash-co",
@@ -355,82 +362,82 @@
     {
       "name": "auto-restart-watchdog",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "auto-restart-watchdog-cycle",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "customer-success",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "expansion-prompter",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "growth-narrator",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "growth-watcher",
       "status": "stale",
-      "ageMin": 3771
+      "ageMin": 3848
     },
     {
       "name": "hot-flash-co-orders",
-      "status": "healthy",
-      "ageMin": 1
+      "status": "stale",
+      "ageMin": 17
     },
     {
       "name": "opportunity-scanner",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "outbox-deadletter",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "outbox-deadletter-cycle",
       "status": "stale",
-      "ageMin": 16
+      "ageMin": 29
     },
     {
       "name": "proactive-monitor",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "recursive-expansion",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "skill-multiplier",
-      "status": "healthy",
-      "ageMin": 1
+      "status": "stale",
+      "ageMin": 18
     },
     {
       "name": "system-pulse",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "telegram-poller",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "video-pipeline",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     }
   ],
   "skill_counts": {
@@ -615,6 +622,13 @@
   ],
   "empire_battle_log": [
     {
+      "ts": "2026-05-19T21:58:31.737Z",
+      "tenant": "hot-flash-co",
+      "actor": "orders-watcher",
+      "action": "poll_error",
+      "error": "fetch failed"
+    },
+    {
       "ts": "2026-05-19T20:06:55.000Z",
       "tenant": "hot-flash-co",
       "actor": "scheduled-task-day14-4pm",
@@ -728,16 +742,6 @@
       "slug": "sweating-since",
       "product_id": "6a0b8f1078740a01af03c604",
       "title": "Sweating For No Reason Since 2024 Mug | Hot Flash Humor",
-      "image_model": "pollinations-flux"
-    },
-    {
-      "ts": "2026-05-18T22:16:42.379Z",
-      "tenant": "hot-flash-co",
-      "actor": "printify-product-creator",
-      "action": "product_created",
-      "slug": "menopause-plot-twist",
-      "product_id": "6a0b8eb256c75ac4900ffeda",
-      "title": "Menopause Nature's Plot Twist Mug | Vintage Book Lover Gift",
       "image_model": "pollinations-flux"
     }
   ]
