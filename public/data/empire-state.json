@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-19T20:06:00.793Z",
+  "generated_at": "2026-05-19T20:21:02.739Z",
   "tenants": [
     {
       "slug": "day14",
@@ -92,6 +92,19 @@
       "orders": 0,
       "streak": 0,
       "recent_audit": [
+        {
+          "ts": "2026-05-19T20:06:55.000Z",
+          "tenant": "hot-flash-co",
+          "actor": "scheduled-task-day14-4pm",
+          "action": "pipeline_complete",
+          "scripts": 3,
+          "videos": 1,
+          "variants": 6,
+          "queued": 3,
+          "sync_pushed": false,
+          "sync_note": "git commit/push blocked by sandbox file permissions",
+          "report_path": "telegram outbox queued"
+        },
         {
           "ts": "2026-05-19T20:05:52.537Z",
           "tenant": "hot-flash-co",
@@ -339,7 +352,7 @@
     {
       "name": "growth-watcher",
       "status": "stale",
-      "ageMin": 3696
+      "ageMin": 3711
     },
     {
       "name": "hot-flash-co-orders",
@@ -358,8 +371,8 @@
     },
     {
       "name": "outbox-deadletter-cycle",
-      "status": "healthy",
-      "ageMin": 1
+      "status": "stale",
+      "ageMin": 16
     },
     {
       "name": "proactive-monitor",
@@ -565,6 +578,19 @@
   ],
   "empire_battle_log": [
     {
+      "ts": "2026-05-19T20:06:55.000Z",
+      "tenant": "hot-flash-co",
+      "actor": "scheduled-task-day14-4pm",
+      "action": "pipeline_complete",
+      "scripts": 3,
+      "videos": 1,
+      "variants": 6,
+      "queued": 3,
+      "sync_pushed": false,
+      "sync_note": "git commit/push blocked by sandbox file permissions",
+      "report_path": "telegram outbox queued"
+    },
+    {
       "ts": "2026-05-19T20:05:52.537Z",
       "tenant": "hot-flash-co",
       "actor": "social-orchestrator",
@@ -675,16 +701,6 @@
       "slug": "menopause-plot-twist",
       "product_id": "6a0b8eb256c75ac4900ffeda",
       "title": "Menopause Nature's Plot Twist Mug | Vintage Book Lover Gift",
-      "image_model": "pollinations-flux"
-    },
-    {
-      "ts": "2026-05-18T22:16:42.379Z",
-      "tenant": "hot-flash-co",
-      "actor": "printify-product-creator",
-      "action": "product_created",
-      "slug": "not-yelling",
-      "product_id": "6a0b8e58ed986214f10375f7",
-      "title": "I'm Not Yelling I'm Perimenopausal Mug | Funny Menopause Gift",
       "image_model": "pollinations-flux"
     }
   ]
