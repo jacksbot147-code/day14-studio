@@ -52,6 +52,16 @@ export default async function AdminEmpire() {
     return xpB - xpA;
   });
 
+  const PRIORITY_RANK: Record<string, number> = { high: 0, medium: 1, low: 2 };
+  const openTodos = [...(state.human_todos ?? [])]
+    .filter((t) => t.status === "open")
+    .sort(
+      (a, b) =>
+        (PRIORITY_RANK[a.priority] ?? 1) - (PRIORITY_RANK[b.priority] ?? 1) ||
+        a.seq - b.seq
+    );
+  const botUser = state.bot_username || null;
+
   return (
     <div className="admin-shell">
       <style dangerouslySetInnerHTML={{ __html: ADMIN_CSS }} />
@@ -98,6 +108,48 @@ export default async function AdminEmpire() {
         <div className="kpi"><div className="kpi-label">🧬 Skills</div><div className="kpi-value">{state.skill_counts.live}</div><div className="kpi-sub">{state.skill_counts.drafts} drafts</div></div>
         <div className="kpi"><div className="kpi-label">🔥 Best Streak</div><div className="kpi-value">{maxStreak}d</div></div>
         <div className="kpi"><div className="kpi-label">⚙️ Daemons</div><div className="kpi-value">{healthy}/{state.heartbeats.length}</div><div className="kpi-sub" style={{ color: stale > 0 ? "var(--red)" : "var(--muted)" }}>{stale} stale</div></div>
+      </div>
+
+      <div className="section-header">
+        <div className="section-title">
+          📋 Your To-Do — needs you{openTodos.length > 0 ? ` (${openTodos.length})` : ""}
+        </div>
+      </div>
+      <div className={`todo-panel ${openTodos.length > 0 ? "has-items" : ""}`}>
+        {openTodos.length === 0 ? (
+          <div className="todo-empty">🎉 Nothing needs you right now — the agents have it covered.</div>
+        ) : (
+          openTodos.map((t) => (
+            <div key={t.id} className={`todo-row ${t.priority === "high" ? "pri-high" : ""}`}>
+              <div className="todo-seq">{t.seq}</div>
+              <div className="todo-body">
+                <div className="todo-title">{t.title}</div>
+                {t.detail ? <div className="todo-detail">{t.detail}</div> : null}
+                <div className="todo-meta">
+                  <span className={`pill ${t.priority === "high" ? "pri-high" : ""}`}>{t.priority}</span>
+                  <span className="pill">{t.tenant}</span>
+                  <span className="pill">{t.category}</span>
+                </div>
+              </div>
+              <div className="todo-action">
+                {botUser ? (
+                  <a
+                    className="todo-done-btn"
+                    href={`https://t.me/${botUser}?text=${encodeURIComponent(`done ${t.seq}`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    ✓ Done
+                  </a>
+                ) : (
+                  <span className="todo-done-hint">
+                    Telegram: <code>done {t.seq}</code>
+                  </span>
+                )}
+              </div>
+            </div>
+          ))
+        )}
       </div>
 
       <div className="section-header"><div className="section-title">⚔ Heroes — click any card</div></div>

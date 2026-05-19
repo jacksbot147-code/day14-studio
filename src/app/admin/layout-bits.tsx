@@ -14,6 +14,24 @@ export const ADMIN_CSS = `
 .admin-shell .nav a.nav-site:hover { border-color:var(--green); color:var(--green); }
 .admin-shell .site-cta { display:inline-flex; align-items:center; gap:8px; padding:11px 20px; background:linear-gradient(135deg,#a855f7,#06b6d4); color:#fff; border-radius:10px; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:24px; transition:transform 0.2s, box-shadow 0.2s; box-shadow:0 4px 14px rgba(168,85,247,0.25); }
 .admin-shell .site-cta:hover { transform:translateY(-2px); box-shadow:0 8px 22px rgba(168,85,247,0.4); }
+.admin-shell .todo-panel { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:8px 20px; }
+.admin-shell .todo-panel.has-items { border-color:rgba(245,166,35,0.45); box-shadow:0 0 0 1px rgba(245,166,35,0.12); }
+.admin-shell .todo-empty { color:var(--muted); text-align:center; padding:22px; font-size:13px; }
+.admin-shell .todo-row { display:flex; gap:14px; align-items:flex-start; padding:14px 0; border-bottom:1px solid var(--surface-2); }
+.admin-shell .todo-row:last-child { border-bottom:none; }
+.admin-shell .todo-seq { width:30px; height:30px; flex-shrink:0; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:var(--gold); }
+.admin-shell .todo-row.pri-high .todo-seq { color:var(--red); border-color:rgba(255,107,107,0.5); }
+.admin-shell .todo-body { flex:1; min-width:0; }
+.admin-shell .todo-title { font-size:13px; font-weight:600; color:var(--text); }
+.admin-shell .todo-detail { font-size:12px; color:var(--muted); margin-top:4px; line-height:1.5; }
+.admin-shell .todo-meta { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.07em; margin-top:7px; }
+.admin-shell .todo-meta .pill { background:var(--surface-2); border:1px solid var(--border); border-radius:100px; padding:2px 8px; margin-right:6px; }
+.admin-shell .todo-meta .pill.pri-high { color:var(--red); border-color:rgba(255,107,107,0.4); }
+.admin-shell .todo-action { flex-shrink:0; align-self:center; }
+.admin-shell .todo-done-btn { display:inline-block; padding:8px 16px; background:linear-gradient(135deg,#10b981,#06b6d4); color:#fff; border-radius:8px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; transition:box-shadow 0.2s; }
+.admin-shell .todo-done-btn:hover { box-shadow:0 4px 14px rgba(16,185,129,0.45); }
+.admin-shell .todo-done-hint { font-size:10px; color:var(--muted); white-space:nowrap; }
+.admin-shell .todo-done-hint code { background:var(--surface-2); padding:3px 7px; border-radius:5px; color:var(--gold); font-size:11px; }
 .admin-shell .crumb { font-size:11px; color:var(--muted); margin-bottom:16px; text-transform:uppercase; letter-spacing:0.1em; }
 .admin-shell .crumb a { color:var(--accent); }
 .admin-shell .empire-bar { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; margin-bottom:24px; }
@@ -104,6 +122,8 @@ export const ADMIN_CSS = `
   .admin-shell .queue-grid { grid-template-columns:repeat(2,1fr); }
   .admin-shell .level-num { font-size:42px; }
   .admin-shell table { font-size:11px; }
+  .admin-shell .todo-row { flex-wrap:wrap; }
+  .admin-shell .todo-action { align-self:flex-start; margin-left:44px; }
 }
 @media (max-width: 480px) {
   .admin-shell .kpi-value { font-size:18px; }

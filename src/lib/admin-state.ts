@@ -53,7 +53,22 @@ interface EmpireState {
     status: string;
   }>;
   empire_battle_log: Array<{ ts: string; tenant: string; actor: string; action: string; [k: string]: unknown }>;
+  human_todos?: Array<{
+    id: string;
+    seq: number;
+    tenant: string;
+    title: string;
+    detail: string;
+    category: string;
+    priority: string;
+    status: string;
+    created_at: string;
+    source: string;
+  }>;
+  bot_username?: string | null;
 }
+
+export type HumanTodo = NonNullable<EmpireState["human_todos"]>[number];
 
 const FALLBACK: EmpireState = {
   generated_at: new Date().toISOString(),
@@ -63,6 +78,8 @@ const FALLBACK: EmpireState = {
   expansion_state: { skills_generated: 0 },
   opportunities: [],
   empire_battle_log: [],
+  human_todos: [],
+  bot_username: null,
 };
 
 export async function loadEmpireState(): Promise<EmpireState> {

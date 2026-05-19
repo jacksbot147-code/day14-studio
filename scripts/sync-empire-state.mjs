@@ -19,12 +19,41 @@ import path from "node:path";
 import { existsSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { homedir } from "node:os";
+import { listOpenTodos } from "./_generic/operator-todos.mjs";
 
 const HOME = homedir();
 const BIZ = path.join(HOME, "Documents/businesses");
 const SHARED = path.join(BIZ, "_shared");
 const STUDIO = path.join(HOME, "Documents/studio");
 const TENANTS_FILE = path.join(SHARED, "tenants.json");
+const ENV_FILE = path.join(STUDIO, ".env.local");
+
+/**
+ * Resolve the Telegram bot's @username so the homescreen can render
+ * one-tap "Done" links (https://t.me/<bot>?text=done%20N). Best-effort:
+ * any failure just yields null and the dashboard falls back to showing
+ * the `done N` command as copyable text.
+ */
+async function botUsername() {
+  try {
+    if (!existsSync(ENV_FILE)) return null;
+    const text = await fs.readFile(ENV_FILE, "utf8");
+    const m = text.match(/^\s*TELEGRAM_BOT_TOKEN\s*=\s*(.+)\s*$/m);
+    const token = m && m[1] ? m[1].replace(/^['"]|['"]$/g, "").trim() : "";
+    if (!token) return null;
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 5000);
+    const res = await fetch(`https://api.telegram.org/bot${token}/getMe`, {
+      signal: ctrl.signal,
+    });
+    clearTimeout(timer);
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data?.result?.username || null;
+  } catch {
+    return null;
+  }
+}
 const POLLER_DIR = path.join(SHARED, "poller");
 const SKILLS_LIVE = path.join(STUDIO, "docs/seeds/skills");
 const SKILLS_DRAFTS = path.join(SKILLS_LIVE, "_drafts");
@@ -198,6 +227,10 @@ async function main() {
   }
   allAudit.sort((a, b) => (b.ts || "").localeCompare(a.ts || ""));
 
+  // Operator to-do list — anything the agents can't do themselves.
+  let humanTodos = [];
+  try { humanTodos = await listOpenTodos(); } catch {}
+
   const out = {
     generated_at: new Date().toISOString(),
     tenants,
@@ -206,6 +239,8 @@ async function main() {
     expansion_state: { skills_generated: expansionState.skills_generated || 0 },
     opportunities: await loadOpportunities(),
     empire_battle_log: allAudit.slice(0, 30),
+    human_todos: humanTodos,
+    bot_username: await botUsername(),
   };
 
   await fs.mkdir(PUBLIC_DATA, { recursive: true });

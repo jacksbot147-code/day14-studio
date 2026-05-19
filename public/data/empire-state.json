@@ -1,65 +1,11 @@
 {
-  "generated_at": "2026-05-19T23:33:15.096Z",
+  "generated_at": "2026-05-19T23:46:24.378Z",
   "tenants": [
     {
       "slug": "day14",
       "display_name": "day14",
       "type": "productized-build-shop",
       "stage": "active",
-      "revenue_cents": 0,
-      "orders": 0,
-      "streak": 0,
-      "recent_audit": [],
-      "content_counts": {
-        "pinterestPins": 0,
-        "tiktokScripts": 0,
-        "blogDrafts": 0,
-        "newsletterIssues": 0,
-        "aiVideos": 0,
-        "csDrafts": 0,
-        "marketingDrafts": 0,
-        "rawFootage": 0,
-        "redditDrafts": 0
-      },
-      "queue": {
-        "queued": 0,
-        "approved": 0,
-        "posted": 0,
-        "byPlatform": {}
-      }
-    },
-    {
-      "slug": "etsy-store-1",
-      "display_name": "etsy-store-1",
-      "type": "niche-ecom",
-      "stage": "launching",
-      "revenue_cents": 0,
-      "orders": 0,
-      "streak": 0,
-      "recent_audit": [],
-      "content_counts": {
-        "pinterestPins": 0,
-        "tiktokScripts": 0,
-        "blogDrafts": 0,
-        "newsletterIssues": 0,
-        "aiVideos": 0,
-        "csDrafts": 0,
-        "marketingDrafts": 0,
-        "rawFootage": 0,
-        "redditDrafts": 0
-      },
-      "queue": {
-        "queued": 0,
-        "approved": 0,
-        "posted": 0,
-        "byPlatform": {}
-      }
-    },
-    {
-      "slug": "pod-store-1",
-      "display_name": "pod-store-1",
-      "type": "pod-store",
-      "stage": "launching",
       "revenue_cents": 0,
       "orders": 0,
       "streak": 0,
@@ -362,27 +308,27 @@
     {
       "name": "auto-restart-watchdog",
       "status": "stale",
-      "ageMin": 55
+      "ageMin": 68
     },
     {
       "name": "auto-restart-watchdog-cycle",
       "status": "stale",
-      "ageMin": 55
+      "ageMin": 68
     },
     {
       "name": "customer-success",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "expansion-prompter",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "gmail-cs-triage",
       "status": "stale",
-      "ageMin": 29
+      "ageMin": 12
     },
     {
       "name": "growth-narrator",
@@ -392,17 +338,17 @@
     {
       "name": "growth-watcher",
       "status": "stale",
-      "ageMin": 3903
+      "ageMin": 3916
     },
     {
       "name": "hot-flash-co-orders",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "opportunity-scanner",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "outbox-deadletter",
@@ -411,8 +357,8 @@
     },
     {
       "name": "outbox-deadletter-cycle",
-      "status": "healthy",
-      "ageMin": 10
+      "status": "stale",
+      "ageMin": 23
     },
     {
       "name": "proactive-monitor",
@@ -427,12 +373,12 @@
     {
       "name": "skill-multiplier",
       "status": "stale",
-      "ageMin": 73
+      "ageMin": 86
     },
     {
       "name": "stripe-cs-loop",
-      "status": "healthy",
-      "ageMin": 9
+      "status": "stale",
+      "ageMin": 22
     },
     {
       "name": "system-pulse",
@@ -442,12 +388,12 @@
     {
       "name": "telegram-poller",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "vercel-deploy-monitor",
       "status": "stale",
-      "ageMin": 26
+      "ageMin": 40
     },
     {
       "name": "video-pipeline",
@@ -617,11 +563,38 @@
       "status": "open"
     },
     {
+      "id": "ai-content-repurposing-workflows",
+      "niche": "AI-powered multi-platform content repurposing for niche businesses",
+      "total_score": 79,
+      "suggested_archetype": "info-product",
+      "rationale": "There's clear demand from small businesses and creators to efficiently repurpose content, with AI acting as a key enabler. The existing gap is not just general AI content generation, but structured, niche-specific workflows and templates that guide users through the *strategic adaptation* process for multiple platforms, ensuring brand consistency and adherence to platform best practices. This spec",
+      "pitched": true,
+      "status": "open"
+    },
+    {
       "id": "rave-culture-premium-gear",
       "niche": "Premium festival/rave culture gear — multi-day endurance + recovery focus",
       "total_score": 79,
       "suggested_archetype": "pod-store",
       "rationale": "Gap: most rave merch is throwaway novelty (Amazon $8 LED glasses, party-store kandi). Underserved is the *endurance angle* — multi-day festival gear marketed to adults: cooling gear, electrolyte packs, hearing protection that looks cool, recovery merch.",
+      "pitched": false,
+      "status": "open"
+    },
+    {
+      "id": "ai-prompt-management-teams",
+      "niche": "AI prompt management & optimization for small teams and solopreneurs",
+      "total_score": 77,
+      "suggested_archetype": "saas",
+      "rationale": "The pain point of inconsistent AI outputs and the challenge of managing effective prompts are significant and widely acknowledged by AI users. While many enterprise-level prompt management tools exist, they are often overly complex, expensive, and not designed for the specific needs of small teams and solopreneurs. A simpler, affordable, dedicated solution (whether a lean SaaS product or a robust ",
+      "pitched": false,
+      "status": "open"
+    },
+    {
+      "id": "ai-niche-market-reports",
+      "niche": "Affordable AI-generated niche market research reports for SMBs",
+      "total_score": 76,
+      "suggested_archetype": "agency",
+      "rationale": "There is a significant cost barrier preventing SMBs from accessing quality, niche-specific market research. While general AI tools exist, they typically lack the specific focus and structured analytical frameworks required for deep niche insights and actionable recommendations. This opportunity commoditizes the process of leveraging AI to generate comprehensive, structured market reports tailored ",
       "pitched": false,
       "status": "open"
     },
@@ -759,5 +732,60 @@
       "title": "Sweating For No Reason Since 2024 Mug | Hot Flash Humor",
       "image_model": "pollinations-flux"
     }
-  ]
+  ],
+  "human_todos": [
+    {
+      "id": "todo-1",
+      "seq": 1,
+      "tenant": "day14",
+      "title": "Add ANTHROPIC_API_KEY to .env.local + Vercel",
+      "detail": "The Claude fallback for when Gemini hits its 429 quota. Blank in .env.local right now — until it is set, LLM calls fail instead of failing over.",
+      "category": "credentials",
+      "priority": "high",
+      "status": "open",
+      "created_at": "2026-05-19T21:00:00.000Z",
+      "completed_at": null,
+      "source": "claude-setup"
+    },
+    {
+      "id": "todo-2",
+      "seq": 2,
+      "tenant": "day14",
+      "title": "Add MAILERLITE_API_KEY to .env.local + Vercel",
+      "detail": "Newsletter signup on day14.us and per-tenant brand sites stays inert until this key is set. Get it from mailerlite.com -> Integrations -> Developers -> API.",
+      "category": "credentials",
+      "priority": "high",
+      "status": "open",
+      "created_at": "2026-05-19T21:00:00.000Z",
+      "completed_at": null,
+      "source": "claude-setup"
+    },
+    {
+      "id": "todo-3",
+      "seq": 3,
+      "tenant": "hot-flash-co",
+      "title": "Publish the 10 Hot Flash Co product drafts in Printify",
+      "detail": "Agents generated 10 menopause-humor mug designs and created the product drafts. Open Printify -> Hot Flash Co -> publish them to the Pop-Up Store so they go live.",
+      "category": "publish",
+      "priority": "high",
+      "status": "open",
+      "created_at": "2026-05-19T21:00:00.000Z",
+      "completed_at": null,
+      "source": "claude-setup"
+    },
+    {
+      "id": "todo-4",
+      "seq": 4,
+      "tenant": "kennum-lawn-care",
+      "title": "Review Kennum Lawn Care brand identity + add real business details",
+      "detail": "Kennum Lawn Care was bootstrapped with placeholder details. Check ~/Documents/businesses/kennum-lawn-care/brand-identity.json and add the real phone, service area, and pricing so agents stop guessing.",
+      "category": "review",
+      "priority": "high",
+      "status": "open",
+      "created_at": "2026-05-19T21:00:00.000Z",
+      "completed_at": null,
+      "source": "claude-setup"
+    }
+  ],
+  "bot_username": "Day14_OS_bot"
 }

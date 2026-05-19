@@ -23,6 +23,7 @@ import path from "node:path";
 import { existsSync } from "node:fs";
 import { execSync, spawnSync } from "node:child_process";
 import { homedir } from "node:os";
+import { addTodo } from "./_generic/operator-todos.mjs";
 
 const HOME = homedir();
 const STUDIO = path.join(HOME, "Documents/studio");
@@ -113,7 +114,60 @@ async function registerTenant(slug, display_name, archetype, niche) {
   await fs.writeFile(TENANTS_FILE, JSON.stringify(data, null, 2));
 }
 
-async function celebrate(env, args, archetype, results) {
+/**
+ * Hand off everything the agents can't finish themselves to Jack's
+ * operator to-do list (rendered on the day14.us/admin empire homescreen).
+ * Returns the number of items queued.
+ */
+async function queueOperatorTodos(a, archetype, results) {
+  const steps = [
+    {
+      title: `Review & approve ${a.display_name} brand identity`,
+      detail: `Open ~/Documents/businesses/${a.slug}/brand-identity.json and confirm the name, voice, palette, and tagline before the agents run with it.`,
+      category: "review",
+      priority: "high",
+    },
+  ];
+  const sellsMerch =
+    a.archetype === "pod-store" || (!a.skip_merch && archetype.merch_attached);
+  if (sellsMerch) {
+    steps.push({
+      title: `Publish ${a.display_name} product drafts`,
+      detail: `Agents created product drafts for ${a.display_name}. Open Printify, review them, and publish to the storefront so they go live.`,
+      category: "publish",
+      priority: "high",
+    });
+  }
+  steps.push({
+    title: `Point a domain at ${a.display_name} (optional)`,
+    detail: `Brand site is live at day14.us/brands/${a.slug}. To use a custom domain, add it via Cloudflare + Vercel.`,
+    category: "domain",
+    priority: "low",
+  });
+  for (const r of results) {
+    if (!r.ok) {
+      steps.push({
+        title: `Re-run failed bootstrap step: ${r.label} (${a.display_name})`,
+        detail: `The auto-bootstrap step "${r.label}" returned a non-zero status. Re-run it or check the logs.`,
+        category: "fix",
+        priority: "medium",
+      });
+    }
+  }
+  let added = 0;
+  for (const s of steps) {
+    try {
+      await addTodo({ tenant: a.slug, source: "business-bootstrap", ...s });
+      added++;
+    } catch (e) {
+      console.warn(`  ! could not queue to-do "${s.title}": ${e.message}`);
+    }
+  }
+  console.log(`\n  ✓ ${added} item(s) added to your operator to-do list`);
+  return added;
+}
+
+async function celebrate(env, args, archetype, results, todoCount = 0) {
   if (!env.TELEGRAM_CHAT_ID) return;
   await fs.mkdir(SHARED_OUTBOX, { recursive: true });
   const lines = [
@@ -125,6 +179,8 @@ async function celebrate(env, args, archetype, results) {
     ``,
     `Steps completed:`,
     ...results.map((r) => `  ${r.ok ? "✓" : "✗"} ${r.label}`),
+    ``,
+    `📋 ${todoCount} item(s) added to your to-do list — see day14.us/admin`,
     ``,
     `Brand site: day14.us/brands/${args.slug}`,
     `Constitution: ~/Documents/businesses/${args.slug}/CONSTITUTION.md`,
@@ -238,7 +294,10 @@ async function main() {
     results.push({ label: "Merch (5 mug drafts)", ok: r4 });
   }
 
-  await celebrate(env, a, archetype, results);
+  // Everything the agents can't do themselves -> Jack's operator to-do list.
+  const todoCount = await queueOperatorTodos(a, archetype, results);
+
+  await celebrate(env, a, archetype, results, todoCount);
 
   console.log(`\n╔══════════════════════════════════════════════════════╗`);
   console.log(`║  ${a.display_name} launched.                          `);

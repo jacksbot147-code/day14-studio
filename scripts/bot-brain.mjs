@@ -19,6 +19,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { homedir } from "node:os";
 import { compactSnapshot, fullStateSnapshot, listTenants, tenantRevenue, recentAudit } from "./state-query-engine.mjs";
+import { completeTodo, listOpenTodos } from "./_generic/operator-todos.mjs";
 
 const HOME = homedir();
 const ENV_FILE = path.join(HOME, "Documents/studio/.env.local");
@@ -153,6 +154,43 @@ export async function queueBusinessBootstrap(extracted) {
  */
 export async function processIncomingMessage(message, ctx = {}) {
   const env = await loadEnv();
+  const trimmed = (message || "").trim();
+
+  // ── Fast-path: complete an operator to-do ("done 3", "completed #3", "✓ 3")
+  const doneMatch = trimmed.match(/^(?:done|complete|completed|finished|✓|✅)\s+#?(\d+)$/i);
+  if (doneMatch) {
+    const todo = await completeTodo(doneMatch[1]);
+    let reply;
+    if (!todo) {
+      reply = `Couldn't find an open to-do #${doneMatch[1]}. Send *todos* to see your list.`;
+    } else {
+      const remaining = await listOpenTodos();
+      reply = `✅ Done: *${todo.title}*\n\n${remaining.length} item${remaining.length === 1 ? "" : "s"} left on your to-do list.`;
+    }
+    await logBrain({ direction: "in", message, intent: { intent: "todo-complete" } });
+    await logBrain({ direction: "out", reply: reply.slice(0, 300), action: "todo-completed" });
+    return { reply, intent: { intent: "todo-complete" }, action: "todo-completed" };
+  }
+
+  // ── Fast-path: list operator to-dos ("todos", "to-do list", "what's on my plate")
+  if (/^(todos?|to-?do list|my list|what'?s on my (list|plate)\??)$/i.test(trimmed)) {
+    const open = await listOpenTodos();
+    let reply;
+    if (!open.length) {
+      reply = `🎉 Your operator to-do list is empty — the agents have everything covered.`;
+    } else {
+      reply =
+        `📋 *Your operator to-do list* (${open.length})\n\n` +
+        open
+          .map((t) => `*${t.seq}.* ${t.title}\n   _${t.tenant} · ${t.priority}_`)
+          .join("\n\n") +
+        `\n\nReply *done N* to check one off.`;
+    }
+    await logBrain({ direction: "in", message, intent: { intent: "todo-list" } });
+    await logBrain({ direction: "out", reply: reply.slice(0, 300), action: "todo-list" });
+    return { reply, intent: { intent: "todo-list" }, action: "todo-list" };
+  }
+
   const intent = await classifyIntent(message, env);
   await logBrain({ direction: "in", message, intent });
 
