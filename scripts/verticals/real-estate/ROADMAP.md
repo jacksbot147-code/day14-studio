@@ -36,6 +36,35 @@ runs with zero API quota. The licensed API only sharpens the value estimate;
 county data alone already scores tax-delinquent, absentee, and high-equity
 deals — exactly the motivated-seller pipeline.
 
+## Agent roster — the full realty cluster
+
+Shipped: realty-scout (coordinator), intake, enrichment, evaluation.
+
+Planned (build order: distress-monitor, comp-analyst, deal-alerter first):
+
+Sourcing & lead-gen
+- distress-monitor — watches public records for fresh motivated-seller signals
+  (new tax-delinquency, code violations, pre-foreclosure/lis pendens, probate, vacancy).
+- list-builder — assembles targeted property lists by criteria from the store.
+
+Sharper evaluation
+- comp-analyst — true comparable-sales selection to tighten ARV.
+- rehab-estimator — line-item repair scope + cost.
+- market-watch — neighborhood trend tracking (price, DOM, inventory).
+- financing-modeler — per-deal funding scenarios -> real cash-on-cash.
+
+Acting on deals
+- offer-drafter — MAO-based offer terms + draft offer for review.
+- outreach-drafter — compliant seller-outreach drafts (review-before-send;
+  fair-housing + TCPA aware; owner contact from a licensed skip-trace service,
+  never scraped).
+- disposition-agent — buyer-list matching for fast flip/wholesale exits.
+
+Portfolio & ops
+- portfolio-agent — rent roll + performance for buy-and-hold.
+- compliance-agent — keeps sourcing + outreach within site terms and law.
+- deal-alerter — Telegram push when an A-tier deal scores.
+
 ## Reuse
 `vertical-pack.json` registers this as the second Day14 vertical pack (after
 lawn-care). The recursive-expansion engine can clone the pattern for the next

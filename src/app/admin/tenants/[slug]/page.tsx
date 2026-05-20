@@ -60,6 +60,22 @@ export default async function TenantPage({ params }: Props) {
     .reduce((s, i) => s + (i.amount_cents ?? 0), 0);
   const routeBoard = ops.schedule?.board;
 
+  // Agent activity on this tenant — grouped from the audit log.
+  const agentStats = (() => {
+    const m = new Map<string, { actor: string; runs: number; lastTs: string; lastAction: string }>();
+    for (const a of tenant.recent_audit) {
+      const actor = a.actor || "unknown";
+      const e = m.get(actor) || { actor, runs: 0, lastTs: "", lastAction: "" };
+      e.runs++;
+      if (!e.lastTs || (a.ts || "") > e.lastTs) {
+        e.lastTs = a.ts || "";
+        e.lastAction = a.action || "";
+      }
+      m.set(actor, e);
+    }
+    return [...m.values()].sort((a, b) => b.lastTs.localeCompare(a.lastTs));
+  })();
+
   const arch = ARCHETYPE_CLASSES[tenant.type] || { class: "Adventurer", icon: "🎯", color: "#6b7280" };
   const xp = tenant.orders * 1000 + (tenant.revenue_cents / 100) * 10 + 500 + tenant.streak * 50;
   const level = levelFromXp(xp);
@@ -174,6 +190,27 @@ export default async function TenantPage({ params }: Props) {
           ))}
         </div>
       )}
+
+      <div className="section-header"><div className="section-title">🤖 Agents</div></div>
+      <div className="section">
+        {agentStats.length === 0 ? (
+          <div style={{ color: "var(--muted)" }}>No agent activity logged yet.</div>
+        ) : (
+          <>
+            <div className="agent-row head">
+              <div>Agent</div><div>Runs</div><div>Last active</div><div>Last action</div>
+            </div>
+            {agentStats.map((ag) => (
+              <div key={ag.actor} className="agent-row">
+                <div className="agent-name">{ag.actor}</div>
+                <div className="agent-runs">{ag.runs}</div>
+                <div className="agent-last">{rel(ag.lastTs)}</div>
+                <div className="agent-action">{ag.lastAction}</div>
+              </div>
+            ))}
+          </>
+        )}
+      </div>
 
       <div className="section-header"><div className="section-title">📜 Activity log</div></div>
       <div className="battle-log">

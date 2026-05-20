@@ -63,6 +63,23 @@ export default async function AdminEmpire() {
     );
   const botUser = state.bot_username || null;
 
+  // Day14 agent workforce — grouped from the empire-wide activity log.
+  const empireAgents = (() => {
+    const m = new Map<string, { actor: string; runs: number; tenants: Set<string>; lastTs: string; lastAction: string }>();
+    for (const a of state.empire_battle_log) {
+      const actor = a.actor || "unknown";
+      const e = m.get(actor) || { actor, runs: 0, tenants: new Set<string>(), lastTs: "", lastAction: "" };
+      e.runs++;
+      if (a.tenant) e.tenants.add(a.tenant);
+      if (!e.lastTs || (a.ts || "") > e.lastTs) {
+        e.lastTs = a.ts || "";
+        e.lastAction = a.action || "";
+      }
+      m.set(actor, e);
+    }
+    return [...m.values()].sort((a, b) => b.lastTs.localeCompare(a.lastTs));
+  })();
+
   return (
     <div className="admin-shell">
       <style dangerouslySetInnerHTML={{ __html: ADMIN_CSS }} />
@@ -188,6 +205,27 @@ export default async function AdminEmpire() {
           })}
         </div>
       )}
+
+      <div className="section-header"><div className="section-title">🤖 Agents — Day14 workforce</div></div>
+      <div className="section">
+        {empireAgents.length === 0 ? (
+          <div style={{ color: "var(--muted)" }}>No agent activity yet.</div>
+        ) : (
+          <>
+            <div className="agent-row head">
+              <div>Agent</div><div>Runs</div><div>Tenants</div><div>Last active</div>
+            </div>
+            {empireAgents.map((ag) => (
+              <div key={ag.actor} className="agent-row">
+                <div className="agent-name">{ag.actor}</div>
+                <div className="agent-runs">{ag.runs}</div>
+                <div className="agent-last">{ag.tenants.size}</div>
+                <div className="agent-action">{rel(ag.lastTs)} · {ag.lastAction}</div>
+              </div>
+            ))}
+          </>
+        )}
+      </div>
 
       <div className="section-header"><div className="section-title">📜 Empire Battle Log</div></div>
       <div className="battle-log">

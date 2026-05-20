@@ -51,6 +51,13 @@ export const ADMIN_CSS = `
 .admin-shell .ops-stat { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px; }
 .admin-shell .ops-stat-num { font-size:22px; font-weight:700; }
 .admin-shell .ops-stat-label { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px; }
+.admin-shell .agent-row { display:grid; grid-template-columns:1.3fr 80px 90px 1.6fr; gap:12px; align-items:center; padding:9px 2px; border-bottom:1px solid var(--surface-2); font-size:12px; }
+.admin-shell .agent-row:last-child { border-bottom:none; }
+.admin-shell .agent-row.head { color:var(--muted); font-size:10px; text-transform:uppercase; letter-spacing:0.08em; border-bottom:1px solid var(--border); }
+.admin-shell .agent-name { font-weight:600; color:var(--accent); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.admin-shell .agent-runs { color:var(--gold); }
+.admin-shell .agent-last { color:var(--muted); }
+.admin-shell .agent-action { color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .admin-shell .crumb { font-size:11px; color:var(--muted); margin-bottom:16px; text-transform:uppercase; letter-spacing:0.1em; }
 .admin-shell .crumb a { color:var(--accent); }
 .admin-shell .empire-bar { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; margin-bottom:24px; }
@@ -137,6 +144,8 @@ export const ADMIN_CSS = `
   .admin-shell .nav { overflow-x:auto; flex-wrap:nowrap; -webkit-overflow-scrolling:touch; }
   .admin-shell .nav a { flex-shrink:0; }
   .admin-shell .battle-entry { grid-template-columns:60px 90px 1fr; font-size:11px; }
+  .admin-shell .agent-row { grid-template-columns:1fr 60px 70px; font-size:11px; }
+  .admin-shell .agent-row .agent-action { display:none; }
   .admin-shell .content-grid { grid-template-columns:repeat(2,1fr); }
   .admin-shell .queue-grid { grid-template-columns:repeat(2,1fr); }
   .admin-shell .level-num { font-size:42px; }
