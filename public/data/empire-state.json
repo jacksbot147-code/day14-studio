@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-19T23:48:16.547Z",
+  "generated_at": "2026-05-20T00:00:35.621Z",
   "tenants": [
     {
       "slug": "day14",
@@ -38,6 +38,14 @@
       "orders": 0,
       "streak": 0,
       "recent_audit": [
+        {
+          "ts": "2026-05-20T00:00:35.587Z",
+          "tenant": "hot-flash-co",
+          "actor": "brand-site-sweep",
+          "action": "site_swept",
+          "gaps": 2,
+          "fixed": 1
+        },
         {
           "ts": "2026-05-19T21:58:31.737Z",
           "tenant": "hot-flash-co",
@@ -307,28 +315,28 @@
   "heartbeats": [
     {
       "name": "auto-restart-watchdog",
-      "status": "stale",
-      "ageMin": 70
+      "status": "healthy",
+      "ageMin": 0
     },
     {
       "name": "auto-restart-watchdog-cycle",
-      "status": "stale",
-      "ageMin": 70
+      "status": "healthy",
+      "ageMin": 1
     },
     {
       "name": "customer-success",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "expansion-prompter",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "gmail-cs-triage",
       "status": "stale",
-      "ageMin": 14
+      "ageMin": 26
     },
     {
       "name": "growth-narrator",
@@ -338,67 +346,67 @@
     {
       "name": "growth-watcher",
       "status": "stale",
-      "ageMin": 3918
+      "ageMin": 3930
     },
     {
       "name": "hot-flash-co-orders",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "opportunity-scanner",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "outbox-deadletter",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "outbox-deadletter-cycle",
-      "status": "stale",
-      "ageMin": 25
+      "status": "healthy",
+      "ageMin": 7
     },
     {
       "name": "proactive-monitor",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "recursive-expansion",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "skill-multiplier",
-      "status": "stale",
-      "ageMin": 88
+      "status": "healthy",
+      "ageMin": 0
     },
     {
       "name": "stripe-cs-loop",
       "status": "stale",
-      "ageMin": 24
+      "ageMin": 37
     },
     {
       "name": "system-pulse",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "telegram-poller",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     },
     {
       "name": "vercel-deploy-monitor",
       "status": "stale",
-      "ageMin": 41
+      "ageMin": 54
     },
     {
       "name": "video-pipeline",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0
     }
   ],
   "skill_counts": {
@@ -610,6 +618,14 @@
   ],
   "empire_battle_log": [
     {
+      "ts": "2026-05-20T00:00:35.587Z",
+      "tenant": "hot-flash-co",
+      "actor": "brand-site-sweep",
+      "action": "site_swept",
+      "gaps": 2,
+      "fixed": 1
+    },
+    {
       "ts": "2026-05-19T21:58:31.737Z",
       "tenant": "hot-flash-co",
       "actor": "orders-watcher",
@@ -721,16 +737,6 @@
       "product_id": "6a0b8f67e859ea852a0bcba4",
       "title": "Menopause Survivor Club Mug | Vintage Varsity Patch Humor",
       "image_model": "pollinations-flux"
-    },
-    {
-      "ts": "2026-05-18T22:16:42.379Z",
-      "tenant": "hot-flash-co",
-      "actor": "printify-product-creator",
-      "action": "product_created",
-      "slug": "sweating-since",
-      "product_id": "6a0b8f1078740a01af03c604",
-      "title": "Sweating For No Reason Since 2024 Mug | Hot Flash Humor",
-      "image_model": "pollinations-flux"
     }
   ],
   "human_todos": [
@@ -785,6 +791,149 @@
       "created_at": "2026-05-19T21:00:00.000Z",
       "completed_at": null,
       "source": "claude-setup"
+    },
+    {
+      "id": "todo-5",
+      "seq": 5,
+      "tenant": "kennum-lawn-care",
+      "title": "Re-bootstrap Kennum Lawn Care — no brand charter",
+      "detail": "kennum-lawn-care has no CONSTITUTION.md, so its site can't be built. Re-run: node scripts/business-bootstrap.mjs --slug kennum-lawn-care --display-name \"Kennum Lawn Care\" --niche \"Southwest Florida lawn care + landscaping service with full digital admin (similar to Splash Jacks Pools)\"",
+      "category": "fix",
+      "priority": "high",
+      "status": "open",
+      "created_at": "2026-05-20T00:00:35.554Z",
+      "completed_at": null,
+      "source": "brand-site-sweep"
+    },
+    {
+      "id": "todo-6",
+      "seq": 6,
+      "tenant": "kennum-lawn-care",
+      "title": "Review & approve Kennum Lawn Care brand identity",
+      "detail": "Open ~/Documents/businesses/kennum-lawn-care/brand-identity.json and confirm the name, voice, palette, and tagline before the agents run with it.",
+      "category": "review",
+      "priority": "high",
+      "status": "open",
+      "created_at": "2026-05-20T00:00:35.557Z",
+      "completed_at": null,
+      "source": "business-bootstrap"
+    },
+    {
+      "id": "todo-7",
+      "seq": 7,
+      "tenant": "kennum-lawn-care",
+      "title": "Publish Kennum Lawn Care product drafts",
+      "detail": "Agents created product drafts for Kennum Lawn Care. Open Printify, review them, and publish to the storefront so they go live.",
+      "category": "publish",
+      "priority": "high",
+      "status": "open",
+      "created_at": "2026-05-20T00:00:35.558Z",
+      "completed_at": null,
+      "source": "business-bootstrap"
+    },
+    {
+      "id": "todo-9",
+      "seq": 9,
+      "tenant": "kennum-lawn-care",
+      "title": "Re-run failed bootstrap step: Brand identity (Kennum Lawn Care)",
+      "detail": "The auto-bootstrap step \"Brand identity\" returned a non-zero status. Re-run it or check the logs.",
+      "category": "fix",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-05-20T00:00:35.558Z",
+      "completed_at": null,
+      "source": "business-bootstrap"
+    },
+    {
+      "id": "todo-10",
+      "seq": 10,
+      "tenant": "kennum-lawn-care",
+      "title": "Re-run failed bootstrap step: Competitor research (Kennum Lawn Care)",
+      "detail": "The auto-bootstrap step \"Competitor research\" returned a non-zero status. Re-run it or check the logs.",
+      "category": "fix",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-05-20T00:00:35.559Z",
+      "completed_at": null,
+      "source": "business-bootstrap"
+    },
+    {
+      "id": "todo-11",
+      "seq": 11,
+      "tenant": "kennum-lawn-care",
+      "title": "Re-run failed bootstrap step: Productized service / agency scaffold (Kennum Lawn Care)",
+      "detail": "The auto-bootstrap step \"Productized service / agency scaffold\" returned a non-zero status. Re-run it or check the logs.",
+      "category": "fix",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-05-20T00:00:35.559Z",
+      "completed_at": null,
+      "source": "business-bootstrap"
+    },
+    {
+      "id": "todo-12",
+      "seq": 12,
+      "tenant": "kennum-lawn-care",
+      "title": "Re-run failed bootstrap step: Brand website (Kennum Lawn Care)",
+      "detail": "The auto-bootstrap step \"Brand website\" returned a non-zero status. Re-run it or check the logs.",
+      "category": "fix",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-05-20T00:00:35.560Z",
+      "completed_at": null,
+      "source": "business-bootstrap"
+    },
+    {
+      "id": "todo-13",
+      "seq": 13,
+      "tenant": "kennum-lawn-care",
+      "title": "Re-run failed bootstrap step: Merch (5 mug drafts) (Kennum Lawn Care)",
+      "detail": "The auto-bootstrap step \"Merch (5 mug drafts)\" returned a non-zero status. Re-run it or check the logs.",
+      "category": "fix",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-05-20T00:00:35.560Z",
+      "completed_at": null,
+      "source": "business-bootstrap"
+    },
+    {
+      "id": "todo-14",
+      "seq": 14,
+      "tenant": "hot-flash-co",
+      "title": "Generate brand identity for Hot Flash Co",
+      "detail": "hot-flash-co has no brand-identity.json, so the site falls back to default colors and fonts. Run: node scripts/brand-identity-generator.mjs --slug hot-flash-co --display-name \"Hot Flash Co\" --niche \"Real goods for the seasons no one warns you about.\"",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-05-20T00:00:35.585Z",
+      "completed_at": null,
+      "source": "brand-site-sweep"
+    },
+    {
+      "id": "todo-15",
+      "seq": 15,
+      "tenant": "hot-flash-co",
+      "title": "Publish blog content for Hot Flash Co",
+      "detail": "No blog drafts yet for hot-flash-co. The daily content engine will generate them; confirm its LaunchAgent is installed.",
+      "category": "content",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-05-20T00:00:35.586Z",
+      "completed_at": null,
+      "source": "brand-site-sweep"
+    },
+    {
+      "id": "todo-8",
+      "seq": 8,
+      "tenant": "kennum-lawn-care",
+      "title": "Point a domain at Kennum Lawn Care (optional)",
+      "detail": "Brand site is live at day14.us/brands/kennum-lawn-care. To use a custom domain, add it via Cloudflare + Vercel.",
+      "category": "domain",
+      "priority": "low",
+      "status": "open",
+      "created_at": "2026-05-20T00:00:35.558Z",
+      "completed_at": null,
+      "source": "business-bootstrap"
     }
   ],
   "bot_username": "Day14_OS_bot"
