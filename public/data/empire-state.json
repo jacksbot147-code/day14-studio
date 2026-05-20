@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-20T00:59:34.068Z",
+  "generated_at": "2026-05-20T01:00:53.244Z",
   "tenants": [
     {
       "slug": "day14",
@@ -322,47 +322,19 @@
           }
         }
       }
-    },
-    {
-      "slug": "kennum-lawn-care",
-      "display_name": "Kennum Lawn Care",
-      "type": "agency",
-      "stage": "launching",
-      "tagline": "Southwest Florida lawn care + landscaping service with full digital admin (similar to Splash Jacks Pools)",
-      "revenue_cents": 0,
-      "orders": 0,
-      "streak": 0,
-      "recent_audit": [],
-      "content_counts": {
-        "pinterestPins": 0,
-        "tiktokScripts": 0,
-        "blogDrafts": 0,
-        "newsletterIssues": 0,
-        "aiVideos": 0,
-        "csDrafts": 0,
-        "marketingDrafts": 0,
-        "rawFootage": 0,
-        "redditDrafts": 0
-      },
-      "queue": {
-        "queued": 0,
-        "approved": 0,
-        "posted": 0,
-        "byPlatform": {}
-      }
     }
   ],
   "heartbeats": [
     {
       "name": "auto-restart-watchdog",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1
     },
     {
       "name": "auto-restart-watchdog-cycle",
       "status": "stale",
-      "ageMin": 15,
+      "ageMin": 16,
       "cadenceMin": 5
     },
     {
@@ -380,13 +352,13 @@
     {
       "name": "gmail-cs-triage",
       "status": "healthy",
-      "ageMin": 20,
+      "ageMin": 22,
       "cadenceMin": 31
     },
     {
       "name": "growth-narrator",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1
     },
     {
@@ -404,7 +376,7 @@
     {
       "name": "opportunity-scanner",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1
     },
     {
@@ -416,13 +388,13 @@
     {
       "name": "outbox-deadletter-cycle",
       "status": "healthy",
-      "ageMin": 6,
+      "ageMin": 8,
       "cadenceMin": 1
     },
     {
       "name": "proactive-monitor",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1
     },
     {
@@ -434,13 +406,13 @@
     {
       "name": "skill-multiplier",
       "status": "stale",
-      "ageMin": 30,
+      "ageMin": 31,
       "cadenceMin": 1
     },
     {
       "name": "stripe-cs-loop",
       "status": "healthy",
-      "ageMin": 35,
+      "ageMin": 36,
       "cadenceMin": 60
     },
     {
@@ -452,13 +424,13 @@
     {
       "name": "telegram-poller",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1
     },
     {
       "name": "vercel-deploy-monitor",
       "status": "stale",
-      "ageMin": 113,
+      "ageMin": 114,
       "cadenceMin": 1
     },
     {
@@ -883,6 +855,19 @@
       "priority": "high",
       "status": "open",
       "created_at": "2026-05-20T00:00:35.558Z",
+      "completed_at": null,
+      "source": "business-bootstrap"
+    },
+    {
+      "id": "todo-16",
+      "seq": 16,
+      "tenant": "kennum-lawn-care",
+      "title": "Retry build: Kennum Lawn Care",
+      "detail": "The Kennum Lawn Care build failed before a brand charter could be generated — usually the Gemini API quota. Nothing was left half-built. Retry when quota resets: node scripts/business-bootstrap.mjs --slug kennum-lawn-care --display-name \"Kennum Lawn Care\" --niche \"Southwest Florida lawn care and landscaping service\" --archetype agency",
+      "category": "fix",
+      "priority": "high",
+      "status": "open",
+      "created_at": "2026-05-20T01:00:53.202Z",
       "completed_at": null,
       "source": "business-bootstrap"
     },
