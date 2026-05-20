@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import type { REEvaluation } from "@/lib/admin-state";
 
 function money(cents: number) {
@@ -28,19 +29,23 @@ function startPayload(cmd: string): string | null {
   }
 }
 
+type AddState = "idle" | "sending" | "added" | "note" | "telegram";
+
 export function AddCountyBox({ botUsername }: { botUsername: string | null }) {
+  const router = useRouter();
   const [val, setVal] = useState("");
-  const [status, setStatus] = useState<"" | "sent" | "copied">("");
+  const [state, setState] = useState<AddState>("idle");
+  const [msg, setMsg] = useState("");
   const trimmed = val.trim();
 
-  function send() {
-    if (!trimmed) return;
-    const cmd = `realty ${trimmed}`;
-    // Copy the plain command as a guaranteed fallback path.
+  /** Hosted-copy fallback: hand off to Telegram + copy the command. */
+  function telegramFallback(cmd: string) {
+    let copied = false;
     try {
       navigator.clipboard?.writeText(cmd);
+      copied = true;
     } catch {
-      /* clipboard may be blocked — the deep link still works */
+      /* clipboard may be blocked */
     }
     if (botUsername) {
       const payload = startPayload(cmd);
@@ -48,11 +53,55 @@ export function AddCountyBox({ botUsername }: { botUsername: string | null }) {
         ? `https://t.me/${botUsername}?start=${payload}`
         : `https://t.me/${botUsername}`;
       window.open(url, "_blank", "noopener");
-      setStatus("sent");
+      setMsg(
+        "This is the hosted dashboard, so it can't reach your Mac — opened your Telegram bot to register it instead." +
+          (copied ? " (Command copied to your clipboard too.)" : "")
+      );
     } else {
-      setStatus("copied");
+      setMsg(copied ? "Command copied — paste it into your Day14 bot." : `Send "${cmd}" to your Day14 bot.`);
+    }
+    setState("telegram");
+  }
+
+  async function send() {
+    if (!trimmed || state === "sending") return;
+    const cmd = `realty ${trimmed}`;
+    setState("sending");
+    setMsg("");
+    let res: Response;
+    try {
+      res = await fetch("/api/realty/add-county", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ county: trimmed }),
+      });
+    } catch {
+      telegramFallback(cmd);
+      return;
+    }
+    if (res.status === 503) {
+      telegramFallback(cmd);
+      return;
+    }
+    let data: { ok?: boolean; message?: string; error?: string } = {};
+    try {
+      data = await res.json();
+    } catch {
+      /* unparseable */
+    }
+    if (data.ok) {
+      setState("added");
+      setMsg(data.message || "Added — the scout is sourcing it now.");
+      setVal("");
+      router.refresh();
+    } else {
+      setState("note");
+      setMsg(data.message || data.error || "Couldn't add that county.");
     }
   }
+
+  const hintColor =
+    state === "added" ? "var(--green)" : state === "note" ? "var(--amber)" : undefined;
 
   return (
     <div>
@@ -63,22 +112,24 @@ export function AddCountyBox({ botUsername }: { botUsername: string | null }) {
           value={val}
           onChange={(e) => {
             setVal(e.target.value);
-            setStatus("");
+            if (state !== "sending") setState("idle");
           }}
           onKeyDown={(e) => {
             if (e.key === "Enter") send();
           }}
+          disabled={state === "sending"}
         />
-        <button className="add-county-btn" onClick={send} disabled={!trimmed}>
-          Send to scout →
+        <button
+          className="add-county-btn"
+          onClick={send}
+          disabled={!trimmed || state === "sending"}
+        >
+          {state === "sending" ? "Starting…" : "Send to scout →"}
         </button>
       </div>
-      <div className="add-county-hint">
-        {status === "sent"
-          ? "Opening your Day14 bot — tap Start there to register the county. (The command is also copied to your clipboard as a backup — just paste it if needed.)"
-          : status === "copied"
-            ? "Command copied — open your Day14 Telegram bot and paste it to start the scout."
-            : "Sends the command to your Day14 Telegram bot, which registers the county and kicks off the scout."}
+      <div className="add-county-hint" style={hintColor ? { color: hintColor } : undefined}>
+        {msg ||
+          "Registers the county on the watch list and starts the scout — straight from the dashboard."}
       </div>
     </div>
   );
