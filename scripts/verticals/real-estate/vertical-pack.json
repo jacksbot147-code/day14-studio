@@ -9,13 +9,15 @@
   "agents": [
     { "name": "realty-scout", "file": "scripts/verticals/real-estate/scout-agent.mjs", "role": "Coordinator — runs the funnel, ranks deals, writes the Scout brief.", "build_and_operate": true },
     { "name": "re-intake-agent", "file": "scripts/verticals/real-estate/intake-agent.mjs", "capability": "intake", "role": "Ingests county property-record CSV exports into the property store.", "build_and_operate": true },
+    { "name": "re-county-feed-agent", "file": "scripts/verticals/real-estate/county-feed-agent.mjs", "capability": "county-feed", "role": "Works the county watch list — sources properties per county (API + CSV), files records to-dos, keeps targets monitored.", "build_and_operate": true },
     { "name": "re-enrichment-agent", "file": "scripts/verticals/real-estate/enrichment-agent.mjs", "capability": "enrichment", "role": "Adds AVM value + rent estimate via a licensed property API.", "build_and_operate": true },
     { "name": "re-evaluation-agent", "file": "scripts/verticals/real-estate/evaluation-agent.mjs", "capability": "evaluation", "role": "Scores every property flip/rental/wholesale + blended deal score.", "build_and_operate": true },
     { "name": "re-distress-monitor", "file": "scripts/verticals/real-estate/distress-monitor.mjs", "capability": "distress-monitor", "role": "Re-scans the property set for motivated-seller signals; surfaces ranked hot leads.", "build_and_operate": true },
     { "name": "re-comp-analyst", "file": "scripts/verticals/real-estate/comp-analyst.mjs", "capability": "comp-analyst", "role": "Comparable-sales analysis — comp-based ARV per property.", "build_and_operate": true },
     { "name": "re-deal-alerter", "file": "scripts/verticals/real-estate/deal-alerter.mjs", "capability": "deal-alerter", "role": "Telegram push the moment a new A-tier deal scores.", "build_and_operate": true }
   ],
-  "data_layer": "businesses/day14-realty/ops/ (properties.json, evaluations.json) + businesses/day14-realty/intake/ (drop county CSVs here)",
+  "data_layer": "businesses/day14-realty/ops/ (properties.json, evaluations.json, targets.json) + businesses/day14-realty/intake/ (drop county CSVs here)",
+  "telegram": "Send the bot a county or metro to add a watch target — e.g. \"realty Lee County, FL\" or \"realty Tampa Bay area\". \"realty targets\" lists the watch list.",
   "data_sources": {
     "county": "Official county property-appraiser data exports — public records.",
     "valuation": "Licensed property API (RentCast / ATTOM / Estated). Env: REALESTATE_API_KEY.",

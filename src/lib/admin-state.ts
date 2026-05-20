@@ -125,9 +125,25 @@ export interface REEvaluation {
   wholesale: { equity_pct: number; score: number };
 }
 
+export interface RETarget {
+  id: string;
+  county: string;
+  state: string;
+  label: string;
+  status: string;
+  monitor?: boolean;
+  source?: string;
+  cities?: string[];
+  added_at?: string;
+  last_scanned_at?: string | null;
+  properties_sourced: number;
+  a_tier: number;
+}
+
 export interface TenantOps {
   slug?: string;
   generated_at?: string;
+  targets?: RETarget[];
   leads?: Array<{ id: string; name?: string; status?: string }>;
   quotes?: Array<{ id: string; status?: string; amount_cents?: number; customer?: string; service?: string }>;
   jobs?: Array<{ id: string; status?: string; customer?: string; service?: string; day?: string; zone?: string }>;

@@ -16,7 +16,9 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { homedir } from "node:os";
 import { KNOWLEDGE, scaffold, opsDir, loadStore, money, auditRE } from "./brain.mjs";
+import { loadTargets } from "./targets.mjs";
 import * as intake from "./intake-agent.mjs";
+import * as countyFeed from "./county-feed-agent.mjs";
 import * as distressMonitor from "./distress-monitor.mjs";
 import * as compAnalyst from "./comp-analyst.mjs";
 import * as enrichment from "./enrichment-agent.mjs";
@@ -37,6 +39,7 @@ export async function operate(slug) {
   const results = {};
   for (const [name, agent] of [
     ["intake", intake],
+    ["countyFeed", countyFeed],
     ["distress", distressMonitor],
     ["comps", compAnalyst],
     ["enrichment", enrichment],
@@ -52,6 +55,7 @@ export async function operate(slug) {
 
   const evals = await loadStore(slug, "evaluations");
   const top = evals.slice(0, 10);
+  const targets = await loadTargets(slug);
 
   const lines = [
     `# Real-Estate Deal Scout — ${slug}`,
@@ -60,6 +64,7 @@ export async function operate(slug) {
     ``,
     `## Funnel`,
     `- Intake: +${results.intake.ingested ?? 0} new · ${results.intake.total_properties ?? 0} properties tracked`,
+    `- County feed: ${results.countyFeed?.targets ?? 0} watched · ${results.countyFeed?.active ?? 0} active · ${results.countyFeed?.needs_csv ?? 0} awaiting CSV${results.countyFeed?.api_sourced ? ` · +${results.countyFeed.api_sourced} via API` : ""}`,
     `- Distress scan: ${results.distress?.hot_leads ?? 0} hot leads`,
     `- Comps: ${results.comps?.comp_arvs ?? 0} comp ARVs computed`,
     `- Enrichment: ${results.enrichment.has_key ? `+${results.enrichment.enriched ?? 0} enriched, ${results.enrichment.pending ?? 0} pending` : "no API key — running on county data only"}`,
@@ -70,6 +75,14 @@ export async function operate(slug) {
     ...(top.length
       ? top.map((e, i) => `${i + 1}. **${e.score}** ${e.tier} · ${e.address || "(no address)"} — best play: ${e.best_play}${e.signals.length ? ` · ${e.signals.join(", ")}` : ""}`)
       : ["- No properties yet. Drop a county property-appraiser CSV into `businesses/" + slug + "/intake/`."]),
+    ``,
+    `## County watch list`,
+    ...(targets.length
+      ? targets.map(
+          (t) =>
+            `- ${t.label} — ${t.status}${t.properties_sourced ? ` · ${t.properties_sourced} properties` : ""}${t.a_tier ? ` · ${t.a_tier} A-tier` : ""}`
+        )
+      : ['- No counties watched yet. Telegram a county or metro to start, e.g. "realty Lee County, FL".']),
     ``,
     `## Build roadmap`,
     ...ROADMAP.map((r) => `- [P${r.phase}] ${r.capability}: ${r.goal}`),

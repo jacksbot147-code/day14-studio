@@ -17,8 +17,14 @@ and driven by the Real-Estate Deal Scout agent.
   tier and best play, with per-property evaluation detail. *(scheduled build)*
 
 ## Phase 3 — Scale the funnel
-- **County-feed connectors** — per-county official data feeds so intake is
-  automatic, not a manual CSV drop.
+- **County watch list** *(shipped)* — Telegram the bot a county or a metro
+  ("realty Lee County, FL" / "realty Tampa Bay area"); each becomes a standing
+  target the scout sources, scores, and re-scans every run. Metros auto-expand
+  to their counties. The county-feed agent pulls on-market listings via the
+  licensed API when a key is set, and otherwise files a precise to-do for the
+  county's official records export — which auto-ingests the moment it's dropped.
+- **County-feed connectors** — direct per-county official data feeds so even
+  the CSV step disappears for counties that publish a bulk endpoint.
 - **Owner-outreach drafting** — for A-tier wholesale leads, draft compliant
   outreach for Jack to review and send.
 
@@ -38,8 +44,8 @@ deals — exactly the motivated-seller pipeline.
 
 ## Agent roster — the full realty cluster
 
-Shipped: realty-scout (coordinator), intake, enrichment, evaluation,
-distress-monitor, comp-analyst, deal-alerter.
+Shipped: realty-scout (coordinator), intake, county-feed, enrichment,
+evaluation, distress-monitor, comp-analyst, deal-alerter.
 
 Planned:
 

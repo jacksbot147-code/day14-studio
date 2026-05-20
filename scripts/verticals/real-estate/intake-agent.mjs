@@ -37,6 +37,26 @@ function parseCsv(text) {
   return rows;
 }
 
+/**
+ * Derive a county name from a CSV filename (e.g. "lee-county.csv" -> "Lee").
+ * Used as a fallback so properties tag back to a watch-list target even when
+ * the export has no county column.
+ */
+function countyFromFilename(name) {
+  const s = name
+    .replace(/\.csv$/i, "")
+    .replace(/[_-]+/g, " ")
+    .replace(/\bcount(y|ies)\b/gi, " ")
+    .replace(/\d+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!s) return "";
+  return s
+    .split(/\s+/)
+    .map((w) => (w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w))
+    .join(" ");
+}
+
 function rowsToObjects(rows) {
   if (rows.length < 2) return [];
   const headers = rows[0].map((h) => h.trim().toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, ""));
@@ -60,9 +80,11 @@ export async function operate(slug) {
   let ingested = 0, skipped = 0, filesDone = 0;
   for (const f of files) {
     try {
+      const fileCounty = countyFromFilename(f);
       const text = await fs.readFile(path.join(dir, f), "utf8");
       for (const raw of rowsToObjects(parseCsv(text))) {
         const p = normalizeProperty(raw);
+        if (!p.county && fileCounty) p.county = fileCounty;
         const key = (p.address || p.id).toLowerCase();
         if (!p.address) { skipped++; continue; }
         if (seen.has(key)) { skipped++; continue; }

@@ -21,6 +21,8 @@ import { homedir } from "node:os";
 import { spawn } from "node:child_process";
 import { compactSnapshot, fullStateSnapshot, listTenants, tenantRevenue, recentAudit } from "./state-query-engine.mjs";
 import { completeTodo, listOpenTodos } from "./_generic/operator-todos.mjs";
+import { parseTargetRequest } from "./verticals/real-estate/regions.mjs";
+import { addTarget, loadTargets, REALTY_SLUG } from "./verticals/real-estate/targets.mjs";
 
 const HOME = homedir();
 const ENV_FILE = path.join(HOME, "Documents/studio/.env.local");
@@ -189,6 +191,129 @@ export async function queueBusinessBootstrap(extracted) {
   return filename;
 }
 
+// ── Realty county watch list ────────────────────────────────────────────
+// Jack can Telegram a county ("realty Travis County, TX"), a metro ("scout
+// the Tampa Bay area"), or "look at Maricopa County" — each becomes a
+// standing watch target the realty scout sources, scores, and monitors.
+
+/** Decide whether a message is a realty watch command. */
+function realtyTrigger(text) {
+  const t = text.trim();
+  if (/^realty\b/i.test(t)) return "explicit";
+  if (/^scout\s+\S/i.test(t)) return "loose";
+  if (/^(start|begin)\s+(looking|scouting)\b/i.test(t)) return "loose";
+  if (/^look(?:ing)?\s+(?:at|in|into)\s+\S/i.test(t)) return "loose";
+  // Bare county/metro: short, mentions "county", and not a question.
+  const words = t.split(/\s+/).length;
+  if (
+    /\bcount(?:y|ies)\b/i.test(t) &&
+    words <= 10 &&
+    !/^(what|which|where|how|is|are|do|does|did|why|who|when|can|could|should|would|tell|show|explain|list)\b/i.test(t)
+  )
+    return "loose";
+  return null;
+}
+
+async function realtyListReply() {
+  const targets = await loadTargets(REALTY_SLUG);
+  if (!targets.length) {
+    return {
+      reply: `🏠 *Realty watch list is empty.*\n\nTelegram a county or metro to start — e.g. *realty Lee County, FL* or *realty Tampa Bay area*.`,
+      action: "realty-list",
+    };
+  }
+  const lines = targets.map((t) => {
+    const stat =
+      t.status === "active"
+        ? `active · ${t.properties_sourced} properties${t.a_tier ? ` · ${t.a_tier} A-tier` : ""}`
+        : t.status === "needs-csv"
+          ? "awaiting county CSV"
+          : t.status;
+    return `*${t.label}* — ${stat}`;
+  });
+  return {
+    reply: `🏠 *Realty watch list* (${targets.length})\n\n${lines.join("\n")}\n\nSee the board: day14.us/admin/realty`,
+    action: "realty-list",
+  };
+}
+
+/** Returns a reply object for a realty command, or null if not one. */
+async function tryRealtyCommand(text) {
+  const trig = realtyTrigger(text);
+  if (!trig) return null;
+
+  // List sub-command — "realty", "realty targets", "realty list".
+  const body = text.replace(/^realty[:\s]+/i, "").trim();
+  if (trig === "explicit" && /^(targets?|list|watch\s*list|watchlist|status)?$/i.test(body)) {
+    return await realtyListReply();
+  }
+
+  const parsed = parseTargetRequest(text);
+  if (parsed.type === "empty") {
+    if (trig === "explicit") {
+      return {
+        reply: `🏠 Tell me a county or metro to scout — e.g. *realty Lee County, FL* or *realty Tampa Bay area*.`,
+        action: "realty-noop",
+      };
+    }
+    return null; // loose trigger, nothing parseable — let the LLM handle it
+  }
+  if (parsed.type === "unknown-region") {
+    if (trig === "explicit") {
+      return {
+        reply: `🏠 I don't have *${parsed.region}* mapped to counties yet. Reply with the counties — e.g. *realty Sangamon County, IL* (comma-separate several).`,
+        action: "realty-unknown-region",
+      };
+    }
+    return null; // loose trigger on an unknown place — avoid false positives
+  }
+
+  // type "counties" or "region" — register each county.
+  const added = [];
+  const existing = [];
+  for (const c of parsed.counties) {
+    try {
+      const { target, created } = await addTarget(REALTY_SLUG, {
+        county: c.county,
+        state: c.state,
+        source: "telegram",
+      });
+      (created ? added : existing).push(target);
+    } catch { /* skip a malformed county */ }
+  }
+  if (!added.length && !existing.length) {
+    return { reply: `🏠 Couldn't read a county out of that. Try *realty Lee County, FL*.`, action: "realty-noop" };
+  }
+
+  // Kick the scout so sourcing begins immediately.
+  try {
+    const child = spawn(
+      "node",
+      [path.join(STUDIO, "scripts/verticals/real-estate/scout-agent.mjs"), REALTY_SLUG],
+      { detached: true, stdio: "ignore", cwd: STUDIO }
+    );
+    child.unref();
+  } catch { /* the overnight scout run will pick it up */ }
+
+  const total = added.length + existing.length;
+  const head =
+    parsed.type === "region"
+      ? `🏠 *Scouting the ${parsed.region} region*`
+      : total === 1
+        ? `🏠 *Now scouting ${(added[0] || existing[0]).label}*`
+        : `🏠 *Now scouting ${total} counties*`;
+  const bits = [head, ""];
+  if (added.length) bits.push(`Added: ${added.map((t) => t.label).join(", ")}`);
+  if (existing.length) bits.push(`Already watched: ${existing.map((t) => t.label).join(", ")}`);
+  bits.push(
+    "",
+    "The scout is sourcing now. For any county without an automatic feed, a to-do lands on day14.us/admin with exactly where to pull the official records — drop that CSV and it scores + monitors automatically.",
+    "",
+    "Reply *realty targets* for your watch list."
+  );
+  return { reply: bits.join("\n"), action: `realty-targets:+${added.length}/${existing.length}` };
+}
+
 /**
  * Main entrypoint. Returns the bot's reply text + any side effects performed.
  */
@@ -229,6 +354,14 @@ export async function processIncomingMessage(message, ctx = {}) {
     await logBrain({ direction: "in", message, intent: { intent: "todo-list" } });
     await logBrain({ direction: "out", reply: reply.slice(0, 300), action: "todo-list" });
     return { reply, intent: { intent: "todo-list" }, action: "todo-list" };
+  }
+
+  // ── Fast-path: realty county / region watch list
+  const realty = await tryRealtyCommand(trimmed);
+  if (realty) {
+    await logBrain({ direction: "in", message, intent: { intent: "realty-target" } });
+    await logBrain({ direction: "out", reply: realty.reply.slice(0, 300), action: realty.action });
+    return { reply: realty.reply, intent: { intent: "realty-target" }, action: realty.action };
   }
 
   const intent = await classifyIntent(message, env);
