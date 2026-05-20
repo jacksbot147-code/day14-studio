@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-20T00:48:24.224Z",
+  "generated_at": "2026-05-20T00:59:28.301Z",
   "tenants": [
     {
       "slug": "day14",
@@ -352,13 +352,13 @@
     {
       "name": "auto-restart-watchdog",
       "status": "healthy",
-      "ageMin": 5,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
       "name": "auto-restart-watchdog-cycle",
-      "status": "healthy",
-      "ageMin": 4,
+      "status": "stale",
+      "ageMin": 15,
       "cadenceMin": 5
     },
     {
@@ -376,7 +376,7 @@
     {
       "name": "gmail-cs-triage",
       "status": "healthy",
-      "ageMin": 9,
+      "ageMin": 20,
       "cadenceMin": 31
     },
     {
@@ -406,13 +406,13 @@
     {
       "name": "outbox-deadletter",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
       "name": "outbox-deadletter-cycle",
-      "status": "stale",
-      "ageMin": 25,
+      "status": "healthy",
+      "ageMin": 6,
       "cadenceMin": 1
     },
     {
@@ -424,25 +424,25 @@
     {
       "name": "recursive-expansion",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
       "name": "skill-multiplier",
       "status": "stale",
-      "ageMin": 19,
+      "ageMin": 30,
       "cadenceMin": 1
     },
     {
       "name": "stripe-cs-loop",
       "status": "healthy",
-      "ageMin": 24,
+      "ageMin": 35,
       "cadenceMin": 60
     },
     {
       "name": "system-pulse",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
@@ -454,13 +454,13 @@
     {
       "name": "vercel-deploy-monitor",
       "status": "stale",
-      "ageMin": 102,
+      "ageMin": 113,
       "cadenceMin": 1
     },
     {
       "name": "video-pipeline",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     }
   ],
