@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-20T00:03:18.416Z",
+  "generated_at": "2026-05-20T00:18:20.373Z",
   "tenants": [
     {
       "slug": "day14",
@@ -316,97 +316,116 @@
     {
       "name": "auto-restart-watchdog",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 1,
+      "cadenceMin": 1
     },
     {
       "name": "auto-restart-watchdog-cycle",
       "status": "healthy",
-      "ageMin": 4
+      "ageMin": 4,
+      "cadenceMin": 1
     },
     {
       "name": "customer-success",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 1,
+      "cadenceMin": 1
     },
     {
       "name": "expansion-prompter",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 1,
+      "cadenceMin": 1
     },
     {
       "name": "gmail-cs-triage",
-      "status": "stale",
-      "ageMin": 29
+      "status": "healthy",
+      "ageMin": 9,
+      "cadenceMin": 35
     },
     {
       "name": "growth-narrator",
       "status": "healthy",
-      "ageMin": 0
+      "ageMin": 0,
+      "cadenceMin": 1
     },
     {
       "name": "growth-watcher",
-      "status": "stale",
-      "ageMin": 3933
+      "status": "error",
+      "ageMin": 3948,
+      "cadenceMin": 1
     },
     {
       "name": "hot-flash-co-orders",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 1,
+      "cadenceMin": 1
     },
     {
       "name": "opportunity-scanner",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 1,
+      "cadenceMin": 1
     },
     {
       "name": "outbox-deadletter",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 1,
+      "cadenceMin": 1
     },
     {
       "name": "outbox-deadletter-cycle",
-      "status": "healthy",
-      "ageMin": 10
+      "status": "stale",
+      "ageMin": 25,
+      "cadenceMin": 1
     },
     {
       "name": "proactive-monitor",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 1,
+      "cadenceMin": 1
     },
     {
       "name": "recursive-expansion",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 1,
+      "cadenceMin": 1
     },
     {
       "name": "skill-multiplier",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 1,
+      "cadenceMin": 1
     },
     {
       "name": "stripe-cs-loop",
       "status": "stale",
-      "ageMin": 39
+      "ageMin": 54,
+      "cadenceMin": 1
     },
     {
       "name": "system-pulse",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 1,
+      "cadenceMin": 1
     },
     {
       "name": "telegram-poller",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 0,
+      "cadenceMin": 1
     },
     {
       "name": "vercel-deploy-monitor",
       "status": "stale",
-      "ageMin": 57
+      "ageMin": 72,
+      "cadenceMin": 1
     },
     {
       "name": "video-pipeline",
       "status": "healthy",
-      "ageMin": 1
+      "ageMin": 1,
+      "cadenceMin": 1
     }
   ],
   "skill_counts": {
