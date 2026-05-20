@@ -33,6 +33,7 @@ export const ADMIN_CSS = `
 .admin-shell .todo-done-btn:hover { box-shadow:0 4px 14px rgba(16,185,129,0.45); }
 .admin-shell .todo-done-hint { font-size:10px; color:var(--muted); white-space:nowrap; }
 .admin-shell .todo-done-hint code { background:var(--surface-2); padding:3px 7px; border-radius:5px; color:var(--gold); font-size:11px; }
+.admin-shell .build-failed-flag { margin-top:10px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--red); background:rgba(255,107,107,0.12); border:1px solid rgba(255,107,107,0.35); border-radius:6px; padding:5px 8px; text-align:center; }
 .admin-shell .crumb { font-size:11px; color:var(--muted); margin-bottom:16px; text-transform:uppercase; letter-spacing:0.1em; }
 .admin-shell .crumb a { color:var(--accent); }
 .admin-shell .empire-bar { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; margin-bottom:24px; }

@@ -172,6 +172,9 @@ export default async function AdminEmpire() {
                     <div className="char-class" style={{ color: arch.color }}>{arch.class}</div>
                   </div>
                 </div>
+                {t.stage === "build-failed" ? (
+                  <div className="build-failed-flag">⚠ Build failed — retry queued</div>
+                ) : null}
                 <div className="char-stats">
                   <div className="char-stat-label">💰 Revenue</div><div className="char-stat-value">${(t.revenue_cents / 100).toFixed(2)}</div>
                   <div className="char-stat-label">📦 Orders</div><div className="char-stat-value">{t.orders}</div>

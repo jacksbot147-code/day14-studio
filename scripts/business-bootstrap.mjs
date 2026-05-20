@@ -102,18 +102,50 @@ function runStep(label, cmd, args, { retries = 1, retryDelaySec = 45 } = {}) {
   return false;
 }
 
+/** Set a tenant's stage in the registry (no-op if the tenant isn't there). */
+async function markTenantStage(slug, stage) {
+  try {
+    if (!existsSync(TENANTS_FILE)) return;
+    const data = JSON.parse(await fs.readFile(TENANTS_FILE, "utf8"));
+    const t = (data.tenants || []).find((x) => x.slug === slug);
+    if (t && t.stage !== stage) {
+      t.stage = stage;
+      await fs.writeFile(TENANTS_FILE, JSON.stringify(data, null, 2));
+    }
+  } catch {}
+}
+
 /**
- * Roll back a failed bootstrap so a half-built business never lingers as a
- * broken "zombie" tenant on the dashboard. Removes the tenant directory,
- * de-registers it, files ONE clear retry to-do, and alerts.
+ * Roll back a failed bootstrap. A failed build must not become a misleading
+ * half-complete "zombie" tenant — but it must not silently vanish either.
+ * So: wipe the half-built artifacts, keep the tenant registered but flagged
+ * `stage: "build-failed"` (stays visible on the dashboard), file ONE retry
+ * to-do, and alert.
  */
 async function rollback(a, env, reason) {
   console.error(`\n✗ ${reason}`);
+  // Remove half-built artifacts so a retry can recreate the directory cleanly.
   try { await fs.rm(path.join(BIZ, a.slug), { recursive: true, force: true }); } catch {}
+  // Keep the tenant on the dashboard, clearly flagged — not deleted.
   try {
     if (existsSync(TENANTS_FILE)) {
       const data = JSON.parse(await fs.readFile(TENANTS_FILE, "utf8"));
-      data.tenants = (data.tenants || []).filter((t) => t.slug !== a.slug);
+      data.tenants = data.tenants || [];
+      const t = data.tenants.find((x) => x.slug === a.slug);
+      if (t) {
+        t.stage = "build-failed";
+      } else {
+        data.tenants.push({
+          slug: a.slug,
+          display_name: a.display_name,
+          type: a.archetype,
+          domain: null,
+          tagline: a.niche,
+          stage: "build-failed",
+          channels: [],
+          notes: `Build failed ${new Date().toISOString()} — retry pending.`,
+        });
+      }
       await fs.writeFile(TENANTS_FILE, JSON.stringify(data, null, 2));
     }
   } catch {}
@@ -121,8 +153,8 @@ async function rollback(a, env, reason) {
     const { addTodo } = await import("./_generic/operator-todos.mjs");
     await addTodo({
       tenant: a.slug,
-      title: `Retry build: ${a.display_name}`,
-      detail: `The ${a.display_name} build failed before a brand charter could be generated — usually the Gemini API quota. Nothing was left half-built. Retry when quota resets: node scripts/business-bootstrap.mjs --slug ${a.slug} --display-name "${a.display_name}" --niche "${a.niche}" --archetype ${a.archetype}`,
+      title: `Retry the ${a.display_name} build`,
+      detail: `The ${a.display_name} build failed before a brand charter could be generated — usually the Gemini API quota. Nothing was left half-built; it's flagged "build-failed" on the dashboard. Retry when quota resets: node scripts/business-bootstrap.mjs --slug ${a.slug} --display-name "${a.display_name}" --niche "${a.niche}" --archetype ${a.archetype}`,
       category: "fix",
       priority: "high",
       source: "business-bootstrap",
@@ -135,7 +167,7 @@ async function rollback(a, env, reason) {
         path.join(SHARED_OUTBOX, `${Date.now()}-bootstrap-failed-${a.slug}.json`),
         JSON.stringify({
           chat_id: env.TELEGRAM_CHAT_ID,
-          text: `⚠️ *${a.display_name} build failed*\n\nThe brand-charter step failed (likely Gemini quota). Nothing was left half-built — no broken tenant on your dashboard. Filed a retry to-do; re-run it when quota resets.`,
+          text: `⚠️ *${a.display_name} build failed*\n\nThe brand-charter step failed (likely Gemini quota). Nothing was left half-built — it's on the dashboard flagged "build-failed". Filed a retry to-do; re-run it when quota resets.`,
           parse_mode: "Markdown",
           urgency: "P2",
           queued_at: new Date().toISOString(),
@@ -145,7 +177,7 @@ async function rollback(a, env, reason) {
       );
     } catch {}
   }
-  console.error(`  ✓ rolled back — ${a.slug} removed cleanly, retry to-do filed.`);
+  console.error(`  ✓ rolled back — ${a.slug} flagged build-failed, retry to-do filed.`);
 }
 
 async function registerTenant(slug, display_name, archetype, niche) {
@@ -341,6 +373,8 @@ async function main() {
     await rollback(a, env, "No CONSTITUTION.md generated — foundation step failed (likely Gemini quota).");
     process.exit(1);
   }
+  // Foundation is real — clear any prior "build-failed" flag from an earlier attempt.
+  await markTenantStage(a.slug, "launching");
 
   // 3b. Full multi-page brand website — the real site (home, shop, blog,
   //     about, contact, SEO sitemap + JSON-LD), not just a stub page.
