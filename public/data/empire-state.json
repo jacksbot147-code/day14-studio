@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-20T01:00:53.244Z",
+  "generated_at": "2026-05-20T01:10:14.168Z",
   "tenants": [
     {
       "slug": "day14",
@@ -327,116 +327,116 @@
   "heartbeats": [
     {
       "name": "auto-restart-watchdog",
-      "status": "healthy",
-      "ageMin": 1,
+      "status": "stale",
+      "ageMin": 11,
       "cadenceMin": 1
     },
     {
       "name": "auto-restart-watchdog-cycle",
       "status": "stale",
-      "ageMin": 16,
+      "ageMin": 26,
       "cadenceMin": 5
     },
     {
       "name": "customer-success",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1
     },
     {
       "name": "expansion-prompter",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1
     },
     {
       "name": "gmail-cs-triage",
       "status": "healthy",
-      "ageMin": 22,
+      "ageMin": 1,
       "cadenceMin": 31
     },
     {
       "name": "growth-narrator",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
       "name": "growth-watcher",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1
     },
     {
       "name": "hot-flash-co-orders",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1
     },
     {
       "name": "opportunity-scanner",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
       "name": "outbox-deadletter",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1
     },
     {
       "name": "outbox-deadletter-cycle",
-      "status": "healthy",
-      "ageMin": 8,
+      "status": "stale",
+      "ageMin": 17,
       "cadenceMin": 1
     },
     {
       "name": "proactive-monitor",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
       "name": "recursive-expansion",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1
     },
     {
       "name": "skill-multiplier",
       "status": "stale",
-      "ageMin": 31,
+      "ageMin": 41,
       "cadenceMin": 1
     },
     {
       "name": "stripe-cs-loop",
       "status": "healthy",
-      "ageMin": 36,
+      "ageMin": 46,
       "cadenceMin": 60
     },
     {
       "name": "system-pulse",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1
     },
     {
       "name": "telegram-poller",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
       "name": "vercel-deploy-monitor",
       "status": "stale",
-      "ageMin": 114,
+      "ageMin": 123,
       "cadenceMin": 1
     },
     {
       "name": "video-pipeline",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1
     }
   ],
@@ -771,8 +771,8 @@
       "id": "todo-1",
       "seq": 1,
       "tenant": "day14",
-      "title": "Add ANTHROPIC_API_KEY to .env.local + Vercel",
-      "detail": "The Claude fallback for when Gemini hits its 429 quota. Blank in .env.local right now — until it is set, LLM calls fail instead of failing over.",
+      "title": "Get an Anthropic API key — unblocks all agent builds",
+      "detail": "Builds (Kennum and every future business) keep dying on the Gemini 429 quota. The durable fix is the Claude fallback, now wired into the whole bootstrap chain — it just needs a key. Generate one at console.anthropic.com -> Settings -> API Keys (requires enabling API billing). Then paste the key to Claude; Claude will add it to .env.local + Vercel and re-run the Kennum build for you.",
       "category": "credentials",
       "priority": "high",
       "status": "open",
@@ -785,7 +785,7 @@
       "seq": 2,
       "tenant": "day14",
       "title": "Add MAILERLITE_API_KEY to .env.local + Vercel",
-      "detail": "Newsletter signup on day14.us and per-tenant brand sites stays inert until this key is set. Get it from mailerlite.com -> Integrations -> Developers -> API.",
+      "detail": "Newsletter signup on day14.us and every brand site stays inert until this key is set. Get it from mailerlite.com -> Integrations -> Developers -> API, then paste it to Claude to wire in.",
       "category": "credentials",
       "priority": "high",
       "status": "open",
@@ -796,6 +796,19 @@
     {
       "id": "todo-3",
       "seq": 3,
+      "tenant": "kennum-lawn-care",
+      "title": "Retry the Kennum Lawn Care build",
+      "detail": "The Kennum build failed before a brand charter could be generated — the Gemini quota. The no-zombie guard cleaned it up; nothing is half-built. Retry once the Gemini daily quota resets, or after the Anthropic key above is set: node scripts/business-bootstrap.mjs --slug kennum-lawn-care --display-name \"Kennum Lawn Care\" --niche \"Southwest Florida lawn care and landscaping service\" --archetype agency",
+      "category": "fix",
+      "priority": "high",
+      "status": "open",
+      "created_at": "2026-05-20T01:00:53.202Z",
+      "completed_at": null,
+      "source": "business-bootstrap"
+    },
+    {
+      "id": "todo-4",
+      "seq": 4,
       "tenant": "hot-flash-co",
       "title": "Publish the 10 Hot Flash Co product drafts in Printify",
       "detail": "Agents generated 10 menopause-humor mug designs and created the product drafts. Open Printify -> Hot Flash Co -> publish them to the Pop-Up Store so they go live.",
@@ -807,141 +820,11 @@
       "source": "claude-setup"
     },
     {
-      "id": "todo-4",
-      "seq": 4,
-      "tenant": "kennum-lawn-care",
-      "title": "Review Kennum Lawn Care brand identity + add real business details",
-      "detail": "Kennum Lawn Care was bootstrapped with placeholder details. Check ~/Documents/businesses/kennum-lawn-care/brand-identity.json and add the real phone, service area, and pricing so agents stop guessing.",
-      "category": "review",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-05-19T21:00:00.000Z",
-      "completed_at": null,
-      "source": "claude-setup"
-    },
-    {
       "id": "todo-5",
       "seq": 5,
-      "tenant": "kennum-lawn-care",
-      "title": "Re-bootstrap Kennum Lawn Care — no brand charter",
-      "detail": "kennum-lawn-care has no CONSTITUTION.md, so its site can't be built. Re-run: node scripts/business-bootstrap.mjs --slug kennum-lawn-care --display-name \"Kennum Lawn Care\" --niche \"Southwest Florida lawn care + landscaping service with full digital admin (similar to Splash Jacks Pools)\"",
-      "category": "fix",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-05-20T00:00:35.554Z",
-      "completed_at": null,
-      "source": "brand-site-sweep"
-    },
-    {
-      "id": "todo-6",
-      "seq": 6,
-      "tenant": "kennum-lawn-care",
-      "title": "Review & approve Kennum Lawn Care brand identity",
-      "detail": "Open ~/Documents/businesses/kennum-lawn-care/brand-identity.json and confirm the name, voice, palette, and tagline before the agents run with it.",
-      "category": "review",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-05-20T00:00:35.557Z",
-      "completed_at": null,
-      "source": "business-bootstrap"
-    },
-    {
-      "id": "todo-7",
-      "seq": 7,
-      "tenant": "kennum-lawn-care",
-      "title": "Publish Kennum Lawn Care product drafts",
-      "detail": "Agents created product drafts for Kennum Lawn Care. Open Printify, review them, and publish to the storefront so they go live.",
-      "category": "publish",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-05-20T00:00:35.558Z",
-      "completed_at": null,
-      "source": "business-bootstrap"
-    },
-    {
-      "id": "todo-16",
-      "seq": 16,
-      "tenant": "kennum-lawn-care",
-      "title": "Retry build: Kennum Lawn Care",
-      "detail": "The Kennum Lawn Care build failed before a brand charter could be generated — usually the Gemini API quota. Nothing was left half-built. Retry when quota resets: node scripts/business-bootstrap.mjs --slug kennum-lawn-care --display-name \"Kennum Lawn Care\" --niche \"Southwest Florida lawn care and landscaping service\" --archetype agency",
-      "category": "fix",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-05-20T01:00:53.202Z",
-      "completed_at": null,
-      "source": "business-bootstrap"
-    },
-    {
-      "id": "todo-9",
-      "seq": 9,
-      "tenant": "kennum-lawn-care",
-      "title": "Re-run failed bootstrap step: Brand identity (Kennum Lawn Care)",
-      "detail": "The auto-bootstrap step \"Brand identity\" returned a non-zero status. Re-run it or check the logs.",
-      "category": "fix",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-20T00:00:35.558Z",
-      "completed_at": null,
-      "source": "business-bootstrap"
-    },
-    {
-      "id": "todo-10",
-      "seq": 10,
-      "tenant": "kennum-lawn-care",
-      "title": "Re-run failed bootstrap step: Competitor research (Kennum Lawn Care)",
-      "detail": "The auto-bootstrap step \"Competitor research\" returned a non-zero status. Re-run it or check the logs.",
-      "category": "fix",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-20T00:00:35.559Z",
-      "completed_at": null,
-      "source": "business-bootstrap"
-    },
-    {
-      "id": "todo-11",
-      "seq": 11,
-      "tenant": "kennum-lawn-care",
-      "title": "Re-run failed bootstrap step: Productized service / agency scaffold (Kennum Lawn Care)",
-      "detail": "The auto-bootstrap step \"Productized service / agency scaffold\" returned a non-zero status. Re-run it or check the logs.",
-      "category": "fix",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-20T00:00:35.559Z",
-      "completed_at": null,
-      "source": "business-bootstrap"
-    },
-    {
-      "id": "todo-12",
-      "seq": 12,
-      "tenant": "kennum-lawn-care",
-      "title": "Re-run failed bootstrap step: Brand website (Kennum Lawn Care)",
-      "detail": "The auto-bootstrap step \"Brand website\" returned a non-zero status. Re-run it or check the logs.",
-      "category": "fix",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-20T00:00:35.560Z",
-      "completed_at": null,
-      "source": "business-bootstrap"
-    },
-    {
-      "id": "todo-13",
-      "seq": 13,
-      "tenant": "kennum-lawn-care",
-      "title": "Re-run failed bootstrap step: Merch (5 mug drafts) (Kennum Lawn Care)",
-      "detail": "The auto-bootstrap step \"Merch (5 mug drafts)\" returned a non-zero status. Re-run it or check the logs.",
-      "category": "fix",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-20T00:00:35.560Z",
-      "completed_at": null,
-      "source": "business-bootstrap"
-    },
-    {
-      "id": "todo-14",
-      "seq": 14,
       "tenant": "hot-flash-co",
       "title": "Generate brand identity for Hot Flash Co",
-      "detail": "hot-flash-co has no brand-identity.json, so the site falls back to default colors and fonts. Run: node scripts/brand-identity-generator.mjs --slug hot-flash-co --display-name \"Hot Flash Co\" --niche \"Real goods for the seasons no one warns you about.\"",
+      "detail": "hot-flash-co has no brand-identity.json, so its site falls back to default colors and fonts. Run: node scripts/brand-identity-generator.mjs --slug hot-flash-co --display-name \"Hot Flash Co\" --niche \"Real goods for the seasons no one warns you about.\"",
       "category": "review",
       "priority": "medium",
       "status": "open",
@@ -950,30 +833,17 @@
       "source": "brand-site-sweep"
     },
     {
-      "id": "todo-15",
-      "seq": 15,
+      "id": "todo-6",
+      "seq": 6,
       "tenant": "hot-flash-co",
       "title": "Publish blog content for Hot Flash Co",
-      "detail": "No blog drafts yet for hot-flash-co. The daily content engine will generate them; confirm its LaunchAgent is installed.",
+      "detail": "No blog drafts exist yet for hot-flash-co, so the blog page is empty. The daily content engine generates them; confirm its LaunchAgent is installed, then review and mark drafts status: live.",
       "category": "content",
       "priority": "medium",
       "status": "open",
       "created_at": "2026-05-20T00:00:35.586Z",
       "completed_at": null,
       "source": "brand-site-sweep"
-    },
-    {
-      "id": "todo-8",
-      "seq": 8,
-      "tenant": "kennum-lawn-care",
-      "title": "Point a domain at Kennum Lawn Care (optional)",
-      "detail": "Brand site is live at day14.us/brands/kennum-lawn-care. To use a custom domain, add it via Cloudflare + Vercel.",
-      "category": "domain",
-      "priority": "low",
-      "status": "open",
-      "created_at": "2026-05-20T00:00:35.558Z",
-      "completed_at": null,
-      "source": "business-bootstrap"
     }
   ],
   "bot_username": "Day14_OS_bot"
