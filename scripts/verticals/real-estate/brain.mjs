@@ -88,9 +88,15 @@ export function normalizeProperty(raw = {}) {
   };
 }
 
-/** Best available market value, preferring AVM, then county market, then assessed. */
+/** Best available market value: AVM, then comp-based ARV, then county market, then assessed. */
 export function bestValue(p) {
-  return p.avm_value_cents || p.market_value_cents || Math.round((p.assessed_value_cents || 0) / 0.85) || 0;
+  return (
+    p.avm_value_cents ||
+    p.comp_arv_cents ||
+    p.market_value_cents ||
+    Math.round((p.assessed_value_cents || 0) / 0.85) ||
+    0
+  );
 }
 
 export function repairEstimate(p) {

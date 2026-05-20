@@ -17,8 +17,11 @@ import path from "node:path";
 import { homedir } from "node:os";
 import { KNOWLEDGE, scaffold, opsDir, loadStore, money, auditRE } from "./brain.mjs";
 import * as intake from "./intake-agent.mjs";
+import * as distressMonitor from "./distress-monitor.mjs";
+import * as compAnalyst from "./comp-analyst.mjs";
 import * as enrichment from "./enrichment-agent.mjs";
 import * as evaluation from "./evaluation-agent.mjs";
+import * as dealAlerter from "./deal-alerter.mjs";
 
 export const ROADMAP = [
   { phase: 1, capability: "intake", goal: "County property-record CSV intake, normalized + de-duped." },
@@ -34,8 +37,11 @@ export async function operate(slug) {
   const results = {};
   for (const [name, agent] of [
     ["intake", intake],
+    ["distress", distressMonitor],
+    ["comps", compAnalyst],
     ["enrichment", enrichment],
     ["evaluation", evaluation],
+    ["alerts", dealAlerter],
   ]) {
     try {
       results[name] = await agent.operate(slug);
@@ -54,8 +60,11 @@ export async function operate(slug) {
     ``,
     `## Funnel`,
     `- Intake: +${results.intake.ingested ?? 0} new · ${results.intake.total_properties ?? 0} properties tracked`,
+    `- Distress scan: ${results.distress?.hot_leads ?? 0} hot leads`,
+    `- Comps: ${results.comps?.comp_arvs ?? 0} comp ARVs computed`,
     `- Enrichment: ${results.enrichment.has_key ? `+${results.enrichment.enriched ?? 0} enriched, ${results.enrichment.pending ?? 0} pending` : "no API key — running on county data only"}`,
     `- Evaluation: ${results.evaluation.evaluated ?? 0} scored · ${results.evaluation.tier_a ?? 0} A-tier, ${results.evaluation.tier_b ?? 0} B-tier`,
+    `- Alerts: ${results.alerts?.new_alerts ?? 0} new A-tier alert(s)`,
     ``,
     `## Top deals`,
     ...(top.length

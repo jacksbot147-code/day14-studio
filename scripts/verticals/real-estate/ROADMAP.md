@@ -38,17 +38,15 @@ deals — exactly the motivated-seller pipeline.
 
 ## Agent roster — the full realty cluster
 
-Shipped: realty-scout (coordinator), intake, enrichment, evaluation.
+Shipped: realty-scout (coordinator), intake, enrichment, evaluation,
+distress-monitor, comp-analyst, deal-alerter.
 
-Planned (build order: distress-monitor, comp-analyst, deal-alerter first):
+Planned:
 
 Sourcing & lead-gen
-- distress-monitor — watches public records for fresh motivated-seller signals
-  (new tax-delinquency, code violations, pre-foreclosure/lis pendens, probate, vacancy).
 - list-builder — assembles targeted property lists by criteria from the store.
 
 Sharper evaluation
-- comp-analyst — true comparable-sales selection to tighten ARV.
 - rehab-estimator — line-item repair scope + cost.
 - market-watch — neighborhood trend tracking (price, DOM, inventory).
 - financing-modeler — per-deal funding scenarios -> real cash-on-cash.
