@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-20T01:44:34.575Z",
+  "generated_at": "2026-05-20T01:59:36.490Z",
   "tenants": [
     {
       "slug": "day14",
@@ -404,13 +404,13 @@
     {
       "name": "auto-restart-watchdog",
       "status": "stale",
-      "ageMin": 45,
+      "ageMin": 60,
       "cadenceMin": 1
     },
     {
       "name": "auto-restart-watchdog-cycle",
       "status": "stale",
-      "ageMin": 60,
+      "ageMin": 75,
       "cadenceMin": 5
     },
     {
@@ -428,7 +428,7 @@
     {
       "name": "gmail-cs-triage",
       "status": "healthy",
-      "ageMin": 5,
+      "ageMin": 20,
       "cadenceMin": 30
     },
     {
@@ -451,8 +451,8 @@
     },
     {
       "name": "lawn-care-gm-kennum-lawn-care",
-      "status": "healthy",
-      "ageMin": 10,
+      "status": "stale",
+      "ageMin": 25,
       "cadenceMin": 1
     },
     {
@@ -469,8 +469,8 @@
     },
     {
       "name": "outbox-deadletter-cycle",
-      "status": "stale",
-      "ageMin": 15,
+      "status": "healthy",
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
@@ -488,13 +488,13 @@
     {
       "name": "skill-multiplier",
       "status": "stale",
-      "ageMin": 75,
+      "ageMin": 90,
       "cadenceMin": 1
     },
     {
       "name": "stripe-cs-loop",
       "status": "healthy",
-      "ageMin": 80,
+      "ageMin": 95,
       "cadenceMin": 60
     },
     {
@@ -512,7 +512,7 @@
     {
       "name": "vercel-deploy-monitor",
       "status": "stale",
-      "ageMin": 158,
+      "ageMin": 173,
       "cadenceMin": 1
     },
     {
