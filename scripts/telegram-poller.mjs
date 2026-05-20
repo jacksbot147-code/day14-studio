@@ -198,6 +198,34 @@ async function processInbox() {
 
       if (COMMAND_REPLIES[command]) {
         reply = COMMAND_REPLIES[command];
+      } else if (command === '/start') {
+        // Deep-link from t.me/<bot>?start=<base64url> (e.g. the realty
+        // dashboard's "Send to scout" button). Decode the payload back into
+        // a real command and route it through the bot brain.
+        if (args[0]) {
+          let decoded = '';
+          try {
+            let b64 = args[0].replace(/-/g, '+').replace(/_/g, '/');
+            while (b64.length % 4) b64 += '=';
+            decoded = Buffer.from(b64, 'base64').toString('utf8').trim();
+          } catch { /* malformed payload */ }
+          if (decoded) {
+            try {
+              const { processIncomingMessage } = await import(
+                path.join(homedir(), 'Documents/studio/scripts/bot-brain.mjs')
+              );
+              const result = await processIncomingMessage(decoded, { chatId: msg.chat?.id });
+              reply = result.reply || `Done: ${decoded}`;
+              await log(`/start deep-link → "${decoded.slice(0, 60)}"`);
+            } catch (e) {
+              reply = `Couldn't run that: ${e.message}`;
+            }
+          } else {
+            reply = '👋 *Day14 OS online.* Send a county to scout — e.g. *realty Lee County, FL*.';
+          }
+        } else {
+          reply = '👋 *Day14 OS online.*\n\nSend a county to scout (e.g. *realty Lee County, FL*), *todos* for your list, or *architect <idea>* to spec a move.';
+        }
       } else if (command === '/energy' && args[0]) {
         // Quick local handling: log energy from chat
         await logEnergyFromChat(args[0], args[1]);

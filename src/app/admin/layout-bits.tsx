@@ -161,7 +161,8 @@ export const ADMIN_CSS = `
 .admin-shell .filter-chip.active { background:var(--accent-soft); border-color:var(--accent); color:var(--accent-text); font-weight:600; }
 .admin-shell .sort-select { padding:8px 10px; border:1px solid var(--border); border-radius:9px; background:var(--surface); color:var(--text); font-size:12px; font-family:inherit; cursor:pointer; box-shadow:var(--shadow); }
 .admin-shell .toolbar-count { font-size:12px; color:var(--muted); margin:0 0 10px; }
-.admin-shell .add-county { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+.admin-shell .add-county { display:flex; gap:8px; margin-bottom:6px; flex-wrap:wrap; }
+.admin-shell .add-county-hint { font-size:12px; color:var(--muted); margin:0 0 14px; line-height:1.5; }
 .admin-shell .add-county-btn { display:inline-flex; align-items:center; padding:9px 16px; background:var(--accent); color:#fff; border:none; border-radius:9px; font-size:13px; font-weight:600; white-space:nowrap; box-shadow:var(--shadow); cursor:pointer; font-family:inherit; }
 .admin-shell .add-county-btn:hover { background:var(--accent-text); }
 .admin-shell .add-county-btn:disabled { background:var(--surface-3); color:var(--muted); cursor:not-allowed; box-shadow:none; }

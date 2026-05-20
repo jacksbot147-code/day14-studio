@@ -15,38 +15,71 @@ function tierClass(tier: string) {
  * Mac, so this routes through Telegram — it opens the bot with the
  * "realty <county>" command pre-filled, and the poller starts the scout.
  */
+/** base64url-encode a string (UTF-8 safe) for a Telegram ?start= payload. */
+function startPayload(cmd: string): string | null {
+  try {
+    const b64 = btoa(String.fromCharCode(...new TextEncoder().encode(cmd)))
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
+    return b64.length <= 64 ? b64 : null; // Telegram caps start payloads at 64
+  } catch {
+    return null;
+  }
+}
+
 export function AddCountyBox({ botUsername }: { botUsername: string | null }) {
   const [val, setVal] = useState("");
+  const [status, setStatus] = useState<"" | "sent" | "copied">("");
   const trimmed = val.trim();
-  const href =
-    botUsername && trimmed
-      ? `https://t.me/${botUsername}?text=${encodeURIComponent(`realty ${trimmed}`)}`
-      : null;
+
+  function send() {
+    if (!trimmed) return;
+    const cmd = `realty ${trimmed}`;
+    // Copy the plain command as a guaranteed fallback path.
+    try {
+      navigator.clipboard?.writeText(cmd);
+    } catch {
+      /* clipboard may be blocked — the deep link still works */
+    }
+    if (botUsername) {
+      const payload = startPayload(cmd);
+      const url = payload
+        ? `https://t.me/${botUsername}?start=${payload}`
+        : `https://t.me/${botUsername}`;
+      window.open(url, "_blank", "noopener");
+      setStatus("sent");
+    } else {
+      setStatus("copied");
+    }
+  }
 
   return (
-    <div className="add-county">
-      <input
-        className="search-input"
-        placeholder="Add a county or metro — e.g. Lee County, FL  or  Tampa Bay area"
-        value={val}
-        onChange={(e) => setVal(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && href) window.open(href, "_blank", "noopener");
-        }}
-      />
-      {href ? (
-        <a className="add-county-btn" href={href} target="_blank" rel="noopener noreferrer">
-          Send to scout →
-        </a>
-      ) : (
-        <button
-          className="add-county-btn"
-          disabled
-          title={botUsername ? "Type a county first" : "Bot link unavailable — sync the empire state"}
-        >
+    <div>
+      <div className="add-county">
+        <input
+          className="search-input"
+          placeholder="Add a county or metro — e.g. Lee County, FL  or  Tampa Bay area"
+          value={val}
+          onChange={(e) => {
+            setVal(e.target.value);
+            setStatus("");
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") send();
+          }}
+        />
+        <button className="add-county-btn" onClick={send} disabled={!trimmed}>
           Send to scout →
         </button>
-      )}
+      </div>
+      <div className="add-county-hint">
+        {status === "sent"
+          ? "Opening your Day14 bot — tap Start there to register the county. (The command is also copied to your clipboard as a backup — just paste it if needed.)"
+          : status === "copied"
+            ? "Command copied — open your Day14 Telegram bot and paste it to start the scout."
+            : "Sends the command to your Day14 Telegram bot, which registers the county and kicks off the scout."}
+      </div>
     </div>
   );
 }
