@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-20T20:45:31.713Z",
+  "generated_at": "2026-05-20T20:56:26.718Z",
   "tenants": [
     {
       "slug": "day14",
@@ -305,6 +305,53 @@
       "streak": 0,
       "recent_audit": [
         {
+          "ts": "2026-05-20T20:50:54.311Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "lawn-care-gm",
+          "action": "cluster_run",
+          "scaffolded": 0,
+          "season": "Rainy / peak growth (May–Oct)",
+          "pipeline_value": 0,
+          "at_risk": 0
+        },
+        {
+          "ts": "2026-05-20T20:50:54.310Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "portal-agent",
+          "action": "portal_feeds_built",
+          "portal_feeds": 0
+        },
+        {
+          "ts": "2026-05-20T20:50:54.309Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "crm-agent",
+          "action": "crm_scored",
+          "customers": 0,
+          "at_risk": 0,
+          "upsell_openings": 0
+        },
+        {
+          "ts": "2026-05-20T20:50:54.307Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "scheduling-agent",
+          "action": "routes_optimized",
+          "scheduled": 0,
+          "rolled_for_weather": 0,
+          "avg_density": 0
+        },
+        {
+          "ts": "2026-05-20T20:50:54.293Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "pipeline-agent",
+          "action": "pipeline_advanced",
+          "quoted": 0,
+          "opened": 0,
+          "invoiced": 0,
+          "open_leads": 0,
+          "pipeline_value": 0,
+          "outstanding_cents": 0
+        },
+        {
           "ts": "2026-05-20T20:38:06.159Z",
           "tenant": "kennum-lawn-care",
           "actor": "lawn-care-gm",
@@ -428,6 +475,42 @@
       "streak": 0,
       "recent_audit": [
         {
+          "ts": "2026-05-20T20:45:33.977Z",
+          "tenant": "day14-realty",
+          "actor": "realty-scout",
+          "action": "scout_run",
+          "scaffolded": 0,
+          "properties": 0,
+          "a_tier": 0
+        },
+        {
+          "ts": "2026-05-20T20:45:33.976Z",
+          "tenant": "day14-realty",
+          "actor": "re-evaluation-agent",
+          "action": "deals_scored",
+          "evaluated": 0,
+          "tier_a": 0,
+          "tier_b": 0,
+          "top_deal": "—"
+        },
+        {
+          "ts": "2026-05-20T20:45:33.976Z",
+          "tenant": "day14-realty",
+          "actor": "re-enrichment-agent",
+          "action": "enrichment_skipped_no_key",
+          "pending": 0
+        },
+        {
+          "ts": "2026-05-20T20:45:33.974Z",
+          "tenant": "day14-realty",
+          "actor": "re-intake-agent",
+          "action": "county_records_ingested",
+          "ingested": 0,
+          "skipped": 0,
+          "files": 0,
+          "total_properties": 0
+        },
+        {
           "ts": "2026-05-20T20:38:06.177Z",
           "tenant": "day14-realty",
           "actor": "realty-scout",
@@ -493,7 +576,7 @@
     {
       "name": "auto-restart-watchdog-cycle",
       "status": "healthy",
-      "ageMin": 5,
+      "ageMin": 1,
       "cadenceMin": 2
     },
     {
@@ -511,13 +594,13 @@
     {
       "name": "gmail-cs-triage",
       "status": "healthy",
-      "ageMin": 6,
+      "ageMin": 17,
       "cadenceMin": 30
     },
     {
       "name": "growth-narrator",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
@@ -535,7 +618,7 @@
     {
       "name": "lawn-care-gm-kennum-lawn-care",
       "status": "healthy",
-      "ageMin": 7,
+      "ageMin": 6,
       "cadenceMin": 1143
     },
     {
@@ -552,8 +635,8 @@
     },
     {
       "name": "outbox-deadletter-cycle",
-      "status": "stale",
-      "ageMin": 22,
+      "status": "healthy",
+      "ageMin": 3,
       "cadenceMin": 1
     },
     {
@@ -565,7 +648,7 @@
     {
       "name": "realty-scout-day14-realty",
       "status": "healthy",
-      "ageMin": 7,
+      "ageMin": 11,
       "cadenceMin": 28
     },
     {
@@ -577,13 +660,13 @@
     {
       "name": "skill-multiplier",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
       "name": "stripe-cs-loop",
       "status": "error",
-      "ageMin": 1221,
+      "ageMin": 1232,
       "cadenceMin": 60
     },
     {
@@ -595,7 +678,7 @@
     {
       "name": "telegram-poller",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
@@ -607,7 +690,7 @@
     {
       "name": "video-pipeline",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     }
   ],
@@ -847,6 +930,89 @@
   ],
   "empire_battle_log": [
     {
+      "ts": "2026-05-20T20:50:54.311Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "lawn-care-gm",
+      "action": "cluster_run",
+      "scaffolded": 0,
+      "season": "Rainy / peak growth (May–Oct)",
+      "pipeline_value": 0,
+      "at_risk": 0
+    },
+    {
+      "ts": "2026-05-20T20:50:54.310Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "portal-agent",
+      "action": "portal_feeds_built",
+      "portal_feeds": 0
+    },
+    {
+      "ts": "2026-05-20T20:50:54.309Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "crm-agent",
+      "action": "crm_scored",
+      "customers": 0,
+      "at_risk": 0,
+      "upsell_openings": 0
+    },
+    {
+      "ts": "2026-05-20T20:50:54.307Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "scheduling-agent",
+      "action": "routes_optimized",
+      "scheduled": 0,
+      "rolled_for_weather": 0,
+      "avg_density": 0
+    },
+    {
+      "ts": "2026-05-20T20:50:54.293Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "pipeline-agent",
+      "action": "pipeline_advanced",
+      "quoted": 0,
+      "opened": 0,
+      "invoiced": 0,
+      "open_leads": 0,
+      "pipeline_value": 0,
+      "outstanding_cents": 0
+    },
+    {
+      "ts": "2026-05-20T20:45:33.977Z",
+      "tenant": "day14-realty",
+      "actor": "realty-scout",
+      "action": "scout_run",
+      "scaffolded": 0,
+      "properties": 0,
+      "a_tier": 0
+    },
+    {
+      "ts": "2026-05-20T20:45:33.976Z",
+      "tenant": "day14-realty",
+      "actor": "re-evaluation-agent",
+      "action": "deals_scored",
+      "evaluated": 0,
+      "tier_a": 0,
+      "tier_b": 0,
+      "top_deal": "—"
+    },
+    {
+      "ts": "2026-05-20T20:45:33.976Z",
+      "tenant": "day14-realty",
+      "actor": "re-enrichment-agent",
+      "action": "enrichment_skipped_no_key",
+      "pending": 0
+    },
+    {
+      "ts": "2026-05-20T20:45:33.974Z",
+      "tenant": "day14-realty",
+      "actor": "re-intake-agent",
+      "action": "county_records_ingested",
+      "ingested": 0,
+      "skipped": 0,
+      "files": 0,
+      "total_properties": 0
+    },
+    {
       "ts": "2026-05-20T20:38:06.177Z",
       "tenant": "day14-realty",
       "actor": "realty-scout",
@@ -1012,73 +1178,6 @@
       "tenant": "hot-flash-co",
       "actor": "daily-engine",
       "action": "run_started"
-    },
-    {
-      "ts": "2026-05-20T01:34:39.084Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "lawn-care-gm",
-      "action": "cluster_run",
-      "scaffolded": 6,
-      "season": "Rainy / peak growth (May–Oct)",
-      "pipeline_value": 0,
-      "at_risk": 0
-    },
-    {
-      "ts": "2026-05-20T01:34:39.083Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "portal-agent",
-      "action": "portal_feeds_built",
-      "portal_feeds": 0
-    },
-    {
-      "ts": "2026-05-20T01:34:39.081Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "crm-agent",
-      "action": "crm_scored",
-      "customers": 0,
-      "at_risk": 0,
-      "upsell_openings": 0
-    },
-    {
-      "ts": "2026-05-20T01:34:39.079Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "scheduling-agent",
-      "action": "routes_optimized",
-      "scheduled": 0,
-      "rolled_for_weather": 0,
-      "avg_density": 0
-    },
-    {
-      "ts": "2026-05-20T01:34:39.077Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "pipeline-agent",
-      "action": "pipeline_advanced",
-      "quoted": 0,
-      "opened": 0,
-      "invoiced": 0,
-      "open_leads": 0,
-      "pipeline_value": 0,
-      "outstanding_cents": 0
-    },
-    {
-      "ts": "2026-05-20T00:59:28.773Z",
-      "tenant": "hot-flash-co",
-      "actor": "daily-engine",
-      "action": "fatal_error",
-      "error": "gemini 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 31.265738913s.\",\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Learn more about Gemini API quotas\",\n            \"url\": \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n          }\n        ]\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.QuotaFailure\",\n        \"violations\": [\n          {\n            \"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\n            \"quotaId\": \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\n            \"quotaDimensions\": {\n              \"model\": \"gemini-2.5-flash\",\n              \"location\": \"global\"\n            },\n            \"quotaValue\": \"20\"\n          }\n        ]\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.RetryInfo\",\n        \"retryDelay\": \"31s\"\n      }\n    ]\n  }\n}\n"
-    },
-    {
-      "ts": "2026-05-20T00:59:28.312Z",
-      "tenant": "hot-flash-co",
-      "actor": "daily-engine",
-      "action": "run_started"
-    },
-    {
-      "ts": "2026-05-20T00:30:13.721Z",
-      "tenant": "hot-flash-co",
-      "actor": "marketing-engine",
-      "action": "fatal_error",
-      "error": "gemini 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 46.350454559s.\",\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Learn more about Gemini API quotas\",\n            \"url\": \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n          }\n        ]\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.QuotaFailure\",\n        \"violations\": [\n          {\n            \"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\n            \"quotaId\": \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\n            \"quotaDimensions\": {\n              \"location\": \"global\",\n              \"model\": \"gemini-2.5-flash\"\n            },\n            \"quotaValue\": \"20\"\n          }\n        ]\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.RetryInfo\",\n        \"retryDelay\": \"46s\"\n      }\n    ]\n  }\n}\n"
     }
   ],
   "human_todos": [
