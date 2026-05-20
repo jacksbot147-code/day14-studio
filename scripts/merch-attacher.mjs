@@ -16,6 +16,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
+import { llmCall } from "./_generic/llm-call.mjs";
 
 const HOME = homedir();
 const BIZ = path.join(HOME, "Documents/businesses");
@@ -50,18 +51,11 @@ async function loadEnv() {
   return env;
 }
 
-async function callGemini(prompt, key, temp = 0.8) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${key}`;
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      generationConfig: { temperature: temp, maxOutputTokens: 5000 },
-    }),
-  });
-  if (!res.ok) throw new Error(`gemini ${res.status}: ${(await res.text()).slice(0, 200)}`);
-  return (await res.json())?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+// Gemini first, automatic fallback to Claude on quota/429 (see llm-call.mjs).
+async function callGemini(prompt, _key, temp = 0.8) {
+  const r = await llmCall({ prompt, temperature: temp, maxTokens: 5000 });
+  if (!r.ok) throw new Error(r.error || "llm call failed");
+  return r.text;
 }
 
 function parseJson(raw) {

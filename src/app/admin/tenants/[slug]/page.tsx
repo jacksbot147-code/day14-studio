@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { loadEmpireState, fetchPrintifyProducts, levelFromXp, xpForLevel } from "@/lib/admin-state";
-import { AdminNav, ADMIN_CSS, SiteCta, tenantSiteUrl, tenantHasSite } from "../../layout-bits";
+import { loadEmpireState, fetchPrintifyProducts, levelFromXp, xpForLevel, loadBrandSites } from "@/lib/admin-state";
+import { AdminNav, ADMIN_CSS, SiteCta, SITE_URL } from "../../layout-bits";
 
 export const dynamic = "force-dynamic";
 
@@ -34,8 +34,15 @@ export default async function TenantPage({ params }: Props) {
   const tenant = state.tenants.find((t) => t.slug === slug);
   if (!tenant) notFound();
 
-  const siteUrl = tenantSiteUrl(slug);
-  const hasSite = tenantHasSite(slug);
+  // Resolve the tenant's own public website from the brand-sites manifest.
+  const brandSites = await loadBrandSites();
+  const hasBrandSite = brandSites.some((s) => s.slug === slug);
+  const isDay14 = slug === "day14";
+  const siteUrl = hasBrandSite
+    ? `${SITE_URL}/brands/${slug}`
+    : isDay14
+      ? SITE_URL
+      : null;
 
   const products = await fetchPrintifyProducts();
   const arch = ARCHETYPE_CLASSES[tenant.type] || { class: "Adventurer", icon: "🎯", color: "#6b7280" };
@@ -59,15 +66,19 @@ export default async function TenantPage({ params }: Props) {
   return (
     <div className="admin-shell">
       <style dangerouslySetInnerHTML={{ __html: ADMIN_CSS }} />
-      <AdminNav active="empire" siteUrl={siteUrl} siteLabel={hasSite ? tenant.display_name : "day14.us"} />
+      <AdminNav active="empire" siteUrl={siteUrl ?? SITE_URL} siteLabel={hasBrandSite ? tenant.display_name : "day14.us"} />
       <div className="crumb"><Link href="/admin">← Empire</Link> / {slug}</div>
       <h1>{arch.icon} {tenant.display_name}</h1>
       <div className="sub" style={{ color: arch.color }}>{arch.class} · {tenant.type} · {tenant.stage} · {tenant.tagline || ""}</div>
 
-      <SiteCta
-        url={siteUrl}
-        label={hasSite ? `Visit ${tenant.display_name} website` : "View day14.us live site"}
-      />
+      {siteUrl ? (
+        <SiteCta
+          url={siteUrl}
+          label={isDay14 ? "View day14.us live site" : `Visit ${tenant.display_name} website`}
+        />
+      ) : (
+        <div className="site-pending">🌐 Brand site not built yet — it appears here once the build finishes.</div>
+      )}
 
       <div className="empire-bar">
         <div className="empire-row">

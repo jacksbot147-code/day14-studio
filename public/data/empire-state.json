@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-20T00:33:22.383Z",
+  "generated_at": "2026-05-20T00:48:24.224Z",
   "tenants": [
     {
       "slug": "day14",
@@ -352,14 +352,14 @@
     {
       "name": "auto-restart-watchdog",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 5,
       "cadenceMin": 1
     },
     {
       "name": "auto-restart-watchdog-cycle",
       "status": "healthy",
       "ageMin": 4,
-      "cadenceMin": 1
+      "cadenceMin": 5
     },
     {
       "name": "customer-success",
@@ -370,14 +370,14 @@
     {
       "name": "expansion-prompter",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
       "name": "gmail-cs-triage",
       "status": "healthy",
-      "ageMin": 24,
-      "cadenceMin": 35
+      "ageMin": 9,
+      "cadenceMin": 31
     },
     {
       "name": "growth-narrator",
@@ -412,7 +412,7 @@
     {
       "name": "outbox-deadletter-cycle",
       "status": "stale",
-      "ageMin": 10,
+      "ageMin": 25,
       "cadenceMin": 1
     },
     {
@@ -429,14 +429,14 @@
     },
     {
       "name": "skill-multiplier",
-      "status": "healthy",
-      "ageMin": 4,
+      "status": "stale",
+      "ageMin": 19,
       "cadenceMin": 1
     },
     {
       "name": "stripe-cs-loop",
       "status": "healthy",
-      "ageMin": 9,
+      "ageMin": 24,
       "cadenceMin": 60
     },
     {
@@ -454,7 +454,7 @@
     {
       "name": "vercel-deploy-monitor",
       "status": "stale",
-      "ageMin": 87,
+      "ageMin": 102,
       "cadenceMin": 1
     },
     {

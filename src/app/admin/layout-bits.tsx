@@ -14,6 +14,7 @@ export const ADMIN_CSS = `
 .admin-shell .nav a.nav-site:hover { border-color:var(--green); color:var(--green); }
 .admin-shell .site-cta { display:inline-flex; align-items:center; gap:8px; padding:11px 20px; background:linear-gradient(135deg,#a855f7,#06b6d4); color:#fff; border-radius:10px; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:24px; transition:transform 0.2s, box-shadow 0.2s; box-shadow:0 4px 14px rgba(168,85,247,0.25); }
 .admin-shell .site-cta:hover { transform:translateY(-2px); box-shadow:0 8px 22px rgba(168,85,247,0.4); }
+.admin-shell .site-pending { display:inline-flex; align-items:center; gap:8px; padding:11px 18px; background:var(--surface); border:1px dashed var(--border); border-radius:10px; font-size:12px; color:var(--muted); margin-bottom:24px; }
 .admin-shell .todo-panel { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:8px 20px; }
 .admin-shell .todo-panel.has-items { border-color:rgba(245,166,35,0.45); box-shadow:0 0 0 1px rgba(245,166,35,0.12); }
 .admin-shell .todo-empty { color:var(--muted); text-align:center; padding:22px; font-size:13px; }
@@ -133,24 +134,9 @@ export const ADMIN_CSS = `
 `;
 
 // ── Public-facing websites ────────────────────────────────────────────────
-// The live empire site.
+// The live empire site. Per-tenant brand sites are resolved at render time
+// from public/data/brand-sites.json (see loadBrandSites in admin-state).
 export const SITE_URL = "https://day14.us";
-
-// Per-tenant public website. Add a tenant's brand site here as soon as it ships.
-const TENANT_SITES: Record<string, string> = {
-  "day14": "https://day14.us",
-  "hot-flash-co": "https://day14.us/brands/hot-flash-co",
-};
-
-/** Public website URL for a tenant — its own brand site if one exists, else day14.us. */
-export function tenantSiteUrl(slug: string): string {
-  return TENANT_SITES[slug] ?? SITE_URL;
-}
-
-/** True when the tenant has its own dedicated brand site (not just the day14.us fallback). */
-export function tenantHasSite(slug: string): boolean {
-  return slug in TENANT_SITES;
-}
 
 interface NavProps { active: string; siteUrl?: string; siteLabel?: string; }
 export function AdminNav({ active, siteUrl = SITE_URL, siteLabel = "day14.us" }: NavProps) {

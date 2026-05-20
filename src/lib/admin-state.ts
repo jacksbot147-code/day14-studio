@@ -91,6 +91,24 @@ export async function loadEmpireState(): Promise<EmpireState> {
   }
 }
 
+export interface BrandSite {
+  slug: string;
+  display_name: string;
+  tagline: string;
+  built_at?: string;
+}
+
+/** Tenants that have a published brand site, from public/data/brand-sites.json. */
+export async function loadBrandSites(): Promise<BrandSite[]> {
+  const f = path.join(process.cwd(), "public/data/brand-sites.json");
+  try {
+    const data = JSON.parse(await fs.readFile(f, "utf8")) as { sites?: BrandSite[] };
+    return data.sites || [];
+  } catch {
+    return [];
+  }
+}
+
 const PRINTIFY_API = "https://api.printify.com/v1";
 
 export async function fetchPrintifyProducts() {

@@ -87,14 +87,65 @@ async function createMailerLiteGroup(env, displayName) {
   } catch { return null; }
 }
 
-function runStep(label, cmd, args) {
-  console.log(`\n━━━ ${label} ━━━`);
-  const r = spawnSync(cmd, args, { stdio: "inherit", cwd: STUDIO });
-  if (r.status !== 0) {
-    console.warn(`  ! ${label} returned status ${r.status} — continuing`);
-    return false;
+function runStep(label, cmd, args, { retries = 1, retryDelaySec = 45 } = {}) {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    if (attempt > 0) {
+      console.warn(`  ↻ retrying "${label}" in ${retryDelaySec}s (attempt ${attempt + 1}/${retries + 1})…`);
+      spawnSync("sleep", [String(retryDelaySec)]);  // space out — Gemini 429 is per-minute
+    }
+    console.log(`\n━━━ ${label}${attempt > 0 ? ` (retry ${attempt})` : ""} ━━━`);
+    const r = spawnSync(cmd, args, { stdio: "inherit", cwd: STUDIO });
+    if (r.status === 0) return true;
+    console.warn(`  ! ${label} returned status ${r.status}`);
   }
-  return true;
+  console.warn(`  ✗ ${label} failed after ${retries + 1} attempt(s) — continuing`);
+  return false;
+}
+
+/**
+ * Roll back a failed bootstrap so a half-built business never lingers as a
+ * broken "zombie" tenant on the dashboard. Removes the tenant directory,
+ * de-registers it, files ONE clear retry to-do, and alerts.
+ */
+async function rollback(a, env, reason) {
+  console.error(`\n✗ ${reason}`);
+  try { await fs.rm(path.join(BIZ, a.slug), { recursive: true, force: true }); } catch {}
+  try {
+    if (existsSync(TENANTS_FILE)) {
+      const data = JSON.parse(await fs.readFile(TENANTS_FILE, "utf8"));
+      data.tenants = (data.tenants || []).filter((t) => t.slug !== a.slug);
+      await fs.writeFile(TENANTS_FILE, JSON.stringify(data, null, 2));
+    }
+  } catch {}
+  try {
+    const { addTodo } = await import("./_generic/operator-todos.mjs");
+    await addTodo({
+      tenant: a.slug,
+      title: `Retry build: ${a.display_name}`,
+      detail: `The ${a.display_name} build failed before a brand charter could be generated — usually the Gemini API quota. Nothing was left half-built. Retry when quota resets: node scripts/business-bootstrap.mjs --slug ${a.slug} --display-name "${a.display_name}" --niche "${a.niche}" --archetype ${a.archetype}`,
+      category: "fix",
+      priority: "high",
+      source: "business-bootstrap",
+    });
+  } catch {}
+  if (env.TELEGRAM_CHAT_ID) {
+    try {
+      await fs.mkdir(SHARED_OUTBOX, { recursive: true });
+      await fs.writeFile(
+        path.join(SHARED_OUTBOX, `${Date.now()}-bootstrap-failed-${a.slug}.json`),
+        JSON.stringify({
+          chat_id: env.TELEGRAM_CHAT_ID,
+          text: `⚠️ *${a.display_name} build failed*\n\nThe brand-charter step failed (likely Gemini quota). Nothing was left half-built — no broken tenant on your dashboard. Filed a retry to-do; re-run it when quota resets.`,
+          parse_mode: "Markdown",
+          urgency: "P2",
+          queued_at: new Date().toISOString(),
+          sent_at: null,
+          tenant: a.slug,
+        }, null, 2)
+      );
+    } catch {}
+  }
+  console.error(`  ✓ rolled back — ${a.slug} removed cleanly, retry to-do filed.`);
 }
 
 async function registerTenant(slug, display_name, archetype, niche) {
@@ -281,6 +332,14 @@ async function main() {
       "--skip-products",
     ]);
     results.push({ label: `${archetype.display_name} scaffold`, ok: r3 });
+  }
+
+  // ── FOUNDATION GUARD ──────────────────────────────────────────────────
+  // If no brand charter was generated, the whole build is unsalvageable.
+  // Roll back instead of leaving a broken zombie tenant on the dashboard.
+  if (!existsSync(path.join(tenantDir, "CONSTITUTION.md"))) {
+    await rollback(a, env, "No CONSTITUTION.md generated — foundation step failed (likely Gemini quota).");
+    process.exit(1);
   }
 
   // 3b. Full multi-page brand website — the real site (home, shop, blog,

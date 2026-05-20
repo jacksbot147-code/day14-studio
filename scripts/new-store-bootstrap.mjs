@@ -34,6 +34,7 @@ import { existsSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { homedir } from "node:os";
 import process from "node:process";
+import { llmCall } from "./_generic/llm-call.mjs";
 
 const HOME = homedir();
 const STUDIO = path.join(HOME, "Documents/studio");
@@ -81,20 +82,11 @@ async function loadEnv() {
   return env;
 }
 
-// ===== Gemini =====
-async function callGemini(prompt, apiKey, temperature = 0.7, maxTokens = 4000) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      generationConfig: { temperature, maxOutputTokens: maxTokens },
-    }),
-  });
-  if (!res.ok) throw new Error(`gemini ${res.status}: ${(await res.text()).slice(0, 200)}`);
-  const data = await res.json();
-  return data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+// ===== LLM — Gemini first, automatic Claude fallback on quota/429 =====
+async function callGemini(prompt, _apiKey, temperature = 0.7, maxTokens = 4000) {
+  const r = await llmCall({ prompt, temperature, maxTokens });
+  if (!r.ok) throw new Error(r.error || "llm call failed");
+  return r.text;
 }
 
 function parseJsonFromText(raw) {

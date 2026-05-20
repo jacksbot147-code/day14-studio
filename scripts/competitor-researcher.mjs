@@ -14,6 +14,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { homedir } from "node:os";
+import { llmCall } from "./_generic/llm-call.mjs";
 
 const HOME = homedir();
 const BIZ = path.join(HOME, "Documents/businesses");
@@ -46,19 +47,13 @@ async function loadEnv() {
   return env;
 }
 
-async function callGroundedGemini(prompt, key) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${key}`;
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.4, maxOutputTokens: 4000 },
-      tools: [{ google_search: {} }],
-    }),
-  });
-  if (!res.ok) throw new Error(`gemini ${res.status}: ${(await res.text()).slice(0, 200)}`);
-  return (await res.json())?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+// Grounded Gemini first, automatic fallback to Claude on quota/429.
+// (The Claude fallback answers from training knowledge — no live search —
+// which is an acceptable degradation versus failing the whole build.)
+async function callGroundedGemini(prompt) {
+  const r = await llmCall({ prompt, temperature: 0.4, maxTokens: 4000, useGrounding: true });
+  if (!r.ok) throw new Error(r.error || "llm call failed");
+  return r.text;
 }
 
 function parseJson(raw) {
