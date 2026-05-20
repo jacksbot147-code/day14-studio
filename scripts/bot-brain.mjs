@@ -18,6 +18,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { homedir } from "node:os";
+import { spawn } from "node:child_process";
 import { compactSnapshot, fullStateSnapshot, listTenants, tenantRevenue, recentAudit } from "./state-query-engine.mjs";
 import { completeTodo, listOpenTodos } from "./_generic/operator-todos.mjs";
 
@@ -27,7 +28,46 @@ const SHARED = path.join(HOME, "Documents/businesses/_shared");
 const SHARED_OUTBOX = path.join(SHARED, "telegram/outbox");
 const BRAIN_LOG = path.join(SHARED, "founder-ops/bot-brain.log");
 const EXPANSION_INBOX = path.join(SHARED, "expansion-requests");
+const TENANTS_FILE = path.join(SHARED, "tenants.json");
+const STUDIO = path.join(HOME, "Documents/studio");
 const GEMINI_MODEL = "gemini-2.5-flash";
+
+/** Turn free text into a clean tenant slug. */
+function slugify(s) {
+  return (
+    String(s)
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 40) || "new-business"
+  );
+}
+
+/** Derive {display_name, slug, niche, archetype} from a "start X" message. */
+function deriveBusinessArgs(message, extracted) {
+  let name = String(extracted.display_name || message || "").trim();
+  name = name.replace(/^(start|launch|create|spin\s*up|build|open|set\s*up|make|kick\s*off)\s+/i, "");
+  name = name.replace(/^(a|an|the)\s+/i, "");
+  name = name.replace(/[."'!?]+$/g, "").trim();
+  if (!name) name = extracted.niche || "New Business";
+  const display_name = name.slice(0, 60);
+  return {
+    display_name,
+    slug: slugify(display_name),
+    niche: extracted.niche || display_name,
+    archetype: extracted.archetype || "pod-store",
+  };
+}
+
+async function tenantExists(slug) {
+  try {
+    const data = JSON.parse(await fs.readFile(TENANTS_FILE, "utf8"));
+    return (data.tenants || []).some((t) => t.slug === slug);
+  } catch {
+    return false;
+  }
+}
 
 async function loadEnv() {
   const t = await fs.readFile(ENV_FILE, "utf8");
@@ -207,11 +247,37 @@ export async function processIncomingMessage(message, ctx = {}) {
       reply = `🧠 *Expansion request queued*\n\nDescription: ${intent.extracted?.description || message}\n\nThe recursive-expansion-engine will draft the skill (SKILL.md + implementation stub) on its next cycle. You'll get a tap-to-approve card.`;
       action = `queued:${skillFile}`;
       break;
-    case "new-business":
-      const bizFile = await queueBusinessBootstrap(intent.extracted);
-      reply = `🚀 *New business request captured*\n\nNiche: ${intent.extracted?.niche || "?"}\nArchetype: ${intent.extracted?.archetype || "auto-detect"}\n\nQueued. Reply *bootstrap now* to launch with auto-defaults, or *details* to set slug + display name first.`;
-      action = `queued:${bizFile}`;
+    case "new-business": {
+      const biz = deriveBusinessArgs(message, intent.extracted || {});
+      if (await tenantExists(biz.slug)) {
+        reply = `*${biz.display_name}* already exists as a tenant. To rebuild + fully sweep its site, reply: *sweep ${biz.slug}*`;
+        action = "new-business-exists";
+        break;
+      }
+      // Low-confidence read — confirm before spending a full build.
+      if ((intent.confidence || 0) < 0.7) {
+        const bizFile = await queueBusinessBootstrap(intent.extracted);
+        reply = `🚀 Launch *${biz.display_name}* as a ${biz.archetype}? Reply *bootstrap now* and I'll build the whole thing — brand, full website, content, agents.`;
+        action = `queued:${bizFile}`;
+        break;
+      }
+      // Fully automatic — fire the whole pipeline now.
+      const child = spawn(
+        "node",
+        [
+          path.join(STUDIO, "scripts/business-bootstrap.mjs"),
+          "--slug", biz.slug,
+          "--display-name", biz.display_name,
+          "--niche", biz.niche,
+          "--archetype", biz.archetype,
+        ],
+        { detached: true, stdio: "ignore", cwd: STUDIO }
+      );
+      child.unref();
+      reply = `🚀 *Building ${biz.display_name} now*\n\nArchetype: ${biz.archetype}\nSlug: \`${biz.slug}\`\n\nFull pipeline running — brand identity → competitor research → full multi-page website → products → operational sweep → automation agents. Anything I can't finish lands on your to-do list at day14.us/admin.\n\nI'll ping you when it's live.`;
+      action = `launched:${biz.slug}`;
       break;
+    }
     case "command":
       reply = `⚙️ Command detected: ${JSON.stringify(intent.extracted)}\n\nDispatching via skill runtime...`;
       action = "command-dispatched";

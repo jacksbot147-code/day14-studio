@@ -38,6 +38,7 @@ export function SiteFooter() {
           <div>
             <div className="eyebrow mb-3">Proof</div>
             <ul className="space-y-2 text-sm text-ink-500">
+              <li><Link href="/brands" className="transition hover:text-ink">Brands</Link></li>
               <li><Link href="/builds" className="transition hover:text-ink">Active builds</Link></li>
               <li><Link href="/case-studies/splash-jacks-pools" className="transition hover:text-ink">Splash Jacks</Link></li>
               <li><Link href="/case-studies/casamore" className="transition hover:text-ink">Casamoré</Link></li>

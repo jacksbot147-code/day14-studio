@@ -1,6 +1,23 @@
 import type { MetadataRoute } from "next";
+import fs from "node:fs/promises";
+import path from "node:path";
 
 const BASE = "https://day14.us";
+
+async function brandSiteUrls(now: Date): Promise<MetadataRoute.Sitemap> {
+  try {
+    const f = path.join(process.cwd(), "public/data/brand-sites.json");
+    const data = JSON.parse(await fs.readFile(f, "utf8")) as { sites?: Array<{ slug: string }> };
+    return (data.sites || []).map((s) => ({
+      url: `${BASE}/brands/${s.slug}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    }));
+  } catch {
+    return [];
+  }
+}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
@@ -24,7 +41,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/verticals/mobile-service`, lastModified: now, priority: 0.6 },
     { url: `${BASE}/verticals/membership`, lastModified: now, priority: 0.6 },
     { url: `${BASE}/verticals/food`, lastModified: now, priority: 0.6 },
-    { url: `${BASE}/brands/hot-flash-co`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${BASE}/brands`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
   ];
-  return urls;
+  return [...urls, ...(await brandSiteUrls(now))];
 }

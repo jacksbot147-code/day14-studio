@@ -31,9 +31,25 @@ import {
 } from "./_lib.mjs";
 
 const STUDIO_SRC = path.join(process.env.HOME, "Documents/studio/src");
+const BRAND_MANIFEST = path.join(process.env.HOME, "Documents/studio/public/data/brand-sites.json");
 
 function pascal(slug) {
   return slug.split("-").map((w) => w[0].toUpperCase() + w.slice(1)).join("");
+}
+
+/** Register the brand in public/data/brand-sites.json so it shows on /brands. */
+async function updateBrandManifest(slug, display, tagline) {
+  let manifest = { schema_version: 1, sites: [] };
+  if (existsSync(BRAND_MANIFEST)) {
+    try { manifest = JSON.parse(await fs.readFile(BRAND_MANIFEST, "utf8")); } catch { /* reset */ }
+  }
+  if (!Array.isArray(manifest.sites)) manifest.sites = [];
+  const entry = { slug, display_name: display, tagline, built_at: new Date().toISOString() };
+  const idx = manifest.sites.findIndex((s) => s.slug === slug);
+  if (idx >= 0) manifest.sites[idx] = { ...manifest.sites[idx], ...entry };
+  else manifest.sites.push(entry);
+  await fs.mkdir(path.dirname(BRAND_MANIFEST), { recursive: true });
+  await fs.writeFile(BRAND_MANIFEST, JSON.stringify(manifest, null, 2));
 }
 
 async function writeFile(filePath, content) {
@@ -557,6 +573,9 @@ async function main() {
 
   const written = await gen(slug, ctx);
   console.log(`  ✓ ${written.length} site files written`);
+
+  await updateBrandManifest(slug, ctx.display_name, ctx.identity?.positioning_statement || ctx.niche || "");
+  console.log(`  ✓ registered in the /brands directory`);
 
   await queueTelegram(env, slug,
     `🌐 *Brand site built — ${ctx.display_name}*\n\n${written.length} pages live:\n• home\n• products + product detail\n• blog + post pages\n• about + contact\n• sitemap.xml\n\nDeploy day14.us to see live: day14.us/brands/${slug}`

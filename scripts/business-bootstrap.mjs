@@ -283,6 +283,14 @@ async function main() {
     results.push({ label: `${archetype.display_name} scaffold`, ok: r3 });
   }
 
+  // 3b. Full multi-page brand website — the real site (home, shop, blog,
+  //     about, contact, SEO sitemap + JSON-LD), not just a stub page.
+  const rSite = runStep("STEP 3b: Full brand website", "node", [
+    path.join(SCRIPTS, "_generic/brand-site-builder.mjs"),
+    a.slug,
+  ]);
+  results.push({ label: "Brand website", ok: rSite });
+
   // 4. Merch attachment (DEFAULT for every archetype unless --skip-merch)
   if (!a.skip_merch && archetype.merch_attached && a.archetype !== "pod-store") {
     const r4 = runStep("STEP 4: Merch attachment (5 brand-aligned products)", "node", [
@@ -293,6 +301,16 @@ async function main() {
     ]);
     results.push({ label: "Merch (5 mug drafts)", ok: r4 });
   }
+
+  // 5. Operational sweep — full QA pass on the site (same kind of sweep
+  //    done by hand on day14.us): audits every page, checks content depth,
+  //    registers the brand in the public directory, files gaps to the
+  //    operator to-do list.
+  const rSweep = runStep("STEP 5: Operational site sweep", "node", [
+    path.join(SCRIPTS, "_generic/brand-site-sweep.mjs"),
+    a.slug,
+  ]);
+  results.push({ label: "Operational sweep", ok: rSweep });
 
   // Everything the agents can't do themselves -> Jack's operator to-do list.
   const todoCount = await queueOperatorTodos(a, archetype, results);
