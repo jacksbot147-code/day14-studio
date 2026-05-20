@@ -40,7 +40,7 @@ interface EmpireState {
       byPlatform: Record<string, { queued: number; approved: number; posted: number }>;
     };
   }>;
-  heartbeats: Array<{ name: string; status: "healthy" | "stale" | "error"; ageMin: number }>;
+  heartbeats: Array<{ name: string; status: "healthy" | "stale" | "error"; ageMin: number; cadenceMin?: number | null }>;
   skill_counts: { live: number; drafts: number };
   expansion_state: { skills_generated: number };
   opportunities: Array<{

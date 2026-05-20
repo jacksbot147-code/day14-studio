@@ -152,11 +152,35 @@ async function heartbeats() {
     const name = f.replace("-heartbeat.log", "");
     try {
       const text = await fs.readFile(path.join(POLLER_DIR, f), "utf8");
-      const last = text.trim().split("\n").filter(Boolean).slice(-1)[0];
-      const ts = last?.match(/^(\S+)/)?.[1];
-      const ageMin = ts ? (Date.now() - new Date(ts).getTime()) / 60_000 : Infinity;
-      out.push({ name, status: ageMin < 10 ? "healthy" : "stale", ageMin: Math.round(ageMin) });
-    } catch { out.push({ name, status: "error", ageMin: 999 }); }
+      const lines = text.trim().split("\n").filter(Boolean);
+      // Parse the most recent timestamps from the heartbeat log.
+      const stamps = lines
+        .slice(-30)
+        .map((l) => new Date((l.match(/^(\S+)/) || [])[1]).getTime())
+        .filter((t) => !Number.isNaN(t));
+      if (!stamps.length) {
+        out.push({ name, status: "error", ageMin: 999, cadenceMin: null });
+        continue;
+      }
+      const lastTs = stamps[stamps.length - 1];
+      const ageMin = (Date.now() - lastTs) / 60_000;
+      // Self-calibrate: the median gap between beats IS this daemon's cadence.
+      // A daemon that beats every 60s and one that runs every 30 min are both
+      // healthy as long as they're not far past their own normal interval.
+      const gaps = [];
+      for (let i = 1; i < stamps.length; i++) gaps.push((stamps[i] - stamps[i - 1]) / 60_000);
+      gaps.sort((a, b) => a - b);
+      const medianGap = gaps.length ? gaps[Math.floor(gaps.length / 2)] : 1;
+      const cadenceMin = Math.max(1, Math.round(medianGap));
+      // Stale = missed ~3 expected beats. Error = long dead.
+      const staleThreshold = Math.max(10, medianGap * 3);
+      let status = "healthy";
+      if (ageMin > Math.max(360, staleThreshold * 4)) status = "error";
+      else if (ageMin > staleThreshold) status = "stale";
+      out.push({ name, status, ageMin: Math.round(ageMin), cadenceMin });
+    } catch {
+      out.push({ name, status: "error", ageMin: 999, cadenceMin: null });
+    }
   }
   return out.sort((a, b) => a.name.localeCompare(b.name));
 }

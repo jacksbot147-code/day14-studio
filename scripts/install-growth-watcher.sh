@@ -35,11 +35,8 @@ cat > "$PLIST_PATH" <<EOF
         <string>$POLLER_SCRIPT</string>
     </array>
     <key>RunAtLoad</key><true/>
-    <key>KeepAlive</key>
-    <dict>
-        <key>SuccessfulExit</key><false/>
-        <key>Crashed</key><true/>
-    </dict>
+    <key>StartInterval</key>
+    <integer>900</integer>
     <key>ThrottleInterval</key>
     <integer>30</integer>
     <key>StandardOutPath</key>
