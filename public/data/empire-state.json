@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-20T01:59:36.490Z",
+  "generated_at": "2026-05-20T02:14:39.101Z",
   "tenants": [
     {
       "slug": "day14",
@@ -404,13 +404,13 @@
     {
       "name": "auto-restart-watchdog",
       "status": "stale",
-      "ageMin": 60,
+      "ageMin": 75,
       "cadenceMin": 1
     },
     {
       "name": "auto-restart-watchdog-cycle",
       "status": "stale",
-      "ageMin": 75,
+      "ageMin": 90,
       "cadenceMin": 5
     },
     {
@@ -428,13 +428,13 @@
     {
       "name": "gmail-cs-triage",
       "status": "healthy",
-      "ageMin": 20,
+      "ageMin": 35,
       "cadenceMin": 30
     },
     {
       "name": "growth-narrator",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1
     },
     {
@@ -452,13 +452,13 @@
     {
       "name": "lawn-care-gm-kennum-lawn-care",
       "status": "stale",
-      "ageMin": 25,
+      "ageMin": 40,
       "cadenceMin": 1
     },
     {
       "name": "opportunity-scanner",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1
     },
     {
@@ -469,14 +469,14 @@
     },
     {
       "name": "outbox-deadletter-cycle",
-      "status": "healthy",
-      "ageMin": 0,
+      "status": "stale",
+      "ageMin": 15,
       "cadenceMin": 1
     },
     {
       "name": "proactive-monitor",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1
     },
     {
@@ -488,13 +488,13 @@
     {
       "name": "skill-multiplier",
       "status": "stale",
-      "ageMin": 90,
+      "ageMin": 105,
       "cadenceMin": 1
     },
     {
       "name": "stripe-cs-loop",
       "status": "healthy",
-      "ageMin": 95,
+      "ageMin": 110,
       "cadenceMin": 60
     },
     {
@@ -512,7 +512,7 @@
     {
       "name": "vercel-deploy-monitor",
       "status": "stale",
-      "ageMin": 173,
+      "ageMin": 188,
       "cadenceMin": 1
     },
     {
@@ -524,10 +524,10 @@
   ],
   "skill_counts": {
     "live": 274,
-    "drafts": 0
+    "drafts": 1
   },
   "expansion_state": {
-    "skills_generated": 0
+    "skills_generated": 1
   },
   "opportunities": [
     {
