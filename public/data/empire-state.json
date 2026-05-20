@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-20T01:15:03.703Z",
+  "generated_at": "2026-05-20T01:23:46.840Z",
   "tenants": [
     {
       "slug": "day14",
@@ -327,8 +327,8 @@
       "slug": "kennum-lawn-care",
       "display_name": "Kennum Lawn Care",
       "type": "agency",
-      "stage": "build-failed",
-      "tagline": "Southwest Florida lawn care + landscaping service with full digital admin (similar to Splash Jacks Pools)",
+      "stage": "launching",
+      "tagline": "A Southwest Florida yard, handled — weekly maintenance and landscaping.",
       "revenue_cents": 0,
       "orders": 0,
       "streak": 0,
@@ -356,31 +356,31 @@
     {
       "name": "auto-restart-watchdog",
       "status": "stale",
-      "ageMin": 16,
+      "ageMin": 24,
       "cadenceMin": 1
     },
     {
       "name": "auto-restart-watchdog-cycle",
       "status": "stale",
-      "ageMin": 31,
+      "ageMin": 39,
       "cadenceMin": 5
     },
     {
       "name": "customer-success",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
       "name": "expansion-prompter",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
       "name": "gmail-cs-triage",
       "status": "healthy",
-      "ageMin": 6,
+      "ageMin": 14,
       "cadenceMin": 31
     },
     {
@@ -392,13 +392,13 @@
     {
       "name": "growth-watcher",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
       "name": "hot-flash-co-orders",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
@@ -410,13 +410,13 @@
     {
       "name": "outbox-deadletter",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
       "name": "outbox-deadletter-cycle",
       "status": "stale",
-      "ageMin": 22,
+      "ageMin": 30,
       "cadenceMin": 1
     },
     {
@@ -428,25 +428,25 @@
     {
       "name": "recursive-expansion",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
       "name": "skill-multiplier",
       "status": "stale",
-      "ageMin": 46,
+      "ageMin": 54,
       "cadenceMin": 1
     },
     {
       "name": "stripe-cs-loop",
       "status": "healthy",
-      "ageMin": 51,
+      "ageMin": 59,
       "cadenceMin": 60
     },
     {
       "name": "system-pulse",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
@@ -458,13 +458,13 @@
     {
       "name": "vercel-deploy-monitor",
       "status": "stale",
-      "ageMin": 128,
+      "ageMin": 137,
       "cadenceMin": 1
     },
     {
       "name": "video-pipeline",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     }
   ],
@@ -822,19 +822,6 @@
       "source": "claude-setup"
     },
     {
-      "id": "todo-3",
-      "seq": 3,
-      "tenant": "kennum-lawn-care",
-      "title": "Retry the Kennum Lawn Care build",
-      "detail": "The Kennum build failed before a brand charter could be generated — the Gemini quota. The no-zombie guard cleaned it up; nothing is half-built. Retry once the Gemini daily quota resets, or after the Anthropic key above is set: node scripts/business-bootstrap.mjs --slug kennum-lawn-care --display-name \"Kennum Lawn Care\" --niche \"Southwest Florida lawn care and landscaping service\" --archetype agency",
-      "category": "fix",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-05-20T01:00:53.202Z",
-      "completed_at": null,
-      "source": "business-bootstrap"
-    },
-    {
       "id": "todo-4",
       "seq": 4,
       "tenant": "hot-flash-co",
@@ -846,6 +833,19 @@
       "created_at": "2026-05-19T21:00:00.000Z",
       "completed_at": null,
       "source": "claude-setup"
+    },
+    {
+      "id": "todo-7",
+      "seq": 7,
+      "tenant": "kennum-lawn-care",
+      "title": "Confirm Kennum Lawn Care's real phone, service area + pricing",
+      "detail": "The Kennum site is live with starting-at price estimates and a quote form (no phone listed yet). Send Claude the real business phone number, the exact SWFL towns served, and confirmed pricing so the site shows real numbers instead of estimates. Source of truth: src/app/brands/kennum-lawn-care/theme.ts.",
+      "category": "review",
+      "priority": "high",
+      "status": "open",
+      "created_at": "2026-05-20T01:35:00.000Z",
+      "completed_at": null,
+      "source": "claude-direct"
     },
     {
       "id": "todo-5",
