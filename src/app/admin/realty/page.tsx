@@ -1,14 +1,12 @@
-import { loadTenantOps, type REEvaluation, type RETarget } from "@/lib/admin-state";
+import { loadTenantOps, loadEmpireState, type REEvaluation, type RETarget } from "@/lib/admin-state";
 import { AdminNav, ADMIN_CSS } from "../layout-bits";
+import { AddCountyBox, DealBoard } from "./realty-interactive";
 
 export const metadata = { title: "Realty — Day14 Admin", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 
 function money(cents: number) {
   return `$${Math.round((cents || 0) / 100).toLocaleString()}`;
-}
-function tierClass(tier: string) {
-  return tier.startsWith("A") ? "a" : tier.startsWith("B") ? "b" : "c";
 }
 function targetStatus(status: string): { cls: string; label: string } {
   if (status === "active") return { cls: "stage-live", label: "Active" };
@@ -25,6 +23,8 @@ function rel(iso: string | null | undefined) {
 
 export default async function RealtyDashboard() {
   const ops = await loadTenantOps("day14-realty");
+  const empire = await loadEmpireState();
+  const botUsername = empire.bot_username || null;
   const deals: REEvaluation[] = [...(ops.evaluations || [])].sort((a, b) => b.score - a.score);
   const propertyCount = (ops.properties || []).length;
   const tierA = deals.filter((d) => d.tier.startsWith("A")).length;
@@ -71,10 +71,11 @@ export default async function RealtyDashboard() {
       </div>
 
       <div className="section-header"><div className="section-title">County watch list</div></div>
+      <AddCountyBox botUsername={botUsername} />
       {targets.length === 0 ? (
         <div className="section">
           <div className="empty">
-            No counties on the watch list yet. Telegram a county or metro to the bot —
+            No counties on the watch list yet. Add one above, or Telegram the bot —
             e.g. <code>realty Lee County, FL</code> or <code>realty Tampa Bay area</code> —
             and the scout starts sourcing automatically.
           </div>
@@ -110,42 +111,7 @@ export default async function RealtyDashboard() {
       )}
 
       <div className="section-header"><div className="section-title">Ranked deals</div></div>
-      {deals.length === 0 ? (
-        <div className="section" style={{ color: "var(--muted)", textAlign: "center", padding: 28, lineHeight: 1.6 }}>
-          No properties scored yet. Drop a county property-appraiser CSV export into{" "}
-          <code style={{ color: "var(--accent)" }}>businesses/day14-realty/intake/</code> — the Real-Estate
-          Scout ingests and scores it on its next run.
-        </div>
-      ) : (
-        <div className="section" style={{ display: "grid", gap: 10 }}>
-          {deals.map((d) => (
-            <div key={d.property_id} className={`deal deal-${tierClass(d.tier)}`}>
-              <div className="deal-score">{d.score}</div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div className="deal-addr">
-                  {d.address || "(no address)"}
-                  {d.city ? `, ${d.city}` : ""}
-                </div>
-                <div className="deal-meta">
-                  {d.tier} · best play: <b>{d.best_play}</b> · est. value {money(d.value_cents)}
-                </div>
-                {d.signals.length > 0 ? (
-                  <div className="deal-sigs">
-                    {d.signals.map((s) => (
-                      <span key={s} className="deal-chip">{s}</span>
-                    ))}
-                  </div>
-                ) : null}
-              </div>
-              <div className="deal-plays">
-                <span>flip {d.flip.score}</span>
-                <span>rent {d.rental.score}</span>
-                <span>whlsl {d.wholesale.score}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      <DealBoard deals={deals} />
     </div>
   );
 }

@@ -150,6 +150,31 @@ export const ADMIN_CSS = `
 .admin-shell .deal-chip { font-size:11px; background:var(--surface-2); border:1px solid var(--border); border-radius:100px; padding:2px 8px; color:var(--muted); }
 .admin-shell .deal-plays { display:flex; flex-direction:column; gap:3px; font-size:11px; color:var(--muted); text-align:right; flex-shrink:0; }
 
+/* ── Realty interactive toolbar ──────────────────────── */
+.admin-shell .toolbar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:10px; }
+.admin-shell .search-input { flex:1; min-width:220px; padding:9px 12px; border:1px solid var(--border); border-radius:9px; background:var(--surface); color:var(--text); font-size:13px; font-family:inherit; outline:none; box-shadow:var(--shadow); }
+.admin-shell .search-input:focus { border-color:var(--accent); }
+.admin-shell .search-input::placeholder { color:var(--muted); }
+.admin-shell .filter-group { display:flex; gap:4px; flex-wrap:wrap; }
+.admin-shell .filter-chip { padding:6px 11px; border:1px solid var(--border); border-radius:100px; background:var(--surface); color:var(--muted); font-size:12px; font-weight:500; cursor:pointer; font-family:inherit; transition:background 0.12s, color 0.12s, border-color 0.12s; }
+.admin-shell .filter-chip:hover { border-color:var(--border-strong); color:var(--text); }
+.admin-shell .filter-chip.active { background:var(--accent-soft); border-color:var(--accent); color:var(--accent-text); font-weight:600; }
+.admin-shell .sort-select { padding:8px 10px; border:1px solid var(--border); border-radius:9px; background:var(--surface); color:var(--text); font-size:12px; font-family:inherit; cursor:pointer; box-shadow:var(--shadow); }
+.admin-shell .toolbar-count { font-size:12px; color:var(--muted); margin:0 0 10px; }
+.admin-shell .add-county { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+.admin-shell .add-county-btn { display:inline-flex; align-items:center; padding:9px 16px; background:var(--accent); color:#fff; border:none; border-radius:9px; font-size:13px; font-weight:600; white-space:nowrap; box-shadow:var(--shadow); cursor:pointer; font-family:inherit; }
+.admin-shell .add-county-btn:hover { background:var(--accent-text); }
+.admin-shell .add-county-btn:disabled { background:var(--surface-3); color:var(--muted); cursor:not-allowed; box-shadow:none; }
+.admin-shell .deal-card-wrap { display:flex; flex-direction:column; gap:8px; }
+.admin-shell .deal.expandable { cursor:pointer; transition:border-color 0.12s; }
+.admin-shell .deal.expandable:hover { border-color:var(--border-strong); }
+.admin-shell .deal-detail { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.admin-shell .deal-detail-card { background:var(--surface-2); border:1px solid var(--border); border-radius:9px; padding:11px 13px; }
+.admin-shell .deal-detail-card h4 { margin:0 0 7px; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:var(--muted); font-weight:600; }
+.admin-shell .deal-detail-row { display:flex; justify-content:space-between; gap:10px; font-size:12px; padding:2px 0; }
+.admin-shell .deal-detail-row span:first-child { color:var(--muted); }
+.admin-shell .deal-detail-row span:last-child { color:var(--text); font-weight:600; }
+
 /* ── Opportunity / inbox cards ───────────────────────── */
 .admin-shell .opp-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px 18px; margin-bottom:10px; box-shadow:var(--shadow); }
 .admin-shell .opp-score-badge { display:inline-block; padding:3px 10px; border-radius:100px; font-size:12px; font-weight:700; }
@@ -175,6 +200,8 @@ export const ADMIN_CSS = `
   .admin-shell .feed-row { grid-template-columns:64px 1fr; }
   .admin-shell .feed-row .feed-actor { display:none; }
   .admin-shell table { font-size:11px; }
+  .admin-shell .deal-detail { grid-template-columns:1fr; }
+  .admin-shell .search-input { min-width:100%; }
 }
 `;
 
