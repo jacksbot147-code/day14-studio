@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { loadEmpireState, fetchPrintifyProducts, levelFromXp, xpForLevel, loadBrandSites } from "@/lib/admin-state";
+import { loadEmpireState, fetchPrintifyProducts, levelFromXp, xpForLevel, loadBrandSites, loadTenantOps } from "@/lib/admin-state";
 import { AdminNav, ADMIN_CSS, SiteCta, SITE_URL } from "../../layout-bits";
 
 export const dynamic = "force-dynamic";
@@ -46,6 +46,20 @@ export default async function TenantPage({ params }: Props) {
       : null;
 
   const products = await fetchPrintifyProducts();
+
+  // Ops console data (synced from the tenant's agent cluster).
+  const ops = await loadTenantOps(slug);
+  const opsLeads = ops.leads ?? [];
+  const opsQuotes = ops.quotes ?? [];
+  const opsJobs = ops.jobs ?? [];
+  const opsInvoices = ops.invoices ?? [];
+  const opsCustomers = ops.customers ?? [];
+  const hasLawnOps = Array.isArray(ops.jobs) || Array.isArray(ops.leads);
+  const opsOutstanding = opsInvoices
+    .filter((i) => i.status === "unpaid")
+    .reduce((s, i) => s + (i.amount_cents ?? 0), 0);
+  const routeBoard = ops.schedule?.board;
+
   const arch = ARCHETYPE_CLASSES[tenant.type] || { class: "Adventurer", icon: "🎯", color: "#6b7280" };
   const xp = tenant.orders * 1000 + (tenant.revenue_cents / 100) * 10 + 500 + tenant.streak * 50;
   const level = levelFromXp(xp);
@@ -108,6 +122,33 @@ export default async function TenantPage({ params }: Props) {
         <div className="kpi"><div className="kpi-label">📤 Posted</div><div className="kpi-value">{tenant.queue.posted}</div></div>
         <div className="kpi"><div className="kpi-label">📨 CS</div><div className="kpi-value">{tenant.content_counts.csDrafts}</div></div>
       </div>
+
+      {hasLawnOps ? (
+        <>
+          <div className="section-header"><div className="section-title">🛠 Operations</div></div>
+          <div className="ops-grid">
+            <div className="ops-stat"><div className="ops-stat-num">{opsLeads.filter((l) => l.status === "new" || l.status === "quoted").length}</div><div className="ops-stat-label">Open leads</div></div>
+            <div className="ops-stat"><div className="ops-stat-num">{opsQuotes.length}</div><div className="ops-stat-label">Quotes</div></div>
+            <div className="ops-stat"><div className="ops-stat-num">{opsJobs.filter((j) => j.status === "scheduled").length}</div><div className="ops-stat-label">Scheduled jobs</div></div>
+            <div className="ops-stat"><div className="ops-stat-num">{opsInvoices.filter((i) => i.status === "unpaid").length}</div><div className="ops-stat-label">Unpaid invoices</div></div>
+            <div className="ops-stat"><div className="ops-stat-num">${(opsOutstanding / 100).toLocaleString()}</div><div className="ops-stat-label">Outstanding</div></div>
+            <div className="ops-stat"><div className="ops-stat-num">{opsCustomers.length}</div><div className="ops-stat-label">Customers</div></div>
+          </div>
+          {routeBoard ? (
+            <>
+              <div className="section-header"><div className="section-title">🗺 Route board{ops.schedule?.season ? ` · ${ops.schedule.season}` : ""}</div></div>
+              <div className="queue-grid">
+                {Object.entries(routeBoard).map(([day, b]) => (
+                  <div key={day} className="queue-cell">
+                    <div className="queue-cell-name">{day}</div>
+                    <div className="queue-counts">{b.stops} stops · density {b.density_score}</div>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : null}
+        </>
+      ) : null}
 
       <div className="section-header"><div className="section-title">📚 Content factory output</div></div>
       <div className="content-grid">

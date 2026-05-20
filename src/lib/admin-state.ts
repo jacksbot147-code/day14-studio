@@ -109,6 +109,45 @@ export async function loadBrandSites(): Promise<BrandSite[]> {
   }
 }
 
+// ── Per-tenant ops data (synced from the agent clusters' data layer) ──────
+export interface REEvaluation {
+  property_id: string;
+  address: string;
+  city?: string;
+  owner?: string;
+  value_cents: number;
+  score: number;
+  tier: string;
+  best_play: string;
+  signals: string[];
+  flip: { mao_cents: number; est_profit_cents: number; score: number };
+  rental: { cap_rate_pct: number; rent_to_value_pct: number; score: number };
+  wholesale: { equity_pct: number; score: number };
+}
+
+export interface TenantOps {
+  slug?: string;
+  generated_at?: string;
+  leads?: Array<{ id: string; name?: string; status?: string }>;
+  quotes?: Array<{ id: string; status?: string; amount_cents?: number; customer?: string; service?: string }>;
+  jobs?: Array<{ id: string; status?: string; customer?: string; service?: string; day?: string; zone?: string }>;
+  invoices?: Array<{ id: string; status?: string; amount_cents?: number; customer?: string }>;
+  customers?: Array<{ name?: string }>;
+  schedule?: { season?: string; board?: Record<string, { stops: number; density_score: number }> };
+  evaluations?: REEvaluation[];
+  properties?: Array<Record<string, unknown>>;
+}
+
+/** The synced ops snapshot for one tenant (public/data/ops/<slug>.json). */
+export async function loadTenantOps(slug: string): Promise<TenantOps> {
+  const f = path.join(process.cwd(), "public/data/ops", `${slug}.json`);
+  try {
+    return JSON.parse(await fs.readFile(f, "utf8")) as TenantOps;
+  } catch {
+    return {};
+  }
+}
+
 const PRINTIFY_API = "https://api.printify.com/v1";
 
 export async function fetchPrintifyProducts() {

@@ -206,6 +206,27 @@ async function loadOpportunities() {
   return out.sort((a, b) => (b.total_score || 0) - (a.total_score || 0));
 }
 
+/**
+ * Snapshot each tenant's ops/ data layer into public/data/ops/<slug>.json
+ * so the Vercel-hosted ops dashboards can read it (Vercel has no Mac FS).
+ */
+async function snapshotOps(tenantsData) {
+  const opsOut = path.join(PUBLIC_DATA, "ops");
+  await fs.mkdir(opsOut, { recursive: true });
+  for (const t of tenantsData) {
+    const dir = path.join(BIZ, t.slug, "ops");
+    if (!existsSync(dir)) continue;
+    const snap = { slug: t.slug, generated_at: new Date().toISOString() };
+    for (const f of await fs.readdir(dir)) {
+      if (!f.endsWith(".json")) continue;
+      try {
+        snap[f.replace(/\.json$/, "")] = JSON.parse(await fs.readFile(path.join(dir, f), "utf8"));
+      } catch {}
+    }
+    await fs.writeFile(path.join(opsOut, `${t.slug}.json`), JSON.stringify(snap, null, 2));
+  }
+}
+
 async function main() {
   if (!existsSync(TENANTS_FILE)) {
     console.error("No tenants.json — skipping sync");
@@ -271,11 +292,14 @@ async function main() {
   await fs.writeFile(OUT, JSON.stringify(out, null, 2));
   console.log(`✓ wrote ${OUT} (${tenants.length} tenants, ${beats.length} heartbeats)`);
 
+  await snapshotOps(tenantsData);
+  console.log(`✓ wrote per-tenant ops snapshots`);
+
   // Git commit + push?
   if (process.argv.includes("--push")) {
     try {
-      execSync("git add public/data/empire-state.json", { cwd: STUDIO, stdio: "pipe" });
-      const status = execSync("git status --porcelain public/data/empire-state.json", { cwd: STUDIO, encoding: "utf8" });
+      execSync("git add public/data", { cwd: STUDIO, stdio: "pipe" });
+      const status = execSync("git status --porcelain public/data", { cwd: STUDIO, encoding: "utf8" });
       if (!status.trim()) {
         console.log("no changes — skip push");
         return;

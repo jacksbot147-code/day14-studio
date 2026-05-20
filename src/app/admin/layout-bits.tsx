@@ -34,6 +34,23 @@ export const ADMIN_CSS = `
 .admin-shell .todo-done-hint { font-size:10px; color:var(--muted); white-space:nowrap; }
 .admin-shell .todo-done-hint code { background:var(--surface-2); padding:3px 7px; border-radius:5px; color:var(--gold); font-size:11px; }
 .admin-shell .build-failed-flag { margin-top:10px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--red); background:rgba(255,107,107,0.12); border:1px solid rgba(255,107,107,0.35); border-radius:6px; padding:5px 8px; text-align:center; }
+.admin-shell .deal { display:flex; gap:14px; align-items:center; background:var(--surface); border:1px solid var(--border); border-left-width:3px; border-radius:10px; padding:14px 16px; }
+.admin-shell .deal-a { border-left-color:var(--green); }
+.admin-shell .deal-b { border-left-color:var(--gold); }
+.admin-shell .deal-c { border-left-color:var(--border); }
+.admin-shell .deal-score { width:46px; height:46px; flex-shrink:0; border-radius:10px; background:var(--surface-2); display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; }
+.admin-shell .deal-a .deal-score { color:var(--green); }
+.admin-shell .deal-b .deal-score { color:var(--gold); }
+.admin-shell .deal-c .deal-score { color:var(--muted); }
+.admin-shell .deal-addr { font-size:14px; font-weight:600; }
+.admin-shell .deal-meta { font-size:12px; color:var(--muted); margin-top:3px; }
+.admin-shell .deal-sigs { margin-top:7px; display:flex; flex-wrap:wrap; gap:5px; }
+.admin-shell .deal-chip { font-size:10px; background:var(--surface-2); border:1px solid var(--border); border-radius:100px; padding:2px 8px; color:var(--muted); }
+.admin-shell .deal-plays { display:flex; flex-direction:column; gap:3px; font-size:10px; color:var(--muted); text-align:right; flex-shrink:0; }
+.admin-shell .ops-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; }
+.admin-shell .ops-stat { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px; }
+.admin-shell .ops-stat-num { font-size:22px; font-weight:700; }
+.admin-shell .ops-stat-label { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px; }
 .admin-shell .crumb { font-size:11px; color:var(--muted); margin-bottom:16px; text-transform:uppercase; letter-spacing:0.1em; }
 .admin-shell .crumb a { color:var(--accent); }
 .admin-shell .empire-bar { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; margin-bottom:24px; }
@@ -143,6 +160,7 @@ interface NavProps { active: string; siteUrl?: string; siteLabel?: string; }
 export function AdminNav({ active, siteUrl = SITE_URL, siteLabel = "day14.us" }: NavProps) {
   const pages = [
     { id: "empire", href: "/admin", label: "⚔ Empire" },
+    { id: "realty", href: "/admin/realty", label: "🏠 Realty" },
     { id: "inbox", href: "/admin/inbox", label: "📬 Inbox" },
     { id: "opps", href: "/admin/opportunities", label: "💡 Ideas" },
     { id: "finance", href: "/admin/finance", label: "💼 Finance" },
