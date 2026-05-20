@@ -130,21 +130,19 @@ export default async function InboxPage() {
     <div className="admin-shell">
       <style dangerouslySetInnerHTML={{ __html: ADMIN_CSS }} />
       <AdminNav active="empire" />
-      <h1>📬 Operator Inbox</h1>
+      <h1>Operator Inbox</h1>
       <div className="sub">{items.length} items waiting on Jack — sorted newest first</div>
 
       <div className="kpi-grid" style={{ gridTemplateColumns: "repeat(5,1fr)" }}>
-        <div className="kpi"><div className="kpi-label">📨 CS</div><div className="kpi-value">{byCategory.cs.length}</div></div>
-        <div className="kpi"><div className="kpi-label">📤 Social</div><div className="kpi-value">{byCategory.social.length}</div></div>
-        <div className="kpi"><div className="kpi-label">🧬 Skills</div><div className="kpi-value">{byCategory.skill.length}</div></div>
-        <div className="kpi"><div className="kpi-label">💡 Ideas</div><div className="kpi-value">{byCategory.opportunity.length}</div></div>
-        <div className="kpi"><div className="kpi-label">🏛 Requests</div><div className="kpi-value">{byCategory.request.length}</div></div>
+        <div className="kpi"><div className="kpi-label">CS</div><div className="kpi-value">{byCategory.cs.length}</div></div>
+        <div className="kpi"><div className="kpi-label">Social</div><div className="kpi-value">{byCategory.social.length}</div></div>
+        <div className="kpi"><div className="kpi-label">Skills</div><div className="kpi-value">{byCategory.skill.length}</div></div>
+        <div className="kpi"><div className="kpi-label">Ideas</div><div className="kpi-value">{byCategory.opportunity.length}</div></div>
+        <div className="kpi"><div className="kpi-label">Requests</div><div className="kpi-value">{byCategory.request.length}</div></div>
       </div>
 
       {items.length === 0 ? (
-        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 12, padding: 60, textAlign: "center", color: "var(--muted)" }}>
-          ✨ Inbox zero. Empire's caught up.
-        </div>
+        <div className="section"><div className="empty">Inbox zero — everything is caught up.</div></div>
       ) : (
         <div>
           <div className="section-header"><div className="section-title">All items ({items.length})</div></div>
@@ -153,7 +151,7 @@ export default async function InboxPage() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: 12 }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 11, color: "var(--muted)", marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                    {item.icon} {item.tenant || "empire"} · {item.age_min}m ago
+                    {item.tenant || "empire"} · {item.age_min}m ago
                   </div>
                   <h3 style={{ fontSize: 15, marginBottom: 6 }}>{item.title}</h3>
                   <div style={{ fontSize: 12, color: "var(--text)", opacity: 0.85, lineHeight: 1.5, whiteSpace: "pre-line", maxHeight: 80, overflow: "hidden" }}>

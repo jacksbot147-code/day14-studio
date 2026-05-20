@@ -1,16 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { loadEmpireState, fetchPrintifyProducts, levelFromXp, xpForLevel, loadBrandSites, loadTenantOps } from "@/lib/admin-state";
+import { loadEmpireState, fetchPrintifyProducts, loadBrandSites, loadTenantOps } from "@/lib/admin-state";
 import { AdminNav, ADMIN_CSS, SiteCta, SITE_URL } from "../../layout-bits";
 
 export const dynamic = "force-dynamic";
 
-const ARCHETYPE_CLASSES: Record<string, { class: string; icon: string; color: string }> = {
-  "pod-store": { class: "Merchant", icon: "👕", color: "#f59e0b" },
-  "newsletter": { class: "Bard", icon: "📜", color: "#a855f7" },
-  "saas": { class: "Engineer", icon: "⚙️", color: "#06b6d4" },
-  "course": { class: "Scholar", icon: "📚", color: "#10b981" },
-  "real-estate": { class: "Prospector", icon: "🏠", color: "#0ea5e9" },
+const TYPE_LABELS: Record<string, { label: string; color: string }> = {
+  "pod-store": { label: "Print-on-demand", color: "#b45309" },
+  "newsletter": { label: "Newsletter", color: "#7c3aed" },
+  "saas": { label: "SaaS", color: "#0e7490" },
+  "course": { label: "Course", color: "#15803d" },
+  "real-estate": { label: "Real estate", color: "#4338ca" },
 };
 
 function rel(iso: string) {
@@ -20,6 +20,15 @@ function rel(iso: string) {
   if (ms < 3_600_000) return `${Math.round(ms / 60_000)}m ago`;
   if (ms < 86_400_000) return `${Math.round(ms / 3_600_000)}h ago`;
   return `${Math.round(ms / 86_400_000)}d ago`;
+}
+
+function stageInfo(stage: string): { cls: string; label: string } {
+  const s = (stage || "").toLowerCase();
+  if (s.includes("fail")) return { cls: "stage-failed", label: "Build failed" };
+  if (s.includes("build") || s.includes("scaffold") || s.includes("launch") || s.includes("draft"))
+    return { cls: "stage-building", label: stage || "Building" };
+  if (!s) return { cls: "stage-default", label: "—" };
+  return { cls: "stage-live", label: stage };
 }
 
 interface Props { params: Promise<{ slug: string }>; }
@@ -76,72 +85,55 @@ export default async function TenantPage({ params }: Props) {
     return [...m.values()].sort((a, b) => b.lastTs.localeCompare(a.lastTs));
   })();
 
-  const arch = ARCHETYPE_CLASSES[tenant.type] || { class: "Adventurer", icon: "🎯", color: "#6b7280" };
-  const xp = tenant.orders * 1000 + (tenant.revenue_cents / 100) * 10 + 500 + tenant.streak * 50;
-  const level = levelFromXp(xp);
-  const xpToNext = xpForLevel(level + 1) - xp;
-  const xpPct = ((xp - xpForLevel(level)) / (xpForLevel(level + 1) - xpForLevel(level))) * 100;
+  const type = TYPE_LABELS[tenant.type] || { label: tenant.type, color: "#737a82" };
+  const st = stageInfo(tenant.stage);
 
   const contentEntries = [
-    { icon: "📌", num: tenant.content_counts.pinterestPins, label: "Pinterest pins" },
-    { icon: "🎬", num: tenant.content_counts.tiktokScripts, label: "TikTok scripts" },
-    { icon: "📝", num: tenant.content_counts.blogDrafts, label: "Blog drafts" },
-    { icon: "📧", num: tenant.content_counts.newsletterIssues, label: "Newsletter issues" },
-    { icon: "🎥", num: tenant.content_counts.aiVideos, label: "AI videos" },
-    { icon: "📨", num: tenant.content_counts.csDrafts, label: "CS drafts" },
-    { icon: "📣", num: tenant.content_counts.marketingDrafts, label: "Marketing drafts" },
-    { icon: "📹", num: tenant.content_counts.rawFootage, label: "Raw footage" },
-    { icon: "👽", num: tenant.content_counts.redditDrafts, label: "Reddit drafts" },
+    { num: tenant.content_counts.pinterestPins, label: "Pinterest pins" },
+    { num: tenant.content_counts.tiktokScripts, label: "TikTok scripts" },
+    { num: tenant.content_counts.blogDrafts, label: "Blog drafts" },
+    { num: tenant.content_counts.newsletterIssues, label: "Newsletter issues" },
+    { num: tenant.content_counts.aiVideos, label: "AI videos" },
+    { num: tenant.content_counts.csDrafts, label: "CS drafts" },
+    { num: tenant.content_counts.marketingDrafts, label: "Marketing drafts" },
+    { num: tenant.content_counts.rawFootage, label: "Raw footage" },
+    { num: tenant.content_counts.redditDrafts, label: "Reddit drafts" },
   ];
 
   return (
     <div className="admin-shell">
       <style dangerouslySetInnerHTML={{ __html: ADMIN_CSS }} />
       <AdminNav active="empire" siteUrl={siteUrl ?? SITE_URL} siteLabel={hasBrandSite ? tenant.display_name : "day14.us"} />
-      <div className="crumb"><Link href="/admin">← Empire</Link> / {slug}</div>
-      <h1>{arch.icon} {tenant.display_name}</h1>
-      <div className="sub" style={{ color: arch.color }}>{arch.class} · {tenant.type} · {tenant.stage} · {tenant.tagline || ""}</div>
+      <div className="crumb"><Link href="/admin">← Overview</Link> &nbsp;/&nbsp; {slug}</div>
+      <h1>{tenant.display_name}</h1>
+      <div className="sub">
+        <span style={{ color: type.color, fontWeight: 600 }}>{type.label}</span>
+        {" · "}
+        <span className={`stage-pill ${st.cls}`}>{st.label}</span>
+        {tenant.tagline ? <>{"  "}{tenant.tagline}</> : null}
+      </div>
 
       {siteUrl ? (
         <SiteCta
           url={siteUrl}
-          label={isDay14 ? "View day14.us live site" : `Visit ${tenant.display_name} website`}
+          label={isDay14 ? "View day14.us" : `Visit ${tenant.display_name} website`}
         />
       ) : (
-        <div className="site-pending">🌐 Brand site not built yet — it appears here once the build finishes.</div>
+        <div className="site-pending">Brand site not built yet — it appears here once the build finishes.</div>
       )}
 
-      <div className="empire-bar">
-        <div className="empire-row">
-          <div className="level-badge">
-            <div className="level-num">{level}</div>
-            <div className="level-label">Tenant Level</div>
-          </div>
-          <div>
-            <div className="xp-bar">
-              <div className="xp-fill" style={{ width: `${Math.max(0, Math.min(100, xpPct)).toFixed(1)}%` }}></div>
-              <div className="xp-text">{xp.toLocaleString()} XP · {xpToNext.toLocaleString()} to level {level + 1}</div>
-            </div>
-          </div>
-          <div className="health-badge">
-            <div style={{ fontSize: 11, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.1em" }}>Streak</div>
-            <div style={{ fontSize: 36, fontWeight: 700, color: "var(--gold)" }}>🔥 {tenant.streak}d</div>
-          </div>
-        </div>
-      </div>
-
       <div className="kpi-grid">
-        <div className="kpi"><div className="kpi-label">💰 Revenue</div><div className="kpi-value">${(tenant.revenue_cents / 100).toFixed(2)}</div><div className="kpi-sub">{tenant.orders} orders</div></div>
-        <div className="kpi"><div className="kpi-label">👕 Products</div><div className="kpi-value">{products.filter((p: { visible?: boolean }) => p.visible !== false).length}</div></div>
-        <div className="kpi"><div className="kpi-label">⏳ Queued</div><div className="kpi-value">{tenant.queue.queued}</div></div>
-        <div className="kpi"><div className="kpi-label">✓ Approved</div><div className="kpi-value">{tenant.queue.approved}</div></div>
-        <div className="kpi"><div className="kpi-label">📤 Posted</div><div className="kpi-value">{tenant.queue.posted}</div></div>
-        <div className="kpi"><div className="kpi-label">📨 CS</div><div className="kpi-value">{tenant.content_counts.csDrafts}</div></div>
+        <div className="kpi"><div className="kpi-label">Revenue</div><div className="kpi-value">${(tenant.revenue_cents / 100).toFixed(2)}</div><div className="kpi-sub">{tenant.orders} orders</div></div>
+        <div className="kpi"><div className="kpi-label">Products</div><div className="kpi-value">{products.filter((p: { visible?: boolean }) => p.visible !== false).length}</div></div>
+        <div className="kpi"><div className="kpi-label">Streak</div><div className="kpi-value">{tenant.streak}d</div><div className="kpi-sub">days active</div></div>
+        <div className="kpi"><div className="kpi-label">Queued</div><div className="kpi-value">{tenant.queue.queued}</div></div>
+        <div className="kpi"><div className="kpi-label">Approved</div><div className="kpi-value">{tenant.queue.approved}</div></div>
+        <div className="kpi"><div className="kpi-label">Posted</div><div className="kpi-value">{tenant.queue.posted}</div></div>
       </div>
 
       {hasLawnOps ? (
         <>
-          <div className="section-header"><div className="section-title">🛠 Operations</div></div>
+          <div className="section-header"><div className="section-title">Operations</div></div>
           <div className="ops-grid">
             <div className="ops-stat"><div className="ops-stat-num">{opsLeads.filter((l) => l.status === "new" || l.status === "quoted").length}</div><div className="ops-stat-label">Open leads</div></div>
             <div className="ops-stat"><div className="ops-stat-num">{opsQuotes.length}</div><div className="ops-stat-label">Quotes</div></div>
@@ -152,7 +144,7 @@ export default async function TenantPage({ params }: Props) {
           </div>
           {routeBoard ? (
             <>
-              <div className="section-header"><div className="section-title">🗺 Route board{ops.schedule?.season ? ` · ${ops.schedule.season}` : ""}</div></div>
+              <div className="section-header"><div className="section-title">Route board{ops.schedule?.season ? ` · ${ops.schedule.season}` : ""}</div></div>
               <div className="queue-grid">
                 {Object.entries(routeBoard).map(([day, b]) => (
                   <div key={day} className="queue-cell">
@@ -166,20 +158,19 @@ export default async function TenantPage({ params }: Props) {
         </>
       ) : null}
 
-      <div className="section-header"><div className="section-title">📚 Content factory output</div></div>
+      <div className="section-header"><div className="section-title">Content factory output</div></div>
       <div className="content-grid">
         {contentEntries.map((e, i) => (
           <div key={i} className="content-stat">
-            <div className="content-stat-icon">{e.icon}</div>
             <div className="content-stat-num">{e.num}</div>
             <div className="content-stat-label">{e.label}</div>
           </div>
         ))}
       </div>
 
-      <div className="section-header"><div className="section-title">🚦 Social queue</div></div>
+      <div className="section-header"><div className="section-title">Social queue</div></div>
       {Object.keys(tenant.queue.byPlatform).length === 0 ? (
-        <div style={{ color: "var(--muted)", padding: 20 }}>No content queued yet.</div>
+        <div className="section"><div className="empty">No content queued yet.</div></div>
       ) : (
         <div className="queue-grid">
           {Object.entries(tenant.queue.byPlatform).map(([p, c]) => (
@@ -191,14 +182,14 @@ export default async function TenantPage({ params }: Props) {
         </div>
       )}
 
-      <div className="section-header"><div className="section-title">🤖 Agents</div></div>
+      <div className="section-header"><div className="section-title">Agents</div></div>
       <div className="section">
         {agentStats.length === 0 ? (
-          <div style={{ color: "var(--muted)" }}>No agent activity logged yet.</div>
+          <div className="empty">No agent activity logged yet.</div>
         ) : (
           <>
             <div className="agent-row head">
-              <div>Agent</div><div>Runs</div><div>Last active</div><div>Last action</div>
+              <div>Agent</div><div>Runs</div><div>Last</div><div>Last action</div>
             </div>
             {agentStats.map((ag) => (
               <div key={ag.actor} className="agent-row">
@@ -212,18 +203,19 @@ export default async function TenantPage({ params }: Props) {
         )}
       </div>
 
-      <div className="section-header"><div className="section-title">📜 Activity log</div></div>
-      <div className="battle-log">
-        {tenant.recent_audit.length === 0
-          ? <div style={{ color: "var(--muted)" }}>No activity logged yet.</div>
-          : tenant.recent_audit.map((a, i) => (
-            <div key={i} className="battle-entry">
-              <div className="battle-time">{rel(a.ts)}</div>
-              <div className="battle-tenant">{a.actor || "?"}</div>
-              <div>{a.action || ""}</div>
+      <div className="section-header"><div className="section-title">Activity log</div></div>
+      <div className="section">
+        {tenant.recent_audit.length === 0 ? (
+          <div className="empty">No activity logged yet.</div>
+        ) : (
+          tenant.recent_audit.map((a, i) => (
+            <div key={i} className="feed-row">
+              <div className="feed-time">{rel(a.ts)}</div>
+              <div className="feed-actor">{a.actor || "?"}</div>
+              <div className="feed-text">{a.action || ""}</div>
             </div>
           ))
-        }
+        )}
       </div>
     </div>
   );

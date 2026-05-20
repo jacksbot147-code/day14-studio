@@ -23,7 +23,7 @@ export default async function RealtyDashboard() {
     <div className="admin-shell">
       <style dangerouslySetInnerHTML={{ __html: ADMIN_CSS }} />
       <AdminNav active="realty" />
-      <h1>🏠 Realty</h1>
+      <h1>Realty</h1>
       <div className="sub">
         Deal sourcing + evaluation · day14-realty segment
         {ops.generated_at ? ` · synced ${new Date(ops.generated_at).toLocaleString()}` : ""}
@@ -31,21 +31,21 @@ export default async function RealtyDashboard() {
 
       <div className="kpi-grid" style={{ gridTemplateColumns: "repeat(4,1fr)" }}>
         <div className="kpi">
-          <div className="kpi-label">🏘 Properties</div>
+          <div className="kpi-label">Properties</div>
           <div className="kpi-value">{propertyCount}</div>
         </div>
         <div className="kpi">
-          <div className="kpi-label">🟢 A-tier</div>
+          <div className="kpi-label">A-tier</div>
           <div className="kpi-value" style={{ color: "var(--green)" }}>{tierA}</div>
           <div className="kpi-sub">pursue now</div>
         </div>
         <div className="kpi">
-          <div className="kpi-label">🟡 B-tier</div>
+          <div className="kpi-label">B-tier</div>
           <div className="kpi-value" style={{ color: "var(--gold)" }}>{tierB}</div>
           <div className="kpi-sub">worth a look</div>
         </div>
         <div className="kpi">
-          <div className="kpi-label">💰 Tracked value</div>
+          <div className="kpi-label">Tracked value</div>
           <div className="kpi-value">{money(totalValue)}</div>
         </div>
       </div>

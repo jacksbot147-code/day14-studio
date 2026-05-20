@@ -41,14 +41,14 @@ export default async function FinancePage() {
     <div className="admin-shell">
       <style dangerouslySetInnerHTML={{ __html: ADMIN_CSS }} />
       <AdminNav active="finance" />
-      <h1>💼 Finance</h1>
+      <h1>Finance</h1>
       <div className="sub">Empire-wide P&L · synced from local Mac</div>
 
       <div className="kpi-grid" style={{ gridTemplateColumns: "repeat(4,1fr)" }}>
-        <div className="kpi"><div className="kpi-label">💰 Revenue</div><div className="kpi-value">${(totalRev / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div><div className="kpi-sub">{totalOrders} orders</div></div>
-        <div className="kpi"><div className="kpi-label">💸 COGS</div><div className="kpi-value">${(totalCogs / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div></div>
-        <div className="kpi"><div className="kpi-label">📈 Gross</div><div className="kpi-value" style={{ color: grossEmpire >= 0 ? "var(--green)" : "var(--red)" }}>${(grossEmpire / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div></div>
-        <div className="kpi"><div className="kpi-label">📊 Margin</div><div className="kpi-value">{marginEmpire.toFixed(0)}%</div></div>
+        <div className="kpi"><div className="kpi-label">Revenue</div><div className="kpi-value">${(totalRev / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div><div className="kpi-sub">{totalOrders} orders</div></div>
+        <div className="kpi"><div className="kpi-label">COGS</div><div className="kpi-value">${(totalCogs / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div></div>
+        <div className="kpi"><div className="kpi-label">Gross</div><div className="kpi-value" style={{ color: grossEmpire >= 0 ? "var(--green)" : "var(--red)" }}>${(grossEmpire / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div></div>
+        <div className="kpi"><div className="kpi-label">Margin</div><div className="kpi-value">{marginEmpire.toFixed(0)}%</div></div>
       </div>
 
       <div className="section-header"><div className="section-title">Per-tenant P&L</div></div>

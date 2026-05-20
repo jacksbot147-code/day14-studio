@@ -1,27 +1,12 @@
 import Link from "next/link";
-import { loadEmpireState, fetchPrintifyProducts, computeEmpireXp, levelFromXp, xpForLevel } from "@/lib/admin-state";
+import { loadEmpireState, fetchPrintifyProducts } from "@/lib/admin-state";
 import { AdminNav, ADMIN_CSS, SiteCta, SITE_URL } from "./layout-bits";
 
 export const metadata = {
-  title: "Day14 — Empire",
+  title: "Day14 — Command Center",
   robots: { index: false, follow: false },
 };
 export const dynamic = "force-dynamic";
-
-const ARCHETYPE_CLASSES: Record<string, { class: string; icon: string; color: string }> = {
-  "pod-store": { class: "Merchant", icon: "👕", color: "#f59e0b" },
-  "newsletter": { class: "Bard", icon: "📜", color: "#a855f7" },
-  "saas": { class: "Engineer", icon: "⚙️", color: "#06b6d4" },
-  "course": { class: "Scholar", icon: "📚", color: "#10b981" },
-  "info-product": { class: "Sage", icon: "🔮", color: "#8b5cf6" },
-  "agency": { class: "Warlord", icon: "⚔️", color: "#ef4444" },
-  "consulting": { class: "Oracle", icon: "🧠", color: "#3b82f6" },
-  "physical-product": { class: "Smith", icon: "🔨", color: "#f97316" },
-  "affiliate-site": { class: "Scout", icon: "🗺️", color: "#84cc16" },
-  "marketplace": { class: "Broker", icon: "🤝", color: "#ec4899" },
-  "community": { class: "Druid", icon: "🌳", color: "#22c55e" },
-  "real-estate": { class: "Prospector", icon: "🏠", color: "#0ea5e9" },
-};
 
 function rel(iso: string) {
   if (!iso) return "—";
@@ -32,26 +17,28 @@ function rel(iso: string) {
   return `${Math.round(ms / 86_400_000)}d ago`;
 }
 
-export default async function AdminEmpire() {
+function money(cents: number) {
+  return `$${(cents / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function stageInfo(stage: string): { cls: string; label: string } {
+  const s = (stage || "").toLowerCase();
+  if (s.includes("fail")) return { cls: "stage-failed", label: "Build failed" };
+  if (s.includes("build") || s.includes("scaffold") || s.includes("launch") || s.includes("draft"))
+    return { cls: "stage-building", label: stage || "Building" };
+  if (!s) return { cls: "stage-default", label: "—" };
+  return { cls: "stage-live", label: stage };
+}
+
+export default async function AdminOverview() {
   const state = await loadEmpireState();
   const products = await fetchPrintifyProducts();
   const totalProducts = products.length;
   const totalRevenue = state.tenants.reduce((s, t) => s + t.revenue_cents, 0);
   const totalOrders = state.tenants.reduce((s, t) => s + t.orders, 0);
-  const maxStreak = state.tenants.reduce((m, t) => Math.max(m, t.streak), 0);
   const healthy = state.heartbeats.filter((h) => h.status === "healthy").length;
-  const stale = state.heartbeats.filter((h) => h.status === "stale").length;
-  const empireXp = computeEmpireXp(state, totalProducts);
-  const level = levelFromXp(empireXp);
-  const xpToNext = xpForLevel(level + 1) - empireXp;
-  const xpPct = ((empireXp - xpForLevel(level)) / (xpForLevel(level + 1) - xpForLevel(level))) * 100;
-  const healthPct = state.heartbeats.length > 0 ? (healthy / state.heartbeats.length) * 100 : 0;
-
-  const sortedTenants = [...state.tenants].sort((a, b) => {
-    const xpA = a.orders * 1000 + (a.revenue_cents / 100) * 10 + 500 + a.streak * 50;
-    const xpB = b.orders * 1000 + (b.revenue_cents / 100) * 10 + 500 + b.streak * 50;
-    return xpB - xpA;
-  });
+  const stale = state.heartbeats.filter((h) => h.status === "stale");
+  const failedBuilds = state.tenants.filter((t) => (t.stage || "").toLowerCase().includes("fail")).length;
 
   const PRIORITY_RANK: Record<string, number> = { high: 0, medium: 1, low: 2 };
   const openTodos = [...(state.human_todos ?? [])]
@@ -61,81 +48,91 @@ export default async function AdminEmpire() {
         (PRIORITY_RANK[a.priority] ?? 1) - (PRIORITY_RANK[b.priority] ?? 1) ||
         a.seq - b.seq
     );
+  const highTodos = openTodos.filter((t) => t.priority === "high").length;
   const botUser = state.bot_username || null;
 
-  // Day14 agent workforce — grouped from the empire-wide activity log.
-  const empireAgents = (() => {
-    const m = new Map<string, { actor: string; runs: number; tenants: Set<string>; lastTs: string; lastAction: string }>();
-    for (const a of state.empire_battle_log) {
-      const actor = a.actor || "unknown";
-      const e = m.get(actor) || { actor, runs: 0, tenants: new Set<string>(), lastTs: "", lastAction: "" };
-      e.runs++;
-      if (a.tenant) e.tenants.add(a.tenant);
-      if (!e.lastTs || (a.ts || "") > e.lastTs) {
-        e.lastTs = a.ts || "";
-        e.lastAction = a.action || "";
-      }
-      m.set(actor, e);
+  // Businesses, ranked by revenue then orders.
+  const businesses = [...state.tenants].sort(
+    (a, b) => b.revenue_cents - a.revenue_cents || b.orders - a.orders
+  );
+
+  // Agent workforce + 24h run count, from the empire-wide activity log.
+  const dayAgo = Date.now() - 86_400_000;
+  let runs24h = 0;
+  const agentMap = new Map<
+    string,
+    { actor: string; runs: number; tenants: Set<string>; lastTs: string; lastAction: string }
+  >();
+  for (const a of state.empire_battle_log) {
+    if (a.ts && new Date(a.ts).getTime() >= dayAgo) runs24h++;
+    const actor = a.actor || "unknown";
+    const e =
+      agentMap.get(actor) ||
+      { actor, runs: 0, tenants: new Set<string>(), lastTs: "", lastAction: "" };
+    e.runs++;
+    if (a.tenant) e.tenants.add(a.tenant);
+    if (!e.lastTs || (a.ts || "") > e.lastTs) {
+      e.lastTs = a.ts || "";
+      e.lastAction = a.action || "";
     }
-    return [...m.values()].sort((a, b) => b.lastTs.localeCompare(a.lastTs));
-  })();
+    agentMap.set(actor, e);
+  }
+  const agents = [...agentMap.values()].sort((a, b) => b.lastTs.localeCompare(a.lastTs));
 
   return (
     <div className="admin-shell">
       <style dangerouslySetInnerHTML={{ __html: ADMIN_CSS }} />
       <AdminNav active="empire" />
-      <h1>⚔️ Day14 Empire</h1>
+      <h1>Day14 Command Center</h1>
       <div className="sub">
-        {state.tenants.length} tenants · synced {rel(state.generated_at)} ·{" "}
+        {state.tenants.length} businesses · synced {rel(state.generated_at)} ·{" "}
         <Link href="/admin" prefetch={false} style={{ color: "var(--accent)" }}>refresh</Link>
       </div>
 
-      <SiteCta url={SITE_URL} label="View day14.us live site" />
+      <SiteCta url={SITE_URL} label="View day14.us" />
 
-      <div className="empire-bar">
-        <div className="empire-row">
-          <div className="level-badge">
-            <div className="level-num">{level}</div>
-            <div className="level-label">Empire Level</div>
-          </div>
-          <div>
-            <div className="xp-bar">
-              <div className="xp-fill" style={{ width: `${Math.max(0, Math.min(100, xpPct)).toFixed(1)}%` }}></div>
-              <div className="xp-text">{empireXp.toLocaleString()} XP · {xpToNext.toLocaleString()} to level {level + 1}</div>
-            </div>
-          </div>
-          <div className="health-badge">
-            <div style={{ fontSize: 11, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.1em" }}>Empire Health</div>
-            <div style={{ fontSize: 22, fontWeight: 700, margin: "4px 0" }}>{healthPct.toFixed(0)}%</div>
-            <div className="health-bar">
-              <div className={`health-fill ${healthPct > 80 ? "good" : healthPct > 50 ? "warn" : "bad"}`} style={{ width: `${healthPct}%` }}></div>
-            </div>
-            <div style={{ fontSize: 10, color: "var(--muted)", marginTop: 4 }}>{healthy}/{state.heartbeats.length} daemons</div>
-          </div>
-        </div>
-      </div>
-
-      <div className="kpi-grid">
+      <div className="kpi-grid" style={{ gridTemplateColumns: "repeat(5,1fr)" }}>
         <div className="kpi">
-          <div className="kpi-label">💰 Revenue</div>
-          <div className="kpi-value">${(totalRevenue / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-          <div className="kpi-sub">{totalOrders} orders</div>
+          <div className="kpi-label">Revenue</div>
+          <div className="kpi-value">{money(totalRevenue)}</div>
+          <div className="kpi-sub">{totalOrders} orders · {totalProducts} products</div>
         </div>
-        <div className="kpi"><div className="kpi-label">👕 Products</div><div className="kpi-value">{totalProducts}</div></div>
-        <div className="kpi"><div className="kpi-label">🏛️ Tenants</div><div className="kpi-value">{state.tenants.length}</div></div>
-        <div className="kpi"><div className="kpi-label">🧬 Skills</div><div className="kpi-value">{state.skill_counts.live}</div><div className="kpi-sub">{state.skill_counts.drafts} drafts</div></div>
-        <div className="kpi"><div className="kpi-label">🔥 Best Streak</div><div className="kpi-value">{maxStreak}d</div></div>
-        <div className="kpi"><div className="kpi-label">⚙️ Daemons</div><div className="kpi-value">{healthy}/{state.heartbeats.length}</div><div className="kpi-sub" style={{ color: stale > 0 ? "var(--red)" : "var(--muted)" }}>{stale} stale</div></div>
+        <div className="kpi">
+          <div className="kpi-label">Businesses</div>
+          <div className="kpi-value">{state.tenants.length}</div>
+          <div className="kpi-sub" style={{ color: failedBuilds > 0 ? "var(--red)" : "var(--muted)" }}>
+            {failedBuilds > 0 ? `${failedBuilds} need attention` : "all building or live"}
+          </div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-label">Needs you</div>
+          <div className="kpi-value" style={{ color: openTodos.length > 0 ? "var(--amber)" : "var(--text)" }}>
+            {openTodos.length}
+          </div>
+          <div className="kpi-sub">{highTodos > 0 ? `${highTodos} high priority` : "open to-do items"}</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-label">Agent runs</div>
+          <div className="kpi-value">{runs24h}</div>
+          <div className="kpi-sub">last 24 hours</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-label">Daemons</div>
+          <div className="kpi-value">{healthy}/{state.heartbeats.length}</div>
+          <div className="kpi-sub" style={{ color: stale.length > 0 ? "var(--red)" : "var(--muted)" }}>
+            {stale.length > 0 ? `${stale.length} stale` : "all healthy"}
+          </div>
+        </div>
       </div>
 
       <div className="section-header">
         <div className="section-title">
-          📋 Your To-Do — needs you{openTodos.length > 0 ? ` (${openTodos.length})` : ""}
+          Needs you{openTodos.length > 0 ? ` · ${openTodos.length}` : ""}
         </div>
       </div>
       <div className={`todo-panel ${openTodos.length > 0 ? "has-items" : ""}`}>
         {openTodos.length === 0 ? (
-          <div className="todo-empty">🎉 Nothing needs you right now — the agents have it covered.</div>
+          <div className="todo-empty">Nothing needs you right now — the agents have it covered.</div>
         ) : (
           openTodos.map((t) => (
             <div key={t.id} className={`todo-row ${t.priority === "high" ? "pri-high" : ""}`}>
@@ -157,7 +154,7 @@ export default async function AdminEmpire() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    ✓ Done
+                    Mark done
                   </a>
                 ) : (
                   <span className="todo-done-hint">
@@ -170,90 +167,139 @@ export default async function AdminEmpire() {
         )}
       </div>
 
-      <div className="section-header"><div className="section-title">⚔ Heroes — click any card</div></div>
-      {sortedTenants.length === 0 ? (
-        <div style={{ color: "var(--muted)", textAlign: "center", padding: 40 }}>No heroes yet.</div>
+      <div className="section-header">
+        <div className="section-title">Businesses</div>
+        <Link href="/admin/finance" prefetch={false} className="section-link">P&amp;L →</Link>
+      </div>
+      {businesses.length === 0 ? (
+        <div className="section"><div className="empty">No businesses yet.</div></div>
       ) : (
-        <div className="tenant-grid">
-          {sortedTenants.map((t, i) => {
-            const arch = ARCHETYPE_CLASSES[t.type] || { class: "Adventurer", icon: "🎯", color: "#6b7280" };
-            const xp = t.orders * 1000 + (t.revenue_cents / 100) * 10 + 500 + t.streak * 50;
-            const tlvl = levelFromXp(xp);
+        <div className="biz-list">
+          {businesses.map((t) => {
+            const st = stageInfo(t.stage);
             return (
-              <Link key={t.slug} href={`/admin/tenants/${t.slug}`} prefetch={false} className={`char-card ${i < 3 ? "rank-" + (i + 1) : ""}`} style={{ display: "block" }}>
-                {i < 3 ? <div className="rank-badge">#{i + 1}</div> : null}
-                <div className="char-level">LVL {tlvl}</div>
-                <div className="char-header">
-                  <div className="char-icon" style={{ color: arch.color }}>{arch.icon}</div>
-                  <div>
-                    <div className="char-name">{t.display_name}</div>
-                    <div className="char-class" style={{ color: arch.color }}>{arch.class}</div>
+              <Link key={t.slug} href={`/admin/tenants/${t.slug}`} prefetch={false} className="biz-row">
+                <div className="biz-main">
+                  <div className="biz-name">{t.display_name}</div>
+                  <div className="biz-sub">{t.type}{t.tagline ? ` · ${t.tagline}` : ""}</div>
+                </div>
+                <span className={`stage-pill ${st.cls}`}>{st.label}</span>
+                <div className="biz-stats">
+                  <div className="biz-stat">
+                    <div className="biz-stat-num">${(t.revenue_cents / 100).toLocaleString()}</div>
+                    <div className="biz-stat-label">Revenue</div>
+                  </div>
+                  <div className="biz-stat">
+                    <div className="biz-stat-num">{t.orders}</div>
+                    <div className="biz-stat-label">Orders</div>
                   </div>
                 </div>
-                {t.stage === "build-failed" ? (
-                  <div className="build-failed-flag">⚠ Build failed — retry queued</div>
-                ) : null}
-                <div className="char-stats">
-                  <div className="char-stat-label">💰 Revenue</div><div className="char-stat-value">${(t.revenue_cents / 100).toFixed(2)}</div>
-                  <div className="char-stat-label">📦 Orders</div><div className="char-stat-value">{t.orders}</div>
-                  <div className="char-stat-label">⚡ XP</div><div className="char-stat-value">{xp.toLocaleString()}</div>
-                  <div className="char-stat-label">🔥 Streak</div><div className="char-stat-value streak-fire">{t.streak}d</div>
-                </div>
-                <div className="char-click-hint">→ Open dashboard</div>
+                <div className="biz-arrow">›</div>
               </Link>
             );
           })}
         </div>
       )}
 
-      <div className="section-header"><div className="section-title">🤖 Agents — Day14 workforce</div></div>
-      <div className="section">
-        {empireAgents.length === 0 ? (
-          <div style={{ color: "var(--muted)" }}>No agent activity yet.</div>
-        ) : (
-          <>
-            <div className="agent-row head">
-              <div>Agent</div><div>Runs</div><div>Tenants</div><div>Last active</div>
+      <div className="panel-grid" style={{ marginTop: 28 }}>
+        <div>
+          <div className="section-header" style={{ margin: "0 0 12px" }}>
+            <div className="section-title">Agent workforce</div>
+          </div>
+          <div className="section">
+            {agents.length === 0 ? (
+              <div className="empty">No agent activity yet.</div>
+            ) : (
+              <>
+                <div className="agent-row head">
+                  <div>Agent</div><div>Runs</div><div>Businesses</div><div>Last active</div>
+                </div>
+                {agents.slice(0, 12).map((ag) => (
+                  <div key={ag.actor} className="agent-row">
+                    <div className="agent-name">{ag.actor}</div>
+                    <div className="agent-runs">{ag.runs}</div>
+                    <div className="agent-last">{ag.tenants.size}</div>
+                    <div className="agent-action">{rel(ag.lastTs)} · {ag.lastAction}</div>
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
+        </div>
+        <div>
+          <div className="section-header" style={{ margin: "0 0 12px" }}>
+            <div className="section-title">System</div>
+            <Link href="/admin/health" prefetch={false} className="section-link">Health →</Link>
+          </div>
+          <div className="section">
+            <div className="sys-row">
+              <span className="sys-label">Daemons healthy</span>
+              <span className="sys-value" style={{ color: stale.length > 0 ? "var(--red)" : "var(--green)" }}>
+                {healthy} / {state.heartbeats.length}
+              </span>
             </div>
-            {empireAgents.map((ag) => (
-              <div key={ag.actor} className="agent-row">
-                <div className="agent-name">{ag.actor}</div>
-                <div className="agent-runs">{ag.runs}</div>
-                <div className="agent-last">{ag.tenants.size}</div>
-                <div className="agent-action">{rel(ag.lastTs)} · {ag.lastAction}</div>
+            <div className="sys-row">
+              <span className="sys-label">Skills live</span>
+              <span className="sys-value">{state.skill_counts.live}</span>
+            </div>
+            <div className="sys-row">
+              <span className="sys-label">Skill drafts</span>
+              <span className="sys-value">{state.skill_counts.drafts}</span>
+            </div>
+            <div className="sys-row">
+              <span className="sys-label">Last sync</span>
+              <span className="sys-value">{rel(state.generated_at)}</span>
+            </div>
+            {stale.length > 0 ? (
+              <div style={{ marginTop: 12 }}>
+                <div style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--red)", marginBottom: 8 }}>
+                  Stale daemons
+                </div>
+                {stale.slice(0, 6).map((d, i) => (
+                  <div key={i} className="daemon" style={{ marginBottom: 6 }}>
+                    <div className="daemon-status stale"></div>
+                    <div className="daemon-name">{d.name}</div>
+                    {isFinite(d.ageMin) ? <div className="daemon-age">{d.ageMin}m</div> : null}
+                  </div>
+                ))}
               </div>
-            ))}
-          </>
+            ) : (
+              <div style={{ marginTop: 12, fontSize: 12, color: "var(--green)" }}>
+                All daemons reporting in.
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="section-header"><div className="section-title">Recent activity</div></div>
+      <div className="section">
+        {state.empire_battle_log.length === 0 ? (
+          <div className="empty">No activity logged yet.</div>
+        ) : (
+          state.empire_battle_log.slice(0, 24).map((a, i) => (
+            <div key={i} className="feed-row">
+              <div className="feed-time">{rel(a.ts)}</div>
+              <div className="feed-actor">
+                <Link href={`/admin/tenants/${a.tenant}`} prefetch={false}>{a.tenant}</Link>
+              </div>
+              <div className="feed-text"><b>{a.actor}</b> — {a.action}</div>
+            </div>
+          ))
         )}
       </div>
 
-      <div className="section-header"><div className="section-title">📜 Empire Battle Log</div></div>
-      <div className="battle-log">
-        {state.empire_battle_log.length === 0
-          ? <div style={{ color: "var(--muted)" }}>No activity.</div>
-          : state.empire_battle_log.slice(0, 30).map((a, i) => (
-            <div key={i} className="battle-entry">
-              <div className="battle-time">{rel(a.ts)}</div>
-              <div className="battle-tenant"><Link href={`/admin/tenants/${a.tenant}`} prefetch={false}>{a.tenant}</Link></div>
-              <div><b>{a.actor}</b> → {a.action}</div>
-            </div>
-          ))
-        }
-      </div>
-
-      <div className="section-header"><div className="section-title">⚙ Daemons</div></div>
-      <div className="daemon-grid">
-        {state.heartbeats.map((b, i) => (
-          <div key={i} className="daemon">
-            <div className={`daemon-status ${b.status}`}></div>
-            <div className="daemon-name">{b.name}</div>
-            {isFinite(b.ageMin) ? <div className="daemon-age">{b.ageMin}m</div> : null}
-          </div>
-        ))}
-      </div>
-
-      <div style={{ textAlign: "center", color: "var(--muted)", fontSize: 11, marginTop: 40 }}>
-        Synced from local Mac · <form action="/api/admin/auth" method="POST" style={{ display: "inline" }}><button formMethod="DELETE" type="submit" style={{ background: "none", border: "none", color: "var(--accent)", cursor: "pointer", fontSize: 11, padding: 0, fontFamily: "inherit" }}>log out</button></form>
+      <div style={{ textAlign: "center", color: "var(--muted)", fontSize: 12, marginTop: 36 }}>
+        Synced from local Mac ·{" "}
+        <form action="/api/admin/auth" method="POST" style={{ display: "inline" }}>
+          <button
+            formMethod="DELETE"
+            type="submit"
+            style={{ background: "none", border: "none", color: "var(--accent)", cursor: "pointer", fontSize: 12, padding: 0, fontFamily: "inherit" }}
+          >
+            log out
+          </button>
+        </form>
       </div>
     </div>
   );

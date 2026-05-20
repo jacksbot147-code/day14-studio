@@ -16,24 +16,24 @@ export default async function OpportunitiesPage() {
   };
 
   const bucketLabels: Record<string, string> = {
-    pitched: "📩 Pitched — ready to launch",
-    open: "🆕 New (unpitched)",
-    launching: "🚀 Launching",
-    skipped: "⏭ Skipped",
+    pitched: "Pitched — ready to launch",
+    open: "New (unpitched)",
+    launching: "Launching",
+    skipped: "Skipped",
   };
 
   return (
     <div className="admin-shell">
       <style dangerouslySetInnerHTML={{ __html: ADMIN_CSS }} />
       <AdminNav active="opps" />
-      <h1>💡 Opportunities</h1>
+      <h1>Opportunities</h1>
       <div className="sub">{opps.length} ideas scanned · {buckets.pitched.length} pitched · {buckets.launching.length} launching</div>
 
       <div className="kpi-grid" style={{ gridTemplateColumns: "repeat(4,1fr)" }}>
-        <div className="kpi"><div className="kpi-label">🆕 New</div><div className="kpi-value">{buckets.open.length}</div></div>
-        <div className="kpi"><div className="kpi-label">📩 Pitched</div><div className="kpi-value">{buckets.pitched.length}</div></div>
-        <div className="kpi"><div className="kpi-label">🚀 Launching</div><div className="kpi-value">{buckets.launching.length}</div></div>
-        <div className="kpi"><div className="kpi-label">⏭ Skipped</div><div className="kpi-value">{buckets.skipped.length}</div></div>
+        <div className="kpi"><div className="kpi-label">New</div><div className="kpi-value">{buckets.open.length}</div></div>
+        <div className="kpi"><div className="kpi-label">Pitched</div><div className="kpi-value">{buckets.pitched.length}</div></div>
+        <div className="kpi"><div className="kpi-label">Launching</div><div className="kpi-value">{buckets.launching.length}</div></div>
+        <div className="kpi"><div className="kpi-label">Skipped</div><div className="kpi-value">{buckets.skipped.length}</div></div>
       </div>
 
       {(["pitched", "open", "launching", "skipped"] as const).map((bucket) => {
@@ -70,7 +70,7 @@ export default async function OpportunitiesPage() {
         );
       })}
 
-      <div className="section-header"><div className="section-title">⚡ Telegram commands</div></div>
+      <div className="section-header"><div className="section-title">Telegram commands</div></div>
       <div className="section">
         <div style={{ fontSize: 12, lineHeight: 1.8, color: "var(--muted)" }}>
           <code style={{ color: "var(--accent)" }}>bootstrap-pitch &lt;id&gt;</code> — launch the business<br />
