@@ -364,6 +364,27 @@ export async function processIncomingMessage(message, ctx = {}) {
     return { reply: realty.reply, intent: { intent: "realty-target" }, action: realty.action };
   }
 
+  // ── Fast-path: architect a move — draft an expansion spec from an idea
+  const archMatch = trimmed.match(/^(?:architect|plan)\s+(.{6,})$/i);
+  if (archMatch) {
+    const idea = archMatch[1].trim();
+    try {
+      const child = spawn("node", [path.join(STUDIO, "scripts/move-architect.mjs"), idea], {
+        detached: true,
+        stdio: "ignore",
+        cwd: STUDIO,
+      });
+      child.unref();
+    } catch { /* the spec can be drafted later */ }
+    const reply =
+      `🧭 *Architecting that move*\n\n` +
+      `Drafting the expansion spec — the fork points to decide first, an honest plan, a file map, risks, verification, and the ship plan.\n\n` +
+      `It lands in \`businesses/_shared/move-specs/\` and I'll ping you the moment it's ready.`;
+    await logBrain({ direction: "in", message, intent: { intent: "architect-move" } });
+    await logBrain({ direction: "out", reply: reply.slice(0, 300), action: "architect-move" });
+    return { reply, intent: { intent: "architect-move" }, action: "architect-move" };
+  }
+
   const intent = await classifyIntent(message, env);
   await logBrain({ direction: "in", message, intent });
 
