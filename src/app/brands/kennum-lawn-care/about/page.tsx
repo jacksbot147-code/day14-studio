@@ -4,7 +4,15 @@ import { brandTheme as t } from "../theme";
 export const metadata = {
   title: "About",
   description:
-    "Kennum Lawn Care is a Southwest Florida lawn care and landscaping service built on showing up.",
+    "Kennum Lawn Care is a Southwest Florida lawn care and landscaping service built on showing up — same crew, same day, flat monthly pricing.",
+  alternates: { canonical: "/brands/kennum-lawn-care/about" },
+  openGraph: {
+    title: "About — Kennum Lawn Care",
+    description:
+      "A Southwest Florida lawn care and landscaping service built on dependability.",
+    type: "website",
+    url: "/brands/kennum-lawn-care/about",
+  },
 };
 
 export default function KennumAbout() {

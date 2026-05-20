@@ -21,6 +21,7 @@ export default function KennumLayout({ children }: { children: React.ReactNode }
     { href: "/brands/kennum-lawn-care", label: "Home" },
     { href: "/brands/kennum-lawn-care/services", label: "Services" },
     { href: "/brands/kennum-lawn-care/about", label: "About" },
+    { href: "/brands/kennum-lawn-care/blog", label: "Blog" },
     { href: "/brands/kennum-lawn-care/contact", label: "Contact" },
   ];
   return (

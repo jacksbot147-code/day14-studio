@@ -4,7 +4,15 @@ import { brandTheme as t, services } from "../theme";
 export const metadata = {
   title: "Services & pricing",
   description:
-    "Lawn maintenance, landscaping, mulch, trimming, seasonal cleanups, and irrigation across Southwest Florida.",
+    "Lawn maintenance, landscaping, mulch, trimming, seasonal cleanups, and irrigation across Southwest Florida. Free custom quotes, flat monthly pricing.",
+  alternates: { canonical: "/brands/kennum-lawn-care/services" },
+  openGraph: {
+    title: "Services & pricing — Kennum Lawn Care",
+    description:
+      "Lawn maintenance, landscaping, mulch, trimming, seasonal cleanups, and irrigation across Southwest Florida.",
+    type: "website",
+    url: "/brands/kennum-lawn-care/services",
+  },
 };
 
 export default function KennumServices() {

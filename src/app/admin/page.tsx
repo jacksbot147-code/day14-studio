@@ -20,6 +20,7 @@ const ARCHETYPE_CLASSES: Record<string, { class: string; icon: string; color: st
   "affiliate-site": { class: "Scout", icon: "🗺️", color: "#84cc16" },
   "marketplace": { class: "Broker", icon: "🤝", color: "#ec4899" },
   "community": { class: "Druid", icon: "🌳", color: "#22c55e" },
+  "real-estate": { class: "Prospector", icon: "🏠", color: "#0ea5e9" },
 };
 
 function rel(iso: string) {

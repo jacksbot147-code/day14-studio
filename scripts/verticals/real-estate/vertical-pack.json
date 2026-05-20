@@ -1,0 +1,25 @@
+{
+  "pack": "real-estate",
+  "version": 1,
+  "label": "Real-Estate Segment — deal sourcing + evaluation agent cluster",
+  "summary": "A build-and-operate agent cluster that sources properties from public county records, enriches them via a licensed property API, and scores every one for flip / rental / wholesale with a blended deal score. Deterministic evaluation — runs with no API quota.",
+  "segment_slug": "day14-realty",
+  "domain_brain": "scripts/verticals/real-estate/brain.mjs",
+  "coordinator": "scripts/verticals/real-estate/scout-agent.mjs",
+  "agents": [
+    { "name": "realty-scout", "file": "scripts/verticals/real-estate/scout-agent.mjs", "role": "Coordinator — runs the funnel, ranks deals, writes the Scout brief.", "build_and_operate": true },
+    { "name": "re-intake-agent", "file": "scripts/verticals/real-estate/intake-agent.mjs", "capability": "intake", "role": "Ingests county property-record CSV exports into the property store.", "build_and_operate": true },
+    { "name": "re-enrichment-agent", "file": "scripts/verticals/real-estate/enrichment-agent.mjs", "capability": "enrichment", "role": "Adds AVM value + rent estimate via a licensed property API.", "build_and_operate": true },
+    { "name": "re-evaluation-agent", "file": "scripts/verticals/real-estate/evaluation-agent.mjs", "capability": "evaluation", "role": "Scores every property flip/rental/wholesale + blended deal score.", "build_and_operate": true }
+  ],
+  "data_layer": "businesses/day14-realty/ops/ (properties.json, evaluations.json) + businesses/day14-realty/intake/ (drop county CSVs here)",
+  "data_sources": {
+    "county": "Official county property-appraiser data exports — public records.",
+    "valuation": "Licensed property API (RentCast / ATTOM / Estated). Env: REALESTATE_API_KEY.",
+    "prohibited": "Zillow / Redfin scraping — against their terms and brittle."
+  },
+  "roadmap": "scripts/verticals/real-estate/ROADMAP.md",
+  "run": "node scripts/verticals/real-estate/scout-agent.mjs day14-realty",
+  "install_daemon": "bash scripts/verticals/real-estate/install-realty-scout.sh day14-realty",
+  "reuse": "Second entry in the Day14 vertical-pack library, after lawn-care. The recursive-expansion engine can clone this pattern for any data-sourcing + evaluation segment."
+}

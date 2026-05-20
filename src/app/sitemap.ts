@@ -1,8 +1,26 @@
 import type { MetadataRoute } from "next";
 import fs from "node:fs/promises";
 import path from "node:path";
+import { blogPosts } from "./brands/kennum-lawn-care/blog-posts";
 
 const BASE = "https://day14.us";
+
+const KENNUM = `${BASE}/brands/kennum-lawn-care`;
+
+function kennumUrls(now: Date): MetadataRoute.Sitemap {
+  return [
+    { url: `${KENNUM}/services`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${KENNUM}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${KENNUM}/contact`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${KENNUM}/blog`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+    ...blogPosts.map((p) => ({
+      url: `${KENNUM}/blog/${p.slug}`,
+      lastModified: new Date(`${p.date}T12:00:00Z`),
+      changeFrequency: "yearly" as const,
+      priority: 0.5,
+    })),
+  ];
+}
 
 async function brandSiteUrls(now: Date): Promise<MetadataRoute.Sitemap> {
   try {
@@ -43,5 +61,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/verticals/food`, lastModified: now, priority: 0.6 },
     { url: `${BASE}/brands`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
   ];
-  return [...urls, ...(await brandSiteUrls(now))];
+  return [...urls, ...kennumUrls(now), ...(await brandSiteUrls(now))];
 }

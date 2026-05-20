@@ -1,9 +1,70 @@
 import Link from "next/link";
 import { brandTheme as t, services, whyUs } from "./theme";
 
+const HOME_TITLE = "Kennum Lawn Care — Lawn Care & Landscaping in Southwest Florida";
+
+export const metadata = {
+  title: { absolute: HOME_TITLE },
+  description:
+    "Weekly lawn maintenance, landscaping, mulch, trimming, and seasonal cleanups across Southwest Florida. Dependable crew, flat monthly pricing, free custom quotes.",
+  alternates: { canonical: "/brands/kennum-lawn-care" },
+  openGraph: {
+    title: HOME_TITLE,
+    description:
+      "A Southwest Florida yard, handled — weekly maintenance and landscaping at one flat monthly price.",
+    type: "website",
+    url: "/brands/kennum-lawn-care",
+  },
+  twitter: { card: "summary_large_image" as const },
+};
+
+const businessJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: "Kennum Lawn Care",
+  description:
+    "Lawn care and landscaping service for homeowners and property managers across Southwest Florida — weekly lawn maintenance, landscape design and installation, mulch and bed maintenance, tree and shrub trimming, seasonal cleanups, and irrigation tune-ups.",
+  url: "https://day14.us/brands/kennum-lawn-care",
+  slogan: t.tagline,
+  priceRange: "$$",
+  knowsAbout: [
+    "Lawn care",
+    "Landscaping",
+    "Lawn maintenance",
+    "Mulch installation",
+    "Tree and shrub trimming",
+    "Irrigation",
+  ],
+  serviceType: ["Lawn care", "Landscaping"],
+  areaServed: [
+    { "@type": "AdministrativeArea", name: "Southwest Florida" },
+    { "@type": "City", name: "Fort Myers" },
+    { "@type": "City", name: "Cape Coral" },
+    { "@type": "City", name: "Naples" },
+    { "@type": "City", name: "Bonita Springs" },
+    { "@type": "City", name: "Estero" },
+  ],
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Lawn care & landscaping services",
+    itemListElement: services.map((s) => ({
+      "@type": "Offer",
+      itemOffered: {
+        "@type": "Service",
+        name: s.title,
+        description: s.blurb,
+      },
+    })),
+  },
+};
+
 export default function KennumHome() {
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(businessJsonLd) }}
+      />
       {/* Hero */}
       <section style={{ padding: "110px 32px 70px", textAlign: "center", maxWidth: 820, margin: "0 auto" }}>
         <div

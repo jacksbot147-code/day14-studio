@@ -1,0 +1,22 @@
+{
+  "pack": "lawn-care",
+  "version": 1,
+  "label": "Lawn-Care Platform — agent cluster",
+  "summary": "A build-and-operate agent cluster for lawn-care / landscaping service businesses. SWFL-specialized, rules-based (no API quota needed), designed to out-operate Jobber.",
+  "applies_to_archetypes": ["agency", "service", "mobile-service", "specialty-contractor"],
+  "applies_to_keywords": ["lawn", "landscap", "yard", "mowing", "irrigation", "tree service"],
+  "domain_brain": "scripts/verticals/lawn-care/brain.mjs",
+  "coordinator": "scripts/verticals/lawn-care/gm-agent.mjs",
+  "agents": [
+    { "name": "lawn-care-gm", "file": "scripts/verticals/lawn-care/gm-agent.mjs", "role": "Coordinator — owns the roadmap, runs the cluster, writes the GM brief.", "build_and_operate": true },
+    { "name": "pipeline-agent", "file": "scripts/verticals/lawn-care/pipeline-agent.mjs", "capability": "pipeline", "role": "Lead -> quote -> job -> invoice, self-advancing.", "build_and_operate": true },
+    { "name": "scheduling-agent", "file": "scripts/verticals/lawn-care/scheduling-agent.mjs", "capability": "scheduling", "role": "Density-scored, weather-aware route board.", "build_and_operate": true },
+    { "name": "crm-agent", "file": "scripts/verticals/lawn-care/crm-agent.mjs", "capability": "crm", "role": "Churn prediction + upsell detection per customer.", "build_and_operate": true },
+    { "name": "portal-agent", "file": "scripts/verticals/lawn-care/portal-agent.mjs", "capability": "portal", "role": "Proactive per-customer portal feeds.", "build_and_operate": true }
+  ],
+  "ops_data_layer": "businesses/<slug>/ops/",
+  "roadmap": "scripts/verticals/lawn-care/ROADMAP.md",
+  "run": "node scripts/verticals/lawn-care/gm-agent.mjs <tenant-slug>",
+  "install_daemon": "bash scripts/verticals/lawn-care/install-lawn-care-gm.sh <tenant-slug>",
+  "reuse": "Tenant-agnostic. The recursive-expansion engine clones this pack as the template for any new service-business tenant: copy the directory, the brain needs no changes, install the GM daemon pointed at the new slug. This is the first entry in the Day14 vertical-pack library — build packs ahead of demand."
+}

@@ -2,7 +2,16 @@ import { brandTheme as t } from "../theme";
 
 export const metadata = {
   title: "Get a free quote",
-  description: "Request a free, custom lawn care or landscaping quote from Kennum Lawn Care.",
+  description:
+    "Request a free, custom lawn care or landscaping quote from Kennum Lawn Care, serving homeowners across Southwest Florida.",
+  alternates: { canonical: "/brands/kennum-lawn-care/contact" },
+  openGraph: {
+    title: "Get a free quote — Kennum Lawn Care",
+    description:
+      "Request a free, custom lawn care or landscaping quote from Kennum Lawn Care.",
+    type: "website",
+    url: "/brands/kennum-lawn-care/contact",
+  },
 };
 
 const inputStyle = {

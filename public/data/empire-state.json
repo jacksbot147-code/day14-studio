@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-20T06:00:11.031Z",
+  "generated_at": "2026-05-20T20:38:03.805Z",
   "tenants": [
     {
       "slug": "day14",
@@ -38,6 +38,90 @@
       "orders": 0,
       "streak": 0,
       "recent_audit": [
+        {
+          "ts": "2026-05-20T19:35:32.250Z",
+          "tenant": "hot-flash-co",
+          "actor": "orders-watcher",
+          "action": "poll_error",
+          "error": "fetch failed"
+        },
+        {
+          "ts": "2026-05-20T18:32:46.411Z",
+          "tenant": "hot-flash-co",
+          "actor": "orders-watcher",
+          "action": "poll_error",
+          "error": "fetch failed"
+        },
+        {
+          "ts": "2026-05-20T17:31:32.310Z",
+          "tenant": "hot-flash-co",
+          "actor": "orders-watcher",
+          "action": "poll_error",
+          "error": "fetch failed"
+        },
+        {
+          "ts": "2026-05-20T17:15:02.757Z",
+          "tenant": "hot-flash-co",
+          "actor": "social-orchestrator",
+          "action": "queue_built",
+          "count": 0,
+          "date": "2026-05-20"
+        },
+        {
+          "ts": "2026-05-20T16:29:33.602Z",
+          "tenant": "hot-flash-co",
+          "actor": "orders-watcher",
+          "action": "poll_error",
+          "error": "fetch failed"
+        },
+        {
+          "ts": "2026-05-20T15:42:05.909Z",
+          "tenant": "hot-flash-co",
+          "actor": "full-content-pipeline",
+          "action": "pipeline_completed"
+        },
+        {
+          "ts": "2026-05-20T15:42:05.866Z",
+          "tenant": "hot-flash-co",
+          "actor": "social-orchestrator",
+          "action": "queue_built",
+          "count": 0,
+          "date": "2026-05-20"
+        },
+        {
+          "ts": "2026-05-20T15:22:12.174Z",
+          "tenant": "hot-flash-co",
+          "actor": "orders-watcher",
+          "action": "poll_error",
+          "error": "fetch failed"
+        },
+        {
+          "ts": "2026-05-20T15:04:56.701Z",
+          "tenant": "hot-flash-co",
+          "actor": "marketing-engine",
+          "action": "fatal_error",
+          "error": "fetch failed"
+        },
+        {
+          "ts": "2026-05-20T14:15:12.367Z",
+          "tenant": "hot-flash-co",
+          "actor": "orders-watcher",
+          "action": "poll_error",
+          "error": "fetch failed"
+        },
+        {
+          "ts": "2026-05-20T13:00:03.620Z",
+          "tenant": "hot-flash-co",
+          "actor": "daily-engine",
+          "action": "fatal_error",
+          "error": "gemini 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 56.461686184s.\",\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Learn more about Gemini API quotas\",\n            \"url\": \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n          }\n        ]\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.QuotaFailure\",\n        \"violations\": [\n          {\n            \"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\n            \"quotaId\": \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\n            \"quotaDimensions\": {\n              \"location\": \"global\",\n              \"model\": \"gemini-2.5-flash\"\n            },\n            \"quotaValue\": \"20\"\n          }\n        ]\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.RetryInfo\",\n        \"retryDelay\": \"56s\"\n      }\n    ]\n  }\n}\n"
+        },
+        {
+          "ts": "2026-05-20T13:00:03.300Z",
+          "tenant": "hot-flash-co",
+          "actor": "daily-engine",
+          "action": "run_started"
+        },
         {
           "ts": "2026-05-20T00:59:28.773Z",
           "tenant": "hot-flash-co",
@@ -174,119 +258,6 @@
           "tenant": "hot-flash-co",
           "actor": "daily-engine",
           "action": "run_started"
-        },
-        {
-          "ts": "2026-05-19T02:31:51.806Z",
-          "tenant": "hot-flash-co",
-          "actor": "full-content-pipeline",
-          "action": "pipeline_completed"
-        },
-        {
-          "ts": "2026-05-19T02:18:44.273Z",
-          "tenant": "hot-flash-co",
-          "actor": "brand-site-builder",
-          "action": "site_generated",
-          "pages": 10
-        },
-        {
-          "ts": "2026-05-18T22:16:42.379Z",
-          "tenant": "hot-flash-co",
-          "actor": "printify-product-creator",
-          "action": "product_created",
-          "slug": "fan-on-please",
-          "product_id": "6a0b8fc06773bcb0850ab44b",
-          "title": "Yes The Fan Stays On Mug | Hot Flash Humor For Menopause",
-          "image_model": "pollinations-flux"
-        },
-        {
-          "ts": "2026-05-18T22:16:42.379Z",
-          "tenant": "hot-flash-co",
-          "actor": "printify-product-creator",
-          "action": "product_created",
-          "slug": "menopause-survivor-club",
-          "product_id": "6a0b8f67e859ea852a0bcba4",
-          "title": "Menopause Survivor Club Mug | Vintage Varsity Patch Humor",
-          "image_model": "pollinations-flux"
-        },
-        {
-          "ts": "2026-05-18T22:16:42.379Z",
-          "tenant": "hot-flash-co",
-          "actor": "printify-product-creator",
-          "action": "product_created",
-          "slug": "sweating-since",
-          "product_id": "6a0b8f1078740a01af03c604",
-          "title": "Sweating For No Reason Since 2024 Mug | Hot Flash Humor",
-          "image_model": "pollinations-flux"
-        },
-        {
-          "ts": "2026-05-18T22:16:42.379Z",
-          "tenant": "hot-flash-co",
-          "actor": "printify-product-creator",
-          "action": "product_created",
-          "slug": "menopause-plot-twist",
-          "product_id": "6a0b8eb256c75ac4900ffeda",
-          "title": "Menopause Nature's Plot Twist Mug | Vintage Book Lover Gift",
-          "image_model": "pollinations-flux"
-        },
-        {
-          "ts": "2026-05-18T22:16:42.379Z",
-          "tenant": "hot-flash-co",
-          "actor": "printify-product-creator",
-          "action": "product_created",
-          "slug": "not-yelling",
-          "product_id": "6a0b8e58ed986214f10375f7",
-          "title": "I'm Not Yelling I'm Perimenopausal Mug | Funny Menopause Gift",
-          "image_model": "pollinations-flux"
-        },
-        {
-          "ts": "2026-05-18T22:16:42.379Z",
-          "tenant": "hot-flash-co",
-          "actor": "printify-product-creator",
-          "action": "product_created",
-          "slug": "decaf-hate-crime",
-          "product_id": "6a0b8dfef4d367ece806878a",
-          "title": "Decaf Is A Hate Crime Mug | Funny Coffee Lover Gift",
-          "image_model": "pollinations-flux"
-        },
-        {
-          "ts": "2026-05-18T22:16:42.379Z",
-          "tenant": "hot-flash-co",
-          "actor": "printify-product-creator",
-          "action": "product_created",
-          "slug": "power-surge",
-          "product_id": "6a0b8db047e067e27001964c",
-          "title": "Power Surge In Progress Mug | Hot Flash Warning Sign Humor",
-          "image_model": "pollinations-flux"
-        },
-        {
-          "ts": "2026-05-18T22:16:42.379Z",
-          "tenant": "hot-flash-co",
-          "actor": "printify-product-creator",
-          "action": "product_created",
-          "slug": "estrogen-called-in-sick",
-          "product_id": "6a0b8d4a6773bcb0850ab28d",
-          "title": "My Estrogen Called In Sick Mug | Funny Menopause Coffee Cup",
-          "image_model": "pollinations-flux"
-        },
-        {
-          "ts": "2026-05-18T22:16:42.379Z",
-          "tenant": "hot-flash-co",
-          "actor": "printify-product-creator",
-          "action": "product_created",
-          "slug": "personal-summer",
-          "product_id": "6a0b8cf10b1d063f8e015f68",
-          "title": "Personal Summer Mug | Hot Flash Humor Coffee Cup",
-          "image_model": "pollinations-flux"
-        },
-        {
-          "ts": "2026-05-18T22:16:42.379Z",
-          "tenant": "hot-flash-co",
-          "actor": "printify-product-creator",
-          "action": "product_created",
-          "slug": "perimenopausal-not-crazy",
-          "product_id": "6a0b8c9973e0ee82eb056531",
-          "title": "She Is Perimenopausal, Not Crazy Mug | Funny Menopause Gift",
-          "image_model": "pollinations-flux"
         }
       ],
       "content_counts": {
@@ -398,37 +369,65 @@
         "posted": 0,
         "byPlatform": {}
       }
+    },
+    {
+      "slug": "day14-realty",
+      "display_name": "Day14 Realty",
+      "type": "real-estate",
+      "stage": "launching",
+      "tagline": "County-records deal sourcing + property evaluation.",
+      "revenue_cents": 0,
+      "orders": 0,
+      "streak": 0,
+      "recent_audit": [],
+      "content_counts": {
+        "pinterestPins": 0,
+        "tiktokScripts": 0,
+        "blogDrafts": 0,
+        "newsletterIssues": 0,
+        "aiVideos": 0,
+        "csDrafts": 0,
+        "marketingDrafts": 0,
+        "rawFootage": 0,
+        "redditDrafts": 0
+      },
+      "queue": {
+        "queued": 0,
+        "approved": 0,
+        "posted": 0,
+        "byPlatform": {}
+      }
     }
   ],
   "heartbeats": [
     {
       "name": "auto-restart-watchdog",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
       "name": "auto-restart-watchdog-cycle",
       "status": "healthy",
-      "ageMin": 1,
-      "cadenceMin": 1
+      "ageMin": 2,
+      "cadenceMin": 2
     },
     {
       "name": "customer-success",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
       "name": "expansion-prompter",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
       "name": "gmail-cs-triage",
       "status": "healthy",
-      "ageMin": 20,
+      "ageMin": 35,
       "cadenceMin": 30
     },
     {
@@ -440,7 +439,7 @@
     {
       "name": "growth-watcher",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
@@ -451,8 +450,8 @@
     },
     {
       "name": "lawn-care-gm-kennum-lawn-care",
-      "status": "stale",
-      "ageMin": 266,
+      "status": "error",
+      "ageMin": 1143,
       "cadenceMin": 1
     },
     {
@@ -464,13 +463,13 @@
     {
       "name": "outbox-deadletter",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
       "name": "outbox-deadletter-cycle",
-      "status": "healthy",
-      "ageMin": 1,
+      "status": "stale",
+      "ageMin": 15,
       "cadenceMin": 1
     },
     {
@@ -480,27 +479,33 @@
       "cadenceMin": 1
     },
     {
+      "name": "realty-scout-day14-realty",
+      "status": "stale",
+      "ageMin": 28,
+      "cadenceMin": 1
+    },
+    {
       "name": "recursive-expansion",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
       "name": "skill-multiplier",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
       "name": "stripe-cs-loop",
-      "status": "stale",
-      "ageMin": 336,
+      "status": "error",
+      "ageMin": 1214,
       "cadenceMin": 60
     },
     {
       "name": "system-pulse",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
@@ -511,23 +516,23 @@
     },
     {
       "name": "vercel-deploy-monitor",
-      "status": "healthy",
-      "ageMin": 55,
-      "cadenceMin": 301
+      "status": "error",
+      "ageMin": 999,
+      "cadenceMin": null
     },
     {
       "name": "video-pipeline",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1
     }
   ],
   "skill_counts": {
     "live": 274,
-    "drafts": 1
+    "drafts": 2
   },
   "expansion_state": {
-    "skills_generated": 1
+    "skills_generated": 2
   },
   "opportunities": [
     {
@@ -612,11 +617,38 @@
       "status": "open"
     },
     {
+      "id": "simplified-swppp-compliance",
+      "niche": "Streamlined Stormwater Pollution Prevention Plan (SWPPP) and compliance for small businesses",
+      "total_score": 85,
+      "suggested_archetype": "saas",
+      "rationale": "Small businesses lack the dedicated compliance teams and advanced systems of larger corporations, making environmental regulations like stormwater management a disproportionate burden. A simplified SaaS solution can significantly reduce the complexity, time, and financial risk associated with SWPPP creation, inspections, and reporting, helping these businesses avoid costly penalties and operationa",
+      "pitched": true,
+      "status": "open"
+    },
+    {
       "id": "ethical-fashion-truth",
       "niche": "Verifying ethical and sustainable fashion claims amidst widespread greenwashing.",
       "total_score": 84.75,
       "suggested_archetype": "newsletter",
       "rationale": "Consumers are overwhelmed by conflicting 'sustainable' claims and deeply distrustful of brands due to widespread greenwashing. A specialized newsletter provides a low-overhead, high-value solution for a solo founder to deliver deeply researched, transparent, and actionable information, helping consumers make genuinely ethical fashion choices and building a loyal community.",
+      "pitched": false,
+      "status": "open"
+    },
+    {
+      "id": "gov-contracting-assistant",
+      "niche": "Guided government contracting and proposal assistance for small businesses",
+      "total_score": 84.75,
+      "suggested_archetype": "saas",
+      "rationale": "The complexity and fragmentation of government procurement information represent a significant barrier for small businesses trying to access a massive market with set-aside opportunities. A SaaS platform that simplifies opportunity discovery, provides guided proposal writing, and helps manage compliance can empower these businesses to compete effectively and secure stable revenue streams.",
+      "pitched": true,
+      "status": "open"
+    },
+    {
+      "id": "niche-inventory-tracker",
+      "niche": "Flexible inventory and materials tracking for niche makers and specialized shops",
+      "total_score": 84.75,
+      "suggested_archetype": "saas",
+      "rationale": "Many small businesses in niche manufacturing and retail sectors face unique inventory challenges that are poorly addressed by generic or overly complex ERP solutions. A highly customizable, yet simple and affordable SaaS can provide the specific tracking, management, and reporting features needed for non-standard inventory, significantly reducing errors, improving efficiency, and freeing up capita",
       "pitched": false,
       "status": "open"
     },
@@ -731,6 +763,90 @@
   ],
   "empire_battle_log": [
     {
+      "ts": "2026-05-20T19:35:32.250Z",
+      "tenant": "hot-flash-co",
+      "actor": "orders-watcher",
+      "action": "poll_error",
+      "error": "fetch failed"
+    },
+    {
+      "ts": "2026-05-20T18:32:46.411Z",
+      "tenant": "hot-flash-co",
+      "actor": "orders-watcher",
+      "action": "poll_error",
+      "error": "fetch failed"
+    },
+    {
+      "ts": "2026-05-20T17:31:32.310Z",
+      "tenant": "hot-flash-co",
+      "actor": "orders-watcher",
+      "action": "poll_error",
+      "error": "fetch failed"
+    },
+    {
+      "ts": "2026-05-20T17:15:02.757Z",
+      "tenant": "hot-flash-co",
+      "actor": "social-orchestrator",
+      "action": "queue_built",
+      "count": 0,
+      "date": "2026-05-20"
+    },
+    {
+      "ts": "2026-05-20T16:29:33.602Z",
+      "tenant": "hot-flash-co",
+      "actor": "orders-watcher",
+      "action": "poll_error",
+      "error": "fetch failed"
+    },
+    {
+      "ts": "2026-05-20T15:42:05.909Z",
+      "tenant": "hot-flash-co",
+      "actor": "full-content-pipeline",
+      "action": "pipeline_completed"
+    },
+    {
+      "ts": "2026-05-20T15:42:05.866Z",
+      "tenant": "hot-flash-co",
+      "actor": "social-orchestrator",
+      "action": "queue_built",
+      "count": 0,
+      "date": "2026-05-20"
+    },
+    {
+      "ts": "2026-05-20T15:22:12.174Z",
+      "tenant": "hot-flash-co",
+      "actor": "orders-watcher",
+      "action": "poll_error",
+      "error": "fetch failed"
+    },
+    {
+      "ts": "2026-05-20T15:04:56.701Z",
+      "tenant": "hot-flash-co",
+      "actor": "marketing-engine",
+      "action": "fatal_error",
+      "error": "fetch failed"
+    },
+    {
+      "ts": "2026-05-20T14:15:12.367Z",
+      "tenant": "hot-flash-co",
+      "actor": "orders-watcher",
+      "action": "poll_error",
+      "error": "fetch failed"
+    },
+    {
+      "ts": "2026-05-20T13:00:03.620Z",
+      "tenant": "hot-flash-co",
+      "actor": "daily-engine",
+      "action": "fatal_error",
+      "error": "gemini 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 56.461686184s.\",\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Learn more about Gemini API quotas\",\n            \"url\": \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n          }\n        ]\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.QuotaFailure\",\n        \"violations\": [\n          {\n            \"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\n            \"quotaId\": \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\n            \"quotaDimensions\": {\n              \"location\": \"global\",\n              \"model\": \"gemini-2.5-flash\"\n            },\n            \"quotaValue\": \"20\"\n          }\n        ]\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.RetryInfo\",\n        \"retryDelay\": \"56s\"\n      }\n    ]\n  }\n}\n"
+    },
+    {
+      "ts": "2026-05-20T13:00:03.300Z",
+      "tenant": "hot-flash-co",
+      "actor": "daily-engine",
+      "action": "run_started"
+    },
+    {
       "ts": "2026-05-20T01:34:39.084Z",
       "tenant": "kennum-lawn-care",
       "actor": "lawn-care-gm",
@@ -796,103 +912,6 @@
       "actor": "marketing-engine",
       "action": "fatal_error",
       "error": "gemini 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 46.350454559s.\",\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Learn more about Gemini API quotas\",\n            \"url\": \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n          }\n        ]\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.QuotaFailure\",\n        \"violations\": [\n          {\n            \"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\n            \"quotaId\": \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\n            \"quotaDimensions\": {\n              \"location\": \"global\",\n              \"model\": \"gemini-2.5-flash\"\n            },\n            \"quotaValue\": \"20\"\n          }\n        ]\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.RetryInfo\",\n        \"retryDelay\": \"46s\"\n      }\n    ]\n  }\n}\n"
-    },
-    {
-      "ts": "2026-05-20T00:30:09.746Z",
-      "tenant": "hot-flash-co",
-      "actor": "full-content-pipeline",
-      "action": "pipeline_completed"
-    },
-    {
-      "ts": "2026-05-20T00:30:09.421Z",
-      "tenant": "hot-flash-co",
-      "actor": "social-orchestrator",
-      "action": "queue_built",
-      "count": 0,
-      "date": "2026-05-20"
-    },
-    {
-      "ts": "2026-05-20T00:30:08.855Z",
-      "tenant": "hot-flash-co",
-      "actor": "brand-site-builder",
-      "action": "site_generated",
-      "pages": 10
-    },
-    {
-      "ts": "2026-05-20T00:30:08.820Z",
-      "tenant": "hot-flash-co",
-      "actor": "social-orchestrator",
-      "action": "queue_built",
-      "count": 0,
-      "date": "2026-05-20"
-    },
-    {
-      "ts": "2026-05-20T00:00:35.587Z",
-      "tenant": "hot-flash-co",
-      "actor": "brand-site-sweep",
-      "action": "site_swept",
-      "gaps": 2,
-      "fixed": 1
-    },
-    {
-      "ts": "2026-05-19T21:58:31.737Z",
-      "tenant": "hot-flash-co",
-      "actor": "orders-watcher",
-      "action": "poll_error",
-      "error": "fetch failed"
-    },
-    {
-      "ts": "2026-05-19T20:06:55.000Z",
-      "tenant": "hot-flash-co",
-      "actor": "scheduled-task-day14-4pm",
-      "action": "pipeline_complete",
-      "scripts": 3,
-      "videos": 1,
-      "variants": 6,
-      "queued": 3,
-      "sync_pushed": false,
-      "sync_note": "git commit/push blocked by sandbox file permissions",
-      "report_path": "telegram outbox queued"
-    },
-    {
-      "ts": "2026-05-19T20:05:52.537Z",
-      "tenant": "hot-flash-co",
-      "actor": "social-orchestrator",
-      "action": "queue_built",
-      "count": 3,
-      "date": "2026-05-19"
-    },
-    {
-      "ts": "2026-05-19T20:05:07.000Z",
-      "tenant": "hot-flash-co",
-      "actor": "scheduled-task-day14-4pm",
-      "action": "video_created_fallback",
-      "slug": "thermostat-is-a-suggestion",
-      "duration_sec": 22,
-      "path": "~/Documents/businesses/hot-flash-co/ai-videos/2026-05-19T20-04-38-thermostat-is-a-suggestion/thermostat-is-a-suggestion.mp4",
-      "note": "Pollinations unreachable + macOS say unavailable in sandbox. Built lavfi-color + drawtext + burned SRT captions placeholder. Not for posting as-is."
-    },
-    {
-      "ts": "2026-05-19T20:03:23.000Z",
-      "tenant": "hot-flash-co",
-      "actor": "scheduled-task-day14-4pm",
-      "action": "scripts_generated_fallback",
-      "count": 3,
-      "folder": "~/Documents/businesses/hot-flash-co/tiktok-scripts/2026-05-19",
-      "note": "Generated by on-task agent because Gemini API unreachable from sandbox egress allowlist."
-    },
-    {
-      "ts": "2026-05-19T20:00:35.503Z",
-      "tenant": "hot-flash-co",
-      "actor": "full-content-pipeline",
-      "action": "pipeline_completed"
-    },
-    {
-      "ts": "2026-05-19T19:02:00.906Z",
-      "tenant": "hot-flash-co",
-      "actor": "marketing-engine",
-      "action": "fatal_error",
-      "error": "fetch failed"
     }
   ],
   "human_todos": [
@@ -949,6 +968,19 @@
       "source": "claude-direct"
     },
     {
+      "id": "todo-8",
+      "seq": 8,
+      "tenant": "day14-realty",
+      "title": "Feed the real estate intake — drop a county property CSV",
+      "detail": "The real estate segment is built and the agents run, but they have no data yet. Download a property-appraiser data export from a county site (e.g. Lee County leepa.org, Collier collierappraiser.com) and drop the CSV into businesses/day14-realty/intake/. The intake agent ingests + evaluates it on the next scout run.",
+      "category": "data",
+      "priority": "high",
+      "status": "open",
+      "created_at": "2026-05-20T20:15:00.000Z",
+      "completed_at": null,
+      "source": "claude-direct"
+    },
+    {
       "id": "todo-5",
       "seq": 5,
       "tenant": "hot-flash-co",
@@ -973,6 +1005,19 @@
       "created_at": "2026-05-20T00:00:35.586Z",
       "completed_at": null,
       "source": "brand-site-sweep"
+    },
+    {
+      "id": "todo-9",
+      "seq": 9,
+      "tenant": "day14-realty",
+      "title": "Add a property-valuation API key (REALESTATE_API_KEY)",
+      "detail": "Optional but recommended. The evaluation layer already scores deals from county data alone; a licensed API (RentCast is cheapest — rentcast.io) adds AVM value + rent estimates for sharper flip/rental scores. Generate a key, then paste it to Claude to add as REALESTATE_API_KEY in .env.local + Vercel.",
+      "category": "credentials",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-05-20T20:15:00.000Z",
+      "completed_at": null,
+      "source": "claude-direct"
     }
   ],
   "bot_username": "Day14_OS_bot"
