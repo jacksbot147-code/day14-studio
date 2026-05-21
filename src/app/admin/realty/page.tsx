@@ -1,6 +1,6 @@
 import { loadTenantOps, loadEmpireState, type REEvaluation, type RETarget } from "@/lib/admin-state";
 import { AdminNav, ADMIN_CSS } from "../layout-bits";
-import { AddCountyBox, DealBoard } from "./realty-interactive";
+import { AddCountyBox, UploadCsvBox, DealBoard } from "./realty-interactive";
 
 export const metadata = { title: "Realty — Day14 Admin", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -109,6 +109,8 @@ export default async function RealtyDashboard() {
           })}
         </div>
       )}
+
+      <UploadCsvBox targets={targets} />
 
       <div className="section-header"><div className="section-title">Ranked deals</div></div>
       <DealBoard deals={deals} />

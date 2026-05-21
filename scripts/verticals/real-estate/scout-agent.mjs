@@ -15,8 +15,9 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { homedir } from "node:os";
-import { KNOWLEDGE, scaffold, opsDir, loadStore, money, auditRE } from "./brain.mjs";
+import { KNOWLEDGE, scaffold, opsDir, loadStore, money, auditRE, writeOpsSnapshot } from "./brain.mjs";
 import { loadTargets } from "./targets.mjs";
+import * as countyData from "./county-data-fetcher.mjs";
 import * as intake from "./intake-agent.mjs";
 import * as countyFeed from "./county-feed-agent.mjs";
 import * as distressMonitor from "./distress-monitor.mjs";
@@ -38,6 +39,7 @@ export async function operate(slug) {
   const created = await scaffold(slug);
   const results = {};
   for (const [name, agent] of [
+    ["countyData", countyData],
     ["intake", intake],
     ["countyFeed", countyFeed],
     ["distress", distressMonitor],
@@ -63,6 +65,7 @@ export async function operate(slug) {
     `Generated: ${new Date().toISOString()}`,
     ``,
     `## Funnel`,
+    `- County data: ${results.countyData?.fetched ?? 0} FL county feed(s) auto-sourced · +${results.countyData?.properties ?? 0} parcels${results.countyData?.errors?.length ? ` · ${results.countyData.errors.length} error(s)` : ""}`,
     `- Intake: +${results.intake.ingested ?? 0} new · ${results.intake.total_properties ?? 0} properties tracked`,
     `- County feed: ${results.countyFeed?.targets ?? 0} watched · ${results.countyFeed?.active ?? 0} active · ${results.countyFeed?.needs_csv ?? 0} awaiting CSV${results.countyFeed?.api_sourced ? ` · +${results.countyFeed.api_sourced} via API` : ""}`,
     `- Distress scan: ${results.distress?.hot_leads ?? 0} hot leads`,
@@ -103,6 +106,9 @@ export async function operate(slug) {
     properties: results.intake.total_properties ?? 0,
     a_tier: results.evaluation.tier_a ?? 0,
   });
+
+  // Mirror this run into the dashboard snapshot so it shows up immediately.
+  await writeOpsSnapshot(slug);
 
   return { slug, scaffolded: created, results, top_deal: top[0] || null };
 }

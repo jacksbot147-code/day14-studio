@@ -163,6 +163,11 @@ export const ADMIN_CSS = `
 .admin-shell .toolbar-count { font-size:12px; color:var(--muted); margin:0 0 10px; }
 .admin-shell .add-county { display:flex; gap:8px; margin-bottom:6px; flex-wrap:wrap; }
 .admin-shell .add-county-hint { font-size:12px; color:var(--muted); margin:0 0 14px; line-height:1.5; }
+.admin-shell .upload-csv { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:12px 0 6px; }
+.admin-shell .upload-file { display:inline-flex; align-items:center; padding:9px 14px; border:1px solid var(--border); border-radius:9px; background:var(--surface); font-size:13px; color:var(--muted); cursor:pointer; box-shadow:var(--shadow); max-width:300px; }
+.admin-shell .upload-file:hover { border-color:var(--border-strong); color:var(--text); }
+.admin-shell .upload-file input { display:none; }
+.admin-shell .upload-file span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .admin-shell .add-county-btn { display:inline-flex; align-items:center; padding:9px 16px; background:var(--accent); color:#fff; border:none; border-radius:9px; font-size:13px; font-weight:600; white-space:nowrap; box-shadow:var(--shadow); cursor:pointer; font-family:inherit; }
 .admin-shell .add-county-btn:hover { background:var(--accent-text); }
 .admin-shell .add-county-btn:disabled { background:var(--surface-3); color:var(--muted); cursor:not-allowed; box-shadow:none; }

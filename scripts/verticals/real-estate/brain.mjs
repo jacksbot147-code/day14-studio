@@ -17,8 +17,11 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
+import { fileURLToPath } from "node:url";
 
 const BIZ = path.join(homedir(), "Documents/businesses");
+// Repo root, from this file at scripts/verticals/real-estate/brain.mjs.
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
 
 export const KNOWLEDGE = {
   segment: "Real estate — county-records deal sourcing + property evaluation",
@@ -208,4 +211,32 @@ export async function auditRE(slug, record) {
   const f = path.join(BIZ, slug, "audit-log.jsonl");
   await fs.mkdir(path.dirname(f), { recursive: true });
   await fs.appendFile(f, JSON.stringify({ ts: new Date().toISOString(), tenant: slug, ...record }) + "\n");
+}
+
+/**
+ * Mirror a segment's ops/ stores into public/data/ops/<slug>.json so the
+ * dashboard reflects the latest run immediately — before the next scheduled
+ * empire-state sync reconciles it. Best-effort; never throws.
+ */
+export async function writeOpsSnapshot(slug) {
+  try {
+    const snapPath = path.join(REPO_ROOT, "public/data/ops", `${slug}.json`);
+    const snap = { slug, generated_at: new Date().toISOString() };
+    const dir = opsDir(slug);
+    if (existsSync(dir)) {
+      for (const f of await fs.readdir(dir)) {
+        if (!f.endsWith(".json")) continue;
+        try {
+          snap[f.replace(/\.json$/, "")] = JSON.parse(await fs.readFile(path.join(dir, f), "utf8"));
+        } catch {
+          /* skip an unreadable store */
+        }
+      }
+    }
+    await fs.mkdir(path.dirname(snapPath), { recursive: true });
+    await fs.writeFile(snapPath, JSON.stringify(snap, null, 2));
+    return true;
+  } catch {
+    return false;
+  }
 }

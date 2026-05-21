@@ -8,6 +8,7 @@
   "coordinator": "scripts/verticals/real-estate/scout-agent.mjs",
   "agents": [
     { "name": "realty-scout", "file": "scripts/verticals/real-estate/scout-agent.mjs", "role": "Coordinator — runs the funnel, ranks deals, writes the Scout brief.", "build_and_operate": true },
+    { "name": "re-county-data-fetcher", "file": "scripts/verticals/real-estate/county-data-fetcher.mjs", "capability": "county-data", "role": "Auto-sources Florida counties from the FDOR statewide cadastral API (all 67 counties, official public records — no scraping).", "build_and_operate": true },
     { "name": "re-intake-agent", "file": "scripts/verticals/real-estate/intake-agent.mjs", "capability": "intake", "role": "Ingests county property-record CSV exports into the property store.", "build_and_operate": true },
     { "name": "re-county-feed-agent", "file": "scripts/verticals/real-estate/county-feed-agent.mjs", "capability": "county-feed", "role": "Works the county watch list — sources properties per county (API + CSV), files records to-dos, keeps targets monitored.", "build_and_operate": true },
     { "name": "re-enrichment-agent", "file": "scripts/verticals/real-estate/enrichment-agent.mjs", "capability": "enrichment", "role": "Adds AVM value + rent estimate via a licensed property API.", "build_and_operate": true },

@@ -20,11 +20,15 @@ and driven by the Real-Estate Deal Scout agent.
 - **County watch list** *(shipped)* — Telegram the bot a county or a metro
   ("realty Lee County, FL" / "realty Tampa Bay area"); each becomes a standing
   target the scout sources, scores, and re-scans every run. Metros auto-expand
-  to their counties. The county-feed agent pulls on-market listings via the
-  licensed API when a key is set, and otherwise files a precise to-do for the
-  county's official records export — which auto-ingests the moment it's dropped.
-- **County-feed connectors** — direct per-county official data feeds so even
-  the CSV step disappears for counties that publish a bulk endpoint.
+  to their counties.
+- **County-data-fetcher** *(shipped)* — auto-sources any **Florida** county
+  from the FDOR statewide cadastral ArcGIS API (all 67 counties, official
+  public records — no scraping, no manual download). Add a FL county and its
+  property roll loads itself. Non-FL states use the dashboard CSV upload until
+  a connector for that state is added.
+- **More state connectors** — extend the fetcher with per-state official data
+  APIs (e.g. other open-data / ArcGIS parcel services) so coverage grows
+  beyond Florida.
 - **Owner-outreach drafting** — for A-tier wholesale leads, draft compliant
   outreach for Jack to review and send.
 
@@ -44,8 +48,8 @@ deals — exactly the motivated-seller pipeline.
 
 ## Agent roster — the full realty cluster
 
-Shipped: realty-scout (coordinator), intake, county-feed, enrichment,
-evaluation, distress-monitor, comp-analyst, deal-alerter.
+Shipped: realty-scout (coordinator), county-data-fetcher, intake, county-feed,
+enrichment, evaluation, distress-monitor, comp-analyst, deal-alerter.
 
 Planned:
 

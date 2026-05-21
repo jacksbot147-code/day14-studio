@@ -135,6 +135,95 @@ export function AddCountyBox({ botUsername }: { botUsername: string | null }) {
   );
 }
 
+/**
+ * Upload a county property-records CSV straight from the dashboard. Posts the
+ * file to the local API, which drops it into intake/ and runs the scout.
+ */
+export function UploadCsvBox({
+  targets,
+}: {
+  targets: { id: string; county: string; label: string }[];
+}) {
+  const router = useRouter();
+  const [county, setCounty] = useState(targets[0]?.county ?? "");
+  const [file, setFile] = useState<File | null>(null);
+  const [state, setState] = useState<"idle" | "uploading" | "done" | "error">("idle");
+  const [msg, setMsg] = useState("");
+
+  if (targets.length === 0) return null;
+
+  async function upload() {
+    if (!file || state === "uploading") return;
+    setState("uploading");
+    setMsg("");
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("county", county);
+    let res: Response;
+    try {
+      res = await fetch("/api/realty/upload-csv", { method: "POST", body: fd });
+    } catch {
+      setState("error");
+      setMsg("Upload failed — make sure the local admin (localhost) is running.");
+      return;
+    }
+    if (res.status === 503) {
+      setState("error");
+      setMsg("CSV upload works on the local dashboard (localhost) — the hosted day14.us copy can't reach your Mac.");
+      return;
+    }
+    let data: { ok?: boolean; message?: string; error?: string } = {};
+    try {
+      data = await res.json();
+    } catch {
+      /* unparseable */
+    }
+    if (data.ok) {
+      setState("done");
+      setMsg(data.message || "Uploaded — the scout is scoring it now.");
+      setFile(null);
+      router.refresh();
+    } else {
+      setState("error");
+      setMsg(data.error || "Upload failed.");
+    }
+  }
+
+  const hintColor =
+    state === "done" ? "var(--green)" : state === "error" ? "var(--amber)" : undefined;
+
+  return (
+    <div>
+      <div className="upload-csv">
+        <select className="sort-select" value={county} onChange={(e) => setCounty(e.target.value)}>
+          {targets.map((t) => (
+            <option key={t.id} value={t.county}>{t.label}</option>
+          ))}
+        </select>
+        <label className="upload-file">
+          <input
+            type="file"
+            accept=".csv"
+            onChange={(e) => {
+              setFile(e.target.files?.[0] ?? null);
+              setState("idle");
+              setMsg("");
+            }}
+          />
+          <span>{file ? file.name : "Choose a county CSV…"}</span>
+        </label>
+        <button className="add-county-btn" onClick={upload} disabled={!file || state === "uploading"}>
+          {state === "uploading" ? "Uploading…" : "Upload + score →"}
+        </button>
+      </div>
+      <div className="add-county-hint" style={hintColor ? { color: hintColor } : undefined}>
+        {msg ||
+          "Have a county's property-records CSV? Pick the county, choose the file — the scout ingests and scores it. No folders, no Telegram."}
+      </div>
+    </div>
+  );
+}
+
 const TIERS = [
   { id: "all", label: "All tiers" },
   { id: "A", label: "A" },
