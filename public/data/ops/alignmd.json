@@ -1,0 +1,68 @@
+{
+  "slug": "alignmd",
+  "generated_at": "2026-05-21T02:12:14.381Z",
+  "build": {
+    "name": "AlignMD",
+    "tagline": "Precision Matching for Modern Healthcare",
+    "summary": "Two-sided healthcare staffing platform — clinicians (NP/PA/MD/DO/CRNA) matched to facility jobs by a credential-aware, rule-based match score.",
+    "current_phase": 0,
+    "updated_at": "2026-05-21T02:30:00.000Z",
+    "next_action": "Provision the Supabase project — run ~/Documents/alignmd/provision.sh and paste the Management API token.",
+    "phases": [
+      {
+        "n": 0,
+        "name": "Security foundation",
+        "status": "scaffolded",
+        "detail": "Data model (~18 tables), audit-trail triggers, and row-level security written as Supabase migrations. Next.js app skeleton scaffolded. Awaiting Supabase project provisioning."
+      },
+      {
+        "n": 1,
+        "name": "Provider CRM core",
+        "status": "planned",
+        "detail": "Provider profiles, credential tracking, 30/60/90-day expiry alerts, permissioned document upload, activity log, pipeline board."
+      },
+      {
+        "n": 2,
+        "name": "Jobs + Matching",
+        "status": "planned",
+        "detail": "Facility/job profiles, procedure catalog, the rule-based match score. End of Phase 2 = a working MVP."
+      },
+      {
+        "n": 3,
+        "name": "Provider intake & onboarding",
+        "status": "planned",
+        "detail": "Self-service application/survey, CV builder, verified references, shift-based availability blocks."
+      },
+      {
+        "n": 4,
+        "name": "Verification & screening",
+        "status": "planned",
+        "detail": "Background check, malpractice check, reference verification, richer credentialing timeline."
+      },
+      {
+        "n": 5,
+        "name": "State license assistant",
+        "status": "planned",
+        "detail": "Survey-driven, per-state license application helper that pre-fills from uploaded documents."
+      },
+      {
+        "n": 6,
+        "name": "Reporting, comms & scale",
+        "status": "planned",
+        "detail": "Submissions/fills/time-to-fill reporting, SMS + email outreach, search hardening."
+      }
+    ],
+    "decisions_pending": [
+      "SSN storage — recommendation: do not store the full SSN",
+      "Background-check vendor",
+      "Malpractice data — store in-platform vs reference the result only",
+      "Verification model — manual coordinator workflow vs vendor integration",
+      "Provider logins in the MVP, or recruiter-only until Phase 3",
+      "Compact / IMLC handling in the match logic"
+    ],
+    "links": {
+      "build_plan": "AlignMD-Build-Plan.md",
+      "project_dir": "~/Documents/alignmd/"
+    }
+  }
+}
