@@ -69,12 +69,14 @@ export function flCountyCode(target) {
   return FL_DOR_CODES[norm(target.county)] ?? null;
 }
 
-/** One page of the cadastral query (single attempt). No orderBy — sorting a
- *  county-sized result set server-side is what made earlier runs time out. */
+/** One page of the cadastral query (single attempt). Orders by OBJECTID —
+ *  required for resultOffset paging, and indexed so it costs nothing (unlike
+ *  ordering by JV, which made earlier runs time out). */
 async function fetchPageOnce(coNo, offset) {
   const params = new URLSearchParams({
     where: `CO_NO=${coNo}`,
     outFields: OUT_FIELDS,
+    orderByFields: "OBJECTID",
     returnGeometry: "false",
     resultOffset: String(offset),
     resultRecordCount: String(PAGE),
