@@ -140,10 +140,29 @@ export interface RETarget {
   a_tier: number;
 }
 
+export interface AlignmdBuildPhase {
+  n: number;
+  name: string;
+  status: string;
+  detail: string;
+}
+export interface AlignmdBuild {
+  name?: string;
+  tagline?: string;
+  summary?: string;
+  current_phase?: number;
+  updated_at?: string;
+  next_action?: string;
+  phases?: AlignmdBuildPhase[];
+  decisions_pending?: string[];
+  links?: { build_plan?: string; project_dir?: string };
+}
+
 export interface TenantOps {
   slug?: string;
   generated_at?: string;
   targets?: RETarget[];
+  build?: AlignmdBuild;
   leads?: Array<{ id: string; name?: string; status?: string }>;
   quotes?: Array<{ id: string; status?: string; amount_cents?: number; customer?: string; service?: string }>;
   jobs?: Array<{ id: string; status?: string; customer?: string; service?: string; day?: string; zone?: string }>;

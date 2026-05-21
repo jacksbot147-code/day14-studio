@@ -30,6 +30,12 @@ function stageInfo(stage: string): { cls: string; label: string } {
   return { cls: "stage-live", label: stage };
 }
 
+// Segments with their own dedicated admin page (vs. the generic tenant page).
+const SEGMENT_PAGES: Record<string, string> = {
+  "day14-realty": "/admin/realty",
+  alignmd: "/admin/alignmd",
+};
+
 export default async function AdminOverview() {
   const state = await loadEmpireState();
   const products = await fetchPrintifyProducts();
@@ -178,7 +184,7 @@ export default async function AdminOverview() {
           {businesses.map((t) => {
             const st = stageInfo(t.stage);
             return (
-              <Link key={t.slug} href={`/admin/tenants/${t.slug}`} prefetch={false} className="biz-row">
+              <Link key={t.slug} href={SEGMENT_PAGES[t.slug] || `/admin/tenants/${t.slug}`} prefetch={false} className="biz-row">
                 <div className="biz-main">
                   <div className="biz-name">{t.display_name}</div>
                   <div className="biz-sub">{t.type}{t.tagline ? ` · ${t.tagline}` : ""}</div>

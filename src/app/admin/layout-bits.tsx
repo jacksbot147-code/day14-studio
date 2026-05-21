@@ -221,6 +221,7 @@ export function AdminNav({ active, siteUrl = SITE_URL, siteLabel = "day14.us" }:
   const pages = [
     { id: "empire", href: "/admin", label: "Overview" },
     { id: "realty", href: "/admin/realty", label: "Realty" },
+    { id: "alignmd", href: "/admin/alignmd", label: "AlignMD" },
     { id: "inbox", href: "/admin/inbox", label: "Inbox" },
     { id: "opps", href: "/admin/opportunities", label: "Ideas" },
     { id: "finance", href: "/admin/finance", label: "Finance" },
