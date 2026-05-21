@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-21T01:27:06.943Z",
+  "generated_at": "2026-05-21T01:42:08.931Z",
   "tenants": [
     {
       "slug": "day14",
@@ -305,6 +305,53 @@
       "streak": 0,
       "recent_audit": [
         {
+          "ts": "2026-05-21T01:35:54.372Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "lawn-care-gm",
+          "action": "cluster_run",
+          "scaffolded": 0,
+          "season": "Rainy / peak growth (May–Oct)",
+          "pipeline_value": 0,
+          "at_risk": 0
+        },
+        {
+          "ts": "2026-05-21T01:35:54.371Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "portal-agent",
+          "action": "portal_feeds_built",
+          "portal_feeds": 0
+        },
+        {
+          "ts": "2026-05-21T01:35:54.371Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "crm-agent",
+          "action": "crm_scored",
+          "customers": 0,
+          "at_risk": 0,
+          "upsell_openings": 0
+        },
+        {
+          "ts": "2026-05-21T01:35:54.369Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "scheduling-agent",
+          "action": "routes_optimized",
+          "scheduled": 0,
+          "rolled_for_weather": 0,
+          "avg_density": 0
+        },
+        {
+          "ts": "2026-05-21T01:35:54.368Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "pipeline-agent",
+          "action": "pipeline_advanced",
+          "quoted": 0,
+          "opened": 0,
+          "invoiced": 0,
+          "open_leads": 0,
+          "pipeline_value": 0,
+          "outstanding_cents": 0
+        },
+        {
           "ts": "2026-05-21T01:20:54.341Z",
           "tenant": "kennum-lawn-care",
           "actor": "lawn-care-gm",
@@ -538,53 +585,6 @@
           "open_leads": 0,
           "pipeline_value": 0,
           "outstanding_cents": 0
-        },
-        {
-          "ts": "2026-05-21T00:05:54.335Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "lawn-care-gm",
-          "action": "cluster_run",
-          "scaffolded": 0,
-          "season": "Rainy / peak growth (May–Oct)",
-          "pipeline_value": 0,
-          "at_risk": 0
-        },
-        {
-          "ts": "2026-05-21T00:05:54.334Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "portal-agent",
-          "action": "portal_feeds_built",
-          "portal_feeds": 0
-        },
-        {
-          "ts": "2026-05-21T00:05:54.334Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "crm-agent",
-          "action": "crm_scored",
-          "customers": 0,
-          "at_risk": 0,
-          "upsell_openings": 0
-        },
-        {
-          "ts": "2026-05-21T00:05:54.333Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "scheduling-agent",
-          "action": "routes_optimized",
-          "scheduled": 0,
-          "rolled_for_weather": 0,
-          "avg_density": 0
-        },
-        {
-          "ts": "2026-05-21T00:05:54.331Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "pipeline-agent",
-          "action": "pipeline_advanced",
-          "quoted": 0,
-          "opened": 0,
-          "invoiced": 0,
-          "open_leads": 0,
-          "pipeline_value": 0,
-          "outstanding_cents": 0
         }
       ],
       "content_counts": {
@@ -615,6 +615,92 @@
       "orders": 0,
       "streak": 0,
       "recent_audit": [
+        {
+          "ts": "2026-05-21T01:33:27.626Z",
+          "tenant": "day14-realty",
+          "actor": "realty-scout",
+          "action": "scout_run",
+          "scaffolded": 0,
+          "properties": 0,
+          "a_tier": 0
+        },
+        {
+          "ts": "2026-05-21T01:33:27.625Z",
+          "tenant": "day14-realty",
+          "actor": "re-deal-alerter",
+          "action": "deals_alerted",
+          "a_tier": 0,
+          "new_alerts": 0
+        },
+        {
+          "ts": "2026-05-21T01:33:27.624Z",
+          "tenant": "day14-realty",
+          "actor": "re-evaluation-agent",
+          "action": "deals_scored",
+          "evaluated": 0,
+          "tier_a": 0,
+          "tier_b": 0,
+          "top_deal": "—"
+        },
+        {
+          "ts": "2026-05-21T01:33:27.624Z",
+          "tenant": "day14-realty",
+          "actor": "re-enrichment-agent",
+          "action": "enrichment_skipped_no_key",
+          "pending": 0
+        },
+        {
+          "ts": "2026-05-21T01:33:27.623Z",
+          "tenant": "day14-realty",
+          "actor": "re-comp-analyst",
+          "action": "comps_computed",
+          "properties": 0,
+          "comp_arvs": 0
+        },
+        {
+          "ts": "2026-05-21T01:33:27.621Z",
+          "tenant": "day14-realty",
+          "actor": "re-distress-monitor",
+          "action": "distress_scanned",
+          "scanned": 0,
+          "hot_leads": 0,
+          "top": "—"
+        },
+        {
+          "ts": "2026-05-21T01:33:27.618Z",
+          "tenant": "day14-realty",
+          "actor": "re-county-feed-agent",
+          "action": "county_feed_run",
+          "targets": 3,
+          "active": 0,
+          "needs_csv": 3,
+          "api_sourced": 0
+        },
+        {
+          "ts": "2026-05-21T01:33:27.609Z",
+          "tenant": "day14-realty",
+          "actor": "re-intake-agent",
+          "action": "county_records_ingested",
+          "ingested": 0,
+          "skipped": 0,
+          "files": 0,
+          "total_properties": 0
+        },
+        {
+          "ts": "2026-05-21T01:33:27.601Z",
+          "tenant": "day14-realty",
+          "actor": "re-county-data-fetcher",
+          "action": "county_data_fetched",
+          "fl_counties": 3,
+          "fetched": 0,
+          "properties": 0,
+          "skipped_non_fl": 0,
+          "errors": [
+            "Collier: This operation was aborted",
+            "Lee: This operation was aborted",
+            "Lee: This operation was aborted"
+          ]
+        },
         {
           "ts": "2026-05-21T01:26:41.206Z",
           "tenant": "day14-realty",
@@ -813,84 +899,6 @@
           "tier_a": 0,
           "tier_b": 0,
           "top_deal": "—"
-        },
-        {
-          "ts": "2026-05-21T01:00:54.303Z",
-          "tenant": "day14-realty",
-          "actor": "re-enrichment-agent",
-          "action": "enrichment_skipped_no_key",
-          "pending": 0
-        },
-        {
-          "ts": "2026-05-21T01:00:54.302Z",
-          "tenant": "day14-realty",
-          "actor": "re-comp-analyst",
-          "action": "comps_computed",
-          "properties": 0,
-          "comp_arvs": 0
-        },
-        {
-          "ts": "2026-05-21T01:00:54.301Z",
-          "tenant": "day14-realty",
-          "actor": "re-distress-monitor",
-          "action": "distress_scanned",
-          "scanned": 0,
-          "hot_leads": 0,
-          "top": "—"
-        },
-        {
-          "ts": "2026-05-21T01:00:54.300Z",
-          "tenant": "day14-realty",
-          "actor": "re-county-feed-agent",
-          "action": "county_feed_run",
-          "targets": 3,
-          "active": 0,
-          "needs_csv": 3,
-          "api_sourced": 0
-        },
-        {
-          "ts": "2026-05-21T01:00:54.294Z",
-          "tenant": "day14-realty",
-          "actor": "re-intake-agent",
-          "action": "county_records_ingested",
-          "ingested": 0,
-          "skipped": 0,
-          "files": 0,
-          "total_properties": 0
-        },
-        {
-          "ts": "2026-05-21T00:45:54.365Z",
-          "tenant": "day14-realty",
-          "actor": "realty-scout",
-          "action": "scout_run",
-          "scaffolded": 0,
-          "properties": 0,
-          "a_tier": 0
-        },
-        {
-          "ts": "2026-05-21T00:45:54.364Z",
-          "tenant": "day14-realty",
-          "actor": "re-deal-alerter",
-          "action": "deals_alerted",
-          "a_tier": 0,
-          "new_alerts": 0
-        },
-        {
-          "ts": "2026-05-21T00:45:54.363Z",
-          "tenant": "day14-realty",
-          "actor": "re-evaluation-agent",
-          "action": "deals_scored",
-          "evaluated": 0,
-          "tier_a": 0,
-          "tier_b": 0,
-          "top_deal": "—"
-        },
-        {
-          "ts": "2026-05-21T00:45:54.363Z",
-          "tenant": "day14-realty",
-          "actor": "re-enrichment-agent",
-          "action": "enrichment_skipped_no_key",
-          "pending": 0
         }
       ],
       "content_counts": {
@@ -940,7 +948,7 @@
     {
       "name": "gmail-cs-triage",
       "status": "healthy",
-      "ageMin": 18,
+      "ageMin": 3,
       "cadenceMin": 30
     },
     {
@@ -981,8 +989,8 @@
     },
     {
       "name": "outbox-deadletter-cycle",
-      "status": "healthy",
-      "ageMin": 4,
+      "status": "stale",
+      "ageMin": 19,
       "cadenceMin": 1
     },
     {
@@ -994,7 +1002,7 @@
     {
       "name": "realty-scout-day14-realty",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 9,
       "cadenceMin": 15
     },
     {
@@ -1012,7 +1020,7 @@
     {
       "name": "stripe-cs-loop",
       "status": "error",
-      "ageMin": 1503,
+      "ageMin": 1518,
       "cadenceMin": 60
     },
     {
@@ -1276,6 +1284,139 @@
   ],
   "empire_battle_log": [
     {
+      "ts": "2026-05-21T01:35:54.372Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "lawn-care-gm",
+      "action": "cluster_run",
+      "scaffolded": 0,
+      "season": "Rainy / peak growth (May–Oct)",
+      "pipeline_value": 0,
+      "at_risk": 0
+    },
+    {
+      "ts": "2026-05-21T01:35:54.371Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "portal-agent",
+      "action": "portal_feeds_built",
+      "portal_feeds": 0
+    },
+    {
+      "ts": "2026-05-21T01:35:54.371Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "crm-agent",
+      "action": "crm_scored",
+      "customers": 0,
+      "at_risk": 0,
+      "upsell_openings": 0
+    },
+    {
+      "ts": "2026-05-21T01:35:54.369Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "scheduling-agent",
+      "action": "routes_optimized",
+      "scheduled": 0,
+      "rolled_for_weather": 0,
+      "avg_density": 0
+    },
+    {
+      "ts": "2026-05-21T01:35:54.368Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "pipeline-agent",
+      "action": "pipeline_advanced",
+      "quoted": 0,
+      "opened": 0,
+      "invoiced": 0,
+      "open_leads": 0,
+      "pipeline_value": 0,
+      "outstanding_cents": 0
+    },
+    {
+      "ts": "2026-05-21T01:33:27.626Z",
+      "tenant": "day14-realty",
+      "actor": "realty-scout",
+      "action": "scout_run",
+      "scaffolded": 0,
+      "properties": 0,
+      "a_tier": 0
+    },
+    {
+      "ts": "2026-05-21T01:33:27.625Z",
+      "tenant": "day14-realty",
+      "actor": "re-deal-alerter",
+      "action": "deals_alerted",
+      "a_tier": 0,
+      "new_alerts": 0
+    },
+    {
+      "ts": "2026-05-21T01:33:27.624Z",
+      "tenant": "day14-realty",
+      "actor": "re-evaluation-agent",
+      "action": "deals_scored",
+      "evaluated": 0,
+      "tier_a": 0,
+      "tier_b": 0,
+      "top_deal": "—"
+    },
+    {
+      "ts": "2026-05-21T01:33:27.624Z",
+      "tenant": "day14-realty",
+      "actor": "re-enrichment-agent",
+      "action": "enrichment_skipped_no_key",
+      "pending": 0
+    },
+    {
+      "ts": "2026-05-21T01:33:27.623Z",
+      "tenant": "day14-realty",
+      "actor": "re-comp-analyst",
+      "action": "comps_computed",
+      "properties": 0,
+      "comp_arvs": 0
+    },
+    {
+      "ts": "2026-05-21T01:33:27.621Z",
+      "tenant": "day14-realty",
+      "actor": "re-distress-monitor",
+      "action": "distress_scanned",
+      "scanned": 0,
+      "hot_leads": 0,
+      "top": "—"
+    },
+    {
+      "ts": "2026-05-21T01:33:27.618Z",
+      "tenant": "day14-realty",
+      "actor": "re-county-feed-agent",
+      "action": "county_feed_run",
+      "targets": 3,
+      "active": 0,
+      "needs_csv": 3,
+      "api_sourced": 0
+    },
+    {
+      "ts": "2026-05-21T01:33:27.609Z",
+      "tenant": "day14-realty",
+      "actor": "re-intake-agent",
+      "action": "county_records_ingested",
+      "ingested": 0,
+      "skipped": 0,
+      "files": 0,
+      "total_properties": 0
+    },
+    {
+      "ts": "2026-05-21T01:33:27.601Z",
+      "tenant": "day14-realty",
+      "actor": "re-county-data-fetcher",
+      "action": "county_data_fetched",
+      "fl_counties": 3,
+      "fetched": 0,
+      "properties": 0,
+      "skipped_non_fl": 0,
+      "errors": [
+        "Collier: This operation was aborted",
+        "Lee: This operation was aborted",
+        "Lee: This operation was aborted"
+      ]
+    },
+    {
       "ts": "2026-05-21T01:26:41.206Z",
       "tenant": "day14-realty",
       "actor": "realty-scout",
@@ -1327,41 +1468,6 @@
       "top": "—"
     },
     {
-      "ts": "2026-05-21T01:26:41.197Z",
-      "tenant": "day14-realty",
-      "actor": "re-county-feed-agent",
-      "action": "county_feed_run",
-      "targets": 3,
-      "active": 0,
-      "needs_csv": 3,
-      "api_sourced": 0
-    },
-    {
-      "ts": "2026-05-21T01:26:41.190Z",
-      "tenant": "day14-realty",
-      "actor": "re-intake-agent",
-      "action": "county_records_ingested",
-      "ingested": 0,
-      "skipped": 0,
-      "files": 0,
-      "total_properties": 0
-    },
-    {
-      "ts": "2026-05-21T01:26:41.184Z",
-      "tenant": "day14-realty",
-      "actor": "re-county-data-fetcher",
-      "action": "county_data_fetched",
-      "fl_counties": 3,
-      "fetched": 0,
-      "properties": 0,
-      "skipped_non_fl": 0,
-      "errors": [
-        "Collier: This operation was aborted",
-        "Lee: This operation was aborted",
-        "Lee: This operation was aborted"
-      ]
-    },
-    {
       "ts": "2026-05-21T01:20:54.341Z",
       "tenant": "kennum-lawn-care",
       "actor": "lawn-care-gm",
@@ -1409,57 +1515,6 @@
       "outstanding_cents": 0
     },
     {
-      "ts": "2026-05-21T01:17:24.371Z",
-      "tenant": "day14-realty",
-      "actor": "realty-scout",
-      "action": "scout_run",
-      "scaffolded": 0,
-      "properties": 0,
-      "a_tier": 0
-    },
-    {
-      "ts": "2026-05-21T01:17:24.369Z",
-      "tenant": "day14-realty",
-      "actor": "re-deal-alerter",
-      "action": "deals_alerted",
-      "a_tier": 0,
-      "new_alerts": 0
-    },
-    {
-      "ts": "2026-05-21T01:17:24.367Z",
-      "tenant": "day14-realty",
-      "actor": "re-evaluation-agent",
-      "action": "deals_scored",
-      "evaluated": 0,
-      "tier_a": 0,
-      "tier_b": 0,
-      "top_deal": "—"
-    },
-    {
-      "ts": "2026-05-21T01:17:24.364Z",
-      "tenant": "day14-realty",
-      "actor": "re-enrichment-agent",
-      "action": "enrichment_skipped_no_key",
-      "pending": 0
-    },
-    {
-      "ts": "2026-05-21T01:17:24.363Z",
-      "tenant": "day14-realty",
-      "actor": "re-comp-analyst",
-      "action": "comps_computed",
-      "properties": 0,
-      "comp_arvs": 0
-    },
-    {
-      "ts": "2026-05-21T01:17:24.361Z",
-      "tenant": "day14-realty",
-      "actor": "re-distress-monitor",
-      "action": "distress_scanned",
-      "scanned": 0,
-      "hot_leads": 0,
-      "top": "—"
-    },
-    {
       "ts": "2026-05-21T01:05:54.294Z",
       "tenant": "kennum-lawn-care",
       "actor": "lawn-care-gm",
@@ -1496,53 +1551,6 @@
     },
     {
       "ts": "2026-05-21T01:05:54.289Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "pipeline-agent",
-      "action": "pipeline_advanced",
-      "quoted": 0,
-      "opened": 0,
-      "invoiced": 0,
-      "open_leads": 0,
-      "pipeline_value": 0,
-      "outstanding_cents": 0
-    },
-    {
-      "ts": "2026-05-21T00:50:54.353Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "lawn-care-gm",
-      "action": "cluster_run",
-      "scaffolded": 0,
-      "season": "Rainy / peak growth (May–Oct)",
-      "pipeline_value": 0,
-      "at_risk": 0
-    },
-    {
-      "ts": "2026-05-21T00:50:54.352Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "portal-agent",
-      "action": "portal_feeds_built",
-      "portal_feeds": 0
-    },
-    {
-      "ts": "2026-05-21T00:50:54.351Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "crm-agent",
-      "action": "crm_scored",
-      "customers": 0,
-      "at_risk": 0,
-      "upsell_openings": 0
-    },
-    {
-      "ts": "2026-05-21T00:50:54.350Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "scheduling-agent",
-      "action": "routes_optimized",
-      "scheduled": 0,
-      "rolled_for_weather": 0,
-      "avg_density": 0
-    },
-    {
-      "ts": "2026-05-21T00:50:54.346Z",
       "tenant": "kennum-lawn-care",
       "actor": "pipeline-agent",
       "action": "pipeline_advanced",
