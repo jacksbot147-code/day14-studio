@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-21T23:38:25.708Z",
+  "generated_at": "2026-05-21T23:53:28.310Z",
   "tenants": [
     {
       "slug": "day14",
@@ -308,6 +308,53 @@
       "streak": 0,
       "recent_audit": [
         {
+          "ts": "2026-05-21T23:46:34.505Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "lawn-care-gm",
+          "action": "cluster_run",
+          "scaffolded": 0,
+          "season": "Rainy / peak growth (May–Oct)",
+          "pipeline_value": 0,
+          "at_risk": 0
+        },
+        {
+          "ts": "2026-05-21T23:46:34.504Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "portal-agent",
+          "action": "portal_feeds_built",
+          "portal_feeds": 0
+        },
+        {
+          "ts": "2026-05-21T23:46:34.503Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "crm-agent",
+          "action": "crm_scored",
+          "customers": 0,
+          "at_risk": 0,
+          "upsell_openings": 0
+        },
+        {
+          "ts": "2026-05-21T23:46:34.502Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "scheduling-agent",
+          "action": "routes_optimized",
+          "scheduled": 0,
+          "rolled_for_weather": 0,
+          "avg_density": 0
+        },
+        {
+          "ts": "2026-05-21T23:46:34.500Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "pipeline-agent",
+          "action": "pipeline_advanced",
+          "quoted": 0,
+          "opened": 0,
+          "invoiced": 0,
+          "open_leads": 0,
+          "pipeline_value": 0,
+          "outstanding_cents": 0
+        },
+        {
           "ts": "2026-05-21T23:31:34.420Z",
           "tenant": "kennum-lawn-care",
           "actor": "lawn-care-gm",
@@ -541,53 +588,6 @@
           "open_leads": 0,
           "pipeline_value": 0,
           "outstanding_cents": 0
-        },
-        {
-          "ts": "2026-05-21T22:16:34.493Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "lawn-care-gm",
-          "action": "cluster_run",
-          "scaffolded": 0,
-          "season": "Rainy / peak growth (May–Oct)",
-          "pipeline_value": 0,
-          "at_risk": 0
-        },
-        {
-          "ts": "2026-05-21T22:16:34.491Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "portal-agent",
-          "action": "portal_feeds_built",
-          "portal_feeds": 0
-        },
-        {
-          "ts": "2026-05-21T22:16:34.485Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "crm-agent",
-          "action": "crm_scored",
-          "customers": 0,
-          "at_risk": 0,
-          "upsell_openings": 0
-        },
-        {
-          "ts": "2026-05-21T22:16:34.461Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "scheduling-agent",
-          "action": "routes_optimized",
-          "scheduled": 0,
-          "rolled_for_weather": 0,
-          "avg_density": 0
-        },
-        {
-          "ts": "2026-05-21T22:16:34.456Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "pipeline-agent",
-          "action": "pipeline_advanced",
-          "quoted": 0,
-          "opened": 0,
-          "invoiced": 0,
-          "open_leads": 0,
-          "pipeline_value": 0,
-          "outstanding_cents": 0
         }
       ],
       "content_counts": {
@@ -618,6 +618,88 @@
       "orders": 0,
       "streak": 0,
       "recent_audit": [
+        {
+          "ts": "2026-05-21T23:41:34.623Z",
+          "tenant": "day14-realty",
+          "actor": "realty-scout",
+          "action": "scout_run",
+          "scaffolded": 0,
+          "properties": 2266,
+          "a_tier": 251
+        },
+        {
+          "ts": "2026-05-21T23:41:34.619Z",
+          "tenant": "day14-realty",
+          "actor": "re-deal-alerter",
+          "action": "deals_alerted",
+          "a_tier": 251,
+          "new_alerts": 0
+        },
+        {
+          "ts": "2026-05-21T23:41:34.615Z",
+          "tenant": "day14-realty",
+          "actor": "re-evaluation-agent",
+          "action": "deals_scored",
+          "evaluated": 2266,
+          "tier_a": 251,
+          "tier_b": 1596,
+          "top_deal": "3030 39TH ST SW (96)"
+        },
+        {
+          "ts": "2026-05-21T23:41:34.603Z",
+          "tenant": "day14-realty",
+          "actor": "re-enrichment-agent",
+          "action": "enrichment_skipped_no_key",
+          "pending": 2266
+        },
+        {
+          "ts": "2026-05-21T23:41:34.600Z",
+          "tenant": "day14-realty",
+          "actor": "re-comp-analyst",
+          "action": "comps_computed",
+          "properties": 2266,
+          "comp_arvs": 1691
+        },
+        {
+          "ts": "2026-05-21T23:41:34.488Z",
+          "tenant": "day14-realty",
+          "actor": "re-distress-monitor",
+          "action": "distress_scanned",
+          "scanned": 2266,
+          "hot_leads": 344,
+          "top": "213 COLLIER BLVD (w3)"
+        },
+        {
+          "ts": "2026-05-21T23:41:34.482Z",
+          "tenant": "day14-realty",
+          "actor": "re-county-feed-agent",
+          "action": "county_feed_run",
+          "targets": 2,
+          "active": 2,
+          "needs_csv": 0,
+          "api_sourced": 0
+        },
+        {
+          "ts": "2026-05-21T23:41:34.468Z",
+          "tenant": "day14-realty",
+          "actor": "re-intake-agent",
+          "action": "county_records_ingested",
+          "ingested": 0,
+          "skipped": 0,
+          "files": 0,
+          "total_properties": 2266
+        },
+        {
+          "ts": "2026-05-21T23:41:34.455Z",
+          "tenant": "day14-realty",
+          "actor": "re-county-data-fetcher",
+          "action": "county_data_fetched",
+          "fl_counties": 2,
+          "fetched": 0,
+          "properties": 0,
+          "skipped_non_fl": 0,
+          "errors": []
+        },
         {
           "ts": "2026-05-21T23:26:34.627Z",
           "tenant": "day14-realty",
@@ -808,88 +890,6 @@
           "tier_a": 251,
           "tier_b": 1596,
           "top_deal": "3030 39TH ST SW (96)"
-        },
-        {
-          "ts": "2026-05-21T22:56:34.643Z",
-          "tenant": "day14-realty",
-          "actor": "re-enrichment-agent",
-          "action": "enrichment_skipped_no_key",
-          "pending": 2266
-        },
-        {
-          "ts": "2026-05-21T22:56:34.640Z",
-          "tenant": "day14-realty",
-          "actor": "re-comp-analyst",
-          "action": "comps_computed",
-          "properties": 2266,
-          "comp_arvs": 1691
-        },
-        {
-          "ts": "2026-05-21T22:56:34.527Z",
-          "tenant": "day14-realty",
-          "actor": "re-distress-monitor",
-          "action": "distress_scanned",
-          "scanned": 2266,
-          "hot_leads": 344,
-          "top": "213 COLLIER BLVD (w3)"
-        },
-        {
-          "ts": "2026-05-21T22:56:34.521Z",
-          "tenant": "day14-realty",
-          "actor": "re-county-feed-agent",
-          "action": "county_feed_run",
-          "targets": 2,
-          "active": 2,
-          "needs_csv": 0,
-          "api_sourced": 0
-        },
-        {
-          "ts": "2026-05-21T22:56:34.505Z",
-          "tenant": "day14-realty",
-          "actor": "re-intake-agent",
-          "action": "county_records_ingested",
-          "ingested": 0,
-          "skipped": 0,
-          "files": 0,
-          "total_properties": 2266
-        },
-        {
-          "ts": "2026-05-21T22:56:34.491Z",
-          "tenant": "day14-realty",
-          "actor": "re-county-data-fetcher",
-          "action": "county_data_fetched",
-          "fl_counties": 2,
-          "fetched": 0,
-          "properties": 0,
-          "skipped_non_fl": 0,
-          "errors": []
-        },
-        {
-          "ts": "2026-05-21T22:41:34.622Z",
-          "tenant": "day14-realty",
-          "actor": "realty-scout",
-          "action": "scout_run",
-          "scaffolded": 0,
-          "properties": 2266,
-          "a_tier": 251
-        },
-        {
-          "ts": "2026-05-21T22:41:34.618Z",
-          "tenant": "day14-realty",
-          "actor": "re-deal-alerter",
-          "action": "deals_alerted",
-          "a_tier": 251,
-          "new_alerts": 0
-        },
-        {
-          "ts": "2026-05-21T22:41:34.614Z",
-          "tenant": "day14-realty",
-          "actor": "re-evaluation-agent",
-          "action": "deals_scored",
-          "evaluated": 2266,
-          "tier_a": 251,
-          "tier_b": 1596,
-          "top_deal": "3030 39TH ST SW (96)"
         }
       ],
       "content_counts": {
@@ -955,7 +955,7 @@
     {
       "name": "customer-success",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1
     },
     {
@@ -967,7 +967,7 @@
     {
       "name": "gmail-cs-triage",
       "status": "healthy",
-      "ageMin": 29,
+      "ageMin": 14,
       "cadenceMin": 30
     },
     {
@@ -979,13 +979,13 @@
     {
       "name": "growth-watcher",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1
     },
     {
       "name": "hot-flash-co-orders",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1
     },
     {
@@ -1008,8 +1008,8 @@
     },
     {
       "name": "outbox-deadletter-cycle",
-      "status": "stale",
-      "ageMin": 15,
+      "status": "healthy",
+      "ageMin": 0,
       "cadenceMin": 1
     },
     {
@@ -1033,13 +1033,13 @@
     {
       "name": "skill-multiplier",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1
     },
     {
       "name": "stripe-cs-loop",
       "status": "error",
-      "ageMin": 2834,
+      "ageMin": 2849,
       "cadenceMin": 60
     },
     {
@@ -1063,7 +1063,7 @@
     {
       "name": "video-pipeline",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1
     }
   ],
@@ -1384,6 +1384,135 @@
   ],
   "empire_battle_log": [
     {
+      "ts": "2026-05-21T23:46:34.505Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "lawn-care-gm",
+      "action": "cluster_run",
+      "scaffolded": 0,
+      "season": "Rainy / peak growth (May–Oct)",
+      "pipeline_value": 0,
+      "at_risk": 0
+    },
+    {
+      "ts": "2026-05-21T23:46:34.504Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "portal-agent",
+      "action": "portal_feeds_built",
+      "portal_feeds": 0
+    },
+    {
+      "ts": "2026-05-21T23:46:34.503Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "crm-agent",
+      "action": "crm_scored",
+      "customers": 0,
+      "at_risk": 0,
+      "upsell_openings": 0
+    },
+    {
+      "ts": "2026-05-21T23:46:34.502Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "scheduling-agent",
+      "action": "routes_optimized",
+      "scheduled": 0,
+      "rolled_for_weather": 0,
+      "avg_density": 0
+    },
+    {
+      "ts": "2026-05-21T23:46:34.500Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "pipeline-agent",
+      "action": "pipeline_advanced",
+      "quoted": 0,
+      "opened": 0,
+      "invoiced": 0,
+      "open_leads": 0,
+      "pipeline_value": 0,
+      "outstanding_cents": 0
+    },
+    {
+      "ts": "2026-05-21T23:41:34.623Z",
+      "tenant": "day14-realty",
+      "actor": "realty-scout",
+      "action": "scout_run",
+      "scaffolded": 0,
+      "properties": 2266,
+      "a_tier": 251
+    },
+    {
+      "ts": "2026-05-21T23:41:34.619Z",
+      "tenant": "day14-realty",
+      "actor": "re-deal-alerter",
+      "action": "deals_alerted",
+      "a_tier": 251,
+      "new_alerts": 0
+    },
+    {
+      "ts": "2026-05-21T23:41:34.615Z",
+      "tenant": "day14-realty",
+      "actor": "re-evaluation-agent",
+      "action": "deals_scored",
+      "evaluated": 2266,
+      "tier_a": 251,
+      "tier_b": 1596,
+      "top_deal": "3030 39TH ST SW (96)"
+    },
+    {
+      "ts": "2026-05-21T23:41:34.603Z",
+      "tenant": "day14-realty",
+      "actor": "re-enrichment-agent",
+      "action": "enrichment_skipped_no_key",
+      "pending": 2266
+    },
+    {
+      "ts": "2026-05-21T23:41:34.600Z",
+      "tenant": "day14-realty",
+      "actor": "re-comp-analyst",
+      "action": "comps_computed",
+      "properties": 2266,
+      "comp_arvs": 1691
+    },
+    {
+      "ts": "2026-05-21T23:41:34.488Z",
+      "tenant": "day14-realty",
+      "actor": "re-distress-monitor",
+      "action": "distress_scanned",
+      "scanned": 2266,
+      "hot_leads": 344,
+      "top": "213 COLLIER BLVD (w3)"
+    },
+    {
+      "ts": "2026-05-21T23:41:34.482Z",
+      "tenant": "day14-realty",
+      "actor": "re-county-feed-agent",
+      "action": "county_feed_run",
+      "targets": 2,
+      "active": 2,
+      "needs_csv": 0,
+      "api_sourced": 0
+    },
+    {
+      "ts": "2026-05-21T23:41:34.468Z",
+      "tenant": "day14-realty",
+      "actor": "re-intake-agent",
+      "action": "county_records_ingested",
+      "ingested": 0,
+      "skipped": 0,
+      "files": 0,
+      "total_properties": 2266
+    },
+    {
+      "ts": "2026-05-21T23:41:34.455Z",
+      "tenant": "day14-realty",
+      "actor": "re-county-data-fetcher",
+      "action": "county_data_fetched",
+      "fl_counties": 2,
+      "fetched": 0,
+      "properties": 0,
+      "skipped_non_fl": 0,
+      "errors": []
+    },
+    {
       "ts": "2026-05-21T23:31:34.420Z",
       "tenant": "kennum-lawn-care",
       "actor": "lawn-care-gm",
@@ -1482,37 +1611,6 @@
       "top": "213 COLLIER BLVD (w3)"
     },
     {
-      "ts": "2026-05-21T23:26:34.488Z",
-      "tenant": "day14-realty",
-      "actor": "re-county-feed-agent",
-      "action": "county_feed_run",
-      "targets": 2,
-      "active": 2,
-      "needs_csv": 0,
-      "api_sourced": 0
-    },
-    {
-      "ts": "2026-05-21T23:26:34.472Z",
-      "tenant": "day14-realty",
-      "actor": "re-intake-agent",
-      "action": "county_records_ingested",
-      "ingested": 0,
-      "skipped": 0,
-      "files": 0,
-      "total_properties": 2266
-    },
-    {
-      "ts": "2026-05-21T23:26:34.458Z",
-      "tenant": "day14-realty",
-      "actor": "re-county-data-fetcher",
-      "action": "county_data_fetched",
-      "fl_counties": 2,
-      "fetched": 0,
-      "properties": 0,
-      "skipped_non_fl": 0,
-      "errors": []
-    },
-    {
       "ts": "2026-05-21T23:16:34.392Z",
       "tenant": "kennum-lawn-care",
       "actor": "lawn-care-gm",
@@ -1558,104 +1656,6 @@
       "open_leads": 0,
       "pipeline_value": 0,
       "outstanding_cents": 0
-    },
-    {
-      "ts": "2026-05-21T23:11:34.577Z",
-      "tenant": "day14-realty",
-      "actor": "realty-scout",
-      "action": "scout_run",
-      "scaffolded": 0,
-      "properties": 2266,
-      "a_tier": 251
-    },
-    {
-      "ts": "2026-05-21T23:11:34.574Z",
-      "tenant": "day14-realty",
-      "actor": "re-deal-alerter",
-      "action": "deals_alerted",
-      "a_tier": 251,
-      "new_alerts": 0
-    },
-    {
-      "ts": "2026-05-21T23:11:34.569Z",
-      "tenant": "day14-realty",
-      "actor": "re-evaluation-agent",
-      "action": "deals_scored",
-      "evaluated": 2266,
-      "tier_a": 251,
-      "tier_b": 1596,
-      "top_deal": "3030 39TH ST SW (96)"
-    },
-    {
-      "ts": "2026-05-21T23:11:34.558Z",
-      "tenant": "day14-realty",
-      "actor": "re-enrichment-agent",
-      "action": "enrichment_skipped_no_key",
-      "pending": 2266
-    },
-    {
-      "ts": "2026-05-21T23:11:34.556Z",
-      "tenant": "day14-realty",
-      "actor": "re-comp-analyst",
-      "action": "comps_computed",
-      "properties": 2266,
-      "comp_arvs": 1691
-    },
-    {
-      "ts": "2026-05-21T23:11:34.449Z",
-      "tenant": "day14-realty",
-      "actor": "re-distress-monitor",
-      "action": "distress_scanned",
-      "scanned": 2266,
-      "hot_leads": 344,
-      "top": "213 COLLIER BLVD (w3)"
-    },
-    {
-      "ts": "2026-05-21T23:01:34.449Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "lawn-care-gm",
-      "action": "cluster_run",
-      "scaffolded": 0,
-      "season": "Rainy / peak growth (May–Oct)",
-      "pipeline_value": 0,
-      "at_risk": 0
-    },
-    {
-      "ts": "2026-05-21T23:01:34.449Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "portal-agent",
-      "action": "portal_feeds_built",
-      "portal_feeds": 0
-    },
-    {
-      "ts": "2026-05-21T23:01:34.448Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "crm-agent",
-      "action": "crm_scored",
-      "customers": 0,
-      "at_risk": 0,
-      "upsell_openings": 0
-    },
-    {
-      "ts": "2026-05-21T23:01:34.446Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "scheduling-agent",
-      "action": "routes_optimized",
-      "scheduled": 0,
-      "rolled_for_weather": 0,
-      "avg_density": 0
-    },
-    {
-      "ts": "2026-05-21T23:01:34.443Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "pipeline-agent",
-      "action": "pipeline_advanced",
-      "quoted": 0,
-      "opened": 0,
-      "invoiced": 0,
-      "open_leads": 0,
-      "pipeline_value": 0,
-      "outstanding_cents": 0
     }
   ],
   "human_todos": [
@@ -1670,7 +1670,26 @@
       "status": "open",
       "created_at": "2026-05-19T21:00:00.000Z",
       "completed_at": null,
-      "source": "claude-setup"
+      "source": "claude-setup",
+      "instructions": {
+        "steps": [
+          "Open the Anthropic Console and sign in (or create an account).",
+          "Go to Settings -> Billing and enable API billing / add a payment method — API keys do not work without it.",
+          "Go to Settings -> API Keys and click Create Key; copy the key (starts with sk-ant-).",
+          "Paste the key straight to Claude in chat — do NOT type it into any file yourself.",
+          "Claude adds it as ANTHROPIC_API_KEY in .env.local + Vercel and re-runs the Kennum build."
+        ],
+        "links": [
+          {
+            "label": "Anthropic Console — API Keys",
+            "url": "https://console.anthropic.com/settings/keys"
+          },
+          {
+            "label": "Anthropic Console — Billing",
+            "url": "https://console.anthropic.com/settings/billing"
+          }
+        ]
+      }
     },
     {
       "id": "todo-2",
@@ -1683,7 +1702,22 @@
       "status": "open",
       "created_at": "2026-05-19T21:00:00.000Z",
       "completed_at": null,
-      "source": "claude-setup"
+      "source": "claude-setup",
+      "instructions": {
+        "steps": [
+          "Open MailerLite and sign in (a free account is fine to start).",
+          "Go to Integrations -> Developers -> API (Account settings).",
+          "Generate a new API token and copy it.",
+          "Paste the token straight to Claude in chat — do NOT type it into any file yourself.",
+          "Claude adds it as MAILERLITE_API_KEY in .env.local + Vercel so newsletter signup goes live."
+        ],
+        "links": [
+          {
+            "label": "MailerLite — API integrations",
+            "url": "https://dashboard.mailerlite.com/integrations/api"
+          }
+        ]
+      }
     },
     {
       "id": "todo-4",
@@ -1696,7 +1730,22 @@
       "status": "open",
       "created_at": "2026-05-19T21:00:00.000Z",
       "completed_at": null,
-      "source": "claude-setup"
+      "source": "claude-setup",
+      "instructions": {
+        "steps": [
+          "Open Printify and sign in.",
+          "Switch to the Hot Flash Co shop and open My Products.",
+          "Find the 10 menopause-humor mug drafts the agents created.",
+          "Review each draft, then publish it to the Pop-Up Store so it goes live.",
+          "Reply \"done 4\" to the Telegram bot once all 10 are published."
+        ],
+        "links": [
+          {
+            "label": "Printify — My Products",
+            "url": "https://printify.com/app/products"
+          }
+        ]
+      }
     },
     {
       "id": "todo-7",
@@ -1709,33 +1758,69 @@
       "status": "open",
       "created_at": "2026-05-20T01:35:00.000Z",
       "completed_at": null,
-      "source": "claude-direct"
+      "source": "claude-direct",
+      "instructions": {
+        "steps": [
+          "Gather the real Kennum business phone number.",
+          "List the exact Southwest Florida towns the business actually serves.",
+          "Confirm the real pricing (not estimates) for each service offered.",
+          "Send all three to Claude in chat — Claude updates src/app/brands/kennum-lawn-care/theme.ts and redeploys so the site shows real numbers."
+        ]
+      }
     },
     {
       "id": "todo-8",
       "seq": 8,
       "tenant": "day14-realty",
       "title": "Feed the real estate intake — drop a county property CSV",
-      "detail": "The real estate segment is built and the agents run, but they have no data yet. Download a property-appraiser data export from a county site (e.g. Lee County leepa.org, Collier collierappraiser.com) and drop the CSV into businesses/day14-realty/intake/. The intake agent ingests + evaluates it on the next scout run.",
+      "detail": "The real estate segment is built and the agents run, but they have no data yet. Download a property-appraiser data export from a county site and drop the CSV into businesses/day14-realty/intake/. The intake agent ingests + evaluates it on the next scout run.",
       "category": "data",
       "priority": "high",
       "status": "open",
       "created_at": "2026-05-20T20:15:00.000Z",
       "completed_at": null,
-      "source": "claude-direct"
+      "source": "claude-direct",
+      "instructions": {
+        "steps": [
+          "Open a Florida county property-appraiser site and find its data download / export page.",
+          "Download the property-roll export as a CSV file.",
+          "Move the CSV into ~/Documents/businesses/day14-realty/intake/ on the Mac.",
+          "The intake agent ingests and evaluates it automatically on the next scout run."
+        ],
+        "links": [
+          {
+            "label": "Lee County Property Appraiser",
+            "url": "https://www.leepa.org"
+          },
+          {
+            "label": "Collier County Property Appraiser",
+            "url": "https://www.collierappraiser.com"
+          }
+        ],
+        "code": "open ~/Documents/businesses/day14-realty/intake/"
+      }
     },
     {
       "id": "todo-5",
       "seq": 5,
       "tenant": "hot-flash-co",
       "title": "Generate brand identity for Hot Flash Co",
-      "detail": "hot-flash-co has no brand-identity.json, so its site falls back to default colors and fonts. Run: node scripts/brand-identity-generator.mjs --slug hot-flash-co --display-name \"Hot Flash Co\" --niche \"Real goods for the seasons no one warns you about.\"",
+      "detail": "hot-flash-co has no brand-identity.json, so its site falls back to default colors and fonts. Run the brand-identity-generator script in the studio repo.",
       "category": "review",
       "priority": "medium",
       "status": "open",
       "created_at": "2026-05-20T00:00:35.585Z",
       "completed_at": null,
-      "source": "brand-site-sweep"
+      "source": "brand-site-sweep",
+      "instructions": {
+        "steps": [
+          "Open Terminal and change into the studio repo: cd ~/Documents/studio",
+          "Run the brand-identity-generator command below.",
+          "It writes brand-identity.json for hot-flash-co; confirm there are no errors.",
+          "Reload the hot-flash-co site to confirm it now uses real colors and fonts."
+        ],
+        "code": "cd ~/Documents/studio && node scripts/brand-identity-generator.mjs --slug hot-flash-co --display-name \"Hot Flash Co\" --niche \"Real goods for the seasons no one warns you about.\""
+      }
     },
     {
       "id": "todo-6",
@@ -1748,59 +1833,105 @@
       "status": "open",
       "created_at": "2026-05-20T00:00:35.586Z",
       "completed_at": null,
-      "source": "brand-site-sweep"
+      "source": "brand-site-sweep",
+      "instructions": {
+        "steps": [
+          "Confirm the daily content engine LaunchAgent is installed and running (check launchctl list).",
+          "Wait for it to generate blog drafts into businesses/hot-flash-co/blog-drafts/, or trigger it manually.",
+          "Review each draft markdown file for quality.",
+          "Set the front-matter status field to \"live\" on the drafts you approve so they appear on the blog page."
+        ],
+        "code": "launchctl list | grep day14   # confirm the content-engine LaunchAgent is loaded\nls ~/Documents/businesses/hot-flash-co/blog-drafts/"
+      }
     },
     {
       "id": "todo-9",
       "seq": 9,
       "tenant": "day14-realty",
       "title": "Add a property-valuation API key (REALESTATE_API_KEY)",
-      "detail": "Optional but recommended. The evaluation layer already scores deals from county data alone; a licensed API (RentCast is cheapest — rentcast.io) adds AVM value + rent estimates for sharper flip/rental scores. Generate a key, then paste it to Claude to add as REALESTATE_API_KEY in .env.local + Vercel.",
+      "detail": "Optional but recommended. The evaluation layer already scores deals from county data alone; a licensed API (RentCast is cheapest) adds AVM value + rent estimates for sharper flip/rental scores. Generate a key, then paste it to Claude to add as REALESTATE_API_KEY.",
       "category": "credentials",
       "priority": "medium",
       "status": "open",
       "created_at": "2026-05-20T20:15:00.000Z",
       "completed_at": null,
-      "source": "claude-direct"
+      "source": "claude-direct",
+      "instructions": {
+        "steps": [
+          "Open RentCast and sign in or create an account (it has the cheapest plan).",
+          "Go to the API section and generate an API key.",
+          "Paste the key straight to Claude in chat — do NOT type it into any file yourself.",
+          "Claude adds it as REALESTATE_API_KEY in .env.local + Vercel; the evaluation layer then adds AVM value + rent estimates."
+        ],
+        "links": [
+          {
+            "label": "RentCast — property data API",
+            "url": "https://www.rentcast.io"
+          },
+          {
+            "label": "RentCast — API dashboard",
+            "url": "https://app.rentcast.io/app/api"
+          }
+        ]
+      }
     },
     {
       "id": "todo-10",
       "seq": 10,
       "tenant": "day14-realty",
       "title": "County records needed: Collier County, FL",
-      "detail": "Day14 needs the public-records property roll for Collier County, FL. Search \"Collier County FL property appraiser data export\" (or the county GIS / open-data portal), download the CSV, and drop it into businesses/day14-realty/intake/ — name it \"collier-county.csv\". The scout ingests, scores, and starts monitoring it automatically.",
+      "detail": "Day14 needs the public-records property roll for Collier County, FL. Download the CSV from the county property appraiser / open-data portal and drop it into businesses/day14-realty/intake/ named \"collier-county.csv\". The scout ingests, scores, and starts monitoring it automatically.",
       "category": "realty",
       "priority": "medium",
       "status": "open",
       "created_at": "2026-05-20T22:07:00.079Z",
       "completed_at": null,
-      "source": "county-feed-agent"
-    },
-    {
-      "id": "todo-11",
-      "seq": 11,
-      "tenant": "day14-realty",
-      "title": "County records needed: Lee County",
-      "detail": "Day14 needs the public-records property roll for Lee County. Search \"Lee County  property appraiser data export\" (or the county GIS / open-data portal), download the CSV, and drop it into businesses/day14-realty/intake/ — name it \"lee-county.csv\". The scout ingests, scores, and starts monitoring it automatically.",
-      "category": "realty",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-20T22:15:14.404Z",
-      "completed_at": null,
-      "source": "county-feed-agent"
+      "source": "county-feed-agent",
+      "instructions": {
+        "steps": [
+          "Open the Collier County Property Appraiser site and find its data download / export page (or search \"Collier County FL property appraiser data export\").",
+          "Download the full property-roll export as a CSV.",
+          "Rename the file to exactly \"collier-county.csv\".",
+          "Move it into ~/Documents/businesses/day14-realty/intake/ on the Mac.",
+          "The scout ingests, scores, and starts monitoring it automatically on the next run."
+        ],
+        "links": [
+          {
+            "label": "Collier County Property Appraiser — Downloads",
+            "url": "https://www.collierappraiser.com/index.aspx?page=46"
+          }
+        ],
+        "code": "open ~/Documents/businesses/day14-realty/intake/"
+      }
     },
     {
       "id": "todo-12",
       "seq": 12,
       "tenant": "day14-realty",
       "title": "County records needed: Lee County, FL",
-      "detail": "Day14 needs the public-records property roll for Lee County, FL. Search \"Lee County FL property appraiser data export\" (or the county GIS / open-data portal), download the CSV, and drop it into businesses/day14-realty/intake/ — name it \"lee-county.csv\". The scout ingests, scores, and starts monitoring it automatically.",
+      "detail": "Day14 needs the public-records property roll for Lee County, FL. Download the CSV from the county property appraiser / open-data portal and drop it into businesses/day14-realty/intake/ named \"lee-county.csv\". The scout ingests, scores, and starts monitoring it automatically.",
       "category": "realty",
       "priority": "medium",
       "status": "open",
       "created_at": "2026-05-20T22:15:30.404Z",
       "completed_at": null,
-      "source": "county-feed-agent"
+      "source": "county-feed-agent",
+      "instructions": {
+        "steps": [
+          "Open the Lee County Property Appraiser site and find its data download / export page (or search \"Lee County FL property appraiser data export\").",
+          "Download the full property-roll export as a CSV.",
+          "Rename the file to exactly \"lee-county.csv\".",
+          "Move it into ~/Documents/businesses/day14-realty/intake/ on the Mac.",
+          "The scout ingests, scores, and starts monitoring it automatically on the next run."
+        ],
+        "links": [
+          {
+            "label": "Lee County Property Appraiser — Downloads",
+            "url": "https://www.leepa.org/Download/DownloadMain.aspx"
+          }
+        ],
+        "code": "open ~/Documents/businesses/day14-realty/intake/"
+      }
     }
   ],
   "bot_username": "Day14_OS_bot"
