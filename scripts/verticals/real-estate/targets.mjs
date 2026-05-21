@@ -44,8 +44,20 @@ export async function addTarget(slug, { county, state = "", source = "telegram",
   if (!county) throw new Error("addTarget: county is required");
   const targets = await loadTargets(slug);
   const id = targetId(county, state);
-  const existing = targets.find((t) => t.id === id);
-  if (existing) return { target: existing, created: false };
+  // Dedupe by county name with a compatible state — so "Lee County" and
+  // "Lee County, FL" resolve to one target instead of two.
+  const existing = targets.find(
+    (t) => sameCounty(t.county, county) && (!t.state || !state || t.state === state)
+  );
+  if (existing) {
+    // Fill in the state if we now know it.
+    if (!existing.state && state) {
+      existing.state = state;
+      existing.label = targetLabel(existing.county, state);
+      await saveTargets(slug, targets);
+    }
+    return { target: existing, created: false };
+  }
 
   const target = {
     id,

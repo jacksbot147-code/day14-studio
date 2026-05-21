@@ -31,8 +31,8 @@ export const BUILD_SPEC = {
 // Florida statewide cadastral — FDOR property roll for all 67 counties.
 const FL_CADASTRAL_QUERY =
   "https://services9.arcgis.com/Gh9awoU677aKree0/arcgis/rest/services/Florida_Statewide_Cadastral/FeatureServer/0/query";
-const PAGE = 2000; // service Max Record Count
-const DEFAULT_CAP = 8000; // parcels per county per run — keeps scoring fast
+const PAGE = 1000; // rows per request — smaller pages fetch fast + reliably
+const DEFAULT_CAP = 6000; // parcels per county per run — keeps scoring fast
 const REFETCH_DAYS = 7; // the roll updates annually; don't re-pull every run
 
 // Florida Dept. of Revenue county numbers (CO_NO field), the stable 11-77
@@ -69,33 +69,43 @@ export function flCountyCode(target) {
   return FL_DOR_CODES[norm(target.county)] ?? null;
 }
 
-/** One page of the cadastral query. Returns the features' attributes array. */
-async function fetchPage(coNo, offset) {
+/** One page of the cadastral query (single attempt). No orderBy — sorting a
+ *  county-sized result set server-side is what made earlier runs time out. */
+async function fetchPageOnce(coNo, offset) {
   const params = new URLSearchParams({
     where: `CO_NO=${coNo}`,
     outFields: OUT_FIELDS,
-    orderByFields: "JV DESC",
     returnGeometry: "false",
     resultOffset: String(offset),
     resultRecordCount: String(PAGE),
     f: "json",
   });
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 30_000);
+  const timer = setTimeout(() => ctrl.abort(), 60_000);
   try {
     const res = await fetch(`${FL_CADASTRAL_QUERY}?${params}`, {
       headers: { Accept: "application/json" },
       signal: ctrl.signal,
     });
     clearTimeout(timer);
-    if (!res.ok) return { error: `http ${res.status}` };
+    if (!res.ok) return { error: `HTTP ${res.status}` };
     const data = await res.json();
     if (data.error) return { error: data.error.message || "query error" };
     return { features: (data.features || []).map((f) => f.attributes || {}) };
   } catch (e) {
     clearTimeout(timer);
-    return { error: e.message };
+    return { error: e.name === "AbortError" ? "timed out (60s)" : e.message };
   }
+}
+
+/** One page, with a single retry on failure. */
+async function fetchPage(coNo, offset) {
+  let page = await fetchPageOnce(coNo, offset);
+  if (page.error) {
+    await new Promise((r) => setTimeout(r, 2000));
+    page = await fetchPageOnce(coNo, offset);
+  }
+  return page;
 }
 
 /** Pull up to `cap` parcels for one Florida county code. */
