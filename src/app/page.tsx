@@ -45,15 +45,39 @@ export default function HomePage() {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Hero                                                                       */
+/* Section heading — editorial: eyebrow-rule, big display title, lead          */
+/* -------------------------------------------------------------------------- */
+
+function SectionHead({
+  eyebrow,
+  title,
+  lead,
+}: {
+  eyebrow: ReactNode;
+  title: ReactNode;
+  lead?: ReactNode;
+}) {
+  return (
+    <div className="max-w-2xl">
+      <div className="eyebrow eyebrow-rule mb-5">{eyebrow}</div>
+      <h2 className="text-3xl font-extrabold tracking-tightest text-ink sm:text-[2.75rem] sm:leading-[1.03]">
+        {title}
+      </h2>
+      {lead ? <p className="mt-5 text-ink-500">{lead}</p> : null}
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/* Hero — asymmetric, line-framed, dramatic editorial type                    */
 /* -------------------------------------------------------------------------- */
 
 function Hero() {
   return (
-    <section className="relative isolate overflow-hidden">
+    <section className="relative isolate overflow-hidden border-b border-ink-100">
       <HeroAurora />
       <div className="container-page pt-14 pb-20 sm:pt-24 sm:pb-28">
-        <div className="eyebrow mb-6">
+        <div className="eyebrow mb-7">
           <span className="relative inline-block h-1.5 w-1.5">
             <span className="absolute inset-0 rounded-full bg-ember-500" />
             <span className="absolute -inset-1 animate-ping rounded-full bg-ember-500/40" />
@@ -61,11 +85,11 @@ function Hero() {
           A one-operator build studio · {SITE.location}
         </div>
 
-        <h1 className="max-w-4xl text-[44px] font-extrabold leading-[1.04] tracking-tightest text-ink sm:text-[64px] lg:text-[76px]">
+        <h1 className="max-w-4xl text-[2.75rem] font-extrabold leading-[1.0] tracking-tightest text-ink sm:text-[64px] lg:text-[78px]">
           Real business platforms,{" "}
-          <span className="text-aurora">owned by you</span>.
+          <span className="marker text-ink">owned by you</span>.
           <br className="hidden sm:block" />{" "}
-          Built in <span className="tnum">14 days</span>.
+          Built in <span className="tnum text-ember-600">14 days</span>.
         </h1>
 
         <p className="mt-7 max-w-2xl text-lg text-ink-500 sm:text-xl">
@@ -78,7 +102,7 @@ function Hero() {
 
         <p className="mt-6 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-ink-500">
           <span>We ship</span>
-          <span className="inline-flex items-baseline rounded border border-ink-200 bg-paper-50 px-2 py-1 normal-case tracking-normal text-sm font-semibold text-ember-600">
+          <span className="inline-flex items-baseline rounded-sm border border-ink-200 bg-paper-50 px-2 py-1 normal-case tracking-normal text-sm font-semibold text-ember-600">
             <CyclingWord words={SHIP_CYCLE} />
           </span>
         </p>
@@ -92,7 +116,8 @@ function Hero() {
           </a>
         </div>
 
-        <div className="mt-12 grid max-w-3xl grid-cols-2 gap-x-8 gap-y-5 text-sm sm:grid-cols-4">
+        {/* Proof strip — a true bordered grid divided by internal rules. */}
+        <div className="mt-14 grid max-w-3xl grid-cols-2 border-l border-t border-ink-100 sm:grid-cols-4">
           <Stat
             label="Avg actual ship"
             value={
@@ -135,11 +160,11 @@ function Stat({
   value: ReactNode;
 }) {
   return (
-    <div>
-      <div className="font-mono text-xs uppercase tracking-[0.18em] text-ink-400">
+    <div className="border-b border-r border-ink-100 px-4 py-4">
+      <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-400">
         {label}
       </div>
-      <div className="mt-1 text-xl font-bold tracking-tightest text-ink tnum">
+      <div className="mt-2 text-2xl font-extrabold tracking-tightest text-ink tnum">
         {value}
       </div>
     </div>
@@ -152,11 +177,10 @@ function Stat({
 
 function LiveDemo() {
   return (
-    <section className="container-page pb-20">
-      <div className="rule mb-12" />
-      <div className="grid gap-10 md:grid-cols-[1fr_1.4fr]">
+    <section className="container-page py-20 sm:py-24">
+      <div className="grid gap-10 md:grid-cols-[1fr_1.4fr] md:gap-12">
         <div>
-          <div className="eyebrow mb-4">The proof</div>
+          <div className="eyebrow eyebrow-rule mb-5">The proof</div>
           <h2 className="text-3xl font-extrabold tracking-tightest text-ink sm:text-4xl">
             A real customer build. Live, public, taking payments.
           </h2>
@@ -184,18 +208,19 @@ function LiveDemo() {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-lg border border-ink-100 bg-paper-50">
+        <div className="overflow-hidden rounded-lg border border-ink-200 bg-paper-50">
           <div className="flex items-center justify-between border-b border-ink-100 bg-paper-100 px-4 py-2.5">
             <div className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-ink-200" />
-              <span className="h-2.5 w-2.5 rounded-full bg-ink-200" />
-              <span className="h-2.5 w-2.5 rounded-full bg-ink-200" />
+              <span className="h-2 w-2 rounded-sm bg-ink-200" />
+              <span className="h-2 w-2 rounded-sm bg-ink-200" />
+              <span className="h-2 w-2 rounded-sm bg-ink-200" />
             </div>
             <div className="font-mono text-xs text-ink-400">
               splashjackspools.com
             </div>
-            <div className="font-mono text-[10px] uppercase tracking-widest text-shipped-600">
-              ● Live
+            <div className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-shipped-600">
+              <span className="h-1.5 w-1.5 rounded-full bg-shipped-500" />
+              Live
             </div>
           </div>
           <div className="relative aspect-[4/3] w-full">
@@ -223,57 +248,61 @@ function LiveDemo() {
 
 function Verticals() {
   return (
-    <section id="verticals" className="container-page py-24">
-      <div className="mx-auto max-w-2xl text-center">
-        <div className="eyebrow mb-4 justify-center">Who we build for</div>
-        <h2 className="text-4xl font-extrabold tracking-tightest text-ink sm:text-5xl">
-          Three kinds of business. One playbook.
-        </h2>
-        <p className="mt-5 text-ink-500">
-          We&rsquo;ve productized the build for three customer shapes. If your
-          business looks like one of these, we already know the stack, the
-          pitfalls, and the launch path. If it doesn&rsquo;t, we&rsquo;ll tell
-          you on the call.
-        </p>
-      </div>
+    <section id="verticals" className="border-t border-ink-100 py-20 sm:py-24">
+      <div className="container-page">
+        <SectionHead
+          eyebrow="Who we build for"
+          title="Three kinds of business. One playbook."
+          lead={
+            <>
+              We&rsquo;ve productized the build for three customer shapes. If
+              your business looks like one of these, we already know the stack,
+              the pitfalls, and the launch path. If it doesn&rsquo;t, we&rsquo;ll
+              tell you on the call.
+            </>
+          }
+        />
 
-      <div className="mt-14 grid gap-5 md:grid-cols-3">
-        {VERTICALS.map((v) => (
-          <Link
-            key={v.slug}
-            href={`/verticals/${v.slug}`}
-            className="card-pop flex h-full flex-col"
-          >
-            <div className="font-mono text-xs uppercase tracking-[0.18em] text-ember-600">
-              {v.shortName}
-            </div>
-            <h3 className="mt-2 text-2xl font-extrabold tracking-tightest text-ink">
-              {v.name}
-            </h3>
-            <p className="mt-3 text-sm text-ink-500">{v.tagline}</p>
+        {/* True bordered grid — divided by internal rules, not floating cards. */}
+        <div className="mt-12 grid border-l border-t border-ink-100 md:grid-cols-3">
+          {VERTICALS.map((v) => (
+            <Link
+              key={v.slug}
+              href={`/verticals/${v.slug}`}
+              className="group relative flex h-full flex-col border-b border-r border-ink-100 bg-paper-50 p-7 transition-colors hover:bg-paper-100"
+            >
+              <span className="absolute inset-x-0 top-0 h-0.5 w-0 bg-ember-500 transition-all duration-200 group-hover:w-full" />
+              <div className="font-mono text-xs font-bold uppercase tracking-[0.18em] text-ember-600">
+                {v.shortName}
+              </div>
+              <h3 className="mt-2 text-2xl font-extrabold tracking-tightest text-ink">
+                {v.name}
+              </h3>
+              <p className="mt-3 text-sm text-ink-500">{v.tagline}</p>
 
-            <div className="eyebrow mb-2 mt-6">A few examples</div>
-            <ul className="flex flex-wrap gap-1.5">
-              {v.examples.slice(0, 5).map((ex) => (
-                <li
-                  key={ex}
-                  className="rounded border border-ink-100 bg-paper-100 px-2 py-0.5 text-xs text-ink-600"
-                >
-                  {ex}
-                </li>
-              ))}
-              {v.examples.length > 5 ? (
-                <li className="rounded border border-ink-100 bg-paper-100 px-2 py-0.5 text-xs text-ink-400">
-                  +{v.examples.length - 5} more
-                </li>
-              ) : null}
-            </ul>
+              <div className="eyebrow mb-2 mt-6 text-[10px]">A few examples</div>
+              <ul className="flex flex-wrap gap-1.5">
+                {v.examples.slice(0, 5).map((ex) => (
+                  <li
+                    key={ex}
+                    className="rounded-sm border border-ink-100 bg-paper px-2 py-0.5 text-xs text-ink-600"
+                  >
+                    {ex}
+                  </li>
+                ))}
+                {v.examples.length > 5 ? (
+                  <li className="rounded-sm border border-ink-100 bg-paper px-2 py-0.5 text-xs text-ink-400">
+                    +{v.examples.length - 5} more
+                  </li>
+                ) : null}
+              </ul>
 
-            <div className="mt-auto pt-6 text-sm font-semibold text-ink">
-              See what we build for {v.shortName.toLowerCase()} →
-            </div>
-          </Link>
-        ))}
+              <div className="mt-auto pt-6 text-sm font-semibold text-ink">
+                See what we build for {v.shortName.toLowerCase()} →
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -285,54 +314,88 @@ function Verticals() {
 
 function SkuSection() {
   return (
-    <section id="sku" className="border-y border-ink-100 bg-paper-50/60 py-20 sm:py-24">
+    <section id="sku" className="border-y border-ink-100 bg-paper-50 py-20 sm:py-24">
       <div className="container-page">
-        <div className="mx-auto max-w-2xl text-center">
-          <div className="eyebrow mb-4 justify-center">Three SKUs, fixed prices</div>
-          <h2 className="text-4xl font-extrabold tracking-tightest text-ink sm:text-5xl">
-            Sign on Tuesday. Live by the second Friday — or your deposit refunds.
-          </h2>
-          <p className="mt-5 text-ink-500">
-            No &ldquo;let me get back to you with a quote.&rdquo; Productized scope, productized price.
-            Anything outside the SKU is $200/hr or rolls into a Platform upgrade.
-          </p>
-        </div>
+        <SectionHead
+          eyebrow="Three SKUs, fixed prices"
+          title="Sign on Tuesday. Live by the second Friday — or your deposit refunds."
+          lead={
+            <>
+              No &ldquo;let me get back to you with a quote.&rdquo; Productized
+              scope, productized price. Anything outside the SKU is $200/hr or
+              rolls into a Platform upgrade.
+            </>
+          }
+        />
 
-        <div className="mt-14 grid gap-5 md:grid-cols-3">
+        {/* Bordered pricing grid — one continuous frame, divided by rules. */}
+        <div className="mt-12 grid border-l border-t border-ink-200 md:grid-cols-3">
           {SKUS.map((sku) => (
             <article
               key={sku.id}
               className={cn(
-                "relative flex flex-col rounded-lg border bg-paper p-7 transition",
-                sku.popular
-                  ? "border-ink shadow-lift"
-                  : "border-ink-100 hover:border-ink-200",
+                "relative flex flex-col border-b border-r border-ink-200 p-7",
+                sku.popular ? "bg-ink text-paper" : "bg-paper",
               )}
             >
               {sku.popular ? (
-                <div className="absolute -top-3 left-7 rounded bg-ember-500 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-widest text-white">
+                <div className="absolute right-0 top-0 bg-ember-500 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-white">
                   Most popular
                 </div>
               ) : null}
 
-              <div className="flex items-baseline justify-between">
-                <h3 className="text-2xl font-extrabold tracking-tightest text-ink">
+              <div className="flex items-baseline justify-between gap-3">
+                <h3
+                  className={cn(
+                    "text-2xl font-extrabold tracking-tightest",
+                    sku.popular ? "text-paper" : "text-ink",
+                  )}
+                >
                   {sku.name}
                 </h3>
-                <div className="font-mono text-xs uppercase tracking-widest text-ink-400">
+                <div
+                  className={cn(
+                    "font-mono text-xs uppercase tracking-widest",
+                    sku.popular ? "text-paper-300" : "text-ink-400",
+                  )}
+                >
                   ships in {sku.shipsIn}
                 </div>
               </div>
 
-              <p className="mt-2 text-sm text-ink-500">{sku.blurb}</p>
+              <p
+                className={cn(
+                  "mt-2 text-sm",
+                  sku.popular ? "text-paper-200" : "text-ink-500",
+                )}
+              >
+                {sku.blurb}
+              </p>
 
               <div className="mt-6 flex items-baseline gap-1.5 tnum">
-                <span className="text-4xl font-extrabold tracking-tightest text-ink">
+                <span
+                  className={cn(
+                    "text-4xl font-extrabold tracking-tightest",
+                    sku.popular ? "text-paper" : "text-ink",
+                  )}
+                >
                   ${sku.oneTime.toLocaleString()}
                 </span>
-                <span className="text-sm font-medium text-ink-400">one-time</span>
+                <span
+                  className={cn(
+                    "text-sm font-medium",
+                    sku.popular ? "text-paper-300" : "text-ink-400",
+                  )}
+                >
+                  one-time
+                </span>
               </div>
-              <div className="mt-1 font-mono text-xs text-ink-400 tnum">
+              <div
+                className={cn(
+                  "mt-1 font-mono text-xs tnum",
+                  sku.popular ? "text-paper-300" : "text-ink-400",
+                )}
+              >
                 + ${sku.monthly}/mo hosting + maintenance
               </div>
 
@@ -346,16 +409,56 @@ function SkuSection() {
                 Book intro call
               </a>
 
-              <div className="rule my-7" />
+              <div
+                className={cn(
+                  "my-7 h-px w-full",
+                  sku.popular ? "bg-paper-200/20" : "bg-ink-100",
+                )}
+              />
 
-              <div className="eyebrow mb-3">Best for</div>
-              <p className="text-sm text-ink-500">{sku.bestFor}</p>
+              <div
+                className={cn(
+                  "mb-3 font-mono text-[11px] font-bold uppercase tracking-[0.22em]",
+                  sku.popular ? "text-ember-300" : "text-ember-600",
+                )}
+              >
+                Best for
+              </div>
+              <p
+                className={cn(
+                  "text-sm",
+                  sku.popular ? "text-paper-200" : "text-ink-500",
+                )}
+              >
+                {sku.bestFor}
+              </p>
 
-              <div className="eyebrow mb-3 mt-6">What&rsquo;s in it</div>
-              <ul className="space-y-2.5 text-sm text-ink-700">
+              <div
+                className={cn(
+                  "mb-3 mt-6 font-mono text-[11px] font-bold uppercase tracking-[0.22em]",
+                  sku.popular ? "text-ember-300" : "text-ember-600",
+                )}
+              >
+                What&rsquo;s in it
+              </div>
+              <ul
+                className={cn(
+                  "space-y-0",
+                  sku.popular ? "text-paper-200" : "text-ink-700",
+                )}
+              >
                 {sku.features.map((f) => (
-                  <li key={f} className="flex gap-2.5">
-                    <span aria-hidden className="mt-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-ember-500" />
+                  <li
+                    key={f}
+                    className={cn(
+                      "flex gap-2.5 border-t py-2.5 text-sm",
+                      sku.popular ? "border-paper-200/15" : "border-ink-100",
+                    )}
+                  >
+                    <span
+                      aria-hidden
+                      className="mt-1.5 inline-block h-1.5 w-1.5 shrink-0 bg-ember-500"
+                    />
                     <span>{f}</span>
                   </li>
                 ))}
@@ -364,7 +467,7 @@ function SkuSection() {
           ))}
         </div>
 
-        <p className="mx-auto mt-12 max-w-2xl text-center font-mono text-xs uppercase tracking-widest text-ink-400">
+        <p className="mt-10 font-mono text-xs uppercase tracking-widest text-ink-400">
           50% on signature · 50% on launch · 30-day cancel · you own the code
         </p>
       </div>
@@ -378,39 +481,46 @@ function SkuSection() {
 
 function HowItWorks() {
   return (
-    <section id="how" className="container-page py-24">
-      <div className="mx-auto max-w-2xl text-center">
-        <div className="eyebrow mb-4 justify-center">How it works</div>
-        <h2 className="text-4xl font-extrabold tracking-tightest text-ink sm:text-5xl">
-          14 days, end to end.
-        </h2>
-        <p className="mt-5 text-ink-500">
-          Every project runs the same playbook. No surprises, no scope creep, no
-          standing meetings.
-        </p>
-      </div>
+    <section id="how" className="border-t border-ink-100 py-20 sm:py-24">
+      <div className="container-page">
+        <SectionHead
+          eyebrow="How it works"
+          title="14 days, end to end."
+          lead={
+            <>
+              Every project runs the same playbook. No surprises, no scope
+              creep, no standing meetings.
+            </>
+          }
+        />
 
-      <ol className="mt-14 space-y-1.5">
-        {TIMELINE.map((step, i) => (
-          <li
-            key={step.day}
-            className="grid items-start gap-5 rounded-lg border border-ink-100 bg-paper-50 p-5 sm:grid-cols-[140px_1fr_2fr] sm:gap-8 sm:p-6"
-          >
-            <div className="font-mono text-xs uppercase tracking-[0.18em] text-ember-600 tnum">
-              {step.day}
-            </div>
-            <div className="text-lg font-bold tracking-tightest text-ink">
-              {step.title}
-            </div>
-            <div className="text-ink-500">{step.body}</div>
-            {/* Index for visual rhythm — not numbered in the data so we hide
-                this on small screens to save space. */}
-            <span aria-hidden className="hidden text-right font-mono text-xs text-ink-300 tnum sm:block">
-              {String(i + 1).padStart(2, "0")} / {String(TIMELINE.length).padStart(2, "0")}
-            </span>
-          </li>
-        ))}
-      </ol>
+        {/* Timeline — connected rows divided by hairline rules, no floating. */}
+        <ol className="mt-12 border-t border-ink-100">
+          {TIMELINE.map((step, i) => (
+            <li
+              key={step.day}
+              className="group relative grid items-baseline gap-3 border-b border-ink-100 py-6 transition-colors hover:bg-paper-50 sm:grid-cols-[150px_minmax(0,1fr)_2fr] sm:gap-8 sm:py-7"
+            >
+              <span className="absolute inset-y-0 left-0 w-0.5 scale-y-0 bg-ember-500 transition-transform duration-200 group-hover:scale-y-100" />
+              <div className="font-mono text-xs font-bold uppercase tracking-[0.18em] text-ember-600 tnum sm:pl-4">
+                {step.day}
+              </div>
+              <div className="text-lg font-bold tracking-tighter text-ink">
+                {step.title}
+              </div>
+              <div className="flex items-baseline gap-6 text-ink-500">
+                <span>{step.body}</span>
+                <span
+                  aria-hidden
+                  className="ml-auto hidden shrink-0 font-mono text-xs text-ink-300 tnum sm:block sm:pr-4"
+                >
+                  {String(i + 1).padStart(2, "0")} / {String(TIMELINE.length).padStart(2, "0")}
+                </span>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
     </section>
   );
 }
@@ -430,17 +540,20 @@ function TrustStrip() {
     "Anthropic",
   ];
   return (
-    <section className="border-y border-ink-100 bg-paper-50/60 py-12">
-      <div className="container-page text-center">
-        <div className="font-mono text-xs uppercase tracking-[0.2em] text-ink-400">
-          Same stack as Vercel, Linear, Cash App
-        </div>
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-lg font-semibold tracking-tight text-ink-300">
-          {STACK.map((name) => (
-            <span key={name} className="transition hover:text-ink">
-              {name}
-            </span>
-          ))}
+    <section className="border-y border-ink-100 bg-paper-50 py-12">
+      <div className="container-page">
+        <div className="grid items-center gap-6 sm:grid-cols-[auto_1fr]">
+          <div className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-ink-400">
+            Same stack as
+            <br className="hidden sm:block" /> Vercel, Linear, Cash App
+          </div>
+          <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-lg font-bold tracking-tighter text-ink-300 sm:justify-end">
+            {STACK.map((name) => (
+              <span key={name} className="transition-colors hover:text-ink">
+                {name}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -456,57 +569,61 @@ function NowBuilding() {
   const inProgress = BUILDS.filter((b) => b.status === "in-progress").slice(0, 2);
 
   return (
-    <section id="now-building" className="container-page py-24">
-      <div className="mx-auto max-w-2xl text-center">
-        <div className="eyebrow mb-4 justify-center">
-          <span className="relative inline-block h-1.5 w-1.5">
-            <span className="absolute inset-0 rounded-full bg-ember-500" />
-            <span className="absolute -inset-1 animate-ping rounded-full bg-ember-500/40" />
-          </span>
-          Now building · public from day one
-        </div>
-        <h2 className="text-4xl font-extrabold tracking-tightest text-ink sm:text-5xl">
-          Watch a 14-day build, in real time.
-        </h2>
-        <p className="mt-5 text-ink-500">
-          Every active customer build is on a public page from Day 1. Day-by-day
-          commits, the same EOD update the customer gets, the preview URL once
-          it&rsquo;s live. No agency does this.
-        </p>
-      </div>
+    <section id="now-building" className="border-t border-ink-100 py-20 sm:py-24">
+      <div className="container-page">
+        <SectionHead
+          eyebrow={
+            <>
+              <span className="relative inline-block h-1.5 w-1.5">
+                <span className="absolute inset-0 rounded-full bg-ember-500" />
+                <span className="absolute -inset-1 animate-ping rounded-full bg-ember-500/40" />
+              </span>
+              Now building · public from day one
+            </>
+          }
+          title="Watch a 14-day build, in real time."
+          lead={
+            <>
+              Every active customer build is on a public page from Day 1.
+              Day-by-day commits, the same EOD update the customer gets, the
+              preview URL once it&rsquo;s live. No agency does this.
+            </>
+          }
+        />
 
-      {inProgress.length === 0 ? (
-        <div className="mx-auto mt-12 max-w-2xl rounded-lg border border-dashed border-ink-200 bg-paper-50 p-8 text-center">
-          <p className="text-ink-500">
-            No active builds right now — three slots open this month. Book an
-            intro call to claim one.
-          </p>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-            <a href={SITE.bookingUrl} className="btn-ember">
-              Book a 30-min intro call
-            </a>
-            <Link href="/builds" className="btn-ghost">
-              See past builds →
-            </Link>
+        {inProgress.length === 0 ? (
+          <div className="mt-12 border border-dashed border-ink-200 bg-paper-50 p-10 text-center">
+            <p className="mx-auto max-w-md text-ink-500">
+              No active builds right now — three slots open this month. Book an
+              intro call to claim one.
+            </p>
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+              <a href={SITE.bookingUrl} className="btn-ember">
+                Book a 30-min intro call
+              </a>
+              <Link href="/builds" className="btn-ghost">
+                See past builds →
+              </Link>
+            </div>
           </div>
-        </div>
-      ) : (
-        <>
-          <div className="mt-14 grid gap-5 md:grid-cols-2">
-            {inProgress.map((b) => (
-              <NowBuildingCard key={b.slug} build={b} />
-            ))}
-          </div>
-          <div className="mt-8 text-center">
-            <Link
-              href="/builds"
-              className="font-mono text-xs uppercase tracking-widest text-ink-500 transition hover:text-ink"
-            >
-              See the full build log →
-            </Link>
-          </div>
-        </>
-      )}
+        ) : (
+          <>
+            <div className="mt-12 grid border-l border-t border-ink-100 md:grid-cols-2">
+              {inProgress.map((b) => (
+                <NowBuildingCard key={b.slug} build={b} />
+              ))}
+            </div>
+            <div className="mt-8">
+              <Link
+                href="/builds"
+                className="font-mono text-xs uppercase tracking-widest text-ink-500 transition-colors hover:text-ink"
+              >
+                See the full build log →
+              </Link>
+            </div>
+          </>
+        )}
+      </div>
     </section>
   );
 }
@@ -516,9 +633,13 @@ function NowBuildingCard({ build }: { build: Build }) {
   const verticalLabel =
     build.vertical === "custom" ? "Custom" : build.vertical.replace("-", " ");
   return (
-    <Link href={`/builds/${build.slug}`} className="card-pop block">
+    <Link
+      href={`/builds/${build.slug}`}
+      className="group relative block border-b border-r border-ink-100 bg-paper-50 p-7 transition-colors hover:bg-paper-100"
+    >
+      <span className="absolute inset-x-0 top-0 h-0.5 w-0 bg-ember-500 transition-all duration-200 group-hover:w-full" />
       <div className="flex items-center justify-between">
-        <div className="font-mono text-xs uppercase tracking-widest text-ember-600">
+        <div className="font-mono text-xs font-bold uppercase tracking-widest text-ember-600">
           {build.sku} · {verticalLabel}
         </div>
         <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-ink-500">
@@ -546,54 +667,57 @@ function NowBuildingCard({ build }: { build: Build }) {
 
 function CaseStudies() {
   return (
-    <section id="case-studies" className="container-page py-24">
-      <div className="mx-auto max-w-2xl text-center">
-        <div className="eyebrow mb-4 justify-center">Three live builds, three SKUs</div>
-        <h2 className="text-4xl font-extrabold tracking-tightest text-ink sm:text-5xl">
-          The work, on the public internet.
-        </h2>
-        <p className="mt-5 text-ink-500">
-          A service-business platform, a brand-heavy event site, and a two-sided
-          marketplace — all shipped, all live, all examples of what Day14 builds
-          inside the standard SKUs.
+    <section id="case-studies" className="border-t border-ink-100 py-20 sm:py-24">
+      <div className="container-page">
+        <SectionHead
+          eyebrow="Three live builds, three SKUs"
+          title="The work, on the public internet."
+          lead={
+            <>
+              A service-business platform, a brand-heavy event site, and a
+              two-sided marketplace — all shipped, all live, all examples of
+              what Day14 builds inside the standard SKUs.
+            </>
+          }
+        />
+
+        <div className="mt-12 grid border-l border-t border-ink-100 md:grid-cols-3">
+          {CASE_STUDIES.map((cs) => (
+            <Link
+              key={cs.slug}
+              href={`/case-studies/${cs.slug}`}
+              className="group relative block border-b border-r border-ink-100 bg-paper-50 p-7 transition-colors hover:bg-paper-100"
+            >
+              <span className="absolute inset-x-0 top-0 h-0.5 w-0 bg-ember-500 transition-all duration-200 group-hover:w-full" />
+              <div className="flex items-center justify-between">
+                <div className="font-mono text-xs font-bold uppercase tracking-widest text-ember-600">
+                  {cs.sku}
+                </div>
+                <StatePill state={cs.state} />
+              </div>
+              <h3 className="mt-3 text-2xl font-extrabold tracking-tightest text-ink">
+                {cs.name}
+              </h3>
+              <p className="mt-1 text-sm text-ink-400">{cs.industry}</p>
+              <p className="mt-4 text-sm text-ink-500">{cs.summary}</p>
+              <div className="mt-5 flex items-center justify-between">
+                <span className="text-sm font-semibold text-ink">
+                  Read the case study →
+                </span>
+                {cs.url ? (
+                  <span className="font-mono text-[11px] uppercase tracking-widest text-ink-400">
+                    {new URL(cs.url).host}
+                  </span>
+                ) : null}
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        <p className="mt-10 font-mono text-xs uppercase tracking-widest text-ink-400">
+          Your business is the fourth. Three slots open this month.
         </p>
       </div>
-
-      <div className="mt-14 grid gap-5 md:grid-cols-3">
-        {CASE_STUDIES.map((cs) => (
-          <Link
-            key={cs.slug}
-            href={`/case-studies/${cs.slug}`}
-            className="card-pop block"
-          >
-            <div className="flex items-center justify-between">
-              <div className="font-mono text-xs uppercase tracking-widest text-ember-600">
-                {cs.sku}
-              </div>
-              <StatePill state={cs.state} />
-            </div>
-            <h3 className="mt-3 text-2xl font-extrabold tracking-tightest text-ink">
-              {cs.name}
-            </h3>
-            <p className="mt-1 text-sm text-ink-400">{cs.industry}</p>
-            <p className="mt-4 text-sm text-ink-500">{cs.summary}</p>
-            <div className="mt-5 flex items-center justify-between">
-              <span className="text-sm font-semibold text-ink">
-                Read the case study →
-              </span>
-              {cs.url ? (
-                <span className="font-mono text-[11px] uppercase tracking-widest text-ink-400">
-                  {new URL(cs.url).host}
-                </span>
-              ) : null}
-            </div>
-          </Link>
-        ))}
-      </div>
-
-      <p className="mt-12 text-center font-mono text-xs uppercase tracking-widest text-ink-400">
-        Your business is the fourth. Three slots open this month.
-      </p>
     </section>
   );
 }
@@ -618,38 +742,37 @@ function StatePill({ state }: { state: "Live" | "Preview" | "Internal" }) {
 
 function FaqSection() {
   return (
-    <section id="faq" className="border-t border-ink-100 bg-paper-50/60 py-24">
+    <section id="faq" className="border-t border-ink-100 bg-paper-50 py-20 sm:py-24">
       <div className="container-page">
-        <div className="mx-auto max-w-2xl text-center">
-          <div className="eyebrow mb-4 justify-center">Frequently asked</div>
-          <h2 className="text-4xl font-extrabold tracking-tightest text-ink sm:text-5xl">
-            The twelve questions every small-business owner asks.
-          </h2>
-        </div>
+        <SectionHead
+          eyebrow="Frequently asked"
+          title="The twelve questions every small-business owner asks."
+        />
 
-        <div className="mx-auto mt-14 max-w-3xl space-y-3">
+        {/* Accordion — a continuous list divided by hairline rules. */}
+        <div className="mt-12 border-t border-ink-100">
           {FAQ.map((item, i) => (
             <details
               key={item.q}
-              className="group rounded-lg border border-ink-100 bg-paper p-5 open:border-ink-200 sm:p-6"
+              className="group border-b border-ink-100 open:bg-paper"
             >
-              <summary className="flex cursor-pointer list-none items-start justify-between gap-4">
+              <summary className="flex cursor-pointer list-none items-start justify-between gap-4 py-5">
                 <div>
                   <span className="font-mono text-xs text-ink-400 tnum">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <span className="ml-3 text-lg font-semibold tracking-tight text-ink">
+                  <span className="ml-3 text-lg font-bold tracking-tighter text-ink">
                     {item.q}
                   </span>
                 </div>
                 <span
                   aria-hidden
-                  className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded border border-ink-200 font-mono text-sm text-ink-500 transition group-open:rotate-45 group-open:border-ember-500 group-open:text-ember-500"
+                  className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-sm border border-ink-200 font-mono text-sm text-ink-500 transition group-open:rotate-45 group-open:border-ember-500 group-open:bg-ember-500 group-open:text-white"
                 >
                   +
                 </span>
               </summary>
-              <div className="mt-3 pl-10 text-ink-500">{item.a}</div>
+              <div className="pb-5 pl-9 pr-10 text-ink-500">{item.a}</div>
             </details>
           ))}
         </div>
@@ -664,32 +787,40 @@ function FaqSection() {
 
 function FinalCta() {
   return (
-    <section className="container-page py-24">
-      <div className="overflow-hidden rounded-xl bg-ink p-10 text-paper sm:p-16">
-        <div className="grid items-center gap-10 md:grid-cols-[1.4fr_1fr]">
-          <div>
-            <div className="eyebrow mb-5 text-ember-300">Talk to a builder</div>
-            <h2 className="text-4xl font-extrabold tracking-tightest sm:text-5xl">
-              30 minutes. No deck. Just the live demo and a fixed price.
-            </h2>
-            <p className="mt-5 max-w-xl text-paper-200">
-              We pull up splashjackspools.com on the call, you tell us your
-              business, we tell you which SKU fits and what we&rsquo;d ship in 14
-              days. If it&rsquo;s not a fit we say so on the call.
-            </p>
-          </div>
-          <div className="flex flex-col gap-3">
-            <a href={SITE.bookingUrl} className="btn-ember w-full justify-center text-base">
-              Book a 30-min intro call
-            </a>
-            <a
-              href={`mailto:${SITE.email}`}
-              className="inline-flex w-full items-center justify-center rounded border border-paper-200/40 px-5 py-3 text-sm font-semibold text-paper transition hover:bg-paper/10"
-            >
-              Or email {SITE.email}
-            </a>
-            <div className="mt-2 text-center font-mono text-xs uppercase tracking-widest text-paper-300/60">
-              Three slots open this month
+    <section className="border-t border-ink-100 py-20 sm:py-24">
+      <div className="container-page">
+        <div className="relative overflow-hidden rounded-lg border border-ink-700 bg-ink p-10 text-paper sm:p-14">
+          <div className="grid-lines-dark absolute inset-0 [mask-image:radial-gradient(600px_360px_at_15%_0%,#000,transparent_75%)]" />
+          <div className="relative grid items-center gap-10 md:grid-cols-[1.4fr_1fr]">
+            <div>
+              <div className="eyebrow eyebrow-rule mb-5 text-ember-300">
+                Talk to a builder
+              </div>
+              <h2 className="text-3xl font-extrabold tracking-tightest text-paper sm:text-[2.75rem] sm:leading-[1.03]">
+                30 minutes. No deck. Just the live demo and a fixed price.
+              </h2>
+              <p className="mt-5 max-w-xl text-paper-200">
+                We pull up splashjackspools.com on the call, you tell us your
+                business, we tell you which SKU fits and what we&rsquo;d ship in
+                14 days. If it&rsquo;s not a fit we say so on the call.
+              </p>
+            </div>
+            <div className="flex flex-col gap-3">
+              <a
+                href={SITE.bookingUrl}
+                className="btn-ember w-full justify-center text-base"
+              >
+                Book a 30-min intro call
+              </a>
+              <a
+                href={`mailto:${SITE.email}`}
+                className="inline-flex w-full items-center justify-center rounded-sm border border-paper-200/30 px-5 py-3 text-sm font-semibold text-paper transition-colors hover:border-paper-200/60 hover:bg-paper/5"
+              >
+                Or email {SITE.email}
+              </a>
+              <div className="mt-2 text-center font-mono text-xs uppercase tracking-widest text-paper-300/70">
+                Three slots open this month
+              </div>
             </div>
           </div>
         </div>

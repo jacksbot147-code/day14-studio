@@ -11,28 +11,33 @@ export default async function AdminLoginPage({ searchParams }: Props) {
   const { error, next } = await searchParams;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#08070d", color: "#e8e6ea", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'SF Mono', Menlo, Monaco, monospace", backgroundImage: "radial-gradient(at 80% 0%, rgba(168, 85, 247, 0.15) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(6, 182, 212, 0.1) 0px, transparent 50%)" }}>
-      <div style={{ width: 360, padding: 40, background: "#13111a", border: "1px solid #2a2535", borderRadius: 16 }}>
-        <h1 style={{ fontSize: 28, marginBottom: 8, letterSpacing: "-0.02em", background: "linear-gradient(135deg,#fff,#b39ddb 50%,#06b6d4)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>⚔ Day14 Admin</h1>
-        <p style={{ fontSize: 13, color: "#847a92", marginBottom: 28 }}>Empire access</p>
+    <div style={{ minHeight: "100vh", background: "#0B0B0A", color: "#F8F6F1", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif", backgroundImage: "linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px)", backgroundSize: "56px 56px" }}>
+      <div style={{ width: 372, padding: 36, background: "#0F0E0C", border: "1px solid #2A2826", borderRadius: 4 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 22, paddingBottom: 18, borderBottom: "1px solid #211F1C" }}>
+          <span style={{ display: "grid", placeItems: "center", width: 36, height: 36, borderRadius: 2, background: "#FF5C28", color: "#0B0B0A", fontWeight: 800, fontSize: 15, fontVariantNumeric: "tabular-nums" }}>14</span>
+          <div>
+            <h1 style={{ fontSize: 21, margin: 0, letterSpacing: "-0.04em", fontWeight: 800, color: "#F8F6F1" }}>Day14 Admin</h1>
+            <p style={{ fontSize: 11, color: "#8A847C", margin: "2px 0 0", textTransform: "uppercase", letterSpacing: "0.14em", fontWeight: 600 }}>Empire access</p>
+          </div>
+        </div>
         <form action="/api/admin/auth" method="POST">
           <input type="hidden" name="next" value={next || "/admin"} />
-          <label style={{ display: "block", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: "#847a92", marginBottom: 6 }}>Password</label>
+          <label style={{ display: "block", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700, color: "#8A847C", marginBottom: 7 }}>Password</label>
           <input
             type="password"
             name="password"
             required
             autoFocus
-            style={{ width: "100%", padding: "12px 14px", background: "#1a1825", border: "1px solid #2a2535", borderRadius: 8, color: "#e8e6ea", fontSize: 14, fontFamily: "inherit", marginBottom: error ? 8 : 20 }}
+            style={{ width: "100%", padding: "12px 14px", background: "#0B0B0A", border: `1px solid ${error ? "#E04617" : "#2A2826"}`, borderRadius: 2, color: "#F8F6F1", fontSize: 14, fontFamily: "inherit", marginBottom: error ? 8 : 20, outline: "none", boxSizing: "border-box" }}
           />
           {error ? (
-            <div style={{ fontSize: 12, color: "#ff6b6b", marginBottom: 16 }}>Incorrect password.</div>
+            <div style={{ fontSize: 12, color: "#FF8A66", marginBottom: 16 }}>Incorrect password.</div>
           ) : null}
-          <button type="submit" style={{ width: "100%", padding: "14px 20px", background: "linear-gradient(135deg,#a855f7,#06b6d4)", border: "none", borderRadius: 8, color: "white", fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+          <button type="submit" style={{ width: "100%", padding: "13px 20px", background: "#FF5C28", border: "1px solid #FF5C28", borderRadius: 2, color: "#0B0B0A", fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
             Enter empire →
           </button>
         </form>
-        <div style={{ marginTop: 24, fontSize: 11, color: "#847a92", textAlign: "center" }}>
+        <div style={{ marginTop: 22, paddingTop: 18, borderTop: "1px solid #211F1C", fontSize: 11, color: "#8A847C", textAlign: "center" }}>
           Session lasts 30 days · single-user mode
         </div>
       </div>

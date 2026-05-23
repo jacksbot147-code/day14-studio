@@ -74,7 +74,10 @@ export function flCountyCode(target) {
  *  ordering by JV, which made earlier runs time out). */
 async function fetchPageOnce(coNo, offset) {
   const params = new URLSearchParams({
-    where: `CO_NO=${coNo}`,
+    // Quote the literal — this layer rejects a bare numeric compare on CO_NO
+    // ("Invalid query parameters"). A quoted literal is accepted whether the
+    // field is typed as text or numeric, so it's the safe universal form.
+    where: `CO_NO='${coNo}'`,
     outFields: OUT_FIELDS,
     orderByFields: "OBJECTID",
     returnGeometry: "false",
@@ -92,7 +95,12 @@ async function fetchPageOnce(coNo, offset) {
     clearTimeout(timer);
     if (!res.ok) return { error: `HTTP ${res.status}` };
     const data = await res.json();
-    if (data.error) return { error: data.error.message || "query error" };
+    if (data.error) {
+      const det = Array.isArray(data.error.details) && data.error.details.length
+        ? ` — ${data.error.details.join("; ")}`
+        : "";
+      return { error: `${data.error.message || "query error"}${det}` };
+    }
     return { features: (data.features || []).map((f) => f.attributes || {}) };
   } catch (e) {
     clearTimeout(timer);

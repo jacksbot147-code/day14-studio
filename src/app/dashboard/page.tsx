@@ -214,8 +214,8 @@ export default async function DashboardPage() {
       {/* Header */}
       <header className="mb-8 flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Empire</h1>
-          <p className="text-sm text-zinc-400 mt-1">
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-zinc-50">Empire</h1>
+          <p className="text-sm text-zinc-400 mt-1.5">
             {new Date().toLocaleString("en-US", {
               weekday: "long",
               month: "short",
@@ -439,18 +439,18 @@ export default async function DashboardPage() {
 
 function StatCard({ label, value, sub }: { label: string; value: number | string; sub?: string }) {
   return (
-    <div className="rounded-lg bg-zinc-900 border border-zinc-800 p-4">
-      <div className="text-xs text-zinc-500 uppercase tracking-wider">{label}</div>
-      <div className="text-3xl font-bold text-zinc-100 mt-1">{value}</div>
-      {sub && <div className="text-xs text-zinc-500 mt-1">{sub}</div>}
+    <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-5 transition-colors duration-150 hover:border-zinc-700">
+      <div className="text-[11px] font-semibold text-zinc-500 uppercase tracking-[0.08em]">{label}</div>
+      <div className="text-3xl font-bold tracking-tight text-zinc-50 mt-1.5 tabular-nums">{value}</div>
+      {sub && <div className="text-xs text-zinc-500 mt-1.5">{sub}</div>}
     </div>
   );
 }
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-lg bg-zinc-900 border border-zinc-800 p-5">
-      <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-wider mb-3">{title}</h2>
+    <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-5">
+      <h2 className="text-[11px] font-semibold text-zinc-400 uppercase tracking-[0.09em] mb-3.5">{title}</h2>
       {children}
     </div>
   );

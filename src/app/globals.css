@@ -2,25 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Day14 — design system
+ *
+ * A sharp, line-driven visual layer for a productized build studio.
+ * Definition over softness: hairline rules and crisp borders carry the
+ * structure, not blurred drop-shadows. Near-square edges, a big editorial
+ * type scale set against small precise uppercase labels, a strong visible
+ * grid rhythm, generous negative space. A single ember-orange accent,
+ * used with restraint. Confident, premium, builder-y — never cushioned. */
+
 @layer base {
   :root {
     --bg: 248 246 241; /* paper */
     --ink: 11 11 10;
+
+    /* Spacing rhythm — an 8px-based scale used across sections + components. */
+    --space-section: 7rem; /* 112px — vertical gap between page sections */
+    --space-block: 2.5rem; /* 40px — gap within a section */
   }
 
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
   }
 
   body {
     @apply bg-paper text-ink font-sans antialiased;
-    /* Warm grain — subtle paper texture via a single radial gradient. */
-    background-image:
-      radial-gradient(at 0% 0%, rgba(255, 92, 40, 0.05) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, rgba(11, 11, 10, 0.03) 0px, transparent 50%);
-    background-attachment: fixed;
   }
 
   ::selection {
@@ -50,9 +63,35 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 
-  /* Display headlines — tighter tracking, heavier weight, no rounding. */
-  h1, h2, h3 {
+  /* Display headlines — tight tracking, heavy weight, no rounding.
+     A dramatic editorial scale: h1 commands the page, h2 organizes a
+     section, h3 labels a block. Big against small is the whole point. */
+  h1, h2, h3, h4 {
     @apply font-display tracking-tightest;
+    text-wrap: balance;
+  }
+  h1 {
+    @apply text-[2.6rem] font-extrabold leading-[1.02] sm:text-6xl;
+  }
+  h2 {
+    @apply text-3xl font-extrabold leading-[1.05] sm:text-[2.75rem];
+  }
+  h3 {
+    @apply text-xl font-bold leading-snug tracking-tighter sm:text-2xl;
+  }
+  h4 {
+    @apply text-base font-bold leading-snug tracking-tighter;
+  }
+
+  /* Body copy reads relaxed; long-form paragraphs get a comfortable measure. */
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Consistent focus ring for keyboard users across all interactive elements. */
+  :focus-visible {
+    outline: none;
+    @apply ring-2 ring-ember-500 ring-offset-2 ring-offset-paper;
   }
 }
 
@@ -61,41 +100,68 @@
     @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
   }
 
-  /* Primary CTA — flat, confident, builder-y. No bouncy shadows. */
-  .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded bg-ink px-5 py-3 text-sm font-semibold text-paper transition hover:bg-ink-700 active:translate-y-px focus:outline-none focus:ring-2 focus:ring-ember-500 focus:ring-offset-2 focus:ring-offset-paper disabled:opacity-50;
-  }
-
-  .btn-ember {
-    @apply inline-flex items-center justify-center gap-2 rounded bg-ember-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-ember-600 active:translate-y-px focus:outline-none focus:ring-2 focus:ring-ember-500 focus:ring-offset-2 focus:ring-offset-paper disabled:opacity-50;
-  }
-
+  /* Shared button base — one consistent shape, sizing, and motion language.
+     Variants only differ in color. Crisp near-square edges, flat ink fill,
+     no glow. A 1px nudge on press is the only motion. */
+  .btn-primary,
+  .btn-ember,
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded border border-ink-200 bg-transparent px-5 py-3 text-sm font-semibold text-ink transition hover:border-ink hover:bg-ink hover:text-paper active:translate-y-px focus:outline-none focus:ring-2 focus:ring-ember-500 focus:ring-offset-2 focus:ring-offset-paper;
+    @apply inline-flex items-center justify-center gap-2 rounded-sm border px-5 py-3 text-sm font-semibold;
+    @apply transition-[background-color,border-color,color,transform] duration-150 ease-out;
+    @apply active:translate-y-px disabled:pointer-events-none disabled:opacity-50;
   }
 
-  /* Card — flat with a hairline border, lifts on hover. No drop shadow. */
+  /* Primary CTA — flat ink fill, crisp border. */
+  .btn-primary {
+    @apply border-ink bg-ink text-paper hover:border-ink-700 hover:bg-ink-700;
+  }
+
+  /* Ember CTA — the single hot accent, flat-filled. */
+  .btn-ember {
+    @apply border-ember-500 bg-ember-500 text-white hover:border-ember-600 hover:bg-ember-600;
+  }
+
+  /* Ghost — hairline-bordered, fills with ink on hover. */
+  .btn-ghost {
+    @apply border-ink-200 bg-transparent text-ink hover:border-ink hover:bg-ink hover:text-paper;
+  }
+
+  /* Card — defined by a clean hairline border, no fill-shadow. */
   .card {
-    @apply rounded-lg border border-ink-100 bg-paper-50 p-6 transition;
+    @apply rounded-lg border border-ink-100 bg-paper-50 p-6 transition-colors duration-150 ease-out;
   }
 
+  /* Interactive card — the border sharpens to ink on hover, no lift. */
   .card-pop {
-    @apply rounded-lg border border-ink-100 bg-paper-50 p-6 transition hover:border-ink-200 hover:shadow-lift;
+    @apply card hover:border-ink;
   }
 
-  /* Eyebrow — small uppercase label above section headings. */
+  /* Eyebrow — small uppercase label above section headings. Wide tracking,
+     heavy weight: the small precise counterweight to big display type. */
   .eyebrow {
-    @apply inline-flex items-center gap-2 font-mono text-xs font-medium uppercase tracking-[0.18em] text-ember-600;
+    @apply inline-flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-ember-600;
   }
 
-  /* Marker — used to highlight key phrases in headlines. */
+  /* Pill / badge — squared, hairline, precise. */
+  .badge {
+    @apply inline-flex items-center gap-1.5 rounded-sm border border-ink-100 bg-paper px-2.5 py-0.5 text-xs font-semibold text-ink-500;
+  }
+
+  /* Form input — consistent field styling across the marketing site. */
+  .field {
+    @apply w-full rounded-sm border border-ink-200 bg-paper px-3.5 py-2.5 text-sm text-ink;
+    @apply transition-[border-color,box-shadow] duration-150 placeholder:text-ink-300;
+    @apply hover:border-ink-300 focus:border-ember-500 focus:outline-none focus:ring-2 focus:ring-ember-500/25;
+  }
+
+  /* Marker — a flat ember underline used to mark key phrases in headlines. */
   .marker {
     @apply relative inline-block;
     background-image: linear-gradient(
-      transparent 68%,
-      theme("colors.ember.200") 68%,
-      theme("colors.ember.200") 92%,
-      transparent 92%
+      transparent 82%,
+      theme("colors.ember.300") 82%,
+      theme("colors.ember.300") 96%,
+      transparent 96%
     );
     background-repeat: no-repeat;
   }
@@ -103,6 +169,27 @@
   /* Rule — thin hairline divider used between sections. */
   .rule {
     @apply h-px w-full bg-ink-100;
+  }
+
+  /* Section eyebrow with a leading rule — editorial label treatment. */
+  .eyebrow-rule::before {
+    content: "";
+    @apply mr-1 inline-block h-px w-6 bg-ember-400 align-middle;
+  }
+
+  /* Hairline grid backdrop — a crisp blueprint texture for hero / dark bands.
+     Lines, not blur, carry the atmosphere. */
+  .grid-lines {
+    background-image:
+      linear-gradient(theme("colors.ink.100") 1px, transparent 1px),
+      linear-gradient(90deg, theme("colors.ink.100") 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+  .grid-lines-dark {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 56px 56px;
   }
 }
 

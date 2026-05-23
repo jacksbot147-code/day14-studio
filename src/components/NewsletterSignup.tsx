@@ -47,36 +47,72 @@ export function NewsletterSignup({
   }
 
   if (status === "ok") {
-    return <div style={{ padding: "12px 16px", background: "rgba(108, 214, 108, 0.1)", border: "1px solid rgba(108, 214, 108, 0.3)", borderRadius: 8, color: "#6cd66c", fontSize: 14 }}>✓ {successMessage}</div>;
+    return (
+      <div className="inline-flex items-center gap-2 rounded-md border border-shipped-500/30 bg-shipped-500/10 px-4 py-3 text-sm font-medium text-shipped-600">
+        <span aria-hidden="true">✓</span> {successMessage}
+      </div>
+    );
   }
-
-  const baseInput = { padding: "12px 14px", border: "1px solid #2a2535", borderRadius: 8, fontSize: 14, background: "#13111a", color: "#e8e6ea", fontFamily: "inherit" } as const;
-  const baseButton = { padding: "12px 20px", background: "linear-gradient(135deg,#a855f7,#06b6d4)", color: "white", border: "none", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" } as const;
 
   if (variant === "minimal") {
     return (
-      <form onSubmit={submit} style={{ display: "flex", gap: 6, alignItems: "center" }}>
-        <input type="email" required placeholder={placeholder} value={email} onChange={(e) => setEmail(e.target.value)} style={{ ...baseInput, flex: 1, fontSize: 13, padding: "8px 12px" }} />
-        <button type="submit" disabled={status === "loading"} style={{ ...baseButton, fontSize: 13, padding: "8px 14px" }}>{status === "loading" ? "…" : buttonText}</button>
+      <form onSubmit={submit} className="flex items-center gap-2">
+        <input
+          type="email"
+          required
+          placeholder={placeholder}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="field flex-1 !py-2 text-[13px]"
+        />
+        <button
+          type="submit"
+          disabled={status === "loading"}
+          className="btn-primary shrink-0 !px-3.5 !py-2 text-[13px]"
+        >
+          {status === "loading" ? "…" : buttonText}
+        </button>
       </form>
     );
   }
 
   if (variant === "stacked") {
     return (
-      <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 8, maxWidth: 400 }}>
-        <input type="email" required placeholder={placeholder} value={email} onChange={(e) => setEmail(e.target.value)} style={baseInput} />
-        <button type="submit" disabled={status === "loading"} style={baseButton}>{status === "loading" ? "Subscribing…" : buttonText}</button>
-        {status === "error" ? <div style={{ fontSize: 12, color: "#ff6b6b" }}>{errorMsg}</div> : null}
+      <form onSubmit={submit} className="flex max-w-[400px] flex-col gap-2.5">
+        <input
+          type="email"
+          required
+          placeholder={placeholder}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="field"
+        />
+        <button type="submit" disabled={status === "loading"} className="btn-ember">
+          {status === "loading" ? "Subscribing…" : buttonText}
+        </button>
+        {status === "error" ? (
+          <div className="text-xs font-medium text-ember-700">{errorMsg}</div>
+        ) : null}
       </form>
     );
   }
 
   return (
-    <form onSubmit={submit} style={{ display: "flex", gap: 8, maxWidth: 480 }}>
-      <input type="email" required placeholder={placeholder} value={email} onChange={(e) => setEmail(e.target.value)} style={{ ...baseInput, flex: 1 }} />
-      <button type="submit" disabled={status === "loading"} style={baseButton}>{status === "loading" ? "…" : buttonText}</button>
-      {status === "error" ? <div style={{ position: "absolute", marginTop: 48, fontSize: 12, color: "#ff6b6b" }}>{errorMsg}</div> : null}
+    <form onSubmit={submit} className="relative flex max-w-[480px] flex-col gap-2 sm:flex-row">
+      <input
+        type="email"
+        required
+        placeholder={placeholder}
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="field flex-1"
+      />
+      <button type="submit" disabled={status === "loading"} className="btn-ember shrink-0">
+        {status === "loading" ? "…" : buttonText}
+      </button>
+      {status === "error" ? (
+        <div className="text-xs font-medium text-ember-700 sm:absolute sm:mt-12">{errorMsg}</div>
+      ) : null}
     </form>
   );
 }

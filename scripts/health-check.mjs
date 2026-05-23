@@ -39,7 +39,9 @@ async function check() {
       try {
         const text = await fs.readFile(path.join(POLLER_DIR, f), "utf8");
         const last = text.trim().split("\n").filter(Boolean).slice(-1)[0];
-        const ts = last?.match(/^(\S+)/)?.[1];
+        // Match an ISO-8601 timestamp anywhere on the line — heartbeat logs
+        // use either a bare leading timestamp or a JSON {"ts":...} object.
+        const ts = last?.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d\d:?\d\d)?/)?.[0];
         const ageMin = ts ? Math.round((Date.now() - new Date(ts).getTime()) / 60_000) : null;
         beats.push({ name, age_min: ageMin, status: ageMin === null ? "unknown" : ageMin < 10 ? "healthy" : ageMin < 60 ? "stale" : "critical" });
       } catch {}

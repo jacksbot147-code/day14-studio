@@ -51,6 +51,15 @@ export async function saveTodos(data) {
 /**
  * Add an item to the operator to-do list.
  * De-dupes against any OPEN item with the same tenant + title.
+ *
+ * `instructions` is OPTIONAL and backward-compatible. When provided it is a
+ * structured object that the /admin empire homescreen renders click-to-expand:
+ *   { steps?: string[], links?: {label,url}[], code?: string }
+ *   - steps : ordered plain-English actions
+ *   - links : exact sites with real URLs
+ *   - code  : terminal commands to paste (one string, may be multi-line)
+ * Most callers should go through operator-todo-writer.mjs (addOperatorTask),
+ * which assembles a complete `instructions` object from category templates.
  */
 export async function addTodo({
   tenant = "day14",
@@ -59,6 +68,7 @@ export async function addTodo({
   category = "general",
   priority = "medium",
   source = "system",
+  instructions = null,
 }) {
   if (!title) throw new Error("addTodo: title is required");
   const data = await loadTodos();
@@ -80,6 +90,20 @@ export async function addTodo({
     completed_at: null,
     source,
   };
+  // Only persist `instructions` when it carries real content — keeps existing
+  // callers' todos byte-identical to before.
+  if (instructions && typeof instructions === "object") {
+    const clean = {};
+    if (Array.isArray(instructions.steps) && instructions.steps.length)
+      clean.steps = instructions.steps.filter(Boolean).map(String);
+    if (Array.isArray(instructions.links) && instructions.links.length)
+      clean.links = instructions.links
+        .filter((l) => l && l.url)
+        .map((l) => ({ label: String(l.label || l.url), url: String(l.url) }));
+    if (instructions.code && String(instructions.code).trim())
+      clean.code = String(instructions.code).trim();
+    if (Object.keys(clean).length) todo.instructions = clean;
+  }
   data.todos.push(todo);
   data.next_seq = seq + 1;
   await saveTodos(data);

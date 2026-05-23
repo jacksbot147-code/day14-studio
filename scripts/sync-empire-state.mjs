@@ -154,9 +154,13 @@ async function heartbeats() {
       const text = await fs.readFile(path.join(POLLER_DIR, f), "utf8");
       const lines = text.trim().split("\n").filter(Boolean);
       // Parse the most recent timestamps from the heartbeat log.
+      // Lines come in two formats: a bare leading timestamp
+      // ("2026-05-22T... alive") or a JSON object ({"ts":"2026-05-22T..."}).
+      // Match an ISO-8601 timestamp anywhere on the line to handle both.
+      const ISO_TS = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d\d:?\d\d)?/;
       const stamps = lines
         .slice(-30)
-        .map((l) => new Date((l.match(/^(\S+)/) || [])[1]).getTime())
+        .map((l) => { const m = l.match(ISO_TS); return m ? new Date(m[0]).getTime() : NaN; })
         .filter((t) => !Number.isNaN(t));
       if (!stamps.length) {
         out.push({ name, status: "error", ageMin: 999, cadenceMin: null });

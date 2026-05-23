@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { loadEmpireState, fetchPrintifyProducts } from "@/lib/admin-state";
 import { AdminNav, ADMIN_CSS, SiteCta, SITE_URL } from "./layout-bits";
+import { OperatorTodosPanel } from "./operator-todos-panel";
 
 export const metadata = {
   title: "Day14 — Command Center",
@@ -136,42 +137,7 @@ export default async function AdminOverview() {
           Needs you{openTodos.length > 0 ? ` · ${openTodos.length}` : ""}
         </div>
       </div>
-      <div className={`todo-panel ${openTodos.length > 0 ? "has-items" : ""}`}>
-        {openTodos.length === 0 ? (
-          <div className="todo-empty">Nothing needs you right now — the agents have it covered.</div>
-        ) : (
-          openTodos.map((t) => (
-            <div key={t.id} className={`todo-row ${t.priority === "high" ? "pri-high" : ""}`}>
-              <div className="todo-seq">{t.seq}</div>
-              <div className="todo-body">
-                <div className="todo-title">{t.title}</div>
-                {t.detail ? <div className="todo-detail">{t.detail}</div> : null}
-                <div className="todo-meta">
-                  <span className={`pill ${t.priority === "high" ? "pri-high" : ""}`}>{t.priority}</span>
-                  <span className="pill">{t.tenant}</span>
-                  <span className="pill">{t.category}</span>
-                </div>
-              </div>
-              <div className="todo-action">
-                {botUser ? (
-                  <a
-                    className="todo-done-btn"
-                    href={`https://t.me/${botUser}?text=${encodeURIComponent(`done ${t.seq}`)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Mark done
-                  </a>
-                ) : (
-                  <span className="todo-done-hint">
-                    Telegram: <code>done {t.seq}</code>
-                  </span>
-                )}
-              </div>
-            </div>
-          ))
-        )}
-      </div>
+      <OperatorTodosPanel todos={openTodos} botUser={botUser} />
 
       <div className="section-header">
         <div className="section-title">Businesses</div>

@@ -64,6 +64,12 @@ interface EmpireState {
     status: string;
     created_at: string;
     source: string;
+    // Optional structured, click-to-expand instructions (backward-compatible).
+    instructions?: {
+      steps?: string[];
+      links?: Array<{ label: string; url: string }>;
+      code?: string;
+    };
   }>;
   bot_username?: string | null;
 }

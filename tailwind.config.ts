@@ -60,17 +60,26 @@ const config: Config = {
         mono: ["var(--font-mono)", "ui-monospace", "monospace"],
       },
       letterSpacing: {
-        tightest: "-0.04em",
+        tightest: "-0.045em",
+        tighter: "-0.03em",
       },
       borderRadius: {
-        DEFAULT: "0.25rem",
-        md: "0.375rem",
-        lg: "0.5rem",
-        xl: "0.75rem",
+        // Crisp, near-square geometry — definition over cushioned softness.
+        none: "0px",
+        DEFAULT: "2px",
+        sm: "2px",
+        md: "3px",
+        lg: "4px",
+        xl: "6px",
+        "2xl": "8px",
       },
       boxShadow: {
+        // Elevation used almost never — hairline rules carry definition now.
+        // What's left is a single-pixel hairline, not a blurred drop-shadow.
         flat: "0 0 0 1px rgb(11 11 10 / 0.08)",
-        lift: "0 1px 0 0 rgb(11 11 10 / 0.04), 0 8px 24px -8px rgb(11 11 10 / 0.12)",
+        sm: "0 1px 0 0 rgb(11 11 10 / 0.04)",
+        lift: "0 1px 0 0 rgb(11 11 10 / 0.05)",
+        pop: "0 1px 0 0 rgb(11 11 10 / 0.06)",
       },
       keyframes: {
         // Hero aurora — two orbs drift on staggered timelines. Slow enough

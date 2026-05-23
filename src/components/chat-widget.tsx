@@ -160,7 +160,7 @@ export function ChatWidget() {
                 key={s}
                 type="button"
                 onClick={() => send(s)}
-                className="rounded border border-ink-200 bg-paper px-2 py-1 text-xs text-ink-600 transition hover:border-ember-500 hover:text-ink"
+                className="rounded-md border border-ink-200 bg-paper px-2.5 py-1 text-xs text-ink-600 transition-colors duration-150 hover:border-ember-500 hover:bg-ember-50 hover:text-ink"
               >
                 {s}
               </button>
@@ -181,12 +181,12 @@ export function ChatWidget() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             disabled={busy}
-            className="flex-1 rounded border border-ink-200 bg-paper px-3 py-2 text-sm text-ink placeholder:text-ink-400 focus:border-ember-500 focus:outline-none"
+            className="field flex-1 !py-2"
           />
           <button
             type="submit"
             disabled={busy || input.trim().length === 0}
-            className="rounded bg-ember-500 px-3 py-2 text-sm font-semibold text-white transition hover:bg-ember-600 disabled:opacity-40"
+            className="rounded-md bg-ember-500 px-3.5 py-2 text-sm font-semibold text-white transition-colors duration-150 hover:bg-ember-600 disabled:opacity-40"
           >
             Send
           </button>
