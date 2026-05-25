@@ -15,7 +15,9 @@
     { "name": "re-evaluation-agent", "file": "scripts/verticals/real-estate/evaluation-agent.mjs", "capability": "evaluation", "role": "Scores every property flip/rental/wholesale + blended deal score.", "build_and_operate": true },
     { "name": "re-distress-monitor", "file": "scripts/verticals/real-estate/distress-monitor.mjs", "capability": "distress-monitor", "role": "Re-scans the property set for motivated-seller signals; surfaces ranked hot leads.", "build_and_operate": true },
     { "name": "re-comp-analyst", "file": "scripts/verticals/real-estate/comp-analyst.mjs", "capability": "comp-analyst", "role": "Comparable-sales analysis — comp-based ARV per property.", "build_and_operate": true },
-    { "name": "re-deal-alerter", "file": "scripts/verticals/real-estate/deal-alerter.mjs", "capability": "deal-alerter", "role": "Telegram push the moment a new A-tier deal scores.", "build_and_operate": true }
+    { "name": "re-deal-alerter", "file": "scripts/verticals/real-estate/deal-alerter.mjs", "capability": "deal-alerter", "role": "Telegram push the moment a new A-tier deal scores.", "build_and_operate": true },
+    { "name": "re-market-expander", "file": "scripts/verticals/real-estate/market-expander.mjs", "capability": "market-expander", "role": "Grows the county watch list on its own — adds the next priority county on a cadence so coverage always expands without manual county adding.", "build_and_operate": true },
+    { "name": "re-freshness-monitor", "file": "scripts/verticals/real-estate/freshness-monitor.mjs", "capability": "freshness-monitor", "role": "Snapshots property-count growth, enrichment coverage, and deal tiers each run; powers the dashboard freshness panel.", "build_and_operate": true }
   ],
   "data_layer": "businesses/day14-realty/ops/ (properties.json, evaluations.json, targets.json) + businesses/day14-realty/intake/ (drop county CSVs here)",
   "telegram": "Send the bot a county or metro to add a watch target — e.g. \"realty Lee County, FL\" or \"realty Tampa Bay area\". \"realty targets\" lists the watch list.",

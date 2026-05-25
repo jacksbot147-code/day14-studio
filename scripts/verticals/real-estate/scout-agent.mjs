@@ -25,6 +25,8 @@ import * as compAnalyst from "./comp-analyst.mjs";
 import * as enrichment from "./enrichment-agent.mjs";
 import * as evaluation from "./evaluation-agent.mjs";
 import * as dealAlerter from "./deal-alerter.mjs";
+import * as marketExpander from "./market-expander.mjs";
+import * as freshnessMonitor from "./freshness-monitor.mjs";
 
 export const ROADMAP = [
   { phase: 1, capability: "intake", goal: "County property-record CSV intake, normalized + de-duped." },
@@ -39,6 +41,7 @@ export async function operate(slug) {
   const created = await scaffold(slug);
   const results = {};
   for (const [name, agent] of [
+    ["marketExpander", marketExpander],
     ["countyData", countyData],
     ["intake", intake],
     ["countyFeed", countyFeed],
@@ -47,6 +50,7 @@ export async function operate(slug) {
     ["enrichment", enrichment],
     ["evaluation", evaluation],
     ["alerts", dealAlerter],
+    ["freshness", freshnessMonitor],
   ]) {
     try {
       results[name] = await agent.operate(slug);
@@ -65,6 +69,7 @@ export async function operate(slug) {
     `Generated: ${new Date().toISOString()}`,
     ``,
     `## Funnel`,
+    `- Watch list: ${results.marketExpander?.watch_list ?? targets.length} counties${results.marketExpander?.added ? ` · +${results.marketExpander.added} auto-added (${results.marketExpander.counties.join(", ")})` : ""}`,
     `- County data: ${results.countyData?.fetched ?? 0} FL county feed(s) auto-sourced · +${results.countyData?.properties ?? 0} parcels${results.countyData?.errors?.length ? ` · ${results.countyData.errors.length} error(s)` : ""}`,
     `- Intake: +${results.intake.ingested ?? 0} new · ${results.intake.total_properties ?? 0} properties tracked`,
     `- County feed: ${results.countyFeed?.targets ?? 0} watched · ${results.countyFeed?.active ?? 0} active · ${results.countyFeed?.needs_csv ?? 0} awaiting CSV${results.countyFeed?.api_sourced ? ` · +${results.countyFeed.api_sourced} via API` : ""}`,
@@ -73,6 +78,7 @@ export async function operate(slug) {
     `- Enrichment: ${results.enrichment.has_key ? `+${results.enrichment.enriched ?? 0} enriched, ${results.enrichment.pending ?? 0} pending` : "no API key — running on county data only"}`,
     `- Evaluation: ${results.evaluation.evaluated ?? 0} scored · ${results.evaluation.tier_a ?? 0} A-tier, ${results.evaluation.tier_b ?? 0} B-tier`,
     `- Alerts: ${results.alerts?.new_alerts ?? 0} new A-tier alert(s)`,
+    `- Freshness: ${results.freshness?.total_properties ?? 0} properties · +${results.freshness?.added_last_run ?? 0} this run · +${results.freshness?.added_7d ?? 0} over 7d · ${results.freshness?.enriched_pct ?? 0}% enriched`,
     ``,
     `## Top deals`,
     ...(top.length

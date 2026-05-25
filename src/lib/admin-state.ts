@@ -121,14 +121,63 @@ export interface REEvaluation {
   address: string;
   city?: string;
   owner?: string;
+  enriched?: boolean;
   value_cents: number;
   score: number;
   tier: string;
   best_play: string;
   signals: string[];
-  flip: { mao_cents: number; est_profit_cents: number; score: number };
-  rental: { cap_rate_pct: number; rent_to_value_pct: number; score: number };
-  wholesale: { equity_pct: number; score: number };
+  flip: {
+    arv_cents: number;
+    repairs_cents: number;
+    mao_cents: number;
+    est_profit_cents: number;
+    score: number;
+  };
+  rental: {
+    monthly_rent_cents: number;
+    cap_rate_pct: number;
+    rent_to_value_pct: number;
+    score: number;
+  };
+  wholesale: {
+    equity_cents: number;
+    equity_pct: number;
+    motivation_signals?: string[];
+    score: number;
+  };
+  evaluated_at?: string;
+}
+
+export type DealStageId =
+  | "watching"
+  | "researching"
+  | "contacted"
+  | "offer-made"
+  | "under-contract"
+  | "closed"
+  | "passed";
+
+export interface DealStageNote {
+  ts: string;
+  text: string;
+}
+
+export interface DealStageEntry {
+  stage: DealStageId;
+  updated_at: string;
+  notes: DealStageNote[];
+}
+
+export type CreditBand = "excellent" | "good" | "fair" | "limited" | "unknown";
+
+export interface BuyerProfile {
+  cash_available_cents: number;
+  credit_band: CreditBand;
+  has_llc: boolean;
+  will_owner_occupy: boolean;
+  goal: "flip" | "rental" | "wholesale" | "mixed";
+  updated_at?: string;
 }
 
 export interface RETarget {
@@ -144,6 +193,30 @@ export interface RETarget {
   last_scanned_at?: string | null;
   properties_sourced: number;
   a_tier: number;
+}
+
+export interface REFreshnessSnapshot {
+  ts: string;
+  total_properties: number;
+  enriched: number;
+  a_tier: number;
+  counties: number;
+  active_counties: number;
+}
+
+export interface REFreshness {
+  updated_at?: string;
+  first_tracked_at?: string;
+  total_properties: number;
+  enriched_count: number;
+  enriched_pct: number;
+  a_tier: number;
+  counties: number;
+  active_counties: number;
+  added_last_run: number;
+  added_7d: number;
+  runs_tracked?: number;
+  history?: REFreshnessSnapshot[];
 }
 
 export interface AlignmdBuildPhase {
@@ -177,6 +250,9 @@ export interface TenantOps {
   schedule?: { season?: string; board?: Record<string, { stops: number; density_score: number }> };
   evaluations?: REEvaluation[];
   properties?: Array<Record<string, unknown>>;
+  freshness?: REFreshness;
+  dealstages?: Record<string, DealStageEntry>;
+  buyerprofile?: BuyerProfile;
 }
 
 /** The synced ops snapshot for one tenant (public/data/ops/<slug>.json). */

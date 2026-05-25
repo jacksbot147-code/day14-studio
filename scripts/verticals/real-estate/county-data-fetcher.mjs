@@ -33,7 +33,7 @@ const FL_CADASTRAL_QUERY =
   "https://services9.arcgis.com/Gh9awoU677aKree0/arcgis/rest/services/Florida_Statewide_Cadastral/FeatureServer/0/query";
 const PAGE = 1000; // rows per request — smaller pages fetch fast + reliably
 const DEFAULT_CAP = 6000; // parcels per county per run — keeps scoring fast
-const REFETCH_DAYS = 7; // the roll updates annually; don't re-pull every run
+const REFETCH_DAYS = 30; // a fully-sourced county refreshes ~monthly
 
 // Florida Dept. of Revenue county numbers (CO_NO field), the stable 11-77
 // standard. Keyed by normalized county name.
@@ -118,17 +118,25 @@ async function fetchPage(coNo, offset) {
   return page;
 }
 
-/** Pull up to `cap` parcels for one Florida county code. */
-async function fetchCounty(coNo, cap) {
+/**
+ * Pull up to `cap` parcels for one Florida county, starting at `startOffset`.
+ * Returns the rows, whether the county roll is exhausted, any error, and the
+ * offset to resume from next run — so a large county is sourced a slice at a
+ * time across runs instead of stopping at the first pull.
+ */
+async function fetchCounty(coNo, startOffset, cap) {
   const rows = [];
-  for (let offset = 0; rows.length < cap; offset += PAGE) {
+  let exhausted = false;
+  let error = null;
+  for (let offset = startOffset; rows.length < cap; offset += PAGE) {
     const page = await fetchPage(coNo, offset);
-    if (page.error) return { error: page.error, rows };
-    if (!page.features.length) break;
+    if (page.error) { error = page.error; break; }
+    if (!page.features.length) { exhausted = true; break; }
     rows.push(...page.features);
-    if (page.features.length < PAGE) break;
+    if (page.features.length < PAGE) { exhausted = true; break; }
   }
-  return { rows: rows.slice(0, cap) };
+  const capped = rows.slice(0, cap);
+  return { rows: capped, exhausted, error, nextOffset: startOffset + capped.length };
 }
 
 function csvCell(v) {
@@ -179,9 +187,9 @@ function countySlug(county) {
   return county.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "county";
 }
 
-function staleEnough(iso) {
+function staleEnough(iso, days) {
   if (!iso) return true;
-  return Date.now() - new Date(iso).getTime() > REFETCH_DAYS * 86_400_000;
+  return Date.now() - new Date(iso).getTime() > days * 86_400_000;
 }
 
 export async function operate(slug = REALTY_SLUG, opts = {}) {
@@ -206,26 +214,45 @@ export async function operate(slug = REALTY_SLUG, opts = {}) {
       skippedNonFl++;
       continue; // non-FL county — manual CSV upload until a connector exists
     }
-    // Already sourced recently? skip (the roll updates annually).
-    if (target.auto_source === "fl-statewide" && !staleEnough(target.last_fetched_at)) {
+    // A county that has been fully sourced refreshes only every REFETCH_DAYS.
+    // A county still being sourced pulls its next slice on every run, so large
+    // counties keep growing instead of stalling at the first page.
+    const complete = target.fetch_complete === true;
+    if (complete && !staleEnough(target.last_completed_at, REFETCH_DAYS)) continue;
+
+    // Complete + stale -> full refresh from the top; otherwise resume.
+    const startOffset = complete ? 0 : (target.fetch_offset || 0);
+    const { rows, exhausted, error, nextOffset } = await fetchCounty(coNo, startOffset, cap);
+    if (error && !rows.length) {
+      errors.push(`${target.county}: ${error} (offset ${startOffset})`);
       continue;
     }
 
-    const { rows, error } = await fetchCounty(coNo, cap);
-    if (error && !rows?.length) {
-      errors.push(`${target.county}: ${error}`);
-      continue;
-    }
-    const mapped = (rows || []).filter((a) => a.PHY_ADDR1).map((a) => toRow(a, target.county));
+    const mapped = rows.filter((a) => a.PHY_ADDR1).map((a) => toRow(a, target.county));
+    const nowIso = new Date().toISOString();
     if (!mapped.length) {
-      errors.push(`${target.county}: no records returned`);
+      if (exhausted) {
+        // Reached the end of the county roll — mark it complete.
+        target.fetch_complete = true;
+        target.last_completed_at = nowIso;
+        target.fetch_offset = 0;
+      } else {
+        errors.push(`${target.county}: no records returned (offset ${startOffset})`);
+      }
       continue;
     }
 
     await fs.writeFile(path.join(dir, `${countySlug(target.county)}-county.csv`), toCsv(mapped));
     target.auto_source = "fl-statewide";
-    target.last_fetched_at = new Date().toISOString();
+    target.last_fetched_at = nowIso;
     target.fetched_count = mapped.length;
+    target.total_fetched = (complete ? 0 : (target.total_fetched || 0)) + mapped.length;
+    target.fetch_offset = exhausted ? 0 : nextOffset;
+    target.fetch_complete = exhausted;
+    if (exhausted) target.last_completed_at = nowIso;
+    if (error) {
+      errors.push(`${target.county}: ${error} — kept ${mapped.length}, resumes at offset ${nextOffset}`);
+    }
     fetched++;
     totalProps += mapped.length;
   }

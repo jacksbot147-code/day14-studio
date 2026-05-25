@@ -6,12 +6,11 @@ export const brandTheme = {
   niche: "Real goods for the seasons no one warns you about.",
   colors: {
     primary: "#2F2A33",
-    secondary: "#6B6079",
-    accent: "#D8CAB0",
+    secondary: "#7A6F8F",
+    accent: "#D4C5A9",
     bg: "#FAF8F4",
-    surface: "#FFFFFF",
-    text: "#1F1C24",
-    muted: "#5C5663",
+    text: "#1f1c24",
+    muted: "#666",
   },
   fonts: {
     heading: "'Inter', system-ui, sans-serif",

@@ -32,9 +32,11 @@ export async function operate(slug) {
       tier: d.tier,
       best_play: d.best_play,
       signals: d.signals,
-      flip: { mao_cents: d.flip.mao_cents, est_profit_cents: d.flip.est_profit_cents, score: d.flip.score },
-      rental: { cap_rate_pct: d.rental.cap_rate_pct, rent_to_value_pct: d.rental.rent_to_value_pct, score: d.rental.score },
-      wholesale: { equity_pct: d.wholesale.equity_pct, score: d.wholesale.score },
+      // Full per-play breakdown — the gameplan page shows the formulas, not
+      // just the headline number.
+      flip: d.flip,
+      rental: d.rental,
+      wholesale: d.wholesale,
       evaluated_at: new Date().toISOString(),
     };
   });

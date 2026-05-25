@@ -7,21 +7,8 @@ export default async function Page() {
   const posts = await fetchLatestBlogPosts("hot-flash-co", 3);
   const featured = products.slice(0, 3);
 
-  const orgJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: t.displayName,
-    description: t.tagline,
-    slogan: t.tagline,
-    url: "https://day14.us/brands/hot-flash-co",
-  };
-
   return (
     <main>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
-      />
       <section style={{ padding: "120px 32px 80px", textAlign: "center", maxWidth: 800, margin: "0 auto" }}>
         <h1 style={{ fontFamily: t.fonts.heading, fontSize: 56, letterSpacing: "-0.03em", lineHeight: 1.05, color: t.colors.primary }}>Hot Flash Co</h1>
         <p style={{ fontSize: 18, color: t.colors.secondary, marginTop: 16, maxWidth: 600, marginInline: "auto" }}>Real goods for the seasons no one warns you about.</p>

@@ -48,8 +48,10 @@ deals — exactly the motivated-seller pipeline.
 
 ## Agent roster — the full realty cluster
 
-Shipped: realty-scout (coordinator), county-data-fetcher, intake, county-feed,
-enrichment, evaluation, distress-monitor, comp-analyst, deal-alerter.
+Shipped: realty-scout (coordinator), county-data-fetcher (resumable paging —
+sources large counties a slice per run), intake, county-feed, enrichment,
+evaluation, distress-monitor, comp-analyst, deal-alerter, market-expander
+(auto-grows the county watch list), freshness-monitor (tracks pipeline growth).
 
 Planned:
 

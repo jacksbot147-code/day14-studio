@@ -33,6 +33,9 @@ export default async function RealtyDashboard() {
   const targets: RETarget[] = [...(ops.targets || [])].sort((a, b) =>
     (a.last_scanned_at || "") < (b.last_scanned_at || "") ? 1 : -1
   );
+  const fresh = ops.freshness;
+  const spark = (fresh?.history || []).slice(-30);
+  const sparkMax = Math.max(1, ...spark.map((h) => h.total_properties));
 
   return (
     <div className="admin-shell">
@@ -69,6 +72,68 @@ export default async function RealtyDashboard() {
           <div className="kpi-value">{money(totalValue)}</div>
         </div>
       </div>
+
+      {fresh ? (
+        <>
+          <div className="section-header"><div className="section-title">Pipeline freshness</div></div>
+          <div className="kpi-grid" style={{ gridTemplateColumns: "repeat(4,1fr)" }}>
+            <div className="kpi">
+              <div className="kpi-label">Added last run</div>
+              <div
+                className="kpi-value"
+                style={fresh.added_last_run > 0 ? { color: "var(--green)" } : undefined}
+              >
+                {fresh.added_last_run > 0 ? "+" : ""}
+                {fresh.added_last_run.toLocaleString()}
+              </div>
+              <div className="kpi-sub">updated {rel(fresh.updated_at)}</div>
+            </div>
+            <div className="kpi">
+              <div className="kpi-label">Added (7 days)</div>
+              <div
+                className="kpi-value"
+                style={fresh.added_7d > 0 ? { color: "var(--green)" } : undefined}
+              >
+                {fresh.added_7d > 0 ? "+" : ""}
+                {fresh.added_7d.toLocaleString()}
+              </div>
+              <div className="kpi-sub">{fresh.runs_tracked ?? 0} runs tracked</div>
+            </div>
+            <div className="kpi">
+              <div className="kpi-label">Enriched</div>
+              <div className="kpi-value">{fresh.enriched_pct}%</div>
+              <div className="kpi-sub">
+                {fresh.enriched_count.toLocaleString()} of {fresh.total_properties.toLocaleString()}
+              </div>
+            </div>
+            <div className="kpi">
+              <div className="kpi-label">Counties live</div>
+              <div className="kpi-value">{fresh.active_counties}</div>
+              <div className="kpi-sub">{fresh.counties} on watch list</div>
+            </div>
+          </div>
+          {spark.length > 1 ? (
+            <div
+              className="section"
+              style={{ display: "flex", alignItems: "flex-end", gap: 3, height: 64 }}
+            >
+              {spark.map((h, i) => (
+                <div
+                  key={h.ts || i}
+                  title={`${new Date(h.ts).toLocaleDateString()} — ${h.total_properties.toLocaleString()} properties`}
+                  style={{
+                    flex: 1,
+                    height: `${Math.max(4, (h.total_properties / sparkMax) * 100)}%`,
+                    background: "var(--green)",
+                    opacity: 0.3 + 0.7 * ((i + 1) / spark.length),
+                    borderRadius: 2,
+                  }}
+                />
+              ))}
+            </div>
+          ) : null}
+        </>
+      ) : null}
 
       <div className="section-header"><div className="section-title">County watch list</div></div>
       <AddCountyBox botUsername={botUsername} />

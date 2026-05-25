@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import type { REEvaluation } from "@/lib/admin-state";
 
 function money(cents: number) {
@@ -237,13 +238,13 @@ const PLAYS = [
   { id: "wholesale", label: "Wholesale" },
 ];
 
-/** Searchable, filterable, sortable deal board with expandable per-deal math. */
+/** Searchable, filterable, sortable deal board — each deal links through to
+ *  its full property gameplan. */
 export function DealBoard({ deals }: { deals: REEvaluation[] }) {
   const [query, setQuery] = useState("");
   const [tier, setTier] = useState("all");
   const [play, setPlay] = useState("all");
   const [sort, setSort] = useState<"score" | "value" | "equity">("score");
-  const [expanded, setExpanded] = useState<string | null>(null);
 
   if (deals.length === 0) {
     return (
@@ -325,63 +326,39 @@ export function DealBoard({ deals }: { deals: REEvaluation[] }) {
         </div>
       ) : (
         <div style={{ display: "grid", gap: 10 }}>
-          {filtered.map((d) => {
-            const open = expanded === d.property_id;
-            return (
-              <div key={d.property_id} className="deal-card-wrap">
-                <div
-                  className={`deal deal-${tierClass(d.tier)} expandable`}
-                  onClick={() => setExpanded(open ? null : d.property_id)}
-                >
-                  <div className="deal-score">{d.score}</div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div className="deal-addr">
-                      {d.address || "(no address)"}
-                      {d.city ? `, ${d.city}` : ""}
-                    </div>
-                    <div className="deal-meta">
-                      {d.tier} · best play: <b>{d.best_play}</b> · est. value{" "}
-                      {money(d.value_cents)}
-                      {d.owner ? ` · ${d.owner}` : ""}
-                    </div>
-                    {d.signals.length > 0 ? (
-                      <div className="deal-sigs">
-                        {d.signals.map((s) => (
-                          <span key={s} className="deal-chip">{s}</span>
-                        ))}
-                      </div>
-                    ) : null}
-                  </div>
-                  <div className="deal-plays">
-                    <span>flip {d.flip.score}</span>
-                    <span>rent {d.rental.score}</span>
-                    <span>whlsl {d.wholesale.score}</span>
-                  </div>
+          {filtered.map((d) => (
+            <Link
+              key={d.property_id}
+              href={`/admin/realty/${encodeURIComponent(d.property_id)}`}
+              className={`deal deal-${tierClass(d.tier)} expandable`}
+            >
+              <div className="deal-score">{d.score}</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div className="deal-addr">
+                  {d.address || "(no address)"}
+                  {d.city ? `, ${d.city}` : ""}
                 </div>
-                {open ? (
-                  <div className="deal-detail">
-                    <div className="deal-detail-card">
-                      <h4>Fix &amp; flip</h4>
-                      <div className="deal-detail-row"><span>Max offer (MAO)</span><span>{money(d.flip.mao_cents)}</span></div>
-                      <div className="deal-detail-row"><span>Est. profit</span><span>{money(d.flip.est_profit_cents)}</span></div>
-                      <div className="deal-detail-row"><span>Play score</span><span>{d.flip.score}</span></div>
-                    </div>
-                    <div className="deal-detail-card">
-                      <h4>Rental</h4>
-                      <div className="deal-detail-row"><span>Cap rate</span><span>{d.rental.cap_rate_pct}%</span></div>
-                      <div className="deal-detail-row"><span>Rent-to-value</span><span>{d.rental.rent_to_value_pct}%</span></div>
-                      <div className="deal-detail-row"><span>Play score</span><span>{d.rental.score}</span></div>
-                    </div>
-                    <div className="deal-detail-card">
-                      <h4>Wholesale</h4>
-                      <div className="deal-detail-row"><span>Equity</span><span>{d.wholesale.equity_pct}%</span></div>
-                      <div className="deal-detail-row"><span>Play score</span><span>{d.wholesale.score}</span></div>
-                    </div>
+                <div className="deal-meta">
+                  {d.tier} · best play: <b>{d.best_play}</b> · est. value{" "}
+                  {money(d.value_cents)}
+                  {d.owner ? ` · ${d.owner}` : ""}
+                </div>
+                {d.signals.length > 0 ? (
+                  <div className="deal-sigs">
+                    {d.signals.map((s) => (
+                      <span key={s} className="deal-chip">{s}</span>
+                    ))}
                   </div>
                 ) : null}
               </div>
-            );
-          })}
+              <div className="deal-plays">
+                <span>flip {d.flip.score}</span>
+                <span>rent {d.rental.score}</span>
+                <span>whlsl {d.wholesale.score}</span>
+              </div>
+              <div className="biz-arrow" style={{ alignSelf: "center" }}>›</div>
+            </Link>
+          ))}
         </div>
       )}
     </>
