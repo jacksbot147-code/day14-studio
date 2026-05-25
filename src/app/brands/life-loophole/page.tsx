@@ -115,6 +115,15 @@ html{scroll-behavior:smooth;}
 .ll-root .finder-search{width:100%;padding:11px 14px;font-size:14px;font-family:var(--sans);
   border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink);margin-bottom:14px;}
 .ll-root .finder-search:focus{outline:2px solid var(--teal-soft);border-color:var(--teal);}
+.ll-root .advisor-cta{margin-top:20px;background:var(--teal-dk);color:#eaf3f1;
+  border-radius:14px;padding:22px 24px;display:flex;align-items:center;
+  gap:20px;flex-wrap:wrap;}
+.ll-root .advisor-cta .ac-h{font-family:var(--serif);font-size:21px;color:#fff;
+  margin-bottom:6px;}
+.ll-root .advisor-cta .ac-p{font-size:13.5px;color:#cfe4e0;max-width:60ch;}
+.ll-root .advisor-cta>div{flex:1;min-width:260px;}
+.ll-root .advisor-cta .btn{background:var(--gold);flex:none;}
+.ll-root .advisor-cta .btn:hover{background:#946523;}
 .ll-root .weave{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);}
 .ll-root .weave-btn{background:var(--gold);}
 .ll-root .weave-btn:hover{background:#946523;}
@@ -414,11 +423,12 @@ export default function LifeLoopholeSite() {
           <div className="brand"><span className="mark">L</span>Life Loophole</div>
           <div className="links">
             <a href="#finder">Find your loopholes</a>
+            <a href="/brands/life-loophole/advisor">Ask the advisor</a>
             <a href="#how">How it works</a>
             <a href="#who">Who it is for</a>
             <a href="#strategies">The strategies</a>
           </div>
-          <a href="#get" className="btn">Get the free checklist</a>
+          <a href="/brands/life-loophole/advisor" className="btn">Ask the advisor</a>
         </div>
       </nav>
 
@@ -433,8 +443,8 @@ export default function LifeLoopholeSite() {
             the way it was actually built to be used.
           </p>
           <div className="cta">
-            <a href="#finder" className="btn lg">Find your loopholes</a>
-            <a href="#how" className="btn ghost lg">See how it works</a>
+            <a href="/brands/life-loophole/advisor" className="btn lg">Ask the advisor</a>
+            <a href="#finder" className="btn ghost lg">Browse the finder</a>
           </div>
           <div className="trust">
             <span><b>48</b> sourced strategies</span>
@@ -456,6 +466,20 @@ export default function LifeLoopholeSite() {
             </p>
           </div>
           <LoopholeFinder />
+          <div className="advisor-cta">
+            <div>
+              <div className="ac-h">Want it done for you instead of by hand?</div>
+              <div className="ac-p">
+                The Loophole Advisor reads your situation in plain English,
+                detects who you are as a taxpayer, and hands back a ranked,
+                sourced strategy set with next steps — quick wins and bigger
+                moves, each citing the IRS rule behind it.
+              </div>
+            </div>
+            <a href="/brands/life-loophole/advisor" className="btn lg">
+              Ask the advisor
+            </a>
+          </div>
         </div>
       </section>
 
@@ -622,7 +646,7 @@ export default function LifeLoopholeSite() {
           <div className="honest-note">
             Everything on Life Loophole is <b>educational information, not tax, legal, or financial
             advice.</b> Tax rules change every year — strategies shown here are current as of the
-            2025 tax year, and the specific dollar limits move annually. Always confirm your own
+            2026 tax year, and the specific dollar limits move annually. Always confirm your own
             situation with a licensed CPA, Enrolled Agent, or tax attorney before you act —
             especially on anything marked <b>Pro</b>.
           </div>
@@ -674,7 +698,7 @@ export default function LifeLoopholeSite() {
             financial advice.</b> Life Loophole helps you understand legal, legitimate tax
             strategies the U.S. tax code allows; it does not prepare returns, represent taxpayers,
             or guarantee any result. Every strategy cites a real IRS source and is current as of
-            the 2025 tax year; figures change annually. Always consult a licensed tax professional
+            the 2026 tax year; figures change annually. Always consult a licensed tax professional
             about your specific situation before acting. © 2026 Day14.
           </div>
         </div>

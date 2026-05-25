@@ -32,6 +32,23 @@ const ENV_FILE = path.join(HOME, "Documents/studio/.env.local");
 const OUT = path.join(SHARED, "empire-dashboard.html");
 const PRINTIFY_API = "https://api.printify.com/v1";
 
+// B1 — dashboard convergence. The live /admin dashboard is the single source
+// of truth; it renders from studio/public/data/empire-state.json. This static
+// page reads its headline numbers from that same canonical file so it cannot
+// drift from /admin.
+const EMPIRE_STATE_FILE = path.join(HOME, "Documents/studio/public/data/empire-state.json");
+const CANONICAL_DASHBOARD_URL = "https://day14.us/admin";
+
+/** Load the canonical empire snapshot, or null if missing/unreadable. */
+async function loadEmpireState() {
+  if (!existsSync(EMPIRE_STATE_FILE)) return null;
+  try {
+    return JSON.parse(await fs.readFile(EMPIRE_STATE_FILE, "utf8"));
+  } catch {
+    return null;
+  }
+}
+
 async function loadEnv() {
   const t = await fs.readFile(ENV_FILE, "utf8");
   const env = {};
@@ -151,19 +168,33 @@ function esc(s) {
 
 async function buildHtml() {
   const env = await loadEnv();
-  const tenants = await listTenants();
   const allProducts = env.PRINTIFY_API_KEY ? await fetchPrintifyProducts(env.PRINTIFY_API_KEY) : [];
-  const beats = await heartbeats();
   const audit = await recentAuditAcrossTenants(30);
-  const drafts = await skillDraftCount();
   const queue = await expansionQueueCounts();
+
+  // Canonical path: read tenants/heartbeats/skill counts from empire-state.json
+  // — the same file /admin renders from — so the numbers cannot disagree.
+  // Fall back to local re-derivation only if the snapshot is unavailable.
+  const state = await loadEmpireState();
+  const usingCanonical = !!state;
+  const tenants = usingCanonical ? (state.tenants || []) : await listTenants();
+  const beats = usingCanonical ? (state.heartbeats || []) : await heartbeats();
+  const drafts = usingCanonical ? (state.skill_counts?.drafts || 0) : await skillDraftCount();
 
   let totalRevenue = 0, totalOrders = 0, totalProducts = allProducts.length, totalLive = 0;
   const tenantCards = [];
   for (const t of tenants) {
-    const orders = await tenantOrdersState(t.slug);
-    const rev = orders?.total_revenue_cents || 0;
-    const ord = orders?.total_orders || 0;
+    // empire-state.json tenants expose revenue_cents/orders directly; the
+    // legacy fallback reads orders-watcher-state.json per tenant.
+    let rev, ord;
+    if (usingCanonical) {
+      rev = t.revenue_cents || 0;
+      ord = t.orders || 0;
+    } else {
+      const orders = await tenantOrdersState(t.slug);
+      rev = orders?.total_revenue_cents || 0;
+      ord = orders?.total_orders || 0;
+    }
     totalRevenue += rev;
     totalOrders += ord;
     const todaysDrafts = await tenantTodaysDrafts(t.slug);
@@ -222,8 +253,16 @@ th { color: #888; font-weight: 500; font-size: 11px; text-transform: uppercase; 
 .muted { color: #666; }
 footer { text-align: center; color: #666; font-size: 12px; margin-top: 40px; }
 a { color: #b39ddb; }
+.snapshot-banner { display: flex; align-items: center; gap: 10px; background: linear-gradient(135deg, rgba(245,166,35,0.16), rgba(168,85,247,0.12)); border: 1px solid #f5a623; border-radius: 10px; padding: 10px 16px; margin-bottom: 20px; font-size: 12px; line-height: 1.45; }
+.snapshot-banner strong { color: #f5a623; }
+.snapshot-banner a { color: #56c8d8; text-decoration: underline; font-weight: 600; }
+.snapshot-banner .dot { width: 9px; height: 9px; border-radius: 50%; background: #f5a623; flex: none; box-shadow: 0 0 8px #f5a623; }
 </style>
 </head><body>
+<div class="snapshot-banner">
+  <span class="dot"></span>
+  <span><strong>Static snapshot</strong> · generated ${esc(new Date().toLocaleString())} · ${esc(usingCanonical ? "numbers from the canonical empire-state.json" : "static snapshot of local state")} · the live, canonical dashboard is at <a href="${esc(CANONICAL_DASHBOARD_URL)}">day14.us/admin</a></span>
+</div>
 <h1>Day14 — Empire</h1>
 <div class="sub">${tenants.length} tenants · auto-refreshes every 15 min · ${new Date().toLocaleString()}</div>
 
@@ -277,11 +316,15 @@ a { color: #b39ddb; }
   <table>
     <thead><tr><th>Name</th><th>Status</th><th>Last Beat</th></tr></thead>
     <tbody>
-    ${beats.map((b) => `<tr>
+    ${beats.map((b) => {
+      // Legacy heartbeats() yields age_min; canonical empire-state.json yields ageMin.
+      const age = b.age_min ?? b.ageMin;
+      return `<tr>
       <td>${esc(b.name)}</td>
       <td><span class="pill ${b.status}">${b.status}</span></td>
-      <td class="muted">${isFinite(b.age_min) ? b.age_min + "m ago" : "—"}</td>
-    </tr>`).join("")}
+      <td class="muted">${isFinite(age) ? age + "m ago" : "—"}</td>
+    </tr>`;
+    }).join("")}
     </tbody>
   </table>
 </div>

@@ -74,7 +74,13 @@ export async function operate(slug) {
   await fs.mkdir(processedDir, { recursive: true });
 
   const properties = await loadStore(slug, "properties");
-  const seen = new Set(properties.map((p) => (p.address || p.id).toLowerCase()));
+  // Dedupe on the parcel id first — it is the stable unique key for a county
+  // record. Keying on address would permanently drop the ~188 vacant-land /
+  // no-address parcels (they share a blank address). Fall back to the address
+  // only when a record genuinely has no id.
+  const dedupeKey = (p) =>
+    (p && p.id ? String(p.id) : `addr:${(p && p.address) || ""}`).trim().toLowerCase();
+  const seen = new Set(properties.map(dedupeKey));
   const files = (await fs.readdir(dir)).filter((f) => f.toLowerCase().endsWith(".csv"));
 
   let ingested = 0, skipped = 0, filesDone = 0;
@@ -85,8 +91,16 @@ export async function operate(slug) {
       for (const raw of rowsToObjects(parseCsv(text))) {
         const p = normalizeProperty(raw);
         if (!p.county && fileCounty) p.county = fileCounty;
-        const key = (p.address || p.id).toLowerCase();
-        if (!p.address) { skipped++; continue; }
+        // Key off the *raw* parcel id — normalizeProperty invents a random id
+        // when one is absent, which would defeat dedupe. A row with neither a
+        // real id nor an address carries no usable identity, so skip only it.
+        const rawId = String(raw.id || raw.parcel || raw.parcel_id || "").trim();
+        const key = rawId
+          ? rawId.toLowerCase()
+          : p.address
+          ? `addr:${p.address.toLowerCase()}`
+          : "";
+        if (!key) { skipped++; continue; }
         if (seen.has(key)) { skipped++; continue; }
         seen.add(key);
         p.ingested_at = new Date().toISOString();

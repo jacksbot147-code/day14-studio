@@ -144,46 +144,68 @@ async function queueDepth(slug) {
   return { queued, approved, posted, byPlatform };
 }
 
+// Interval one-shot agents run on a fixed schedule and beat once per run, so
+// their true cadence IS the interval — not something to infer from a couple of
+// sparse beats. Prefix-matched; mirrors the auto-restart watchdog's overrides.
+const KNOWN_CADENCE_MIN = [
+  { prefix: "realty-scout-", cadence: 60 },
+  { prefix: "lawn-care-gm-", cadence: 30 },
+];
+function knownCadence(name) {
+  for (const k of KNOWN_CADENCE_MIN) if (name.startsWith(k.prefix)) return k.cadence;
+  return null;
+}
+
 async function heartbeats() {
   if (!existsSync(POLLER_DIR)) return [];
   const out = [];
+  // Heartbeat lines come as a bare leading ISO timestamp or a JSON object;
+  // match an ISO-8601 timestamp anywhere on the line to handle both.
+  const ISO_TS = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d\d:?\d\d)?/;
   for (const f of await fs.readdir(POLLER_DIR)) {
     if (!f.endsWith("-heartbeat.log")) continue;
     const name = f.replace("-heartbeat.log", "");
+    const known = knownCadence(name);
+    const kind = known != null ? "oneshot" : "daemon";
     try {
       const text = await fs.readFile(path.join(POLLER_DIR, f), "utf8");
       const lines = text.trim().split("\n").filter(Boolean);
-      // Parse the most recent timestamps from the heartbeat log.
-      // Lines come in two formats: a bare leading timestamp
-      // ("2026-05-22T... alive") or a JSON object ({"ts":"2026-05-22T..."}).
-      // Match an ISO-8601 timestamp anywhere on the line to handle both.
-      const ISO_TS = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d\d:?\d\d)?/;
       const stamps = lines
         .slice(-30)
         .map((l) => { const m = l.match(ISO_TS); return m ? new Date(m[0]).getTime() : NaN; })
         .filter((t) => !Number.isNaN(t));
       if (!stamps.length) {
-        out.push({ name, status: "error", ageMin: 999, cadenceMin: null });
+        out.push({ name, kind, status: "error", ageMin: 999, cadenceMin: known, lastBeat: null });
         continue;
       }
       const lastTs = stamps[stamps.length - 1];
       const ageMin = (Date.now() - lastTs) / 60_000;
-      // Self-calibrate: the median gap between beats IS this daemon's cadence.
-      // A daemon that beats every 60s and one that runs every 30 min are both
-      // healthy as long as they're not far past their own normal interval.
-      const gaps = [];
-      for (let i = 1; i < stamps.length; i++) gaps.push((stamps[i] - stamps[i - 1]) / 60_000);
-      gaps.sort((a, b) => a - b);
-      const medianGap = gaps.length ? gaps[Math.floor(gaps.length / 2)] : 1;
-      const cadenceMin = Math.max(1, Math.round(medianGap));
-      // Stale = missed ~3 expected beats. Error = long dead.
-      const staleThreshold = Math.max(10, medianGap * 3);
+      // Cadence: a known interval for one-shot agents; otherwise self-calibrate
+      // from the median gap between beats — a daemon that beats every 60s and
+      // one that beats every 30 min are each judged against their own normal.
+      let cadenceMin = known;
+      if (cadenceMin == null) {
+        const gaps = [];
+        for (let i = 1; i < stamps.length; i++) gaps.push((stamps[i] - stamps[i - 1]) / 60_000);
+        gaps.sort((a, b) => a - b);
+        cadenceMin = gaps.length ? Math.max(1, Math.round(gaps[Math.floor(gaps.length / 2)])) : 5;
+      }
+      // Stale = a few missed beats (the watchdog retries). Error = long dead.
+      const staleThreshold = Math.max(10, Math.round(cadenceMin * (kind === "oneshot" ? 1.6 : 3)));
+      const downThreshold = Math.max(kind === "oneshot" ? 120 : 360, Math.round(cadenceMin * (kind === "oneshot" ? 5 : 8)));
       let status = "healthy";
-      if (ageMin > Math.max(360, staleThreshold * 4)) status = "error";
+      if (ageMin > downThreshold) status = "error";
       else if (ageMin > staleThreshold) status = "stale";
-      out.push({ name, status, ageMin: Math.round(ageMin), cadenceMin });
+      out.push({
+        name,
+        kind,
+        status,
+        ageMin: Math.round(ageMin),
+        cadenceMin,
+        lastBeat: new Date(lastTs).toISOString(),
+      });
     } catch {
-      out.push({ name, status: "error", ageMin: 999, cadenceMin: null });
+      out.push({ name, kind, status: "error", ageMin: 999, cadenceMin: known, lastBeat: null });
     }
   }
   return out.sort((a, b) => a.name.localeCompare(b.name));

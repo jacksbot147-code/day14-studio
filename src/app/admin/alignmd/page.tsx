@@ -1,5 +1,5 @@
 import { loadTenantOps } from "@/lib/admin-state";
-import { AdminNav, ADMIN_CSS } from "../layout-bits";
+import { AdminNav, ADMIN_CSS, PageHint } from "../layout-bits";
 
 export const metadata = { title: "AlignMD — Day14 Admin", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -23,6 +23,10 @@ export default async function AlignMdPage() {
       <style dangerouslySetInnerHTML={{ __html: ADMIN_CSS }} />
       <AdminNav active="alignmd" />
       <h1>AlignMD</h1>
+      <PageHint>
+        A window into the AlignMD partner app — its build progress and pending
+        decisions.
+      </PageHint>
       <div className="sub">
         {build?.tagline || "Precision Matching for Modern Healthcare"} · Day14 segment
       </div>

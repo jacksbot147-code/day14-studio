@@ -24,10 +24,48 @@ const SHARED = path.join(HOME, "Documents/businesses/_shared");
 const POLLER_DIR = path.join(SHARED, "poller");
 const STATE_FILE = path.join(SHARED, "founder-ops/watchdog-state.json");
 
-const STALE_MIN = 12;          // mark daemon stale after 12 min
+const STALE_MIN = 12;          // default: mark daemon stale after 12 min
 const POLL_INTERVAL_MS = 5 * 60_000;
 const HEARTBEAT_INTERVAL_MS = 60_000;
 const MAX_RESTARTS_30MIN = 3;
+
+// Per-agent stale overrides (minutes).
+//
+// Not every "daemon" is a long-running process. Some agents are installed as
+// interval-scheduled one-shot LaunchAgents (StartInterval): they wake, do
+// work, write ONE heartbeat line, and exit cleanly. Between runs there is no
+// process at all — that is healthy, not a crash. A flat 12-min threshold
+// flags these as stale within minutes of every run and "restarts" them every
+// cycle, producing constant churn + restart alerts.
+//
+// Threshold must exceed the agent's scheduling interval plus slack. Verified
+// against the install-*.sh plists:
+//   - lawn-care-gm-*  : StartInterval 1800s (30 min)  -> 45 min threshold
+//   - realty-scout-*  : StartInterval 3600s (60 min)  -> 80 min threshold
+// Match by name prefix so all tenants of a vertical inherit the override.
+const STALE_MIN_OVERRIDES = [
+  { prefix: "lawn-care-gm-", staleMin: 45 },
+  { prefix: "realty-scout-", staleMin: 80 },
+];
+
+function staleThresholdFor(name) {
+  for (const o of STALE_MIN_OVERRIDES) {
+    if (name.startsWith(o.prefix)) return o.staleMin;
+  }
+  return STALE_MIN;
+}
+
+// Exponential backoff between restart attempts for the SAME agent.
+// Without this, a genuinely-broken agent is kicked every 5-min cycle until it
+// hits MAX_RESTARTS_30MIN. Backoff spaces attempts out: 5, 10, 20 min.
+const BACKOFF_BASE_MS = 5 * 60_000;
+const BACKOFF_MAX_MS = 30 * 60_000;
+
+function backoffMs(attemptCount) {
+  // attemptCount = how many restarts already attempted in the window
+  const ms = BACKOFF_BASE_MS * Math.pow(2, Math.max(0, attemptCount - 1));
+  return Math.min(ms, BACKOFF_MAX_MS);
+}
 
 // Map heartbeat name → launchctl label
 function labelFor(name) {
@@ -77,6 +115,13 @@ async function cycle() {
     const name = f.replace("-heartbeat.log", "");
     if (name === "auto-restart-watchdog") continue;
     if (name === "proactive-monitor") continue; // existing safe-state
+    // recursive-expansion-engine self-gates: with no Gemini API key it logs a
+    // single line and exits 0 (clean no-op). Its LaunchAgent is configured
+    // KeepAlive={SuccessfulExit:false}, so launchd intentionally does NOT
+    // relaunch it after that clean exit — it is meant to stay down until a key
+    // is configured. A stale heartbeat here is the designed healthy state, not
+    // a crash. Restarting it would just spin it up to immediately exit again.
+    if (name === "recursive-expansion") continue;
 
     try {
       const text = await fs.readFile(path.join(POLLER_DIR, f), "utf8");
@@ -84,11 +129,46 @@ async function cycle() {
       const ts = last?.match(/^(\S+)/)?.[1];
       if (!ts) continue;
       const ageMin = (now - new Date(ts).getTime()) / 60_000;
-      if (ageMin < STALE_MIN) continue;
+
+      // Per-agent staleness threshold. Interval-scheduled one-shot agents
+      // legitimately have long heartbeat gaps between runs.
+      const staleMin = staleThresholdFor(name);
+      if (ageMin < staleMin) continue;
+
+      // A "stale" heartbeat is only worth restarting if the agent actually
+      // looks broken. For an interval-scheduled one-shot agent, the absence of
+      // a recent beat is expected idle time, not a crash. The crash signal is
+      // fresh stderr output. If the heartbeat is stale but the stderr log is
+      // empty / not recently written, treat it as a clean exit between runs
+      // and let launchd's own StartInterval handle the next run.
+      const isOverridden = STALE_MIN_OVERRIDES.some((o) => name.startsWith(o.prefix));
+      if (isOverridden) {
+        let stderrFresh = false;
+        try {
+          const st = await fs.stat(path.join(POLLER_DIR, `${name}.stderr.log`));
+          stderrFresh = st.size > 0 && (now - st.mtimeMs) < staleMin * 60_000;
+        } catch { /* no stderr file -> not crashing */ }
+        if (!stderrFresh) {
+          // Healthy idle one-shot agent — clean exit, not a crash. Skip.
+          continue;
+        }
+      }
 
       // Stale — try to restart
       // Check recent restart history
       const history = (state.restarts[name] || []).filter((t) => now - t < 30 * 60_000);
+
+      // Exponential backoff: don't kick the same agent again until enough
+      // time has passed since its last restart attempt.
+      if (history.length > 0) {
+        const lastAttempt = history[history.length - 1];
+        const wait = backoffMs(history.length);
+        if (now - lastAttempt < wait) {
+          // Still in backoff window — leave it alone this cycle.
+          continue;
+        }
+      }
+
       if (history.length >= MAX_RESTARTS_30MIN) {
         // Give up — alert once if not already alerted
         if (!state.restarts[name + "_abandoned"]) {

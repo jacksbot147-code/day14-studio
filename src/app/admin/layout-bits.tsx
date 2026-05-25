@@ -28,6 +28,7 @@ export const ADMIN_CSS = `
 .admin-shell h1 { font-size:32px; font-weight:800; letter-spacing:-0.04em; margin:0 0 4px; color:var(--text); line-height:1.05; }
 .admin-shell h3 { font-size:15px; font-weight:700; letter-spacing:-0.02em; color:var(--text); margin:0; }
 .admin-shell .sub { color:var(--muted); font-size:13px; margin-bottom:24px; padding-bottom:20px; border-bottom:1px solid var(--border); }
+.admin-shell .page-hint { color:var(--text-2); font-size:13px; line-height:1.5; margin:0 0 6px; }
 .admin-shell a { color:inherit; text-decoration:none; }
 .admin-shell ::selection { background:var(--accent); color:#fff; }
 .admin-shell *:focus-visible { outline:none; box-shadow:var(--ring); border-radius:var(--r-sm); }
@@ -159,6 +160,30 @@ export const ADMIN_CSS = `
 .admin-shell .sys-label { color:var(--muted); }
 .admin-shell .sys-value { font-weight:600; color:var(--text); }
 
+/* ── Mission Control banner + health board ───────────── */
+.admin-shell .mc-banner { display:flex; align-items:center; gap:13px; padding:14px 18px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); margin:0 0 20px; }
+.admin-shell .mc-banner.ok { border-left:3px solid var(--green); }
+.admin-shell .mc-banner.warn { border-left:3px solid var(--amber); }
+.admin-shell .mc-banner.bad { border-left:3px solid var(--red); }
+.admin-shell .mc-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.admin-shell .mc-dot.ok { background:var(--green); }
+.admin-shell .mc-dot.warn { background:var(--amber); }
+.admin-shell .mc-dot.bad { background:var(--red); }
+.admin-shell .mc-text { min-width:0; }
+.admin-shell .mc-headline { font-size:14px; font-weight:700; color:var(--text); letter-spacing:-0.01em; }
+.admin-shell .mc-detail { font-size:12.5px; color:var(--muted); margin-top:2px; }
+.admin-shell .hbeat { display:grid; grid-template-columns:12px 200px 104px 1fr; gap:13px; align-items:center; padding:11px 14px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-sm); margin-bottom:6px; }
+.admin-shell .hbeat.down { border-left:2px solid var(--red); }
+.admin-shell .hbeat.stale { border-left:2px solid var(--amber); }
+.admin-shell .hbeat.healthy { border-left:2px solid var(--green); }
+.admin-shell .hbeat-dot { width:9px; height:9px; border-radius:50%; }
+.admin-shell .hbeat-dot.down { background:var(--red); }
+.admin-shell .hbeat-dot.stale { background:var(--amber); }
+.admin-shell .hbeat-dot.healthy { background:var(--green); }
+.admin-shell .hbeat-name { font-family:var(--mono); font-size:12px; font-weight:600; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.admin-shell .hbeat-when { font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums; }
+.admin-shell .hbeat-why { font-size:12px; color:var(--text-2); line-height:1.45; }
+
 /* ── Activity feed ───────────────────────────────────── */
 .admin-shell .feed-row { display:grid; grid-template-columns:84px 150px 1fr; gap:12px; padding:9px 0; border-bottom:1px solid var(--border); font-size:13px; align-items:baseline; }
 .admin-shell .feed-row:last-child { border-bottom:none; }
@@ -166,6 +191,13 @@ export const ADMIN_CSS = `
 .admin-shell .feed-actor { color:var(--accent-text); font-weight:600; font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .admin-shell .feed-actor a { color:var(--accent-text); }
 .admin-shell .feed-text { color:var(--text-2); }
+
+/* ── Activity timeline — day-grouped feed ────────────── */
+.admin-shell .act-timeline { display:flex; flex-direction:column; gap:22px; }
+.admin-shell .act-day-head { display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin:0 0 10px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+.admin-shell .act-day-label { font-size:13px; font-weight:700; letter-spacing:-0.01em; color:var(--text); }
+.admin-shell .act-day-count { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; color:var(--muted); }
+.admin-shell .act-day-body { padding-top:6px; padding-bottom:6px; }
 
 /* ── Ops / content / queue stat grids ────────────────── */
 .admin-shell .ops-grid, .admin-shell .content-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:0; border:1px solid var(--border); border-radius:var(--r-md); overflow:hidden; }
@@ -239,6 +271,23 @@ export const ADMIN_CSS = `
 .admin-shell .opp-score-badge.medium { background:var(--amber-soft); color:var(--amber); }
 .admin-shell .opp-score-badge.low { background:var(--surface-2); color:var(--muted); }
 
+/* ── Integrations panel (Health) ──────────────────────── */
+.admin-shell .integ-row { display:grid; grid-template-columns:12px 160px 96px 1fr; gap:13px; align-items:center; padding:11px 14px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-sm); margin-bottom:6px; }
+.admin-shell .integ-row.connected { border-left:2px solid var(--green); }
+.admin-shell .integ-row.missing { border-left:2px solid var(--border-strong); }
+.admin-shell .integ-dot { width:9px; height:9px; border-radius:50%; }
+.admin-shell .integ-dot.connected { background:var(--green); }
+.admin-shell .integ-dot.missing { background:var(--border-strong); }
+.admin-shell .integ-name { font-size:13px; font-weight:600; color:var(--text); }
+.admin-shell .integ-state { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; }
+.admin-shell .integ-state.connected { color:var(--green); }
+.admin-shell .integ-state.missing { color:var(--amber); }
+.admin-shell .integ-why { font-size:12px; color:var(--text-2); line-height:1.45; }
+@media (max-width: 768px) {
+  .admin-shell .integ-row { grid-template-columns:12px 1fr auto; }
+  .admin-shell .integ-row .integ-why { grid-column:2 / -1; }
+}
+
 /* ── Mobile ──────────────────────────────────────────── */
 @media (max-width: 880px) {
   .admin-shell .kpi-grid { grid-template-columns:repeat(2,1fr) !important; }
@@ -259,6 +308,8 @@ export const ADMIN_CSS = `
   .admin-shell table { font-size:11px; }
   .admin-shell .deal-detail { grid-template-columns:1fr; }
   .admin-shell .search-input { min-width:100%; }
+  .admin-shell .hbeat { grid-template-columns:12px 1fr auto; }
+  .admin-shell .hbeat .hbeat-why { grid-column:2 / -1; }
 }
 `;
 
@@ -277,6 +328,7 @@ export function AdminNav({ active, siteUrl = SITE_URL, siteLabel = "day14.us" }:
     { id: "opps", href: "/admin/opportunities", label: "Ideas" },
     { id: "finance", href: "/admin/finance", label: "Finance" },
     { id: "health", href: "/admin/health", label: "Health" },
+    { id: "activity", href: "/admin/activity", label: "Activity" },
   ];
   return (
     <nav className="nav">
@@ -290,6 +342,14 @@ export function AdminNav({ active, siteUrl = SITE_URL, siteLabel = "day14.us" }:
       </a>
     </nav>
   );
+}
+
+/**
+ * One plain sentence explaining what an admin screen is for. Sits right under
+ * the page <h1> so nobody is ever lost about what they are looking at.
+ */
+export function PageHint({ children }: { children: React.ReactNode }) {
+  return <p className="page-hint">{children}</p>;
 }
 
 /** Prominent "open the live website in a new tab" button for the top of a dashboard. */

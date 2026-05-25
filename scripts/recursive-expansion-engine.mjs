@@ -292,7 +292,11 @@ async function processGrowthPatterns(env, state) {
 async function cycle() {
   try {
     const env = await loadEnv();
-    if (!env.GEMINI_API_KEY) { await log("no GEMINI_API_KEY, skipping cycle"); return; }
+    // Normalise so downstream callGemini()/generateSkill() (which read
+    // env.GEMINI_API_KEY) work regardless of which alias the operator used.
+    const geminiKey = resolveGeminiKey(env);
+    if (!geminiKey) { await log("no API key configured, skipping cycle (clean no-op)"); return; }
+    env.GEMINI_API_KEY = geminiKey;
     const state = await loadState();
 
     const fromInbox = await processExpansionInbox(env, state);
@@ -309,7 +313,39 @@ async function cycle() {
   }
 }
 
+// Resolve the Gemini API key from whichever env var the operator configured.
+// callGemini() uses GEMINI_API_KEY, but accept the common aliases too so a
+// correctly-configured key under a different name still enables the engine.
+function resolveGeminiKey(env) {
+  return (
+    env.GEMINI_API_KEY ||
+    env.GOOGLE_API_KEY ||
+    env.GOOGLE_GENERATIVE_AI_API_KEY ||
+    ""
+  );
+}
+
 async function main() {
+  // Startup gate: this engine is pure dead weight without a Gemini key —
+  // every cycle would just log "skipping" forever while still holding a
+  // long-running process + heartbeat. If no key is configured, do a clean,
+  // single-line no-op and exit 0. Exit 0 (not a crash, not a spin) so the
+  // auto-restart watchdog treats it as a healthy completed run and does NOT
+  // restart it. launchd's StartInterval will retry next cycle; once a key is
+  // added the engine resumes normally.
+  let env = {};
+  try {
+    env = await loadEnv();
+  } catch {
+    // .env.local missing/unreadable counts as "no key configured".
+  }
+  const geminiKey = resolveGeminiKey(env);
+  if (!geminiKey) {
+    await log("recursive-expansion: no API key configured — skipping this cycle (clean no-op)");
+    await heartbeat();
+    process.exit(0);
+  }
+
   await fs.mkdir(SKILLS_DRAFTS, { recursive: true });
   await log("recursive-expansion-engine starting");
 

@@ -215,6 +215,12 @@ export function gameplanRisks(p: REProperty, e: REEvaluation): GameplanRisk[] {
       text: "Equity reads at or near 100% — this usually means no mortgage data was available, not that the home is truly free and clear. Verify before counting on it.",
     });
   }
+  if (e.wholesale.low_confidence) {
+    risks.push({
+      level: "caution",
+      text: "No sale price on record, so the equity here is a conservative guess, not a measured figure — the wholesale score has been discounted to reflect that. Pull the deed and mortgage history before treating this as a high-equity lead.",
+    });
+  }
   return risks;
 }
 

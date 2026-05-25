@@ -30,6 +30,46 @@ const ENV_FILE = path.join(HOME, "Documents/studio/.env.local");
 const EMPIRE_OUT = path.join(SHARED, "empire.html");
 const PRINTIFY_API = "https://api.printify.com/v1";
 
+// B1 — dashboard convergence.
+// The live /admin dashboard is the single source of truth. It renders from
+// studio/public/data/empire-state.json (written by sync-empire-state.mjs).
+// These static _shared/*.html files are convenient offline snapshots only.
+// To stop them drifting, the empire-level + finance pages read their headline
+// numbers from this same canonical JSON instead of re-deriving them.
+const EMPIRE_STATE_FILE = path.join(HOME, "Documents/studio/public/data/empire-state.json");
+const CANONICAL_DASHBOARD_URL = "https://day14.us/admin";
+
+/**
+ * Load the canonical empire snapshot (studio/public/data/empire-state.json) —
+ * the exact file the live /admin dashboard reads. Returns null if missing so
+ * callers can fall back to local re-derivation rather than crash.
+ */
+async function loadEmpireState() {
+  if (!existsSync(EMPIRE_STATE_FILE)) return null;
+  try {
+    return JSON.parse(await fs.readFile(EMPIRE_STATE_FILE, "utf8"));
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Snapshot banner shown at the very top of every generated _shared/*.html page.
+ * Makes the hierarchy unmistakable: the live dashboard is the truth, this file
+ * is a static snapshot. `canonical` flags whether the page's numbers came from
+ * empire-state.json (the same source /admin uses).
+ */
+function snapshotBanner({ canonical = false } = {}) {
+  const ts = new Date().toLocaleString();
+  const sourceNote = canonical
+    ? "numbers from the canonical empire-state.json"
+    : "static snapshot of local state";
+  return `<div class="snapshot-banner">
+  <span class="snapshot-banner-dot"></span>
+  <span><strong>Static snapshot</strong> · generated ${esc(ts)} · ${esc(sourceNote)} · the live, canonical dashboard is at <a href="${esc(CANONICAL_DASHBOARD_URL)}">day14.us/admin</a></span>
+</div>`;
+}
+
 const XP = {
   product_created: 100, product_sold: 1000, skill_approved: 250,
   draft_created: 25, daemon_running: 10, tenant_launched: 500, revenue_per_dollar: 10,
@@ -363,6 +403,10 @@ h1 { font-size:36px; letter-spacing:-0.02em; margin-bottom:4px; background:linea
 .pnl-table tr.totals { font-weight:700; background:var(--surface-2); }
 .pnl-table .negative { color:var(--red); }
 .pnl-table .positive { color:var(--green); }
+.snapshot-banner { display:flex; align-items:center; gap:10px; background:linear-gradient(135deg,rgba(245,166,35,0.16),rgba(168,85,247,0.12)); border:1px solid var(--gold); border-radius:10px; padding:10px 16px; margin-bottom:20px; font-size:12px; line-height:1.45; color:var(--text); }
+.snapshot-banner strong { color:var(--gold); }
+.snapshot-banner a { color:var(--cyan); text-decoration:underline; font-weight:600; }
+.snapshot-banner-dot { width:9px; height:9px; border-radius:50%; background:var(--gold); flex:none; box-shadow:0 0 8px var(--gold); }
 `;
 
 function navBar(active = "empire") {
@@ -379,25 +423,53 @@ function navBar(active = "empire") {
 
 async function buildEmpire() {
   const env = await loadEnv();
-  const tenants = await listTenants();
-  const beats = await heartbeats();
-  const battleLog = await recentEmpireBattleLog(30);
-  const liveSkills = await countLiveSkills();
-  const draftSkills = await countDraftSkills();
-  const expState = await expansionState();
   const allProducts = await fetchPrintifyProducts(env.PRINTIFY_API_KEY);
+
+  // Canonical path: read headline numbers from empire-state.json — the exact
+  // file /admin renders from — so the two dashboards cannot disagree.
+  const state = await loadEmpireState();
+  const usingCanonical = !!state;
+
+  let tenants, beats, battleLog, liveSkills, draftSkills, expState;
+  if (usingCanonical) {
+    tenants = state.tenants || [];
+    beats = (state.heartbeats || []).map((h) => ({ ...h, ageMin: h.ageMin }));
+    battleLog = (state.empire_battle_log || []).map((ev) => ({ ...ev, _slug: ev.tenant }));
+    liveSkills = state.skill_counts?.live || 0;
+    draftSkills = state.skill_counts?.drafts || 0;
+    expState = state.expansion_state || { skills_generated: 0 };
+  } else {
+    // Fallback: empire-state.json missing — re-derive locally (legacy behaviour).
+    tenants = await listTenants();
+    beats = await heartbeats();
+    battleLog = await recentEmpireBattleLog(30);
+    liveSkills = await countLiveSkills();
+    draftSkills = await countDraftSkills();
+    expState = await expansionState();
+  }
 
   let totalRevenue = 0, totalOrders = 0, maxStreak = 0;
   const tenantCards = [];
   for (const t of tenants) {
-    const orders = await tenantOrders(t.slug);
-    const streak = await tenantStreak(t.slug);
-    totalRevenue += orders.total_revenue_cents || 0;
-    totalOrders += orders.total_orders || 0;
+    // empire-state.json tenants carry revenue_cents/orders/streak directly;
+    // legacy fallback reads the same fields from per-tenant orders/audit files.
+    let revCents, orderCount, streak;
+    if (usingCanonical) {
+      revCents = t.revenue_cents || 0;
+      orderCount = t.orders || 0;
+      streak = t.streak || 0;
+    } else {
+      const orders = await tenantOrders(t.slug);
+      revCents = orders.total_revenue_cents || 0;
+      orderCount = orders.total_orders || 0;
+      streak = await tenantStreak(t.slug);
+    }
+    totalRevenue += revCents;
+    totalOrders += orderCount;
     if (streak > maxStreak) maxStreak = streak;
     const archetype = ARCHETYPE_CLASSES[t.type] || { class: "Adventurer", icon: "🎯", color: "#6b7280" };
-    const xp = (orders.total_orders || 0) * XP.product_sold + (orders.total_revenue_cents || 0) / 100 * XP.revenue_per_dollar + XP.tenant_launched + streak * 50;
-    tenantCards.push({ slug: t.slug, name: t.display_name || t.slug, type: t.type, stage: t.stage, class: archetype.class, classIcon: archetype.icon, classColor: archetype.color, revenue: orders.total_revenue_cents || 0, orders: orders.total_orders || 0, streak, xp, level: levelFromXp(xp) });
+    const xp = orderCount * XP.product_sold + revCents / 100 * XP.revenue_per_dollar + XP.tenant_launched + streak * 50;
+    tenantCards.push({ slug: t.slug, name: t.display_name || t.slug, type: t.type, stage: t.stage, class: archetype.class, classIcon: archetype.icon, classColor: archetype.color, revenue: revCents, orders: orderCount, streak, xp, level: levelFromXp(xp) });
   }
   tenantCards.sort((a, b) => b.xp - a.xp);
 
@@ -418,6 +490,7 @@ async function buildEmpire() {
 
   return `<!doctype html>
 <html><head><meta charset="utf-8"><title>Day14 — Empire</title><meta http-equiv="refresh" content="60"><style>${SHARED_CSS}</style></head><body>
+${snapshotBanner({ canonical: usingCanonical })}
 ${navBar("empire")}
 <h1>⚔️ Day14 Empire</h1>
 <div class="sub">${tenants.length} tenants · refreshing 60s · ${new Date().toLocaleString()}</div>
@@ -471,11 +544,15 @@ ${tenantCards.map((c, i) => `<a href="tenant-${esc(c.slug)}.html" class="char-ca
 </body></html>`;
 }
 
-async function buildTenantPage(tenant, env, allProducts) {
+async function buildTenantPage(tenant, env, allProducts, canonicalTenant) {
   const slug = tenant.slug;
   const archetype = ARCHETYPE_CLASSES[tenant.type] || { class: "Adventurer", icon: "🎯", color: "#6b7280" };
-  const orders = await tenantOrders(slug);
-  const streak = await tenantStreak(slug);
+  // Prefer canonical revenue/orders/streak from empire-state.json so tenant
+  // pages match the empire page and /admin; fall back to local files.
+  const orders = canonicalTenant
+    ? { total_revenue_cents: canonicalTenant.revenue_cents || 0, total_orders: canonicalTenant.orders || 0 }
+    : await tenantOrders(slug);
+  const streak = canonicalTenant ? (canonicalTenant.streak || 0) : await tenantStreak(slug);
   const audit = await tenantAudit(slug, 50);
   const content = await tenantContentCounts(slug);
   const queue = await tenantQueueDepth(slug);
@@ -505,6 +582,7 @@ async function buildTenantPage(tenant, env, allProducts) {
 
   return `<!doctype html>
 <html><head><meta charset="utf-8"><title>${esc(tenant.display_name)} — Day14</title><meta http-equiv="refresh" content="60"><style>${SHARED_CSS}</style></head><body>
+${snapshotBanner({ canonical: !!canonicalTenant })}
 ${navBar("")}
 <div class="crumb"><a href="empire.html">← Empire</a> / ${esc(slug)}</div>
 <h1>${archetype.icon} ${esc(tenant.display_name || slug)}</h1>
@@ -612,6 +690,7 @@ async function buildEmployeesPage() {
 
   return `<!doctype html>
 <html><head><meta charset="utf-8"><title>Employees — Day14</title><meta http-equiv="refresh" content="120"><style>${SHARED_CSS}</style></head><body>
+${snapshotBanner()}
 ${navBar("employees")}
 <h1>🏢 Employees</h1>
 <div class="sub">${EMPLOYEES.length} C-suite agents · ${new Date().toLocaleString()}</div>
@@ -661,6 +740,7 @@ async function buildPipelinePage() {
 
   return `<!doctype html>
 <html><head><meta charset="utf-8"><title>Pipeline — Day14</title><meta http-equiv="refresh" content="60"><style>${SHARED_CSS}</style></head><body>
+${snapshotBanner()}
 ${navBar("pipeline")}
 <h1>🚦 Content Pipeline</h1>
 <div class="sub">Queue states across all platforms · ${new Date().toLocaleString()}</div>
@@ -732,6 +812,7 @@ async function buildSkillsPage() {
 
   return `<!doctype html>
 <html><head><meta charset="utf-8"><title>Skills — Day14</title><meta http-equiv="refresh" content="120"><style>${SHARED_CSS}</style></head><body>
+${snapshotBanner()}
 ${navBar("skills")}
 <h1>🧬 Skill Registry</h1>
 <div class="sub">${liveSkills.length} live · ${draftSkills.length} drafts · ${new Date().toLocaleString()}</div>
@@ -774,6 +855,7 @@ async function buildOpportunitiesPage() {
 
   return `<!doctype html>
 <html><head><meta charset="utf-8"><title>Ideas — Day14</title><meta http-equiv="refresh" content="120"><style>${SHARED_CSS}</style></head><body>
+${snapshotBanner()}
 ${navBar("opps")}
 <h1>💡 Opportunities</h1>
 <div class="sub">${opps.length} ideas scanned · ${byStatus.pitched.length} pitched · ${byStatus.launching.length} launching</div>
@@ -837,11 +919,18 @@ const COGS_BY_TYPE = {
 };
 
 async function buildFinancePage() {
-  const tenants = await listTenants();
+  // Revenue + orders come from the canonical empire-state.json (same source as
+  // /admin); COGS is derived here from archetype assumptions. Fall back to
+  // local per-tenant files only if the canonical snapshot is unavailable.
+  const state = await loadEmpireState();
+  const usingCanonical = !!state;
+  const tenants = usingCanonical ? (state.tenants || []) : await listTenants();
   const rows = [];
   let totalRev = 0, totalCogs = 0, totalOrders = 0;
   for (const t of tenants) {
-    const orders = await tenantOrders(t.slug);
+    const orders = usingCanonical
+      ? { total_revenue_cents: t.revenue_cents || 0, total_orders: t.orders || 0 }
+      : await tenantOrders(t.slug);
     const cogs = COGS_BY_TYPE[t.type] || COGS_BY_TYPE["pod-store"];
     const rev = orders.total_revenue_cents || 0;
     const cogsTotal = (orders.total_orders || 0) * cogs.per_order_cents + cogs.fixed_monthly_cents;
@@ -868,9 +957,10 @@ async function buildFinancePage() {
 
   return `<!doctype html>
 <html><head><meta charset="utf-8"><title>Finance — Day14</title><meta http-equiv="refresh" content="60"><style>${SHARED_CSS}</style></head><body>
+${snapshotBanner({ canonical: usingCanonical })}
 ${navBar("finance")}
 <h1>💼 Finance</h1>
-<div class="sub">Empire-wide P&L · ${new Date().toLocaleString()}</div>
+<div class="sub">Empire-wide P&L · revenue from canonical empire-state.json · ${new Date().toLocaleString()}</div>
 
 <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
   <div class="kpi"><div class="kpi-label">💰 Revenue</div><div class="kpi-value">$${(totalRev/100).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div><div class="kpi-sub">${totalOrders} orders</div></div>
@@ -910,6 +1000,12 @@ async function main() {
   const allProducts = await fetchPrintifyProducts(env.PRINTIFY_API_KEY);
   await fs.mkdir(SHARED, { recursive: true });
 
+  // Canonical snapshot — the same file /admin renders from. Used to keep the
+  // per-tenant pages' headline numbers in step with the empire page.
+  const state = await loadEmpireState();
+  const canonicalBySlug = new Map((state?.tenants || []).map((t) => [t.slug, t]));
+  if (!state) console.warn("⚠ empire-state.json missing — falling back to local re-derivation");
+
   // Empire index
   await fs.writeFile(EMPIRE_OUT, await buildEmpire());
   console.log(`✓ ${EMPIRE_OUT}`);
@@ -917,7 +1013,7 @@ async function main() {
   // Per-tenant pages
   for (const t of tenants) {
     const out = path.join(SHARED, `tenant-${t.slug}.html`);
-    await fs.writeFile(out, await buildTenantPage(t, env, allProducts));
+    await fs.writeFile(out, await buildTenantPage(t, env, allProducts, canonicalBySlug.get(t.slug)));
     console.log(`✓ ${out}`);
   }
 

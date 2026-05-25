@@ -16,6 +16,7 @@ import { getActiveTenants, getTotalMonthlyRevenue } from "../tenants";
 const HOME = homedir();
 const SHARED = path.join(HOME, "Documents/businesses/_shared");
 const REGISTER = path.join(SHARED, "growth/work-register.jsonl");
+const HISTORY = path.join(SHARED, "metrics/mrr-history.jsonl");
 
 export interface AggregateSnapshot {
   total_mrr: number;
@@ -56,19 +57,74 @@ async function countTenantActivity(slug: string): Promise<number> {
   return count;
 }
 
+/**
+ * Reads per-tenant MRR from the most recent history snapshot recorded on a
+ * PRIOR day — so multiple runs within the same day don't all read as "flat".
+ * Returns an empty map when there is no prior-day history yet.
+ */
+async function readPrevTenantMrr(): Promise<Record<string, number>> {
+  if (!existsSync(HISTORY)) return {};
+  const today = new Date().toISOString().slice(0, 10);
+  let prev: Record<string, number> = {};
+  try {
+    const text = await fs.readFile(HISTORY, "utf8");
+    for (const line of text.split("\n")) {
+      if (!line.trim()) continue;
+      try {
+        const e = JSON.parse(line) as {
+          ts?: string;
+          per_tenant?: Array<{ slug: string; mrr: number }>;
+        };
+        if (!e.ts || e.ts.slice(0, 10) === today) continue;
+        if (!Array.isArray(e.per_tenant)) continue;
+        const snap: Record<string, number> = {};
+        for (const row of e.per_tenant) snap[row.slug] = row.mrr;
+        prev = snap; // keep overwriting — the last prior-day entry wins
+      } catch {
+        // skip malformed line
+      }
+    }
+  } catch {
+    return {};
+  }
+  return prev;
+}
+
+/** Appends a compact per-tenant MRR snapshot to the history log (best-effort). */
+async function appendHistorySnapshot(snap: AggregateSnapshot): Promise<void> {
+  try {
+    await fs.mkdir(path.dirname(HISTORY), { recursive: true });
+    const line = JSON.stringify({
+      ts: new Date().toISOString(),
+      total_mrr: snap.total_mrr,
+      per_tenant: snap.per_tenant.map((t) => ({ slug: t.slug, mrr: t.mrr })),
+    });
+    await fs.appendFile(HISTORY, line + "\n", "utf8");
+  } catch {
+    // history is best-effort — never block the report on it
+  }
+}
+
 export async function computeAggregate(): Promise<AggregateSnapshot> {
   const tenants = getActiveTenants();
   const totalMrr = getTotalMonthlyRevenue();
+  const prevMrr = await readPrevTenantMrr();
 
   const perTenant = await Promise.all(
-    tenants.map(async (t) => ({
-      slug: t.slug,
-      name: t.name,
-      type: t.type,
-      mrr: t.billing?.monthly_amount ?? 0,
-      direction: "flat" as const, // TODO: compute from history
-      activity_count_30d: await countTenantActivity(t.slug),
-    }))
+    tenants.map(async (t) => {
+      const mrr = t.billing?.monthly_amount ?? 0;
+      const prev = prevMrr[t.slug];
+      const direction: "up" | "down" | "flat" =
+        prev === undefined || prev === mrr ? "flat" : mrr > prev ? "up" : "down";
+      return {
+        slug: t.slug,
+        name: t.name,
+        type: t.type,
+        mrr,
+        direction,
+        activity_count_30d: await countTenantActivity(t.slug),
+      };
+    })
   );
 
   perTenant.sort((a, b) => b.mrr - a.mrr);
@@ -89,6 +145,7 @@ export async function computeAggregate(): Promise<AggregateSnapshot> {
 
 export async function writeAggregateReport(): Promise<string> {
   const snap = await computeAggregate();
+  await appendHistorySnapshot(snap);
   const date = new Date().toISOString().slice(0, 10);
   const reportDir = path.join(SHARED, "metrics");
   await fs.mkdir(reportDir, { recursive: true });
@@ -105,10 +162,10 @@ export async function writeAggregateReport(): Promise<string> {
   if (snap.per_tenant.length > 0) {
     lines.push(`## Per tenant`);
     lines.push("");
-    lines.push("| Slug | Name | Type | MRR | Activity 30d |");
-    lines.push("|------|------|------|----:|------------:|");
+    lines.push("| Slug | Name | Type | MRR | Trend | Activity 30d |");
+    lines.push("|------|------|------|----:|:-----:|------------:|");
     for (const t of snap.per_tenant) {
-      lines.push(`| \`${t.slug}\` | ${t.name} | ${t.type} | $${t.mrr.toLocaleString()} | ${t.activity_count_30d} |`);
+      lines.push(`| \`${t.slug}\` | ${t.name} | ${t.type} | $${t.mrr.toLocaleString()} | ${t.direction} | ${t.activity_count_30d} |`);
     }
     lines.push("");
   }

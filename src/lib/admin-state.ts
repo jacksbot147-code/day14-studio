@@ -10,6 +10,18 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
+export interface Heartbeat {
+  name: string;
+  status: "healthy" | "stale" | "error";
+  ageMin: number;
+  /** Expected beat interval — a known schedule, or self-calibrated. */
+  cadenceMin?: number | null;
+  /** "oneshot" = an interval job that runs then exits; "daemon" = always-on. */
+  kind?: "daemon" | "oneshot";
+  /** ISO timestamp of the most recent heartbeat. */
+  lastBeat?: string | null;
+}
+
 interface EmpireState {
   generated_at: string;
   tenants: Array<{
@@ -40,7 +52,7 @@ interface EmpireState {
       byPlatform: Record<string, { queued: number; approved: number; posted: number }>;
     };
   }>;
-  heartbeats: Array<{ name: string; status: "healthy" | "stale" | "error"; ageMin: number; cadenceMin?: number | null }>;
+  heartbeats: Heartbeat[];
   skill_counts: { live: number; drafts: number };
   expansion_state: { skills_generated: number };
   opportunities: Array<{
@@ -143,6 +155,11 @@ export interface REEvaluation {
   wholesale: {
     equity_cents: number;
     equity_pct: number;
+    /** True when a real sale price backs the equity figure; false = guessed. */
+    equity_known?: boolean;
+    /** True when the equity (and so the wholesale score) is a low-confidence
+     *  estimate because no sale price was on record. */
+    low_confidence?: boolean;
     motivation_signals?: string[];
     score: number;
   };

@@ -34,7 +34,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Confirm your health plan qualifies as an HSA-eligible high-deductible plan, open an HSA with a bank or brokerage, contribute up to the annual limit before the filing deadline, and report the contribution on Form 8889.",
     "source": "IRS Publication 969; Form 8889; IRC Section 223",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -52,7 +52,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Open a traditional IRA with a brokerage, contribute up to the annual limit before the filing deadline, confirm your deduction eligibility given your income and workplace-plan coverage, and report the deduction on Schedule 1 of Form 1040.",
     "source": "IRS Publication 590-A; IRC Section 219; Schedule 1 (Form 1040)",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -70,7 +70,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Confirm your income is within the direct-contribution range, open a Roth IRA, and contribute up to the annual limit before the filing deadline. No tax form is needed for a standard contribution, but keep records of basis.",
     "source": "IRS Publication 590-A; IRC Section 408A",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -87,7 +87,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Enroll through your employer's benefits portal, set a contribution rate at least high enough to capture the full employer match, and choose between pre-tax and Roth treatment based on your situation.",
     "source": "IRC Section 401(k); IRS Publication 525; IRS Topic No. 424",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -105,7 +105,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Make an eligible retirement contribution during the year, check your adjusted gross income against the current limits, and claim the credit on Form 8880.",
     "source": "IRC Section 25B; Form 8880; IRS Topic No. 610",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -122,7 +122,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Confirm each child meets the qualifying-child tests, ensure each has a valid Social Security number, and claim the credit using Schedule 8812 with your Form 1040.",
     "source": "IRC Section 24; Schedule 8812 (Form 1040)",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -139,7 +139,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Enroll in your employer's Dependent Care FSA during open enrollment if available, keep receipts and the care provider's tax ID, and reconcile FSA use against the Child and Dependent Care Credit on Form 2441.",
     "source": "IRC Section 129; IRC Section 21; IRS Publication 503; Form 2441",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -156,7 +156,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Choose a 529 plan (often your home state's, to capture any state tax break), open the account for the beneficiary, contribute, and keep records tying withdrawals to qualified education expenses.",
     "source": "IRC Section 529; IRS Publication 970",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -174,7 +174,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Collect Form 1098-E from your loan servicer, confirm your income is within the phase-out range, and claim the deduction on Schedule 1 of Form 1040.",
     "source": "IRC Section 221; IRS Publication 970; Schedule 1 (Form 1040)",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -192,7 +192,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Get Form 1098-T from the school, determine which credit gives the better result for each student, and claim it on Form 8863 with your Form 1040.",
     "source": "IRC Section 25A; IRS Publication 970; Form 8863",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -210,7 +210,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "medium",
     "action_steps": "Check eligibility with the IRS EITC Assistant, attach Schedule EIC if claiming qualifying children, and claim the credit on Form 1040. Free filing help is available through IRS VITA sites for those who qualify.",
     "source": "IRC Section 32; IRS Publication 596; Schedule EIC (Form 1040)",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -228,7 +228,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "medium",
     "action_steps": "Review the pro-rata rule against your existing IRA balances, make a non-deductible traditional IRA contribution, convert it to a Roth, and report both steps on Form 8606. Confirm the approach with a tax professional before acting.",
     "source": "IRS Publication 590-A; IRC Section 408A; Form 8606",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": true
   },
   {
@@ -245,7 +245,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "medium",
     "action_steps": "Measure the exclusive-use business space, choose the simplified or regular method, keep records of home expenses, and report the deduction on Form 8829 (regular method) or directly on Schedule C (simplified method).",
     "source": "IRC Section 280A; IRS Publication 587; Form 8829",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -262,7 +262,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "medium",
     "action_steps": "Open a dedicated business bank account, track expenses throughout the year, keep receipts and documentation, deduct only the business-use share of mixed costs, and report expenses on Schedule C.",
     "source": "IRC Section 162; Schedule C (Form 1040); IRS Publication 334",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -279,7 +279,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "medium",
     "action_steps": "Determine whether your income is below or above the thresholds, identify whether your business is a specified service trade, calculate the deduction on Form 8995 or 8995-A, and have a tax professional confirm it if your income is in or above the phase-out range.",
     "source": "IRC Section 199A; Form 8995 / Form 8995-A; IRS instructions for Form 8995",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": true
   },
   {
@@ -296,7 +296,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Open a Solo 401(k) with a brokerage before the applicable deadline, calculate the allowable employee and employer contributions for your net self-employment income, contribute, and watch for any annual plan filing requirements. Confirm the contribution calculation with a professional.",
     "source": "IRC Section 401(k); IRS Publication 560; IRS 'One-Participant 401(k) Plans'",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": true
   },
   {
@@ -313,7 +313,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Adopt a SEP plan (often using Form 5305-SEP), open a SEP-IRA with a brokerage, calculate the allowable contribution from net self-employment income, and contribute by the filing deadline including extensions.",
     "source": "IRC Section 408(k); IRS Publication 560; Form 5305-SEP",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -330,7 +330,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Calculate self-employment tax on Schedule SE; the deductible portion flows automatically to Schedule 1 of Form 1040. Most tax software handles this, but confirm it appears.",
     "source": "IRC Section 164(f); Schedule SE (Form 1040); Schedule 1 (Form 1040)",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -347,7 +347,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Total your eligible premiums for the year, confirm you were not eligible for employer-subsidized coverage, account for any marketplace Premium Tax Credit interaction, and claim the deduction on Schedule 1 of Form 1040.",
     "source": "IRC Section 162(l); IRS Publication 974; Schedule 1 (Form 1040)",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -364,7 +364,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "medium",
     "action_steps": "Keep a contemporaneous mileage log (or use a tracking app), decide between the standard mileage rate and actual expenses, verify the current-year standard rate with the IRS, and report the deduction on Schedule C.",
     "source": "IRC Section 162; IRS Publication 463; Schedule C (Form 1040)",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -381,7 +381,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Estimate your annual tax, divide it into four payments, use a safe-harbor target so you are not penalized, and pay each quarter by the IRS deadline using Form 1040-ES or IRS Direct Pay.",
     "source": "IRC Section 6654; Form 1040-ES; IRS Publication 505",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -398,7 +398,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "medium",
     "action_steps": "Have a tax professional model the salary-versus-distribution split against your actual profit, confirm the business is eligible, file Form 2553 to elect S-corp status by the deadline, set up payroll, and pay yourself a defensible reasonable salary.",
     "source": "IRC Section 1362; Form 2553; IRS 'S Corporations'",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": true
   },
   {
@@ -416,7 +416,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Adopt a written accountable plan, have owners and employees submit expense reports with receipts on a regular schedule, reimburse only substantiated business expenses, and record the reimbursements as a business expense rather than as payroll.",
     "source": "IRC Section 62(c); Treasury Regulation 1.62-2; IRS Publication 463",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -428,14 +428,14 @@ export const CATALOG: LoopholeEntry[] = [
       "investors-high-earners"
     ],
     "summary": "Instead of deducting the cost of business equipment a little at a time over many years, these rules let a business write off much or all of it in the year it is placed in service.",
-    "explanation": "Normally the cost of equipment, machinery, vehicles, and similar business property is recovered slowly through depreciation. Section 179 expensing and bonus depreciation are accelerators: Section 179 lets a business immediately deduct the cost of qualifying property up to an annual cap, and bonus depreciation allows an additional first-year deduction on qualifying property. Together they can turn a large capital purchase into a large current-year deduction. The details matter and shift frequently — Section 179 has dollar caps and a phase-out tied to total purchases, it cannot be used to create a loss, and the bonus depreciation percentage has been scheduled to change — so the current-year figures must be verified. Certain vehicles, particularly heavier SUVs, have their own special limits.",
-    "eligibility": "Must be a business placing qualifying tangible property (or certain improvements) into service during the year and using it more than half the time for business. Annual dollar limits, the phase-out threshold, and the bonus depreciation percentage change and must be verified against current IRS guidance.",
+    "explanation": "Normally the cost of equipment, machinery, vehicles, and similar business property is recovered slowly through depreciation. Section 179 expensing and bonus depreciation are accelerators: Section 179 lets a business immediately deduct the cost of qualifying property up to an annual cap, and bonus depreciation allows an additional first-year deduction on qualifying property. Together they can turn a large capital purchase into a large current-year deduction. The details matter, so the current-year figures must be verified: Section 179 has dollar caps and a phase-out tied to total purchases, and it cannot be used to create a loss. Recent legislation made full first-year bonus depreciation a permanent feature rather than the temporary, phasing-down benefit it had been, though the rules on which property and acquisition dates qualify still need to be checked. Certain vehicles, particularly heavier SUVs, have their own special limits.",
+    "eligibility": "Must be a business placing qualifying tangible property (or certain improvements) into service during the year and using it more than half the time for business. The annual dollar limits and the phase-out threshold are indexed and must be verified against current IRS guidance, along with the rules on which property and acquisition dates qualify for bonus depreciation.",
     "estimated_impact": "Accelerating the deduction on a significant equipment purchase could shift a sizable deduction into the current year, potentially saving hundreds to many thousands of dollars depending on the purchase size and bracket — though it borrows from future years' deductions rather than creating new ones.",
     "complexity": "medium",
     "risk_level": "medium",
     "action_steps": "Confirm the property qualifies and is placed in service during the tax year, verify the current Section 179 limits and bonus depreciation percentage, model whether accelerating the deduction helps given your income, and elect the treatment on Form 4562.",
     "source": "IRC Section 179; IRC Section 168(k); IRS Publication 946; Form 4562",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -453,7 +453,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "medium",
     "action_steps": "Establish a genuine business reason to use the home, document a market rental rate with comparable quotes, keep minutes or an agenda showing what took place, have the business pay and deduct the rent, keep the total at 14 days or fewer, and do not report the personal rental income.",
     "source": "IRC Section 280A(g)",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -471,7 +471,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "medium",
     "action_steps": "Assign real work, set reasonable pay, put the child on payroll with proper documentation and timekeeping, issue a Form W-2, and keep records showing the work was genuine. Confirm the payroll tax treatment for your specific entity type.",
     "source": "IRC Section 162; IRC Section 3121(b)(3); IRS 'Family Help'",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -488,7 +488,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Adopt a SIMPLE IRA plan (often using Form 5304-SIMPLE or Form 5305-SIMPLE), notify employees, set up accounts, and make employee and employer contributions by the applicable deadlines.",
     "source": "IRC Section 408(p); IRS Publication 560; Form 5304-SIMPLE",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -506,7 +506,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Engage an actuary or third-party administrator to model and design the plan, confirm the business can sustain the required annual funding, adopt the plan, and coordinate it with any existing retirement plan. This should not be done without professional help.",
     "source": "IRC Section 401(a); IRC Section 412; IRS Publication 560",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": true
   },
   {
@@ -524,7 +524,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Keep records of all pre-launch spending, separate startup and organizational costs from ordinary operating expenses, and elect to deduct and amortize them on the first business tax return, reported with Form 4562.",
     "source": "IRC Section 195; IRC Section 248; IRS Publication 583",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -541,7 +541,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "When establishing a new qualified retirement plan, confirm the business meets the eligibility rules, track startup and administration costs, and claim the credit on Form 8881.",
     "source": "IRC Section 45E; Form 8881",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -551,15 +551,15 @@ export const CATALOG: LoopholeEntry[] = [
       "small-business",
       "legal-entities"
     ],
-    "summary": "Employers can claim a credit for hiring workers from certain groups that have historically faced barriers to employment.",
-    "explanation": "The Work Opportunity Tax Credit rewards employers who hire from specific target groups — among them certain veterans, people receiving certain forms of public assistance, ex-felons, and others identified by the program. It is a credit against income tax, calculated as a percentage of the new hire's first-year wages up to a cap, with the amount varying by target group and hours worked. The single most important and most-missed step is timing: the employer must get the worker pre-screened and submit the certification request to the state workforce agency within a short window after the hire date. Miss that window and the credit is lost no matter how eligible the worker was.",
-    "eligibility": "Must hire an employee who is certified as a member of a WOTC target group. The certification request must be filed with the state workforce agency within the required period after the start date. Program authorization and details should be verified, as the credit is periodically renewed by law.",
+    "summary": "Employers can claim a credit for hiring workers from certain groups that have historically faced barriers to employment, but the credit's legal authorization has lapsed for workers hired after 2025 and currently awaits renewal by Congress.",
+    "explanation": "The Work Opportunity Tax Credit rewards employers who hire from specific target groups — among them certain veterans, people receiving certain forms of public assistance, ex-felons, and others identified by the program. It is a credit against income tax, calculated as a percentage of the new hire's first-year wages up to a cap, with the amount varying by target group and hours worked. The single most important and most-missed step is timing: the employer must get the worker pre-screened and submit the certification request to the state workforce agency within a short window after the hire date. Miss that window and the credit is lost no matter how eligible the worker was. One critical status point: the legal authorization for this credit lapsed for employees who begin work after December 31, 2025, and was not extended by the 2025 tax legislation, so as things stand it is not available for new 2026 hires unless Congress reauthorizes it, something it has done repeatedly before and which proposed legislation would do again. The strategy is kept here for reference and remains valid for qualifying hires made while the credit was authorized; confirm current authorization before relying on it.",
+    "eligibility": "Must hire an employee who is certified as a member of a WOTC target group. The certification request must be filed with the state workforce agency within the required period after the start date. The credit's legal authorization lapsed for employees hired after 2025, so its current availability for the year must be confirmed before relying on it; the credit is periodically renewed by law.",
     "estimated_impact": "Depending on the target group and hours worked, the credit could be worth roughly several hundred to several thousand dollars per qualifying hire.",
     "complexity": "medium",
     "risk_level": "low",
     "action_steps": "Have job applicants complete the pre-screening notice (Form 8850) on or before the offer date, submit it and any required forms to the state workforce agency within the deadline, obtain certification, and claim the credit on Form 5884.",
     "source": "IRC Section 51; Form 8850; Form 5884",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -577,7 +577,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Review taxable accounts for positions trading below cost, sell to realize the loss, avoid buying a substantially identical security within the wash-sale windows, and report the transactions on Form 8949 and Schedule D.",
     "source": "IRC Section 1211; IRC Section 1091; IRS Publication 550; Schedule D (Form 1040)",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -595,7 +595,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Before selling an appreciated asset, check its purchase date and holding period, weigh whether waiting to cross the one-year mark is worthwhile, and report sales on Form 8949 and Schedule D.",
     "source": "IRC Section 1222; IRC Section 1(h); IRS Topic No. 409; IRS Publication 550",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -613,7 +613,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Check Form 1099-DIV to see which dividends are reported as qualified, hold dividend-paying shares long enough to satisfy the holding-period rule, and report dividends on Schedule B and Form 1040.",
     "source": "IRC Section 1(h)(11); IRS Publication 550; IRS Topic No. 404",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -631,7 +631,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "medium",
     "action_steps": "Engage a qualified intermediary before closing the sale, follow the 45-day identification and 180-day closing deadlines exactly, reinvest the proceeds into qualifying like-kind property, and report the exchange on Form 8824. Work with a tax professional and the intermediary throughout.",
     "source": "IRC Section 1031; Form 8824; IRS Publication 544",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": true
   },
   {
@@ -648,7 +648,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "medium",
     "action_steps": "Separate the building's value from the land, determine the correct recovery period, claim depreciation each year on Form 4562 and Schedule E, and keep records because depreciation will be recaptured when you sell.",
     "source": "IRC Section 168; IRS Publication 527; Form 4562",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -666,7 +666,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "medium",
     "action_steps": "Have a qualified cost segregation specialist study the property, apply the reclassified asset lives to your depreciation schedule, coordinate any accounting-method change with a tax professional, and report depreciation on Form 4562.",
     "source": "IRS Cost Segregation Audit Techniques Guide; IRC Section 168; IRS Publication 946",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": true
   },
   {
@@ -683,7 +683,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "high",
     "action_steps": "Honestly assess whether you can meet the time tests, keep a detailed contemporaneous log of all real estate hours, confirm material participation in the rental activities, and work with a tax professional given how closely this status is examined.",
     "source": "IRC Section 469(c)(7); Treasury Regulation 1.469-9; IRS Publication 925",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": true
   },
   {
@@ -701,7 +701,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Open a donor-advised fund at a sponsoring organization, contribute cash or appreciated assets (favoring appreciated assets to also avoid capital gains tax), keep contribution records, claim the itemized deduction on Schedule A, and recommend grants to charities over time.",
     "source": "IRC Section 170; IRC Section 4966; IRS Publication 526",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -719,7 +719,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Confirm you are 70 and a half or older, instruct your IRA custodian to send funds directly to a qualified charity, keep the acknowledgment, verify the current annual QCD limit, and report the distribution correctly on Form 1040.",
     "source": "IRC Section 408(d)(8); IRS Publication 590-B",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -737,7 +737,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "low",
     "action_steps": "Identify long-term appreciated holdings, transfer the shares directly to the charity (or to a donor-advised fund) rather than selling first, obtain a written acknowledgment, file Form 8283 for larger gifts, and claim the deduction on Schedule A.",
     "source": "IRC Section 170; IRS Publication 526; IRS Publication 561; Form 8283",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": false
   },
   {
@@ -754,7 +754,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "medium",
     "action_steps": "Confirm with your plan administrator that the plan allows after-tax contributions and in-plan Roth conversions or in-service distributions, make after-tax contributions, convert them to Roth promptly to limit taxable earnings, and confirm the reporting with a tax professional.",
     "source": "IRC Section 402A; IRC Section 415(c); IRS Notice 2014-54",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": true
   },
   {
@@ -765,14 +765,14 @@ export const CATALOG: LoopholeEntry[] = [
       "legal-entities"
     ],
     "summary": "Gain on the sale of qualifying small business C-corporation stock held long enough can be excluded from federal tax, up to a substantial cap.",
-    "explanation": "Section 1202 is one of the most powerful incentives in the code: if you acquire qualified small business stock and hold it long enough, a large portion — potentially all — of the gain when you sell can be excluded from federal income tax. It is meant to reward investment in small, active C-corporations. The qualifying conditions are numerous and strict: the stock must be C-corporation stock, acquired at original issuance, the corporation must have had gross assets under a statutory ceiling when the stock was issued, it must run an active qualifying business (many service businesses are excluded), and there is a minimum holding period. The amount of gain that can be excluded is capped per taxpayer per company. Recent legislation has been adjusting these rules, so the holding period, asset ceiling, and exclusion cap must all be verified against current law.",
-    "eligibility": "Must hold stock that meets every Section 1202 test — issued by a qualifying small C-corporation, acquired at original issuance, in a non-excluded line of business — and held for the required minimum period. The asset ceiling, holding period, and exclusion cap should be verified, as they have been subject to change.",
+    "explanation": "Section 1202 is one of the most powerful incentives in the code: if you acquire qualified small business stock and hold it long enough, a large portion — potentially all — of the gain when you sell can be excluded from federal income tax. It is meant to reward investment in small, active C-corporations. The qualifying conditions are numerous and strict: the stock must be C-corporation stock, acquired at original issuance, the corporation must have had gross assets under a statutory ceiling when the stock was issued, it must run an active qualifying business (many service businesses are excluded). How much of the gain escapes tax depends on how long the stock is held: stock issued in earlier years generally needed a single multi-year holding period for a full exclusion, while recent legislation introduced a tiered structure under which stock issued after a 2025 cutoff date can earn a partial exclusion at a shorter hold and a full exclusion only after a longer one. That same legislation also raised the company gross-asset ceiling and the per-taxpayer exclusion cap. Because the holding-period tiers, asset ceiling, and exclusion cap now depend on when the stock was issued, all of them must be verified against current law for the specific stock involved.",
+    "eligibility": "Must hold stock that meets every Section 1202 test — issued by a qualifying small C-corporation, acquired at original issuance, in a non-excluded line of business — and held long enough to qualify, with the share of gain excluded depending on the length of the hold for more recently issued stock. The asset ceiling, holding-period tiers, and exclusion cap should be verified, as they now depend on when the stock was issued.",
     "estimated_impact": "Where it applies fully, excluding gain on a successful exit could eliminate federal tax on a very large amount of gain — potentially hundreds of thousands of dollars or more — but only if every requirement is met.",
     "complexity": "high",
     "risk_level": "medium",
     "action_steps": "When investing in or forming a C-corporation, confirm with a tax professional whether the stock can qualify, document the company's status at issuance, hold for the required period, verify the current rules before selling, and report the exclusion on Form 8949 and Schedule D.",
     "source": "IRC Section 1202; IRS instructions for Schedule D (Form 1040)",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": true
   },
   {
@@ -790,7 +790,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "medium",
     "action_steps": "Map out expected profit, growth, funding, and hiring plans, model the tax outcome of each structure with a tax professional and attorney, form or convert the entity, and make any tax election (such as Form 2553 for S-corp status or Form 8832 for entity classification) within the deadlines.",
     "source": "IRS Publication 3402; Form 8832; Form 2553; IRS 'Business Structures'",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": true
   },
   {
@@ -808,7 +808,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "medium",
     "action_steps": "Check whether your state offers a pass-through entity tax, model the effect with a tax professional, make the election by the state's deadline, have the entity pay the tax, and ensure each owner claims the corresponding state credit.",
     "source": "IRS Notice 2020-75",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": true
   },
   {
@@ -826,7 +826,7 @@ export const CATALOG: LoopholeEntry[] = [
     "risk_level": "high",
     "action_steps": "Define your estate and wealth-transfer goals, engage an estate attorney and tax advisor to determine whether a trust fits and which type, have the trust properly drafted and funded, and handle trust tax filings (Form 1041) as required. Do not attempt this without professionals.",
     "source": "IRC Sections 641-685 (Subchapter J); IRC Sections 671-679; IRS Form 1041 instructions",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": true
   },
   {
@@ -838,14 +838,14 @@ export const CATALOG: LoopholeEntry[] = [
       "legal-entities"
     ],
     "summary": "You can give a set amount to any number of people each year with no gift tax and no paperwork, and a large lifetime exemption sits above that.",
-    "explanation": "The gift tax is widely misunderstood. Each year you can give up to an annual exclusion amount to as many separate people as you like with no gift tax and no return to file — a married couple can combine their exclusions to give twice as much per recipient. Gifts above the annual exclusion are usually not taxed either; they simply reduce a large lifetime gift and estate tax exemption, and require filing a gift tax return to track that use. For families focused on transferring wealth, consistent annual-exclusion gifting moves money — and its future growth — out of the taxable estate steadily, without ever touching the lifetime exemption. Certain payments, such as tuition or medical expenses paid directly to the institution, do not count as gifts at all. The annual exclusion and the lifetime exemption are both indexed, and the exemption in particular has been subject to scheduled changes, so current figures must be verified.",
+    "explanation": "The gift tax is widely misunderstood. Each year you can give up to an annual exclusion amount to as many separate people as you like with no gift tax and no return to file — a married couple can combine their exclusions to give twice as much per recipient. Gifts above the annual exclusion are usually not taxed either; they simply reduce a large lifetime gift and estate tax exemption, and require filing a gift tax return to track that use. For families focused on transferring wealth, consistent annual-exclusion gifting moves money — and its future growth — out of the taxable estate steadily, without ever touching the lifetime exemption. Certain payments, such as tuition or medical expenses paid directly to the institution, do not count as gifts at all. The annual exclusion and the lifetime exemption are both indexed for inflation; the lifetime exemption was once set to drop sharply under a scheduled sunset, but recent legislation removed that sunset and set it at a high permanent level, so while no cliff is looming the current figures should still be verified.",
     "eligibility": "Available to anyone making gifts. The annual exclusion applies per recipient per year; gifts above it require a gift tax return and draw against the lifetime exemption. Direct payments of tuition or medical costs to the provider are excluded entirely.",
     "estimated_impact": "Systematic annual-exclusion gifting could move substantial value and its future appreciation out of a taxable estate over time; for larger estates the eventual estate tax saved could be significant, though it depends on the estate's size and the exemption in effect.",
     "complexity": "medium",
     "risk_level": "low",
     "action_steps": "Verify the current annual exclusion amount, make gifts at or below it to each recipient to avoid any filing, pay tuition or medical costs directly to the institution where relevant, and file Form 709 for any gift above the annual exclusion. Coordinate larger gifting with an estate professional.",
     "source": "IRC Section 2503(b); IRC Section 2010; Form 709; IRS 'Frequently Asked Questions on Gift Taxes'",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": true
   },
   {
@@ -856,14 +856,14 @@ export const CATALOG: LoopholeEntry[] = [
       "legal-entities"
     ],
     "summary": "Reinvesting a capital gain into a Qualified Opportunity Fund can defer tax on that gain and, if the investment is held long enough, make its own future growth tax-free.",
-    "explanation": "Qualified Opportunity Zones are designated economically distressed areas, and the tax code offers incentives to channel investment into them. If you realize a capital gain and reinvest the gain amount into a Qualified Opportunity Fund within a set window, you can defer tax on the original gain until a future date set by law. The larger benefit is on the back end: if you hold the Opportunity Fund investment for the required long-term period, the appreciation on the fund investment itself can be excluded from tax entirely. The program has specific timing rules, the funds invest in real estate or businesses within the zones, and the original benefits were tied to particular dates that have evolved with legislation. Because the deferral dates, holding periods, and any program extensions must be checked against current law, and the investments themselves carry real economic risk, this is professional-and-due-diligence territory.",
-    "eligibility": "Must have an eligible capital gain and reinvest the gain amount into a Qualified Opportunity Fund within the required window after realizing it. The full back-end benefit requires meeting a long-term holding period. Program dates and rules have changed and must be verified against current law.",
+    "explanation": "Qualified Opportunity Zones are designated economically distressed areas, and the tax code offers incentives to channel investment into them. If you realize a capital gain and reinvest the gain amount into a Qualified Opportunity Fund within a set window, you can defer tax on the original gain for a period defined by law. The larger benefit is on the back end: if you hold the Opportunity Fund investment for the required long-term period, the appreciation on the fund investment itself can be excluded from tax entirely. The program began as a temporary, deadline-driven incentive, but recent legislation made it a permanent part of the code and restructured how the deferral period and basis step-ups work, with newer investments following a rolling timeline rather than a single fixed statutory date. The funds invest in real estate or businesses within the designated zones. Because the deferral period, holding periods, and step-up rules differ depending on when the investment is made, they must all be checked against current law, and because the investments themselves carry real economic risk, this is professional-and-due-diligence territory.",
+    "eligibility": "Must have an eligible capital gain and reinvest the gain amount into a Qualified Opportunity Fund within the required window after realizing it. The full back-end benefit requires meeting a long-term holding period. The program is now a permanent part of the code, but its deferral and holding-period rules differ depending on when the investment is made and must be verified against current law.",
     "estimated_impact": "Deferring tax on a reinvested gain and potentially excluding all appreciation on the fund investment could be worth a substantial amount on a large gain — but the figure depends on the gain size, the holding period achieved, and current program rules, and the underlying investment can lose value.",
     "complexity": "high",
     "risk_level": "high",
     "action_steps": "Confirm you have an eligible gain, reinvest the gain amount into a Qualified Opportunity Fund within the required period, verify the current deferral and holding-period rules, plan to hold for the long-term threshold, and report the election on Form 8949 and Form 8997 with help from a tax professional.",
     "source": "IRC Section 1400Z-2; Form 8997; Form 8949; IRS 'Opportunity Zones' Frequently Asked Questions",
-    "current_as_of": "2025",
+    "current_as_of": "2026",
     "professional_needed": true
   }
 ];

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { loadEmpireState, fetchPrintifyProducts, loadBrandSites, loadTenantOps } from "@/lib/admin-state";
-import { AdminNav, ADMIN_CSS, SiteCta, SITE_URL } from "../../layout-bits";
+import { AdminNav, ADMIN_CSS, SiteCta, SITE_URL, PageHint } from "../../layout-bits";
 
 export const dynamic = "force-dynamic";
 
@@ -106,6 +106,10 @@ export default async function TenantPage({ params }: Props) {
       <AdminNav active="empire" siteUrl={siteUrl ?? SITE_URL} siteLabel={hasBrandSite ? tenant.display_name : "day14.us"} />
       <div className="crumb"><Link href="/admin">← Overview</Link> &nbsp;/&nbsp; {slug}</div>
       <h1>{tenant.display_name}</h1>
+      <PageHint>
+        The full picture for one business — its build, content, money, and
+        activity in a single place.
+      </PageHint>
       <div className="sub">
         <span style={{ color: type.color, fontWeight: 600 }}>{type.label}</span>
         {" · "}

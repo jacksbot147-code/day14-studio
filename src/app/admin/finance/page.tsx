@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { loadEmpireState } from "@/lib/admin-state";
-import { AdminNav, ADMIN_CSS } from "../layout-bits";
+import { AdminNav, ADMIN_CSS, PageHint } from "../layout-bits";
 
 export const metadata = { title: "Finance — Day14 Admin", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -42,7 +42,11 @@ export default async function FinancePage() {
       <style dangerouslySetInnerHTML={{ __html: ADMIN_CSS }} />
       <AdminNav active="finance" />
       <h1>Finance</h1>
-      <div className="sub">Empire-wide P&L · synced from local Mac</div>
+      <PageHint>
+        Revenue and the cross-tenant money rollup — what every business earns,
+        added up.
+      </PageHint>
+      <div className="sub">Empire-wide P&amp;L · synced from local Mac</div>
 
       <div className="kpi-grid" style={{ gridTemplateColumns: "repeat(4,1fr)" }}>
         <div className="kpi"><div className="kpi-label">Revenue</div><div className="kpi-value">${(totalRev / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div><div className="kpi-sub">{totalOrders} orders</div></div>

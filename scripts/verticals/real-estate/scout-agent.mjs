@@ -63,11 +63,39 @@ export async function operate(slug) {
   const top = evals.slice(0, 10);
   const targets = await loadTargets(slug);
 
+  // ── Collect every failure so the report leads with the truth ───────────
+  // An agent that threw outright, plus per-county data-fetch errors. This is
+  // surfaced at the TOP of the report — a frozen pipeline must not read green.
+  const agentFailures = Object.entries(results)
+    .filter(([, v]) => v && v.error)
+    .map(([name, v]) => `${name}: ${v.error}`);
+  const fetchErrors = results.countyData?.errors || [];
+  const circuitTripped = results.countyData?.circuit_tripped === true;
+  const hasFailures = agentFailures.length > 0 || fetchErrors.length > 0;
+
+  const failureBlock = hasFailures
+    ? [
+        `## ⚠ Pipeline failures — read first`,
+        ``,
+        circuitTripped
+          ? `**County data feed is DOWN** — the circuit-breaker tripped this run (consecutive county failures). No new parcels were sourced from the FDOR feed.`
+          : `**${fetchErrors.length} county data-fetch error(s) this run** — some counties did not source new parcels.`,
+        ``,
+        ...(agentFailures.length
+          ? [`Agent failures:`, ...agentFailures.map((e) => `- ${e}`), ``]
+          : []),
+        ...(fetchErrors.length
+          ? [`County data-fetch errors:`, ...fetchErrors.map((e) => `- ${e}`), ``]
+          : []),
+      ]
+    : [`## Status`, ``, `No pipeline failures this run.`, ``];
+
   const lines = [
     `# Real-Estate Deal Scout — ${slug}`,
     ``,
     `Generated: ${new Date().toISOString()}`,
     ``,
+    ...failureBlock,
     `## Funnel`,
     `- Watch list: ${results.marketExpander?.watch_list ?? targets.length} counties${results.marketExpander?.added ? ` · +${results.marketExpander.added} auto-added (${results.marketExpander.counties.join(", ")})` : ""}`,
     `- County data: ${results.countyData?.fetched ?? 0} FL county feed(s) auto-sourced · +${results.countyData?.properties ?? 0} parcels${results.countyData?.errors?.length ? ` · ${results.countyData.errors.length} error(s)` : ""}`,

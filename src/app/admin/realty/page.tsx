@@ -1,5 +1,5 @@
 import { loadTenantOps, loadEmpireState, type REEvaluation, type RETarget } from "@/lib/admin-state";
-import { AdminNav, ADMIN_CSS } from "../layout-bits";
+import { AdminNav, ADMIN_CSS, PageHint } from "../layout-bits";
 import { AddCountyBox, UploadCsvBox, DealBoard } from "./realty-interactive";
 
 export const metadata = { title: "Realty — Day14 Admin", robots: { index: false, follow: false } };
@@ -42,6 +42,10 @@ export default async function RealtyDashboard() {
       <style dangerouslySetInnerHTML={{ __html: ADMIN_CSS }} />
       <AdminNav active="realty" />
       <h1>Realty</h1>
+      <PageHint>
+        Your scored property deal board — click any property to open its full
+        gameplan.
+      </PageHint>
       <div className="sub">
         Deal sourcing + evaluation · day14-realty segment
         {ops.generated_at ? ` · synced ${new Date(ops.generated_at).toLocaleString()}` : ""}

@@ -1,19 +1,22 @@
-// Auto-generated brand theme for Hot Flash Co
+// Brand theme for Hot Flash Co.
+// Values derived from businesses/hot-flash-co/brand-identity.json
+// (generated 2026-05-25 from CONSTITUTION.md). Replaces the earlier
+// generic fallback palette and tagline.
 export const brandTheme = {
   slug: "hot-flash-co",
   displayName: "Hot Flash Co",
-  tagline: "Real goods for the seasons no one warns you about.",
-  niche: "Real goods for the seasons no one warns you about.",
+  tagline: "Dry goods for a hot situation.",
+  niche: "Print-on-demand mugs, apparel, and goods of dry humor for women navigating perimenopause and menopause.",
   colors: {
-    primary: "#2F2A33",
-    secondary: "#7A6F8F",
-    accent: "#D4C5A9",
-    bg: "#FAF8F4",
-    text: "#1f1c24",
-    muted: "#666",
+    primary: "#1F1A17",
+    secondary: "#C53A22",
+    accent: "#E4D8BE",
+    bg: "#F9F4E8",
+    text: "#2A2420",
+    muted: "#6E6253",
   },
   fonts: {
-    heading: "'Inter', system-ui, sans-serif",
-    body: "'Inter', system-ui, sans-serif",
+    heading: "'Fraunces', 'Georgia', serif",
+    body: "'Work Sans', system-ui, -apple-system, sans-serif",
   },
 };

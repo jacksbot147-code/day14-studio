@@ -150,16 +150,30 @@ export function evaluateRental(p) {
 
 export function evaluateWholesale(p) {
   const value = bestValue(p);
-  const owed = p.last_sale_price_cents || Math.round(value * 0.6);
+  // Whether we actually know what the property cost the current owner. With
+  // no sale price on record we have NO debt signal — equity is a guess, not
+  // a fact. Treat that case as low-confidence and score it conservatively
+  // instead of fabricating a generous equity number from a fixed fallback.
+  const saleKnown = (p.last_sale_price_cents || 0) > 0;
+  // Known sale price -> use it as the loan-balance proxy. Unknown -> assume
+  // a high outstanding balance (90% owed) so an unknown property does not
+  // masquerade as a high-equity wholesale lead.
+  const owed = saleKnown ? p.last_sale_price_cents : Math.round(value * 0.9);
   const equity = value - owed;
   const equityPct = value ? equity / value : 0;
   const motivation = motivationSignals(p);
   const motScore = motivation.reduce((s, m) => s + m.weight, 0);
+  // Raw equity-driven score, then a confidence haircut when the sale price
+  // (and therefore the equity) is unknown — keeps missing data out of A-tier.
+  const rawScore = equityPct * 90 + motScore * 9;
+  const score = saleKnown ? clamp(rawScore) : clamp(rawScore * 0.6);
   return {
     equity_cents: equity,
     equity_pct: +(equityPct * 100).toFixed(1),
+    equity_known: saleKnown,
+    low_confidence: !saleKnown,
     motivation_signals: motivation.map((m) => m.flag),
-    score: clamp(equityPct * 90 + motScore * 9),
+    score,
   };
 }
 

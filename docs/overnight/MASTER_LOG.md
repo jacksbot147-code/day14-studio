@@ -26,3 +26,6 @@
 [2026-05-22 23:00 ET] nightly-polish COMPLETE → polish-2026-05-22.md, confidence: 0.9
 [2026-05-23 23:00 ET] nightly-polish COMPLETE → polish-2026-05-23.md, confidence: 0.9
 [2026-05-24 20:00 ET] weekly-council-review COMPLETE → council-review-2026-05-24.md, confidence: 0.9
+[2026-05-25 22:00 ET] weekly-skill-harvest COMPLETE → skill-harvest-findings-2026-05-25.md, confidence: 0.85
+[2026-05-25 23:00 ET] nightly-polish COMPLETE → polish-2026-05-25.md, confidence: 0.9
+[2026-05-25 17:00 ET] daily-eod COMPLETE → eod-2026-05-25.md, confidence: 0.3

@@ -1,5 +1,5 @@
 import { loadEmpireState } from "@/lib/admin-state";
-import { AdminNav, ADMIN_CSS } from "../layout-bits";
+import { AdminNav, ADMIN_CSS, PageHint } from "../layout-bits";
 
 export const metadata = { title: "Ideas — Day14 Admin", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -27,6 +27,10 @@ export default async function OpportunitiesPage() {
       <style dangerouslySetInnerHTML={{ __html: ADMIN_CSS }} />
       <AdminNav active="opps" />
       <h1>Opportunities</h1>
+      <PageHint>
+        Market opportunities the scanner found, plus the ideas it has pitched for
+        you to launch.
+      </PageHint>
       <div className="sub">{opps.length} ideas scanned · {buckets.pitched.length} pitched · {buckets.launching.length} launching</div>
 
       <div className="kpi-grid" style={{ gridTemplateColumns: "repeat(4,1fr)" }}>

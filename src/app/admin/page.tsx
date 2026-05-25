@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { loadEmpireState, fetchPrintifyProducts } from "@/lib/admin-state";
-import { AdminNav, ADMIN_CSS, SiteCta, SITE_URL } from "./layout-bits";
+import { AdminNav, ADMIN_CSS, SiteCta, SITE_URL, PageHint } from "./layout-bits";
 import { OperatorTodosPanel } from "./operator-todos-panel";
 
 export const metadata = {
@@ -45,6 +45,7 @@ export default async function AdminOverview() {
   const totalOrders = state.tenants.reduce((s, t) => s + t.orders, 0);
   const healthy = state.heartbeats.filter((h) => h.status === "healthy").length;
   const stale = state.heartbeats.filter((h) => h.status === "stale");
+  const down = state.heartbeats.filter((h) => h.status === "error");
   const failedBuilds = state.tenants.filter((t) => (t.stage || "").toLowerCase().includes("fail")).length;
 
   const PRIORITY_RANK: Record<string, number> = { high: 0, medium: 1, low: 2 };
@@ -86,14 +87,44 @@ export default async function AdminOverview() {
   }
   const agents = [...agentMap.values()].sort((a, b) => b.lastTs.localeCompare(a.lastTs));
 
+  // Mission Control verdict — one scannable line over the whole empire.
+  const attention = [...down, ...stale];
+  const sysTone =
+    down.length > 0
+      ? "bad"
+      : attention.length > 0 || failedBuilds > 0 || highTodos > 0
+        ? "warn"
+        : "ok";
+  const sysHeadline =
+    down.length > 0
+      ? `${down.length} agent${down.length === 1 ? "" : "s"} down — needs you`
+      : openTodos.length > 0
+        ? `${openTodos.length} item${openTodos.length === 1 ? "" : "s"} need you`
+        : "All systems healthy";
+
   return (
     <div className="admin-shell">
       <style dangerouslySetInnerHTML={{ __html: ADMIN_CSS }} />
       <AdminNav active="empire" />
       <h1>Day14 Command Center</h1>
+      <PageHint>
+        Your daily starting point — a single view of every business, what needs
+        you, and whether the empire is running clean.
+      </PageHint>
       <div className="sub">
         {state.tenants.length} businesses · synced {rel(state.generated_at)} ·{" "}
         <Link href="/admin" prefetch={false} style={{ color: "var(--accent)" }}>refresh</Link>
+      </div>
+
+      <div className={`mc-banner ${sysTone}`}>
+        <span className={`mc-dot ${sysTone}`} />
+        <div className="mc-text">
+          <div className="mc-headline">{sysHeadline}</div>
+          <div className="mc-detail">
+            {money(totalRevenue)} revenue · {runs24h} agent runs today ·{" "}
+            {healthy}/{state.heartbeats.length} agents up · {openTodos.length} open to-do
+          </div>
+        </div>
       </div>
 
       <SiteCta url={SITE_URL} label="View day14.us" />
@@ -126,8 +157,8 @@ export default async function AdminOverview() {
         <div className="kpi">
           <div className="kpi-label">Daemons</div>
           <div className="kpi-value">{healthy}/{state.heartbeats.length}</div>
-          <div className="kpi-sub" style={{ color: stale.length > 0 ? "var(--red)" : "var(--muted)" }}>
-            {stale.length > 0 ? `${stale.length} stale` : "all healthy"}
+          <div className="kpi-sub" style={{ color: down.length > 0 ? "var(--red)" : stale.length > 0 ? "var(--amber)" : "var(--muted)" }}>
+            {down.length > 0 ? `${down.length} down` : stale.length > 0 ? `${stale.length} behind` : "all healthy"}
           </div>
         </div>
       </div>
@@ -206,7 +237,7 @@ export default async function AdminOverview() {
           <div className="section">
             <div className="sys-row">
               <span className="sys-label">Daemons healthy</span>
-              <span className="sys-value" style={{ color: stale.length > 0 ? "var(--red)" : "var(--green)" }}>
+              <span className="sys-value" style={{ color: attention.length > 0 ? "var(--red)" : "var(--green)" }}>
                 {healthy} / {state.heartbeats.length}
               </span>
             </div>
@@ -222,16 +253,16 @@ export default async function AdminOverview() {
               <span className="sys-label">Last sync</span>
               <span className="sys-value">{rel(state.generated_at)}</span>
             </div>
-            {stale.length > 0 ? (
+            {attention.length > 0 ? (
               <div style={{ marginTop: 12 }}>
                 <div style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--red)", marginBottom: 8 }}>
-                  Stale daemons
+                  Needs attention
                 </div>
-                {stale.slice(0, 6).map((d, i) => (
+                {attention.slice(0, 6).map((d, i) => (
                   <div key={i} className="daemon" style={{ marginBottom: 6 }}>
-                    <div className="daemon-status stale"></div>
+                    <div className={`daemon-status ${d.status === "error" ? "error" : "stale"}`}></div>
                     <div className="daemon-name">{d.name}</div>
-                    {isFinite(d.ageMin) ? <div className="daemon-age">{d.ageMin}m</div> : null}
+                    <div className="daemon-age">{d.status === "error" ? "down" : `${d.ageMin}m`}</div>
                   </div>
                 ))}
               </div>
