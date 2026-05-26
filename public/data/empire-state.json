@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-26T01:42:08.348Z",
+  "generated_at": "2026-05-26T01:57:15.868Z",
   "tenants": [
     {
       "slug": "day14",
@@ -294,6 +294,53 @@
       "streak": 0,
       "recent_audit": [
         {
+          "ts": "2026-05-26T01:52:49.427Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "lawn-care-gm",
+          "action": "cluster_run",
+          "scaffolded": 0,
+          "season": "Rainy / peak growth (May–Oct)",
+          "pipeline_value": 0,
+          "at_risk": 0
+        },
+        {
+          "ts": "2026-05-26T01:52:49.426Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "portal-agent",
+          "action": "portal_feeds_built",
+          "portal_feeds": 0
+        },
+        {
+          "ts": "2026-05-26T01:52:49.425Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "crm-agent",
+          "action": "crm_scored",
+          "customers": 0,
+          "at_risk": 0,
+          "upsell_openings": 0
+        },
+        {
+          "ts": "2026-05-26T01:52:49.424Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "scheduling-agent",
+          "action": "routes_optimized",
+          "scheduled": 0,
+          "rolled_for_weather": 0,
+          "avg_density": 0
+        },
+        {
+          "ts": "2026-05-26T01:52:49.416Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "pipeline-agent",
+          "action": "pipeline_advanced",
+          "quoted": 0,
+          "opened": 0,
+          "invoiced": 0,
+          "open_leads": 0,
+          "pipeline_value": 0,
+          "outstanding_cents": 0
+        },
+        {
           "ts": "2026-05-26T01:37:49.418Z",
           "tenant": "kennum-lawn-care",
           "actor": "lawn-care-gm",
@@ -527,53 +574,6 @@
           "open_leads": 0,
           "pipeline_value": 0,
           "outstanding_cents": 0
-        },
-        {
-          "ts": "2026-05-26T00:22:49.539Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "lawn-care-gm",
-          "action": "cluster_run",
-          "scaffolded": 0,
-          "season": "Rainy / peak growth (May–Oct)",
-          "pipeline_value": 0,
-          "at_risk": 0
-        },
-        {
-          "ts": "2026-05-26T00:22:49.538Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "portal-agent",
-          "action": "portal_feeds_built",
-          "portal_feeds": 0
-        },
-        {
-          "ts": "2026-05-26T00:22:49.538Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "crm-agent",
-          "action": "crm_scored",
-          "customers": 0,
-          "at_risk": 0,
-          "upsell_openings": 0
-        },
-        {
-          "ts": "2026-05-26T00:22:49.537Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "scheduling-agent",
-          "action": "routes_optimized",
-          "scheduled": 0,
-          "rolled_for_weather": 0,
-          "avg_density": 0
-        },
-        {
-          "ts": "2026-05-26T00:22:49.533Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "pipeline-agent",
-          "action": "pipeline_advanced",
-          "quoted": 0,
-          "opened": 0,
-          "invoiced": 0,
-          "open_leads": 0,
-          "pipeline_value": 0,
-          "outstanding_cents": 0
         }
       ],
       "content_counts": {
@@ -604,6 +604,58 @@
       "orders": 0,
       "streak": 0,
       "recent_audit": [
+        {
+          "ts": "2026-05-26T01:42:21.152Z",
+          "tenant": "day14-realty",
+          "actor": "realty-scout",
+          "action": "scout_run",
+          "scaffolded": 0,
+          "properties": 24632,
+          "a_tier": 2544
+        },
+        {
+          "ts": "2026-05-26T01:42:21.096Z",
+          "tenant": "day14-realty",
+          "actor": "re-freshness-monitor",
+          "action": "freshness_tracked",
+          "total_properties": 24632,
+          "added_last_run": 998,
+          "added_7d": 998,
+          "enriched_pct": 0
+        },
+        {
+          "ts": "2026-05-26T01:42:21.020Z",
+          "tenant": "day14-realty",
+          "actor": "re-deal-alerter",
+          "action": "deals_alerted",
+          "a_tier": 2544,
+          "new_alerts": 98
+        },
+        {
+          "ts": "2026-05-26T01:42:20.965Z",
+          "tenant": "day14-realty",
+          "actor": "re-evaluation-agent",
+          "action": "deals_scored",
+          "evaluated": 24632,
+          "tier_a": 2544,
+          "tier_b": 3548,
+          "top_deal": "3030 39TH ST SW (96)"
+        },
+        {
+          "ts": "2026-05-26T01:42:20.850Z",
+          "tenant": "day14-realty",
+          "actor": "re-enrichment-agent",
+          "action": "enrichment_skipped_no_key",
+          "pending": 24392
+        },
+        {
+          "ts": "2026-05-26T01:42:20.826Z",
+          "tenant": "day14-realty",
+          "actor": "re-comp-analyst",
+          "action": "comps_computed",
+          "properties": 24632,
+          "comp_arvs": 16701
+        },
         {
           "ts": "2026-05-26T01:42:05.222Z",
           "tenant": "day14-realty",
@@ -854,70 +906,6 @@
           "skipped": 1000,
           "files": 1,
           "total_properties": 22635
-        },
-        {
-          "ts": "2026-05-26T01:07:48.757Z",
-          "tenant": "day14-realty",
-          "actor": "re-county-data-fetcher",
-          "action": "county_data_fetched",
-          "fl_counties": 6,
-          "fetched": 1,
-          "properties": 1000,
-          "skipped_non_fl": 0,
-          "circuit_tripped": false,
-          "errors": [
-            "Manatee: timed out (30s) (offset 0)",
-            "Hendry: timed out (30s) (offset 0)",
-            "Collier: timed out (30s) — kept 1000, resumes at offset 5000",
-            "Lee: timed out (30s) (offset 0)"
-          ]
-        },
-        {
-          "ts": "2026-05-26T01:02:49.490Z",
-          "tenant": "day14-realty",
-          "actor": "re-market-expander",
-          "action": "market_expanded",
-          "watch_list": 6,
-          "added": 0,
-          "counties": [],
-          "reason": "paced — expanded within the last day"
-        },
-        {
-          "ts": "2026-05-26T00:46:08.464Z",
-          "tenant": "day14-realty",
-          "actor": "realty-scout",
-          "action": "scout_run",
-          "scaffolded": 0,
-          "properties": 22635,
-          "a_tier": 2346
-        },
-        {
-          "ts": "2026-05-26T00:46:08.417Z",
-          "tenant": "day14-realty",
-          "actor": "re-freshness-monitor",
-          "action": "freshness_tracked",
-          "total_properties": 22635,
-          "added_last_run": 0,
-          "added_7d": 0,
-          "enriched_pct": 0
-        },
-        {
-          "ts": "2026-05-26T00:46:08.341Z",
-          "tenant": "day14-realty",
-          "actor": "re-deal-alerter",
-          "action": "deals_alerted",
-          "a_tier": 2346,
-          "new_alerts": 0
-        },
-        {
-          "ts": "2026-05-26T00:46:08.291Z",
-          "tenant": "day14-realty",
-          "actor": "re-evaluation-agent",
-          "action": "deals_scored",
-          "evaluated": 22635,
-          "tier_a": 2346,
-          "tier_b": 3333,
-          "top_deal": "3030 39TH ST SW (96)"
         }
       ],
       "content_counts": {
@@ -1070,7 +1058,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-26T01:42:07.669Z"
+      "lastBeat": "2026-05-26T01:57:07.688Z"
     },
     {
       "name": "auto-restart-watchdog-cycle",
@@ -1078,7 +1066,7 @@
       "status": "healthy",
       "ageMin": 4,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-26T01:38:00.704Z"
+      "lastBeat": "2026-05-26T01:52:49.378Z"
     },
     {
       "name": "customer-success",
@@ -1086,7 +1074,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-26T01:41:52.400Z"
+      "lastBeat": "2026-05-26T01:56:52.419Z"
     },
     {
       "name": "expansion-prompter",
@@ -1094,13 +1082,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-26T01:41:49.517Z"
+      "lastBeat": "2026-05-26T01:56:49.537Z"
     },
     {
       "name": "gmail-cs-triage",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 3,
+      "ageMin": 18,
       "cadenceMin": 30,
       "lastBeat": "2026-05-26T01:39:31.000Z"
     },
@@ -1110,7 +1098,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-26T01:41:49.504Z"
+      "lastBeat": "2026-05-26T01:56:49.515Z"
     },
     {
       "name": "growth-watcher",
@@ -1118,7 +1106,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-26T01:41:49.563Z"
+      "lastBeat": "2026-05-26T01:56:49.572Z"
     },
     {
       "name": "hot-flash-co-orders",
@@ -1126,7 +1114,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-26T01:41:52.493Z"
+      "lastBeat": "2026-05-26T01:56:52.508Z"
     },
     {
       "name": "lawn-care-gm-kennum-lawn-care",
@@ -1134,7 +1122,7 @@
       "status": "healthy",
       "ageMin": 4,
       "cadenceMin": 30,
-      "lastBeat": "2026-05-26T01:37:49.418Z"
+      "lastBeat": "2026-05-26T01:52:49.427Z"
     },
     {
       "name": "opportunity-scanner",
@@ -1142,7 +1130,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-26T01:41:49.592Z"
+      "lastBeat": "2026-05-26T01:56:49.610Z"
     },
     {
       "name": "outbox-deadletter",
@@ -1150,15 +1138,15 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-26T01:41:49.637Z"
+      "lastBeat": "2026-05-26T01:56:49.656Z"
     },
     {
       "name": "outbox-deadletter-cycle",
       "kind": "daemon",
-      "status": "stale",
-      "ageMin": 19,
+      "status": "healthy",
+      "ageMin": 4,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-26T01:22:49.521Z"
+      "lastBeat": "2026-05-26T01:52:49.506Z"
     },
     {
       "name": "proactive-monitor",
@@ -1166,15 +1154,15 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-26T01:41:29.329Z"
+      "lastBeat": "2026-05-26T01:56:29.350Z"
     },
     {
       "name": "realty-scout-day14-realty",
       "kind": "oneshot",
       "status": "healthy",
-      "ageMin": 26,
+      "ageMin": 15,
       "cadenceMin": 60,
-      "lastBeat": "2026-05-26T01:16:10.063Z"
+      "lastBeat": "2026-05-26T01:42:21.359Z"
     },
     {
       "name": "recursive-expansion",
@@ -1182,7 +1170,7 @@
       "status": "healthy",
       "ageMin": 4,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-26T01:37:49.452Z"
+      "lastBeat": "2026-05-26T01:52:49.442Z"
     },
     {
       "name": "skill-multiplier",
@@ -1190,13 +1178,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-26T01:41:49.797Z"
+      "lastBeat": "2026-05-26T01:56:49.816Z"
     },
     {
       "name": "stripe-cs-loop",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 18,
+      "ageMin": 33,
       "cadenceMin": 60,
       "lastBeat": "2026-05-26T01:24:27.000Z"
     },
@@ -1206,13 +1194,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-26T01:41:49.375Z"
+      "lastBeat": "2026-05-26T01:56:49.395Z"
     },
     {
       "name": "telegram-poller",
       "kind": "daemon",
       "status": "error",
-      "ageMin": 4092,
+      "ageMin": 4107,
       "cadenceMin": 1,
       "lastBeat": "2026-05-23T05:29:56.124Z"
     },
@@ -1220,7 +1208,7 @@
       "name": "vercel-deploy-monitor",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 37,
+      "ageMin": 52,
       "cadenceMin": 60,
       "lastBeat": "2026-05-26T01:04:49.000Z"
     },
@@ -1230,7 +1218,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-26T01:41:54.641Z"
+      "lastBeat": "2026-05-26T01:56:54.659Z"
     }
   ],
   "skill_counts": {
@@ -1550,6 +1538,105 @@
   ],
   "empire_battle_log": [
     {
+      "ts": "2026-05-26T01:52:49.427Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "lawn-care-gm",
+      "action": "cluster_run",
+      "scaffolded": 0,
+      "season": "Rainy / peak growth (May–Oct)",
+      "pipeline_value": 0,
+      "at_risk": 0
+    },
+    {
+      "ts": "2026-05-26T01:52:49.426Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "portal-agent",
+      "action": "portal_feeds_built",
+      "portal_feeds": 0
+    },
+    {
+      "ts": "2026-05-26T01:52:49.425Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "crm-agent",
+      "action": "crm_scored",
+      "customers": 0,
+      "at_risk": 0,
+      "upsell_openings": 0
+    },
+    {
+      "ts": "2026-05-26T01:52:49.424Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "scheduling-agent",
+      "action": "routes_optimized",
+      "scheduled": 0,
+      "rolled_for_weather": 0,
+      "avg_density": 0
+    },
+    {
+      "ts": "2026-05-26T01:52:49.416Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "pipeline-agent",
+      "action": "pipeline_advanced",
+      "quoted": 0,
+      "opened": 0,
+      "invoiced": 0,
+      "open_leads": 0,
+      "pipeline_value": 0,
+      "outstanding_cents": 0
+    },
+    {
+      "ts": "2026-05-26T01:42:21.152Z",
+      "tenant": "day14-realty",
+      "actor": "realty-scout",
+      "action": "scout_run",
+      "scaffolded": 0,
+      "properties": 24632,
+      "a_tier": 2544
+    },
+    {
+      "ts": "2026-05-26T01:42:21.096Z",
+      "tenant": "day14-realty",
+      "actor": "re-freshness-monitor",
+      "action": "freshness_tracked",
+      "total_properties": 24632,
+      "added_last_run": 998,
+      "added_7d": 998,
+      "enriched_pct": 0
+    },
+    {
+      "ts": "2026-05-26T01:42:21.020Z",
+      "tenant": "day14-realty",
+      "actor": "re-deal-alerter",
+      "action": "deals_alerted",
+      "a_tier": 2544,
+      "new_alerts": 98
+    },
+    {
+      "ts": "2026-05-26T01:42:20.965Z",
+      "tenant": "day14-realty",
+      "actor": "re-evaluation-agent",
+      "action": "deals_scored",
+      "evaluated": 24632,
+      "tier_a": 2544,
+      "tier_b": 3548,
+      "top_deal": "3030 39TH ST SW (96)"
+    },
+    {
+      "ts": "2026-05-26T01:42:20.850Z",
+      "tenant": "day14-realty",
+      "actor": "re-enrichment-agent",
+      "action": "enrichment_skipped_no_key",
+      "pending": 24392
+    },
+    {
+      "ts": "2026-05-26T01:42:20.826Z",
+      "tenant": "day14-realty",
+      "actor": "re-comp-analyst",
+      "action": "comps_computed",
+      "properties": 24632,
+      "comp_arvs": 16701
+    },
+    {
       "ts": "2026-05-26T01:42:05.222Z",
       "tenant": "day14-realty",
       "actor": "re-distress-monitor",
@@ -1736,114 +1823,6 @@
       "tier_a": 2446,
       "tier_b": 3454,
       "top_deal": "3030 39TH ST SW (96)"
-    },
-    {
-      "ts": "2026-05-26T01:16:09.542Z",
-      "tenant": "day14-realty",
-      "actor": "re-enrichment-agent",
-      "action": "enrichment_skipped_no_key",
-      "pending": 23406
-    },
-    {
-      "ts": "2026-05-26T01:16:09.518Z",
-      "tenant": "day14-realty",
-      "actor": "re-comp-analyst",
-      "action": "comps_computed",
-      "properties": 23634,
-      "comp_arvs": 15918
-    },
-    {
-      "ts": "2026-05-26T01:15:55.747Z",
-      "tenant": "day14-realty",
-      "actor": "re-distress-monitor",
-      "action": "distress_scanned",
-      "scanned": 23634,
-      "hot_leads": 2901,
-      "top": "213 COLLIER BLVD (w3)"
-    },
-    {
-      "ts": "2026-05-26T01:15:55.717Z",
-      "tenant": "day14-realty",
-      "actor": "re-county-feed-agent",
-      "action": "county_feed_run",
-      "targets": 6,
-      "active": 3,
-      "needs_csv": 3,
-      "api_sourced": 0
-    },
-    {
-      "ts": "2026-05-26T01:15:55.584Z",
-      "tenant": "day14-realty",
-      "actor": "re-intake-agent",
-      "action": "county_records_ingested",
-      "ingested": 0,
-      "skipped": 0,
-      "files": 0,
-      "total_properties": 23634
-    },
-    {
-      "ts": "2026-05-26T01:15:55.486Z",
-      "tenant": "day14-realty",
-      "actor": "re-county-data-fetcher",
-      "action": "county_data_fetched",
-      "fl_counties": 6,
-      "fetched": 0,
-      "properties": 0,
-      "skipped_non_fl": 0,
-      "circuit_tripped": true,
-      "errors": [
-        "Charlotte: timed out (30s) (offset 20000)",
-        "Sarasota: timed out (30s) (offset 0)",
-        "Manatee: timed out (30s) (offset 0)",
-        "circuit-breaker: 3 counties failed in a row — FDOR service likely down, aborting run"
-      ]
-    },
-    {
-      "ts": "2026-05-26T01:07:49.504Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "lawn-care-gm",
-      "action": "cluster_run",
-      "scaffolded": 0,
-      "season": "Rainy / peak growth (May–Oct)",
-      "pipeline_value": 0,
-      "at_risk": 0
-    },
-    {
-      "ts": "2026-05-26T01:07:49.504Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "portal-agent",
-      "action": "portal_feeds_built",
-      "portal_feeds": 0
-    },
-    {
-      "ts": "2026-05-26T01:07:49.503Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "crm-agent",
-      "action": "crm_scored",
-      "customers": 0,
-      "at_risk": 0,
-      "upsell_openings": 0
-    },
-    {
-      "ts": "2026-05-26T01:07:49.503Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "scheduling-agent",
-      "action": "routes_optimized",
-      "scheduled": 0,
-      "rolled_for_weather": 0,
-      "avg_density": 0
-    },
-    {
-      "ts": "2026-05-26T01:07:49.496Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "pipeline-agent",
-      "action": "pipeline_advanced",
-      "quoted": 0,
-      "opened": 0,
-      "invoiced": 0,
-      "open_leads": 0,
-      "pipeline_value": 0,
-      "outstanding_cents": 0
     }
   ],
   "human_todos": [
