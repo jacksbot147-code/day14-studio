@@ -12,6 +12,14 @@ export const metadata = {
       "A Southwest Florida lawn care and landscaping service built on dependability.",
     type: "website",
     url: "/brands/kennum-lawn-care/about",
+    siteName: "Kennum Lawn Care",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image" as const,
+    title: "About — Kennum Lawn Care",
+    description:
+      "A Southwest Florida lawn care and landscaping service built on dependability.",
   },
 };
 

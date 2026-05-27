@@ -25,10 +25,12 @@ export async function generateMetadata({
       description: post.description,
       type: "article",
       url,
+      siteName: "Kennum Lawn Care",
+      locale: "en_US",
       publishedTime: post.date,
     },
     twitter: {
-      card: "summary_large_image",
+      card: "summary_large_image" as const,
       title: post.title,
       description: post.description,
     },

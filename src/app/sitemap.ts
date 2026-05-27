@@ -6,6 +6,8 @@ import { blogPosts } from "./brands/kennum-lawn-care/blog-posts";
 const BASE = "https://day14.us";
 
 const KENNUM = `${BASE}/brands/kennum-lawn-care`;
+const HFC = `${BASE}/brands/hot-flash-co`;
+const LIFELOOP = `${BASE}/brands/life-loophole`;
 
 function kennumUrls(now: Date): MetadataRoute.Sitemap {
   return [
@@ -19,6 +21,23 @@ function kennumUrls(now: Date): MetadataRoute.Sitemap {
       changeFrequency: "yearly" as const,
       priority: 0.5,
     })),
+  ];
+}
+
+function hotFlashCoUrls(now: Date): MetadataRoute.Sitemap {
+  // Static surface for hot-flash-co. Live products and blog posts are
+  // enumerated dynamically by /brands/hot-flash-co/sitemap.xml.
+  return [
+    { url: `${HFC}/products`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${HFC}/blog`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${HFC}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${HFC}/contact`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
+  ];
+}
+
+function lifeLoopholeUrls(now: Date): MetadataRoute.Sitemap {
+  return [
+    { url: `${LIFELOOP}/advisor`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
   ];
 }
 
@@ -61,5 +80,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/verticals/food`, lastModified: now, priority: 0.6 },
     { url: `${BASE}/brands`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
   ];
-  return [...urls, ...kennumUrls(now), ...(await brandSiteUrls(now))];
+  return [
+    ...urls,
+    ...kennumUrls(now),
+    ...hotFlashCoUrls(now),
+    ...lifeLoopholeUrls(now),
+    ...(await brandSiteUrls(now)),
+  ];
 }

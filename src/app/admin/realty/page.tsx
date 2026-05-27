@@ -1,6 +1,7 @@
 import { loadTenantOps, loadEmpireState, type REEvaluation, type RETarget } from "@/lib/admin-state";
 import { AdminNav, ADMIN_CSS, PageHint } from "../layout-bits";
 import { AddCountyBox, UploadCsvBox, DealBoard } from "./realty-interactive";
+import { EmptyState } from "@/components/ui";
 
 export const metadata = { title: "Realty — Day14 Admin", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -142,13 +143,19 @@ export default async function RealtyDashboard() {
       <div className="section-header"><div className="section-title">County watch list</div></div>
       <AddCountyBox botUsername={botUsername} />
       {targets.length === 0 ? (
-        <div className="section">
-          <div className="empty">
-            No counties on the watch list yet. Add one above, or Telegram the bot —
-            e.g. <code>realty Lee County, FL</code> or <code>realty Tampa Bay area</code> —
-            and the scout starts sourcing automatically.
-          </div>
-        </div>
+        <EmptyState
+          icon="🗺️"
+          headline="No counties on the watch list yet."
+          hint={
+            <>
+              Add one with the box above, or Telegram the bot — e.g.{" "}
+              <code>realty Lee County, FL</code> or{" "}
+              <code>realty Tampa Bay area</code> — and the scout starts sourcing
+              automatically. Watch-list counties feed{" "}
+              <code>re-county-data-fetcher</code> and then the deal board.
+            </>
+          }
+        />
       ) : (
         <div className="biz-list">
           {targets.map((t) => {

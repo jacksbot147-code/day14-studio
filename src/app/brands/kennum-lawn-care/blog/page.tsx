@@ -13,6 +13,14 @@ export const metadata = {
       "Practical lawn care and landscaping advice for Southwest Florida homeowners.",
     type: "website",
     url: "/brands/kennum-lawn-care/blog",
+    siteName: "Kennum Lawn Care",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image" as const,
+    title: "Kennum Lawn Care Blog",
+    description:
+      "Practical lawn care and landscaping advice for Southwest Florida homeowners.",
   },
 };
 

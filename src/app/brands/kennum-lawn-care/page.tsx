@@ -130,6 +130,27 @@ export default function KennumHome() {
             See services
           </Link>
         </div>
+        <div
+          style={{
+            marginTop: 22,
+            display: "flex",
+            gap: 22,
+            justifyContent: "center",
+            flexWrap: "wrap",
+            fontSize: 13,
+            color: t.colors.muted,
+          }}
+        >
+          <span>
+            <b style={{ color: t.colors.primary }}>Same crew</b>, same day, every week
+          </span>
+          <span>
+            <b style={{ color: t.colors.primary }}>Flat monthly price</b> — agreed up front
+          </span>
+          <span>
+            <b style={{ color: t.colors.primary }}>Free</b> custom quotes
+          </span>
+        </div>
       </section>
 
       {/* Services preview */}

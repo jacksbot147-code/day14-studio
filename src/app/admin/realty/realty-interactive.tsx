@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { REEvaluation } from "@/lib/admin-state";
+import { EmptyState } from "@/components/ui";
 
 function money(cents: number) {
   return `$${Math.round((cents || 0) / 100).toLocaleString()}`;
@@ -248,13 +249,18 @@ export function DealBoard({ deals }: { deals: REEvaluation[] }) {
 
   if (deals.length === 0) {
     return (
-      <div className="section">
-        <div className="empty">
-          No properties scored yet. Add a county above, or drop a county
-          property-appraiser CSV into the realty intake folder — the scout
-          ingests and scores it on its next run.
-        </div>
-      </div>
+      <EmptyState
+        icon="🏚️"
+        headline="No properties scored yet."
+        hint={
+          <>
+            Add a county to the watch list above, or drop a county
+            property-appraiser CSV into the realty intake folder — the scout
+            ingests, comps and scores it on its next run. Deals tier up to A/B
+            automatically once <code>re-evaluation-agent</code> has the data.
+          </>
+        }
+      />
     );
   }
 
@@ -321,9 +327,17 @@ export function DealBoard({ deals }: { deals: REEvaluation[] }) {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="section">
-          <div className="empty">No deals match your search or filters.</div>
-        </div>
+        <EmptyState
+          icon="🔎"
+          headline="No deals match your search or filters."
+          hint={
+            <>
+              Clear the search box, widen the tier (try All), or switch the play
+              filter. {deals.length} scored {deals.length === 1 ? "deal is" : "deals are"} in
+              the pool — narrowing too far is usually the cause.
+            </>
+          }
+        />
       ) : (
         <div style={{ display: "grid", gap: 10 }}>
           {filtered.map((d) => (

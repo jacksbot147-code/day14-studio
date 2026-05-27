@@ -1,5 +1,6 @@
 import { loadEmpireState, type Heartbeat } from "@/lib/admin-state";
 import { AdminNav, ADMIN_CSS, PageHint } from "../layout-bits";
+import { EmptyState } from "@/components/ui";
 
 export const metadata = { title: "Health — Day14 Admin", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -181,7 +182,19 @@ export default async function HealthPage() {
         </div>
       </div>
       {ordered.length === 0 ? (
-        <div className="section"><div className="empty">No agents are reporting heartbeats yet.</div></div>
+        <EmptyState
+          icon="💓"
+          headline="No agents are reporting heartbeats yet."
+          hint={
+            <>
+              Every poller writes to{" "}
+              <code>~/Documents/businesses/_shared/poller/&lt;name&gt;-heartbeat.log</code>
+              {" "}each run. If you just installed the pollers, the first beat is
+              one cycle away. Otherwise check that{" "}
+              <code>auto-restart-watchdog</code> is running.
+            </>
+          }
+        />
       ) : (
         <div>
           {ordered.map((h) => {

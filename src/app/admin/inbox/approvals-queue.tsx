@@ -14,41 +14,32 @@
  * the queue works whether or not the Telegram bridge is up. On the hosted
  * (view-only) copy the API returns 503 and the row shows the Telegram command
  * to run instead — nothing is silently lost.
+ *
+ * Tenant filter chips at the top let Jack slice the queue to one business at
+ * a time. Filtering is purely client-side over the already-loaded items, so
+ * switching chips is instant. The active chip is reflected in the `?tenant=`
+ * query param so the filtered view is shareable / linkable from per-tenant
+ * Mission Control pages.
  */
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { EmptyState } from "@/components/ui";
+import type { ApprovalItem, ApprovalKind } from "@/lib/admin-approvals";
 
-export type ApprovalKind = "todo" | "social" | "skill" | "expansion" | "opportunity";
+// Re-export the shared types so existing imports from this module keep
+// working (the inbox page used to own these definitions locally).
+export type { ApprovalItem, ApprovalKind };
 
-export interface ApprovalItem {
-  /** Stable React key — unique across the whole queue. */
-  key: string;
-  /** Which write handler the API should run. */
-  kind: ApprovalKind;
-  /** The id the API resolves the item by. */
-  id: string;
-  /** Urgency bucket — drives grouping. */
-  urgency: "high" | "normal" | "low";
-  /** Short type label, e.g. "Operator to-do". */
-  typeLabel: string;
-  /** Which business this belongs to. */
-  business: string;
-  /** The headline. */
-  title: string;
-  /** Why it needs Jack. */
-  reason: string;
-  /** Optional longer preview text. */
-  preview?: string;
-  /** Minutes since the item appeared, for the meta line. */
-  ageMin: number;
-  /** Verb shown on the primary button. */
-  approveLabel: string;
-  /** Verb shown on the secondary button. */
-  skipLabel: string;
-  /** Telegram command that does the same thing — the hosted-copy fallback. */
-  telegramHint?: string;
+export interface TenantOption {
+  slug: string;
+  displayName: string;
 }
+
+/** Sentinel chip value for items with no tenant scope (empire-level). */
+const UNASSIGNED = "unassigned";
+
+type FilterValue = "all" | "unassigned" | string;
 
 type RowState =
   | { phase: "idle" }
@@ -199,22 +190,171 @@ const GROUPS: Array<{ urgency: ApprovalItem["urgency"]; label: string }> = [
   { urgency: "low", label: "When you have a minute" },
 ];
 
-export function ApprovalsQueue({ items }: { items: ApprovalItem[] }) {
+interface ApprovalsQueueProps {
+  items: ApprovalItem[];
+  /** Tenant chips to render (in addition to All + Unassigned). */
+  tenants?: TenantOption[];
+  /**
+   * Initial tenant filter: a tenant slug, the sentinel "unassigned", or
+   * null for "All". Sourced from the `?tenant=` query param server-side.
+   */
+  initialTenant?: string | null;
+}
+
+export function ApprovalsQueue({
+  items,
+  tenants = [],
+  initialTenant = null,
+}: ApprovalsQueueProps) {
+  // Resolve the initial filter value, defaulting to "all" when no tenant
+  // was supplied. The chip row is always visible so the chosen filter can
+  // be toggled even when the empty-state fills the rest of the panel.
+  const initial: FilterValue =
+    initialTenant === UNASSIGNED
+      ? UNASSIGNED
+      : initialTenant && tenants.some((t) => t.slug === initialTenant)
+        ? initialTenant
+        : "all";
+
+  const [filter, setFilter] = useState<FilterValue>(initial);
+
+  // Keep the URL in sync with the active chip so the filtered view is
+  // shareable and survives a browser refresh. `replaceState` avoids
+  // pushing history entries on every chip click.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    if (filter === "all") url.searchParams.delete("tenant");
+    else url.searchParams.set("tenant", filter);
+    const next = `${url.pathname}${url.search}${url.hash}`;
+    if (next !== `${window.location.pathname}${window.location.search}${window.location.hash}`) {
+      window.history.replaceState(null, "", next);
+    }
+  }, [filter]);
+
+  // Counts per chip — drives the badge on each chip and updates as the
+  // server re-collects after an approve/skip.
+  const counts = useMemo(() => {
+    const c: Record<string, number> = { all: items.length, [UNASSIGNED]: 0 };
+    for (const t of tenants) c[t.slug] = 0;
+    for (const item of items) {
+      if (item.tenant === null) c[UNASSIGNED] = (c[UNASSIGNED] ?? 0) + 1;
+      else c[item.tenant] = (c[item.tenant] ?? 0) + 1;
+    }
+    return c;
+  }, [items, tenants]);
+
+  // The chip row — order: All, one per tenant, then Unassigned.
+  const chips: Array<{ value: FilterValue; label: string }> = [
+    { value: "all", label: "All" },
+    ...tenants.map((t) => ({ value: t.slug as FilterValue, label: t.displayName })),
+    { value: UNASSIGNED, label: "Unassigned" },
+  ];
+
+  // Slice the already-loaded items by the active filter. Empire-level
+  // items (no tenant) only show under "All" or "Unassigned".
+  const filtered = useMemo(() => {
+    if (filter === "all") return items;
+    if (filter === UNASSIGNED) return items.filter((i) => i.tenant === null);
+    return items.filter((i) => i.tenant === filter);
+  }, [items, filter]);
+
+  const activeChipLabel =
+    filter === "all"
+      ? null
+      : filter === UNASSIGNED
+        ? "empire-level items"
+        : (tenants.find((t) => t.slug === filter)?.displayName ?? filter);
+
+  const chipRow = (
+    <div
+      role="tablist"
+      aria-label="Filter approvals by tenant"
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: 8,
+        marginBottom: 18,
+      }}
+    >
+      {chips.map((chip) => {
+        const active = filter === chip.value;
+        const count = counts[chip.value] ?? 0;
+        return (
+          <button
+            key={chip.value}
+            type="button"
+            role="tab"
+            aria-selected={active}
+            className={`filter-chip${active ? " active" : ""}`}
+            onClick={() => setFilter(chip.value)}
+          >
+            {chip.label}
+            <span
+              style={{
+                marginLeft: 6,
+                opacity: 0.75,
+                fontVariantNumeric: "tabular-nums",
+              }}
+            >
+              {count}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+
+  // Empty states — three flavours:
+  //   1. Empire-wide empty   ("All" filter, no items at all)
+  //   2. Per-tenant empty    (chip selected, nothing for that tenant)
+  //   3. Unassigned empty    (chip selected, no empire-level items)
   if (items.length === 0) {
     return (
-      <div className="section">
-        <div className="empty">
-          Approvals zero — nothing is waiting on you. Every queued post, draft and
-          to-do across the empire is signed off.
-        </div>
+      <div>
+        {chipRow}
+        <EmptyState
+          icon="✅"
+          headline="Approvals zero — nothing waiting on you."
+          hint={
+            <>
+              Every queued post, skill draft, expansion request, pitched opportunity
+              and operator to-do is signed off. New work shows up here the moment an
+              agent queues it.
+            </>
+          }
+        />
+      </div>
+    );
+  }
+
+  if (filtered.length === 0) {
+    const headline =
+      filter === UNASSIGNED
+        ? "No empire-level items waiting — nice."
+        : `No approvals waiting for ${activeChipLabel} — nice.`;
+    return (
+      <div>
+        {chipRow}
+        <EmptyState
+          icon="✅"
+          headline={headline}
+          hint={
+            <>
+              Switch back to <b>All</b> above to see the rest of the queue,
+              or pick another tenant.
+            </>
+          }
+        />
       </div>
     );
   }
 
   return (
     <div>
+      {chipRow}
       {GROUPS.map((group) => {
-        const groupItems = items.filter((i) => i.urgency === group.urgency);
+        const groupItems = filtered.filter((i) => i.urgency === group.urgency);
         if (groupItems.length === 0) return null;
         return (
           <div key={group.urgency}>

@@ -12,6 +12,14 @@ export const metadata = {
       "Lawn maintenance, landscaping, mulch, trimming, seasonal cleanups, and irrigation across Southwest Florida.",
     type: "website",
     url: "/brands/kennum-lawn-care/services",
+    siteName: "Kennum Lawn Care",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image" as const,
+    title: "Services & pricing — Kennum Lawn Care",
+    description:
+      "Lawn maintenance, landscaping, mulch, trimming, seasonal cleanups, and irrigation across Southwest Florida.",
   },
 };
 

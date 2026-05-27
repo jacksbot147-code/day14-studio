@@ -1,5 +1,6 @@
 import { loadEmpireState } from "@/lib/admin-state";
 import { AdminNav, ADMIN_CSS, PageHint } from "../layout-bits";
+import { Card, EmptyState } from "@/components/ui";
 
 export const metadata = { title: "Ideas — Day14 Admin", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -40,6 +41,22 @@ export default async function OpportunitiesPage() {
         <div className="kpi"><div className="kpi-label">Skipped</div><div className="kpi-value">{buckets.skipped.length}</div></div>
       </div>
 
+      {opps.length === 0 ? (
+        <EmptyState
+          icon="💡"
+          headline="No opportunities have been scanned yet."
+          hint={
+            <>
+              The idea pitcher and opportunity scanner write here as soon as they
+              find a niche worth considering. Run{" "}
+              <code>node scripts/idea-pitcher.mjs</code> manually, or wait for the
+              nightly scan — pitched opportunities then show up in the{" "}
+              Approvals queue too.
+            </>
+          }
+        />
+      ) : null}
+
       {(["pitched", "open", "launching", "skipped"] as const).map((bucket) => {
         const items = buckets[bucket];
         if (items.length === 0) return null;
@@ -75,13 +92,13 @@ export default async function OpportunitiesPage() {
       })}
 
       <div className="section-header"><div className="section-title">Telegram commands</div></div>
-      <div className="section">
+      <Card>
         <div style={{ fontSize: 12, lineHeight: 1.8, color: "var(--muted)" }}>
           <code style={{ color: "var(--accent)" }}>bootstrap-pitch &lt;id&gt;</code> — launch the business<br />
           <code style={{ color: "var(--accent)" }}>show pitch &lt;id&gt;</code> — show full pitch text<br />
           <code style={{ color: "var(--accent)" }}>skip-pitch &lt;id&gt;</code> — retire opportunity<br />
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

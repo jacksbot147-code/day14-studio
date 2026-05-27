@@ -1,29 +1,16 @@
 import Link from "next/link";
+import { DESIGN_TOKENS } from "@/lib/design-tokens";
+import { SearchBox } from "./search-box";
 
 export const ADMIN_CSS = `
 /* Day14 admin — a sharp, line-driven command center.
  * Definition over softness: hairline rules and crisp borders carry the
  * structure, near-square edges, big editorial numbers against small
- * uppercase labels. One ember accent, used with restraint. */
-:root {
-  /* Surfaces — clean off-white, lines do the structural work now. */
-  --bg:#f6f6f4; --surface:#ffffff; --surface-2:#f5f5f2; --surface-3:#ebebe7;
-  --border:#e6e6e1; --border-strong:#cfcfc8;
-  --text:#0b0b0a; --text-2:#3c3c38; --muted:#6e6e66;
-  /* Ember accent — aligns the admin with the day14.us marketing palette. */
-  --accent:#e04617; --accent-text:#b5360f; --accent-soft:#fdeee9;
-  --green:#15803d; --green-soft:#e7f6ec;
-  --gold:#b45309; --amber:#b45309; --amber-soft:#fbf0db;
-  --red:#dc2626; --red-soft:#fdeceb;
-  --cyan:#0e7490; --purple:#7c3aed;
-  /* Elevation used almost never — a single-pixel hairline, no blur. */
-  --shadow:0 1px 0 rgba(11,11,10,0.03);
-  --shadow-lift:0 1px 0 rgba(11,11,10,0.04);
-  --ring:0 0 0 2px #ffffff, 0 0 0 4px var(--accent);
-  /* Geometry pulled down hard — crisp, not cushioned. */
-  --r-sm:2px; --r-md:3px; --r-lg:4px;
-  --mono:'SF Mono', ui-monospace, Menlo, Monaco, Consolas, monospace;
-}
+ * uppercase labels. One ember accent, used with restraint.
+ *
+ * The :root token block is sourced from src/lib/design-tokens.ts so the
+ * admin and per-brand sites share one canonical palette + geometry. */
+${DESIGN_TOKENS}
 .admin-shell { font:14px/1.55 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background:var(--bg); color:var(--text); padding:40px 24px 96px; max-width:1200px; margin:0 auto; min-height:100vh; -webkit-font-smoothing:antialiased; }
 .admin-shell h1 { font-size:32px; font-weight:800; letter-spacing:-0.04em; margin:0 0 4px; color:var(--text); line-height:1.05; }
 .admin-shell h3 { font-size:15px; font-weight:700; letter-spacing:-0.02em; color:var(--text); margin:0; }
@@ -39,8 +26,15 @@ export const ADMIN_CSS = `
 .admin-shell .nav a { padding:9px 14px; font-size:13px; font-weight:600; color:var(--muted); border-bottom:2px solid transparent; margin-bottom:-1px; transition:color 0.13s ease, border-color 0.13s ease; }
 .admin-shell .nav a:hover { color:var(--text); }
 .admin-shell .nav a.active { color:var(--text); border-bottom-color:var(--accent); }
-.admin-shell .nav a.nav-site { margin-left:auto; border:1px solid var(--border-strong); border-bottom-width:1px; margin-bottom:0; align-self:center; background:var(--surface); color:var(--accent-text); font-weight:600; border-radius:var(--r-sm); padding:6px 12px; }
+.admin-shell .nav a.nav-site { border:1px solid var(--border-strong); border-bottom-width:1px; margin-bottom:0; align-self:center; background:var(--surface); color:var(--accent-text); font-weight:600; border-radius:var(--r-sm); padding:6px 12px; }
 .admin-shell .nav a.nav-site:hover { border-color:var(--accent); background:var(--accent-soft); color:var(--accent-text); }
+
+/* ── Nav search — empire-wide search input docked in the nav ─── */
+.admin-shell .nav-search-form { display:flex; flex:1 1 220px; min-width:0; margin:0 10px 6px auto; align-self:center; max-width:320px; }
+.admin-shell .nav-search-input { width:100%; min-width:0; padding:6px 10px; font-size:12px; }
+@media (max-width: 880px) {
+  .admin-shell .nav-search-form { flex:1 1 100%; max-width:none; margin:6px 0; }
+}
 
 /* ── Site CTA — flat ink-orange fill, no glow ────────── */
 .admin-shell .site-cta { display:inline-flex; align-items:center; gap:7px; padding:9px 16px; background:var(--accent); color:#fff; border:1px solid var(--accent); border-radius:var(--r-sm); font-size:13px; font-weight:700; margin-bottom:24px; transition:background 0.15s ease, border-color 0.15s ease, transform 0.1s ease; }
@@ -318,16 +312,30 @@ export const ADMIN_CSS = `
 // from public/data/brand-sites.json (see loadBrandSites in admin-state).
 export const SITE_URL = "https://day14.us";
 
-interface NavProps { active: string; siteUrl?: string; siteLabel?: string; }
-export function AdminNav({ active, siteUrl = SITE_URL, siteLabel = "day14.us" }: NavProps) {
+interface NavProps {
+  active: string;
+  siteUrl?: string;
+  siteLabel?: string;
+  /** Pre-fills the empire search box when rendered on `/admin/search`. */
+  searchQuery?: string;
+}
+export function AdminNav({
+  active,
+  siteUrl = SITE_URL,
+  siteLabel = "day14.us",
+  searchQuery = "",
+}: NavProps) {
   const pages = [
     { id: "empire", href: "/admin", label: "Overview" },
+    { id: "today", href: "/admin/today", label: "Today" },
     { id: "realty", href: "/admin/realty", label: "Realty" },
+    { id: "preview", href: "/admin/preview", label: "Preview" },
     { id: "alignmd", href: "/admin/alignmd", label: "AlignMD" },
     { id: "inbox", href: "/admin/inbox", label: "Inbox" },
     { id: "opps", href: "/admin/opportunities", label: "Ideas" },
     { id: "finance", href: "/admin/finance", label: "Finance" },
     { id: "health", href: "/admin/health", label: "Health" },
+    { id: "ship", href: "/admin/ship", label: "Ship" },
     { id: "activity", href: "/admin/activity", label: "Activity" },
   ];
   return (
@@ -337,6 +345,7 @@ export function AdminNav({ active, siteUrl = SITE_URL, siteLabel = "day14.us" }:
           {p.label}
         </Link>
       ))}
+      <SearchBox initialQuery={searchQuery} />
       <a href={siteUrl} target="_blank" rel="noopener noreferrer" className="nav-site">
         {siteLabel} ↗
       </a>

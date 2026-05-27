@@ -29,3 +29,5 @@
 [2026-05-25 22:00 ET] weekly-skill-harvest COMPLETE → skill-harvest-findings-2026-05-25.md, confidence: 0.85
 [2026-05-25 23:00 ET] nightly-polish COMPLETE → polish-2026-05-25.md, confidence: 0.9
 [2026-05-25 17:00 ET] daily-eod COMPLETE → eod-2026-05-25.md, confidence: 0.3
+[2026-05-25 23:00 ET] nightly-polish COMPLETE → polish-2026-05-25.md, confidence: 0.9 (overwrites earlier same-day entry; same conclusions, no site changes between runs)
+[2026-05-27 09:00 ET] daily-kickoff COMPLETE → kickoff-2026-05-27.md, confidence: 0.85

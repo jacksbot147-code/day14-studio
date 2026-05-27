@@ -2,7 +2,27 @@ import { brandTheme as t } from "../theme";
 import Link from "next/link";
 import { fetchTenantProducts } from "@/lib/brand-data";
 
-export const metadata = { title: "Shop" };
+const SHOP_DESCRIPTION =
+  "Shop Hot Flash Co — real goods for the seasons no one warns you about.";
+
+export const metadata = {
+  title: "Shop",
+  description: SHOP_DESCRIPTION,
+  alternates: { canonical: "/brands/hot-flash-co/products" },
+  openGraph: {
+    title: "Shop — Hot Flash Co",
+    description: SHOP_DESCRIPTION,
+    type: "website",
+    url: "/brands/hot-flash-co/products",
+    siteName: "Hot Flash Co",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image" as const,
+    title: "Shop — Hot Flash Co",
+    description: SHOP_DESCRIPTION,
+  },
+};
 
 export default async function ProductsPage() {
   const products = await fetchTenantProducts("hot-flash-co");

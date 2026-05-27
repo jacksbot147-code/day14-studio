@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { EmptyState } from "@/components/ui";
 
 /**
  * One activity event, already shaped for display by the server component.
@@ -163,13 +164,17 @@ export function ActivityFeed({ events, tenants }: Props) {
       </p>
 
       {groups.length === 0 ? (
-        <div className="section">
-          <div className="empty">
-            No activity in this window yet. Try widening the time range or
-            picking a different business — agent runs will show up here as they
-            happen.
-          </div>
-        </div>
+        <EmptyState
+          icon="🔭"
+          headline="No activity in this window."
+          hint={
+            <>
+              Try widening the time range or picking a different business —
+              filters cut on tenant + recency, so a quiet hour doesn&apos;t mean a
+              quiet day. Live runs appear here without a refresh.
+            </>
+          }
+        />
       ) : (
         <div className="act-timeline">
           {groups.map(([key, items]) => (

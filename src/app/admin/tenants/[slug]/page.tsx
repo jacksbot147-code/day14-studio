@@ -1,7 +1,19 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { loadEmpireState, fetchPrintifyProducts, loadBrandSites, loadTenantOps } from "@/lib/admin-state";
+import {
+  loadEmpireState,
+  fetchPrintifyProducts,
+  loadBrandSites,
+  loadTenantOps,
+} from "@/lib/admin-state";
+import { summarize, type LogEntry } from "@/lib/activity-summary";
+import {
+  collectAllApprovals,
+  collectTenantApprovals,
+  type ApprovalItem,
+} from "@/lib/admin-approvals";
 import { AdminNav, ADMIN_CSS, SiteCta, SITE_URL, PageHint } from "../../layout-bits";
+import { Card, EmptyState, StatusBanner, type StatusTone } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -29,6 +41,40 @@ function stageInfo(stage: string): { cls: string; label: string } {
     return { cls: "stage-building", label: stage || "Building" };
   if (!s) return { cls: "stage-default", label: "—" };
   return { cls: "stage-live", label: stage };
+}
+
+/** Local YYYY-MM-DD key for grouping (avoids UTC date drift). */
+function dayKey(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "unknown";
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+/** Human day header — "Today", "Yesterday", or a written date. */
+function dayLabel(key: string): string {
+  if (key === "unknown") return "Undated";
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const day = new Date(`${key}T00:00:00`);
+  if (Number.isNaN(day.getTime())) return key;
+  const diff = Math.round((today.getTime() - day.getTime()) / 86_400_000);
+  if (diff === 0) return "Today";
+  if (diff === 1) return "Yesterday";
+  return day.toLocaleDateString(undefined, {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: today.getFullYear() === day.getFullYear() ? undefined : "numeric",
+  });
+}
+
+/** Heuristic: does this heartbeat name belong to the tenant? */
+function heartbeatBelongsToTenant(name: string, slug: string): boolean {
+  if (!name || !slug) return false;
+  return name.toLowerCase().includes(slug.toLowerCase());
 }
 
 interface Props { params: Promise<{ slug: string }>; }
@@ -68,6 +114,105 @@ export default async function TenantPage({ params }: Props) {
     .filter((i) => i.status === "unpaid")
     .reduce((s, i) => s + (i.amount_cents ?? 0), 0);
   const routeBoard = ops.schedule?.board;
+
+  // ── Mission Control: per-tenant state ─────────────────────────────────────
+  // Open operator to-dos against this tenant (not the empire, not other tenants).
+  const PRIORITY_RANK: Record<string, number> = { high: 0, medium: 1, low: 2 };
+  const allOpenTodos = (state.human_todos ?? []).filter((t) => t.status === "open");
+  const tenantTodos = [...allOpenTodos]
+    .filter((t) => t.tenant === slug)
+    .sort(
+      (a, b) =>
+        (PRIORITY_RANK[a.priority] ?? 1) - (PRIORITY_RANK[b.priority] ?? 1) ||
+        a.seq - b.seq
+    );
+  const tenantHighTodos = tenantTodos.filter((t) => t.priority === "high").length;
+
+  // Heartbeats that look like they belong to this tenant (name match).
+  const tenantHeartbeats = state.heartbeats.filter((h) =>
+    heartbeatBelongsToTenant(h.name, slug)
+  );
+  const tenantHealthy = tenantHeartbeats.filter((h) => h.status === "healthy").length;
+  const tenantDown = tenantHeartbeats.filter((h) => h.status === "error");
+  const tenantStale = tenantHeartbeats.filter((h) => h.status === "stale");
+  const buildFailed = (tenant.stage || "").toLowerCase().includes("fail");
+
+  // Battle-log entries scoped to this tenant, newest first.
+  const tenantLog: LogEntry[] = state.empire_battle_log
+    .filter((e): e is LogEntry => Boolean(e) && typeof e?.ts === "string" && e?.tenant === slug)
+    .sort((a, b) => b.ts.localeCompare(a.ts));
+  const lastActivityTs = tenantLog[0]?.ts ?? "";
+
+  // 24h window — distinct actors and total runs.
+  const dayAgo = Date.now() - 86_400_000;
+  const actorsTodaySet = new Set<string>();
+  let runs24h = 0;
+  for (const e of tenantLog) {
+    const t = new Date(e.ts).getTime();
+    if (!Number.isFinite(t) || t < dayAgo) continue;
+    runs24h++;
+    if (e.actor) actorsTodaySet.add(e.actor);
+  }
+  const actorsToday = actorsTodaySet.size;
+
+  // Per-tenant approvals queue (only sources with a tenant scope).
+  const tenantApprovals = await collectTenantApprovals(slug, allOpenTodos);
+
+  // Mini approvals queue mirroring the empire-wide /admin/inbox view —
+  // same items, just sliced to this tenant. Re-uses the inbox aggregator
+  // so this card and the inbox can never drift out of sync.
+  const allApprovalsForTenant: ApprovalItem[] = (await collectAllApprovals(state))
+    .filter((item) => item.tenant === slug);
+  const MINI_APPROVAL_LIMIT = 5;
+  const miniApprovals = allApprovalsForTenant.slice(0, MINI_APPROVAL_LIMIT);
+  const miniApprovalsOverflow = Math.max(
+    0,
+    allApprovalsForTenant.length - MINI_APPROVAL_LIMIT
+  );
+
+  // Audit-log error/failure markers in the last 7 days (tenant.recent_audit
+  // is already scoped to this tenant by the sync).
+  const weekAgo = Date.now() - 7 * 86_400_000;
+  const errorAudit = tenant.recent_audit.filter((a) => {
+    const action = (a.action || "").toLowerCase();
+    if (!action.includes("fail") && !action.includes("error")) return false;
+    const t = a.ts ? new Date(a.ts).getTime() : 0;
+    return Number.isFinite(t) && t >= weekAgo;
+  });
+
+  // Mission Control verdict — one line scoped to this tenant.
+  const tenantNeedsYou = tenantTodos.length + tenantApprovals.length;
+  const sysTone: StatusTone =
+    tenantDown.length > 0 || buildFailed
+      ? "bad"
+      : tenantStale.length > 0 ||
+          tenantHighTodos > 0 ||
+          tenantApprovals.length > 0 ||
+          errorAudit.length > 0
+        ? "warn"
+        : "ok";
+  const sysHeadline =
+    tenantDown.length > 0
+      ? `${tenantDown.length} agent${tenantDown.length === 1 ? "" : "s"} down — needs you`
+      : buildFailed
+        ? "Build failed — needs you"
+        : tenantNeedsYou > 0
+          ? `${tenantNeedsYou} item${tenantNeedsYou === 1 ? "" : "s"} need you`
+          : "All clear on this business";
+
+  // ── Activity timeline: latest 50 entries grouped by local day ─────────────
+  const ACTIVITY_CAP = 50;
+  const cappedLog = tenantLog.slice(0, ACTIVITY_CAP);
+  const activityGroups: Array<[string, LogEntry[]]> = (() => {
+    const map = new Map<string, LogEntry[]>();
+    for (const e of cappedLog) {
+      const key = dayKey(e.ts);
+      const bucket = map.get(key);
+      if (bucket) bucket.push(e);
+      else map.set(key, [e]);
+    }
+    return [...map.entries()];
+  })();
 
   // Agent activity on this tenant — grouped from the audit log.
   const agentStats = (() => {
@@ -117,6 +262,23 @@ export default async function TenantPage({ params }: Props) {
         {tenant.tagline ? <>{"  "}{tenant.tagline}</> : null}
       </div>
 
+      {/* Per-tenant Mission Control — same shape as the empire banner. */}
+      <StatusBanner
+        tone={sysTone}
+        headline={sysHeadline}
+        detail={
+          <>
+            {tenantHeartbeats.length > 0
+              ? `${tenantHealthy}/${tenantHeartbeats.length} agents up · `
+              : "no scoped agents · "}
+            {runs24h} agent run{runs24h === 1 ? "" : "s"} today ·{" "}
+            {tenantApprovals.length} in approvals queue ·{" "}
+            {lastActivityTs ? `last activity ${rel(lastActivityTs)}` : "no activity yet"}
+          </>
+        }
+        style={{ marginBottom: 20 }}
+      />
+
       {siteUrl ? (
         <SiteCta
           url={siteUrl}
@@ -124,6 +286,233 @@ export default async function TenantPage({ params }: Props) {
         />
       ) : (
         <div className="site-pending">Brand site not built yet — it appears here once the build finishes.</div>
+      )}
+
+      {/* Per-tenant KPI strip — Mission Control style, four headline numbers. */}
+      <div className="kpi-grid" style={{ gridTemplateColumns: "repeat(4,1fr)" }}>
+        <div className="kpi">
+          <div className="kpi-label">Revenue</div>
+          <div className="kpi-value">${(tenant.revenue_cents / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+          <div className="kpi-sub">{tenant.orders} {tenant.orders === 1 ? "order" : "orders"}</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-label">Agents acting</div>
+          <div className="kpi-value">{actorsToday}</div>
+          <div className="kpi-sub">{runs24h} run{runs24h === 1 ? "" : "s"} · last 24h</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-label">Needs you</div>
+          <div className="kpi-value" style={{ color: tenantTodos.length > 0 ? "var(--amber)" : "var(--text)" }}>
+            {tenantTodos.length}
+          </div>
+          <div className="kpi-sub">{tenantHighTodos > 0 ? `${tenantHighTodos} high priority` : "open operator to-dos"}</div>
+        </div>
+        <div className="kpi">
+          <div className="kpi-label">Approvals queued</div>
+          <div className="kpi-value" style={{ color: tenantApprovals.length > 0 ? "var(--accent-text)" : "var(--text)" }}>
+            {tenantApprovals.length}
+          </div>
+          <div className="kpi-sub">
+            {tenantApprovals.length === 0
+              ? "nothing waiting"
+              : (
+                <Link href="/admin/inbox" prefetch={false} style={{ color: "var(--accent-text)" }}>
+                  open inbox →
+                </Link>
+              )}
+          </div>
+        </div>
+      </div>
+
+      {/* What&apos;s blocked — todos, approvals, and recent failures, all scoped. */}
+      <div className="section-header">
+        <div className="section-title">
+          What&apos;s blocked
+          {tenantTodos.length + tenantApprovals.length + errorAudit.length > 0
+            ? ` · ${tenantTodos.length + tenantApprovals.length + errorAudit.length}`
+            : ""}
+        </div>
+      </div>
+      {tenantTodos.length + tenantApprovals.length + errorAudit.length === 0 ? (
+        <EmptyState
+          icon="🟢"
+          headline={`Nothing is blocking ${tenant.display_name}.`}
+          hint={
+            <>
+              No open operator to-dos, no queued approvals, no recent agent
+              errors for this tenant. Activity is still tracked below — this
+              panel only lights up when something needs you.
+            </>
+          }
+        />
+      ) : (
+        <Card>
+          {tenantTodos.length > 0 ? (
+            <>
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.07em",
+                  color: "var(--muted)",
+                  marginBottom: 8,
+                }}
+              >
+                Operator to-dos · {tenantTodos.length}
+              </div>
+              {tenantTodos.map((t) => (
+                <div key={t.id} className="feed-row">
+                  <div className="feed-time">{rel(t.created_at)}</div>
+                  <div className="feed-actor">
+                    <span className={`pill ${t.priority === "high" ? "pri-high" : ""}`}>
+                      {t.priority}
+                    </span>
+                  </div>
+                  <div className="feed-text">
+                    <b>{t.title}</b>
+                    {t.detail ? (
+                      <div style={{ color: "var(--muted)", marginTop: 3 }}>{t.detail}</div>
+                    ) : null}
+                  </div>
+                </div>
+              ))}
+            </>
+          ) : null}
+
+          {tenantApprovals.length > 0 ? (
+            <div style={{ marginTop: tenantTodos.length > 0 ? 18 : 0 }}>
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.07em",
+                  color: "var(--muted)",
+                  marginBottom: 8,
+                }}
+              >
+                Approvals queued · {tenantApprovals.length}
+              </div>
+              {tenantApprovals.map((a) => (
+                <div key={a.key} className="feed-row">
+                  <div className="feed-time">{rel(new Date(Date.now() - a.ageMin * 60_000).toISOString())}</div>
+                  <div className="feed-actor">
+                    <span className={`pill ${a.urgency === "high" ? "pri-high" : ""}`}>
+                      {a.typeLabel}
+                    </span>
+                  </div>
+                  <div className="feed-text">
+                    <b>{a.title}</b>
+                    <div style={{ color: "var(--muted)", marginTop: 3 }}>{a.reason}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : null}
+
+          {errorAudit.length > 0 ? (
+            <div style={{ marginTop: tenantTodos.length + tenantApprovals.length > 0 ? 18 : 0 }}>
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.07em",
+                  color: "var(--red)",
+                  marginBottom: 8,
+                }}
+              >
+                Recent failures · {errorAudit.length}
+              </div>
+              {errorAudit.map((a, i) => (
+                <div key={i} className="feed-row">
+                  <div className="feed-time">{rel(a.ts)}</div>
+                  <div className="feed-actor">{a.actor || "?"}</div>
+                  <div className="feed-text">{a.action || ""}</div>
+                </div>
+              ))}
+            </div>
+          ) : null}
+        </Card>
+      )}
+
+      {/*
+        Per-tenant mini Approvals queue — the same items the unified
+        /admin/inbox would show, sliced to this tenant. Re-uses the
+        empire collectAllApprovals aggregator so this preview and the
+        inbox can't drift out of sync.
+      */}
+      <div className="section-header">
+        <div className="section-title">
+          Approvals queue
+          {allApprovalsForTenant.length > 0 ? ` · ${allApprovalsForTenant.length}` : ""}
+        </div>
+        {allApprovalsForTenant.length > 0 ? (
+          <Link
+            href={`/admin/inbox?tenant=${slug}`}
+            prefetch={false}
+            className="section-link"
+          >
+            Open in inbox →
+          </Link>
+        ) : null}
+      </div>
+      {allApprovalsForTenant.length === 0 ? (
+        <EmptyState
+          icon="✅"
+          headline={`No approvals waiting for ${tenant.display_name} — nice.`}
+          hint={
+            <>
+              When an agent queues a post, files a to-do against this tenant,
+              or anything else that needs your sign-off, it will show up here
+              and in the unified{" "}
+              <Link href={`/admin/inbox?tenant=${slug}`} prefetch={false}>
+                Approvals queue
+              </Link>
+              .
+            </>
+          }
+        />
+      ) : (
+        <Card>
+          {miniApprovals.map((item) => (
+            <div key={item.key} className="feed-row">
+              <div className="feed-time">
+                {rel(new Date(Date.now() - item.ageMin * 60_000).toISOString())}
+              </div>
+              <div className="feed-actor">
+                <span className={`pill ${item.urgency === "high" ? "pri-high" : ""}`}>
+                  {item.typeLabel}
+                </span>
+              </div>
+              <div className="feed-text">
+                <b>{item.title}</b>
+                <div style={{ color: "var(--muted)", marginTop: 3 }}>{item.reason}</div>
+              </div>
+            </div>
+          ))}
+          {miniApprovalsOverflow > 0 ? (
+            <div
+              style={{
+                marginTop: 12,
+                paddingTop: 12,
+                borderTop: "1px solid var(--border)",
+                fontSize: 12.5,
+                color: "var(--muted)",
+              }}
+            >
+              + {miniApprovalsOverflow} more —{" "}
+              <Link
+                href={`/admin/inbox?tenant=${slug}`}
+                prefetch={false}
+                style={{ color: "var(--accent-text)", fontWeight: 600 }}
+              >
+                open full filtered view →
+              </Link>
+            </div>
+          ) : null}
+        </Card>
       )}
 
       <div className="kpi-grid">
@@ -174,7 +563,19 @@ export default async function TenantPage({ params }: Props) {
 
       <div className="section-header"><div className="section-title">Social queue</div></div>
       {Object.keys(tenant.queue.byPlatform).length === 0 ? (
-        <div className="section"><div className="empty">No content queued yet.</div></div>
+        <EmptyState
+          icon="📭"
+          headline="No content queued for this tenant yet."
+          hint={
+            <>
+              Social posts land here once the per-tenant marketing/social
+              orchestrator runs (e.g. <code>hot-flash-co-marketing-engine</code>).
+              Queued posts surface in the{" "}
+              <Link href="/admin/inbox" prefetch={false}>Approvals queue</Link> for
+              sign-off, then move to approved → posted as they ship.
+            </>
+          }
+        />
       ) : (
         <div className="queue-grid">
           {Object.entries(tenant.queue.byPlatform).map(([p, c]) => (
@@ -187,9 +588,20 @@ export default async function TenantPage({ params }: Props) {
       )}
 
       <div className="section-header"><div className="section-title">Agents</div></div>
-      <div className="section">
+      <Card>
         {agentStats.length === 0 ? (
-          <div className="empty">No agent activity logged yet.</div>
+          <EmptyState
+            icon="🤖"
+            headline={`${tenant.display_name} hasn't logged an agent run yet.`}
+            hint={
+              <>
+                Agent runs land here as soon as one writes to{" "}
+                <code>~/Documents/businesses/{tenant.slug}/audit-log.jsonl</code>.
+                If you expected activity, start the relevant poller or check{" "}
+                <Link href="/admin/health" prefetch={false}>Health</Link>.
+              </>
+            }
+          />
         ) : (
           <>
             <div className="agent-row head">
@@ -205,22 +617,56 @@ export default async function TenantPage({ params }: Props) {
             ))}
           </>
         )}
-      </div>
+      </Card>
 
-      <div className="section-header"><div className="section-title">Activity log</div></div>
-      <div className="section">
-        {tenant.recent_audit.length === 0 ? (
-          <div className="empty">No activity logged yet.</div>
-        ) : (
-          tenant.recent_audit.map((a, i) => (
-            <div key={i} className="feed-row">
-              <div className="feed-time">{rel(a.ts)}</div>
-              <div className="feed-actor">{a.actor || "?"}</div>
-              <div className="feed-text">{a.action || ""}</div>
-            </div>
-          ))
-        )}
+      {/* Activity timeline — battle log scoped to this tenant, grouped by day. */}
+      <div className="section-header">
+        <div className="section-title">
+          Activity timeline
+          {tenantLog.length > 0
+            ? ` · ${tenantLog.length}${tenantLog.length > ACTIVITY_CAP ? `+` : ""}`
+            : ""}
+        </div>
+        <Link href="/admin/activity" prefetch={false} className="section-link">
+          Full feed →
+        </Link>
       </div>
+      {activityGroups.length === 0 ? (
+        <EmptyState
+          icon="📡"
+          headline={`No activity for ${tenant.display_name} yet.`}
+          hint={
+            <>
+              Runs are tracked in the per-tenant audit log; the empire-wide{" "}
+              <Link href="/admin/activity" prefetch={false}>Activity</Link> page
+              has the broader feed. First run usually appears within one polling
+              cycle.
+            </>
+          }
+        />
+      ) : (
+        <div className="act-timeline">
+          {activityGroups.map(([key, items]) => (
+            <div key={key} className="act-day">
+              <div className="act-day-head">
+                <span className="act-day-label">{dayLabel(key)}</span>
+                <span className="act-day-count">
+                  {items.length} {items.length === 1 ? "event" : "events"}
+                </span>
+              </div>
+              <div className="section act-day-body">
+                {items.map((e, i) => (
+                  <div key={`${e.ts}-${i}`} className="feed-row">
+                    <div className="feed-time">{rel(e.ts)}</div>
+                    <div className="feed-actor">{e.actor || "unknown agent"}</div>
+                    <div className="feed-text">{summarize(e)}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

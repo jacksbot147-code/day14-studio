@@ -1,10 +1,7 @@
 import { loadEmpireState } from "@/lib/admin-state";
 import { AdminNav, ADMIN_CSS, PageHint } from "../layout-bits";
-import { ApprovalsQueue, type ApprovalItem } from "./approvals-queue";
-import fs from "node:fs/promises";
-import path from "node:path";
-import { existsSync } from "node:fs";
-import { homedir } from "node:os";
+import { ApprovalsQueue, type TenantOption } from "./approvals-queue";
+import { collectAllApprovals } from "@/lib/admin-approvals";
 
 export const metadata = {
   title: "Approvals — Day14 Admin",
@@ -21,192 +18,43 @@ export const dynamic = "force-dynamic";
  * actions (in approvals-queue.tsx) write straight to the underlying state files
  * via /api/admin/approvals, using the same conventions the Telegram flow uses.
  *
- * Aggregated sources:
+ * Aggregated sources (see `collectAllApprovals` in src/lib/admin-approvals.ts):
  *   - open operator to-dos    (empire-state.json human_todos)
  *   - queued social posts     (businesses/<t>/social-queue/<platform>/*.json)
  *   - skill drafts            (studio/docs/seeds/skills/_drafts/<name>)
  *   - expansion requests      (businesses/_shared/expansion-requests/*.json)
  *   - opportunity pitches     (empire-state.json opportunities, pitched + open)
+ *
+ * The `?tenant=<slug>` query param sets the initial tenant filter so links
+ * from per-tenant Mission Control land directly on the filtered view.
  */
 
-const HOME = homedir();
-const BIZ = path.join(HOME, "Documents/businesses");
-const STUDIO_DRAFTS = path.join(HOME, "Documents/studio/docs/seeds/skills/_drafts");
-const EXPANSION_INBOX = path.join(BIZ, "_shared/expansion-requests");
-
-function ageMinFrom(iso: string | undefined | null, now: number): number {
-  if (!iso) return 0;
-  const t = new Date(iso).getTime();
-  if (Number.isNaN(t)) return 0;
-  return Math.max(0, Math.round((now - t) / 60_000));
+interface PageProps {
+  searchParams: Promise<{ tenant?: string | string[] }>;
 }
 
-function clip(text: string, n: number): string {
-  const trimmed = text.trim();
-  return trimmed.length > n ? `${trimmed.slice(0, n)}…` : trimmed;
-}
-
-async function collectApprovals(
-  state: Awaited<ReturnType<typeof loadEmpireState>>
-): Promise<ApprovalItem[]> {
-  const items: ApprovalItem[] = [];
-  const now = Date.now();
-
-  // ── Open operator to-dos ─────────────────────────────────────────────────
-  for (const todo of (state.human_todos || []).filter((t) => t.status === "open")) {
-    const high = todo.priority === "high";
-    items.push({
-      key: `todo-${todo.id}`,
-      kind: "todo",
-      id: todo.id,
-      urgency: high ? "high" : "normal",
-      typeLabel: "Operator to-do",
-      business: todo.tenant || "empire",
-      title: todo.title,
-      reason: `Only you can do this — ${todo.category} task an agent filed and cannot finish itself.`,
-      preview: todo.detail ? clip(todo.detail, 220) : undefined,
-      ageMin: ageMinFrom(todo.created_at, now),
-      approveLabel: "Mark done",
-      skipLabel: "Dismiss",
-      telegramHint: `done ${todo.seq}`,
-    });
-  }
-
-  // ── Queued social posts ──────────────────────────────────────────────────
-  for (const t of state.tenants) {
-    const sqRoot = path.join(BIZ, t.slug, "social-queue");
-    if (!existsSync(sqRoot)) continue;
-    for (const platform of await fs.readdir(sqRoot).catch(() => [])) {
-      const platformDir = path.join(sqRoot, platform);
-      const files = (await fs.readdir(platformDir).catch(() => []))
-        .filter((f) => f.endsWith(".json"))
-        .slice(0, 10);
-      for (const f of files) {
-        try {
-          const data = JSON.parse(await fs.readFile(path.join(platformDir, f), "utf8"));
-          if (data?.status !== "queued") continue;
-          const postId: string = data.id || data.content?.slug || f.replace(/\.json$/, "");
-          items.push({
-            key: `social-${t.slug}-${postId}`,
-            kind: "social",
-            id: postId,
-            urgency: "normal",
-            typeLabel: `${platform} post`,
-            business: t.display_name,
-            title: data.content?.slug || data.angle || postId,
-            reason: "Queued content awaiting your sign-off before it can publish.",
-            preview: clip(
-              data.angle || data.content?.caption || data.content?.text || "",
-              200
-            ),
-            ageMin: ageMinFrom(data.queued_at, now),
-            approveLabel: "Approve",
-            skipLabel: "Skip",
-            telegramHint: `approve post ${postId}`,
-          });
-        } catch {
-          /* skip unreadable queue file */
-        }
-      }
-    }
-  }
-
-  // ── Skill drafts awaiting sign-off ───────────────────────────────────────
-  if (existsSync(STUDIO_DRAFTS)) {
-    const drafts = (await fs.readdir(STUDIO_DRAFTS, { withFileTypes: true }))
-      .filter((e) => e.isDirectory() && !e.name.startsWith("_"))
-      .slice(0, 15);
-    for (const d of drafts) {
-      const skillMd = path.join(STUDIO_DRAFTS, d.name, "SKILL.md");
-      if (!existsSync(skillMd)) continue;
-      const stat = await fs.stat(skillMd);
-      const text = (await fs.readFile(skillMd, "utf8")).slice(0, 260);
-      items.push({
-        key: `skill-${d.name}`,
-        kind: "skill",
-        id: d.name,
-        urgency: "low",
-        typeLabel: "Skill draft",
-        business: "empire",
-        title: d.name,
-        reason: "A new skill an agent drafted — approve to make it live, or skip.",
-        preview: clip(text, 220),
-        ageMin: ageMinFrom(stat.mtime.toISOString(), now),
-        approveLabel: "Approve",
-        skipLabel: "Skip",
-        telegramHint: `approve ${d.name}`,
-      });
-    }
-  }
-
-  // ── Pending expansion requests ───────────────────────────────────────────
-  if (existsSync(EXPANSION_INBOX)) {
-    const files = (await fs.readdir(EXPANSION_INBOX).catch(() => []))
-      .filter((f) => f.endsWith(".json"))
-      .slice(0, 15);
-    for (const f of files) {
-      try {
-        const data = JSON.parse(await fs.readFile(path.join(EXPANSION_INBOX, f), "utf8"));
-        if (data?.status !== "pending") continue;
-        const isBusiness = data.type === "new-business";
-        items.push({
-          key: `expansion-${f}`,
-          kind: "expansion",
-          id: f,
-          urgency: isBusiness ? "high" : "normal",
-          typeLabel: isBusiness ? "New business request" : "Expansion request",
-          business: "empire",
-          title: isBusiness
-            ? "Bootstrap a new business"
-            : data.skill_name || "New skill request",
-          reason: isBusiness
-            ? "An agent flagged a new business to launch — needs your go-ahead."
-            : "An expansion request waiting on your call.",
-          preview: clip(
-            data.description || JSON.stringify(data.extracted || {}),
-            220
-          ),
-          ageMin: ageMinFrom(data.requested_at, now),
-          approveLabel: "Approve",
-          skipLabel: "Dismiss",
-          telegramHint: isBusiness ? "bootstrap now" : undefined,
-        });
-      } catch {
-        /* skip unreadable request file */
-      }
-    }
-  }
-
-  // ── Opportunity pitches awaiting a launch decision ───────────────────────
-  for (const o of (state.opportunities || [])
-    .filter((o) => o.pitched && o.status === "open")
-    .slice(0, 15)) {
-    items.push({
-      key: `opportunity-${o.id}`,
-      kind: "opportunity",
-      id: o.id,
-      urgency: "low",
-      typeLabel: "Opportunity pitch",
-      business: "empire",
-      title: o.niche,
-      reason: `Pitched idea (score ${o.total_score}) — approve to queue it for launch, or skip.`,
-      preview: clip(o.rationale || "", 220),
-      ageMin: 0,
-      approveLabel: "Approve",
-      skipLabel: "Skip",
-      telegramHint: `bootstrap-pitch ${o.id}`,
-    });
-  }
-
-  // High urgency first, then by age (newest first) within a bucket.
-  const rank = { high: 0, normal: 1, low: 2 } as const;
-  items.sort((a, b) => rank[a.urgency] - rank[b.urgency] || a.ageMin - b.ageMin);
-  return items;
-}
-
-export default async function InboxPage() {
+export default async function InboxPage({ searchParams }: PageProps) {
   const state = await loadEmpireState();
-  const items = await collectApprovals(state);
+  const items = await collectAllApprovals(state);
+
+  // The tenant chip row is built from the empire-state tenant list so it
+  // stays stable across renders even when a tenant currently has zero items.
+  const tenants: TenantOption[] = state.tenants.map((t) => ({
+    slug: t.slug,
+    displayName: t.display_name,
+  }));
+
+  // Resolve the initial filter from the URL: a known tenant slug, the
+  // sentinel "unassigned", or null for "All".
+  const params = await searchParams;
+  const rawTenant = Array.isArray(params.tenant) ? params.tenant[0] : params.tenant;
+  const knownSlug = tenants.some((t) => t.slug === rawTenant);
+  const initialTenant: string | null =
+    rawTenant === "unassigned"
+      ? "unassigned"
+      : knownSlug
+        ? (rawTenant as string)
+        : null;
 
   const counts = {
     high: items.filter((i) => i.urgency === "high").length,
@@ -228,7 +76,7 @@ export default async function InboxPage() {
       </PageHint>
       <div className="sub">
         {items.length === 0
-          ? "Every source checked — nothing is waiting on you."
+          ? "Every source checked — nothing is waiting on you. New work shows up the moment an agent queues it."
           : `${items.length} ${items.length === 1 ? "item needs" : "items need"} you, from every source — one surface, works whether or not Telegram is up.`}
       </div>
 
@@ -260,7 +108,7 @@ export default async function InboxPage() {
       </div>
 
       <div style={{ marginTop: 24 }}>
-        <ApprovalsQueue items={items} />
+        <ApprovalsQueue items={items} tenants={tenants} initialTenant={initialTenant} />
       </div>
     </div>
   );

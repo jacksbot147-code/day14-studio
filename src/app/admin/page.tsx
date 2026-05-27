@@ -2,6 +2,7 @@ import Link from "next/link";
 import { loadEmpireState, fetchPrintifyProducts } from "@/lib/admin-state";
 import { AdminNav, ADMIN_CSS, SiteCta, SITE_URL, PageHint } from "./layout-bits";
 import { OperatorTodosPanel } from "./operator-todos-panel";
+import { Card, EmptyState, StatusBanner, type StatusTone } from "@/components/ui";
 
 export const metadata = {
   title: "Day14 — Command Center",
@@ -89,7 +90,7 @@ export default async function AdminOverview() {
 
   // Mission Control verdict — one scannable line over the whole empire.
   const attention = [...down, ...stale];
-  const sysTone =
+  const sysTone: StatusTone =
     down.length > 0
       ? "bad"
       : attention.length > 0 || failedBuilds > 0 || highTodos > 0
@@ -116,16 +117,17 @@ export default async function AdminOverview() {
         <Link href="/admin" prefetch={false} style={{ color: "var(--accent)" }}>refresh</Link>
       </div>
 
-      <div className={`mc-banner ${sysTone}`}>
-        <span className={`mc-dot ${sysTone}`} />
-        <div className="mc-text">
-          <div className="mc-headline">{sysHeadline}</div>
-          <div className="mc-detail">
+      <StatusBanner
+        tone={sysTone}
+        headline={sysHeadline}
+        detail={
+          <>
             {money(totalRevenue)} revenue · {runs24h} agent runs today ·{" "}
             {healthy}/{state.heartbeats.length} agents up · {openTodos.length} open to-do
-          </div>
-        </div>
-      </div>
+          </>
+        }
+        style={{ marginBottom: 20 }}
+      />
 
       <SiteCta url={SITE_URL} label="View day14.us" />
 
@@ -175,7 +177,18 @@ export default async function AdminOverview() {
         <Link href="/admin/finance" prefetch={false} className="section-link">P&amp;L →</Link>
       </div>
       {businesses.length === 0 ? (
-        <div className="section"><div className="empty">No businesses yet.</div></div>
+        <EmptyState
+          icon="🏗️"
+          headline="No businesses launched yet."
+          hint={
+            <>
+              Pitch a niche to the bot — <code>bootstrap-pitch &lt;id&gt;</code> from{" "}
+              <Link href="/admin/opportunities" prefetch={false}>Ideas</Link> — and
+              the scaffolder kicks off the build. New businesses appear here once
+              their stage flips from build to launching.
+            </>
+          }
+        />
       ) : (
         <div className="biz-list">
           {businesses.map((t) => {
@@ -209,9 +222,20 @@ export default async function AdminOverview() {
           <div className="section-header" style={{ margin: "0 0 12px" }}>
             <div className="section-title">Agent workforce</div>
           </div>
-          <div className="section">
+          <Card>
             {agents.length === 0 ? (
-              <div className="empty">No agent activity yet.</div>
+              <EmptyState
+                icon="🤖"
+                headline="No agents have logged a run yet."
+                hint={
+                  <>
+                    The workforce table fills up as soon as any agent writes to a
+                    tenant&apos;s <code>audit-log.jsonl</code>. Start the pollers
+                    (<code>npm run agents</code>) or wait for the next scheduled
+                    cycle.
+                  </>
+                }
+              />
             ) : (
               <>
                 <div className="agent-row head">
@@ -227,14 +251,14 @@ export default async function AdminOverview() {
                 ))}
               </>
             )}
-          </div>
+          </Card>
         </div>
         <div>
           <div className="section-header" style={{ margin: "0 0 12px" }}>
             <div className="section-title">System</div>
             <Link href="/admin/health" prefetch={false} className="section-link">Health →</Link>
           </div>
-          <div className="section">
+          <Card>
             <div className="sys-row">
               <span className="sys-label">Daemons healthy</span>
               <span className="sys-value" style={{ color: attention.length > 0 ? "var(--red)" : "var(--green)" }}>
@@ -271,14 +295,25 @@ export default async function AdminOverview() {
                 All daemons reporting in.
               </div>
             )}
-          </div>
+          </Card>
         </div>
       </div>
 
       <div className="section-header"><div className="section-title">Recent activity</div></div>
-      <div className="section">
+      <Card>
         {state.empire_battle_log.length === 0 ? (
-          <div className="empty">No activity logged yet.</div>
+          <EmptyState
+            icon="📜"
+            headline="The battle log is quiet."
+            hint={
+              <>
+                Agent runs land here as soon as they record to{" "}
+                <code>audit-log.jsonl</code>. If you expected activity, check{" "}
+                <Link href="/admin/health" prefetch={false}>Health</Link> for stale
+                heartbeats.
+              </>
+            }
+          />
         ) : (
           state.empire_battle_log.slice(0, 24).map((a, i) => (
             <div key={i} className="feed-row">
@@ -290,7 +325,7 @@ export default async function AdminOverview() {
             </div>
           ))
         )}
-      </div>
+      </Card>
 
       <div style={{ textAlign: "center", color: "var(--muted)", fontSize: 12, marginTop: 36 }}>
         Synced from local Mac ·{" "}

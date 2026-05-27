@@ -1,19 +1,39 @@
 import Link from "next/link";
 import { brandTheme as t } from "./theme";
 
+const KENNUM_TITLE = "Kennum Lawn Care — Southwest Florida lawn care & landscaping";
+const KENNUM_DESCRIPTION =
+  "Weekly lawn maintenance and landscaping across Southwest Florida. Dependable crew, flat monthly pricing, free quotes.";
+const KENNUM_OG_DESCRIPTION =
+  "A Southwest Florida yard, handled — weekly maintenance and landscaping.";
+
 export const metadata = {
   title: {
-    default: "Kennum Lawn Care — Southwest Florida lawn care & landscaping",
+    default: KENNUM_TITLE,
     template: "%s — Kennum Lawn Care",
   },
-  description:
-    "Weekly lawn maintenance and landscaping across Southwest Florida. Dependable crew, flat monthly pricing, free quotes.",
+  description: KENNUM_DESCRIPTION,
   openGraph: {
     title: "Kennum Lawn Care",
-    description: "A Southwest Florida yard, handled — weekly maintenance and landscaping.",
+    description: KENNUM_OG_DESCRIPTION,
     type: "website",
+    siteName: "Kennum Lawn Care",
+    locale: "en_US",
   },
-  twitter: { card: "summary_large_image" },
+  twitter: {
+    card: "summary_large_image" as const,
+    title: "Kennum Lawn Care",
+    description: KENNUM_OG_DESCRIPTION,
+  },
+};
+
+const siteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Kennum Lawn Care",
+  url: "https://day14.us/brands/kennum-lawn-care",
+  description: KENNUM_DESCRIPTION,
+  inLanguage: "en-US",
 };
 
 export default function KennumLayout({ children }: { children: React.ReactNode }) {
@@ -26,6 +46,10 @@ export default function KennumLayout({ children }: { children: React.ReactNode }
   ];
   return (
     <div style={{ background: t.colors.bg, color: t.colors.text, fontFamily: t.fonts.body, minHeight: "100vh" }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}
+      />
       <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
         rel="stylesheet"

@@ -1,6 +1,26 @@
 import { brandTheme as t } from "../theme";
 
-export const metadata = { title: "Contact" };
+const CONTACT_DESCRIPTION =
+  "Get in touch with Hot Flash Co — for press, partnership, refunds, or general questions.";
+
+export const metadata = {
+  title: "Contact",
+  description: CONTACT_DESCRIPTION,
+  alternates: { canonical: "/brands/hot-flash-co/contact" },
+  openGraph: {
+    title: "Contact — Hot Flash Co",
+    description: CONTACT_DESCRIPTION,
+    type: "website",
+    url: "/brands/hot-flash-co/contact",
+    siteName: "Hot Flash Co",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image" as const,
+    title: "Contact — Hot Flash Co",
+    description: CONTACT_DESCRIPTION,
+  },
+};
 
 export default function ContactPage() {
   return (

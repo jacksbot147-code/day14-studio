@@ -1,5 +1,6 @@
 import { loadTenantOps } from "@/lib/admin-state";
 import { AdminNav, ADMIN_CSS, PageHint } from "../layout-bits";
+import { Card, EmptyState } from "@/components/ui";
 
 export const metadata = { title: "AlignMD — Day14 Admin", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -32,12 +33,18 @@ export default async function AlignMdPage() {
       </div>
 
       {!build ? (
-        <div className="section">
-          <div className="empty">
-            AlignMD was just registered as a segment — its build status appears here on
-            the next state sync.
-          </div>
-        </div>
+        <EmptyState
+          icon="🏥"
+          headline="AlignMD just registered — build status syncing."
+          hint={
+            <>
+              The segment is wired up; its build snapshot lands here on the next
+              sync cycle (typically within a few minutes). Phase progress,
+              pending decisions, and next actions appear once the AlignMD
+              orchestrator writes its first <code>build-status.json</code>.
+            </>
+          }
+        />
       ) : (
         <>
           <div className="kpi-grid" style={{ gridTemplateColumns: "repeat(4,1fr)" }}>
@@ -63,11 +70,11 @@ export default async function AlignMdPage() {
           </div>
 
           {build.summary ? (
-            <div className="section" style={{ marginTop: 4 }}>
+            <Card style={{ marginTop: 4 }}>
               <div style={{ fontSize: 13, color: "var(--text-2)", lineHeight: 1.6 }}>
                 {build.summary}
               </div>
-            </div>
+            </Card>
           ) : null}
 
           {build.next_action ? (
@@ -103,19 +110,19 @@ export default async function AlignMdPage() {
           {decisions.length ? (
             <>
               <div className="section-header"><div className="section-title">Decisions to make</div></div>
-              <div className="section">
+              <Card>
                 {decisions.map((d, i) => (
                   <div key={i} className="feed-row" style={{ gridTemplateColumns: "26px 1fr" }}>
                     <div className="feed-time">{i + 1}</div>
                     <div className="feed-text">{d}</div>
                   </div>
                 ))}
-              </div>
+              </Card>
             </>
           ) : null}
 
           <div className="section-header"><div className="section-title">Project</div></div>
-          <div className="section">
+          <Card>
             <div className="sys-row">
               <span className="sys-label">Build plan</span>
               <span className="sys-value">{build.links?.build_plan || "AlignMD-Build-Plan.md"}</span>
@@ -130,7 +137,7 @@ export default async function AlignMdPage() {
                 {build.updated_at ? new Date(build.updated_at).toLocaleString() : "—"}
               </span>
             </div>
-          </div>
+          </Card>
         </>
       )}
     </div>

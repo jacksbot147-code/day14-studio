@@ -11,6 +11,14 @@ export const metadata = {
       "Request a free, custom lawn care or landscaping quote from Kennum Lawn Care.",
     type: "website",
     url: "/brands/kennum-lawn-care/contact",
+    siteName: "Kennum Lawn Care",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image" as const,
+    title: "Get a free quote — Kennum Lawn Care",
+    description:
+      "Request a free, custom lawn care or landscaping quote from Kennum Lawn Care.",
   },
 };
 
