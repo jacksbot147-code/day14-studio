@@ -1,0 +1,9 @@
+{
+  "paused_at": "2026-05-28T12:23:20Z",
+  "reason": "token-budget",
+  "unloaded_agents": [
+    "com.day14.realty-scout-day14-realty"
+  ],
+  "notes": "Expected agent label from install-realty-scout.sh (default slug day14-realty). Actual launchctl unload must be run manually from a user terminal — the scheduled-task sandbox cannot execute launchctl. Resume = delete this file + launchctl load the listed plists.",
+  "set_by": "scheduled-task workday-t01-stop-realty-scans"
+}
