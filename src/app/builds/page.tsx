@@ -105,11 +105,23 @@ function BuildList({
 
 function BuildRow({ build }: { build: Build }) {
   const day = dayOfFourteen(build);
+  const progressPct = Math.min(100, Math.round((day / 14) * 100));
+  const barColor =
+    build.status === "shipped"
+      ? "bg-shipped-500"
+      : build.status === "paused"
+        ? "bg-ink-300"
+        : "bg-ember-500";
   return (
     <Link
       href={`/builds/${build.slug}`}
-      className="grid items-start gap-4 rounded-lg border border-ink-100 bg-paper-50 p-5 transition hover:border-ink-200 hover:shadow-lift sm:grid-cols-[1.6fr_1fr_2fr_auto] sm:items-center sm:gap-6 sm:p-6"
+      className="relative grid items-start gap-4 overflow-hidden rounded-lg border border-ink-100 bg-paper-50 p-5 transition hover:border-ink-200 hover:shadow-lift sm:grid-cols-[1.6fr_1fr_2fr_auto] sm:items-center sm:gap-6 sm:p-6"
     >
+      <span
+        className={`absolute inset-x-0 top-0 h-0.5 ${barColor}`}
+        style={{ width: `${progressPct}%` }}
+        aria-hidden="true"
+      />
       <div>
         <div className="font-mono text-xs uppercase tracking-[0.18em] text-ember-600">
           {build.sku} · {build.vertical === "custom" ? "Custom" : build.vertical.replace("-", " ")}
@@ -119,8 +131,16 @@ function BuildRow({ build }: { build: Build }) {
         </div>
       </div>
 
-      <div className="font-mono text-xs uppercase tracking-widest text-ink-500 tnum">
-        Day {day} of 14
+      <div className="flex flex-col gap-1.5">
+        <div className="font-mono text-xs uppercase tracking-widest text-ink-500 tnum">
+          Day {day} of 14 · {progressPct}%
+        </div>
+        <div className="h-1 w-full overflow-hidden rounded-sm bg-ink-100">
+          <span
+            className={`block h-full ${barColor}`}
+            style={{ width: `${progressPct}%` }}
+          />
+        </div>
       </div>
 
       <p className="text-sm text-ink-500">{build.currentStatus}</p>

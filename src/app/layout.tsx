@@ -1,8 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { SITE, PITCH } from "@/lib/site";
 import { ChatWidget } from "@/components/chat-widget";
+import { RouteTransition } from "@/components/motion/route-transition";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -48,12 +49,15 @@ export const metadata: Metadata = {
     index: process.env.VERCEL_ENV === "production",
     follow: process.env.VERCEL_ENV === "production",
   },
-  themeColor: "#0B0B0A",
   appleWebApp: {
     capable: true,
     title: SITE.brand,
     statusBarStyle: "black-translucent",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0B0B0A",
 };
 
 export default function RootLayout({
@@ -64,7 +68,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${mono.variable}`}>
       <body>
-        {children}
+        <RouteTransition>{children}</RouteTransition>
         <ChatWidget />
       </body>
     </html>

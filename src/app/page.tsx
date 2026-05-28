@@ -74,7 +74,7 @@ function SectionHead({
 
 function Hero() {
   return (
-    <section className="relative isolate overflow-hidden border-b border-ink-100">
+    <section className="grain relative isolate overflow-hidden border-b border-ink-100">
       <HeroAurora />
       <div className="container-page pt-14 pb-20 sm:pt-24 sm:pb-28">
         <div className="eyebrow mb-7">
@@ -636,6 +636,7 @@ function NowBuilding() {
 
 function NowBuildingCard({ build }: { build: Build }) {
   const day = dayOfFourteen(build);
+  const progressPct = Math.min(100, Math.round((day / 14) * 100));
   const verticalLabel =
     build.vertical === "custom" ? "Custom" : build.vertical.replace("-", " ");
   return (
@@ -643,21 +644,31 @@ function NowBuildingCard({ build }: { build: Build }) {
       href={`/builds/${build.slug}`}
       className="group relative block border-b border-r border-ink-100 bg-paper-50 p-7 transition-colors hover:bg-paper-100"
     >
-      <span className="absolute inset-x-0 top-0 h-0.5 w-0 bg-ember-500 transition-all duration-200 group-hover:w-full" />
+      <span
+        className="absolute inset-x-0 top-0 h-0.5 bg-ember-500 transition-all duration-300 ease-out group-hover:!w-full"
+        style={{ width: `${progressPct}%` }}
+      />
       <div className="flex items-center justify-between">
         <div className="font-mono text-xs font-bold uppercase tracking-widest text-ember-600">
           {build.sku} · {verticalLabel}
         </div>
         <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-ink-500">
-          <span className="h-1.5 w-1.5 rounded-full bg-ember-500" />
+          <span className="relative inline-block h-1.5 w-1.5">
+            <span className="absolute inset-0 rounded-full bg-ember-500" />
+            <span className="absolute -inset-1 animate-ping rounded-full bg-ember-500/40" />
+          </span>
           In progress
         </span>
       </div>
       <h3 className="mt-3 text-2xl font-extrabold tracking-tightest text-ink">
         {build.customerName}
       </h3>
-      <div className="mt-1 font-mono text-xs uppercase tracking-widest text-ink-400 tnum">
-        Day {day} of 14
+      <div className="mt-1 flex items-baseline gap-3 font-mono text-xs uppercase tracking-widest text-ink-400 tnum">
+        <span>
+          Day <span className="text-ink">{day}</span> of 14
+        </span>
+        <span className="text-ink-300">·</span>
+        <span>{progressPct}% there</span>
       </div>
       <p className="mt-4 text-sm text-ink-500">{build.currentStatus}</p>
       <div className="mt-5 text-sm font-semibold text-ink">
@@ -692,29 +703,44 @@ function CaseStudies() {
             <Link
               key={cs.slug}
               href={`/case-studies/${cs.slug}`}
-              className="group relative block border-b border-r border-ink-100 bg-paper-50 p-7 transition-[background-color,transform] duration-200 ease-out hover:-translate-y-0.5 hover:bg-paper-100 motion-reduce:transform-none motion-reduce:hover:translate-y-0"
+              className="group relative flex flex-col overflow-hidden border-b border-r border-ink-100 bg-paper-50 transition-[background-color,transform] duration-200 ease-out hover:-translate-y-0.5 hover:bg-paper-100 motion-reduce:transform-none motion-reduce:hover:translate-y-0"
             >
-              <span className="absolute inset-x-0 top-0 h-0.5 w-0 bg-ember-500 transition-all duration-200 group-hover:w-full" />
-              <div className="flex items-center justify-between">
-                <div className="font-mono text-xs font-bold uppercase tracking-widest text-ember-600">
-                  {cs.sku}
+              <span className="absolute inset-x-0 top-0 z-10 h-0.5 w-0 bg-ember-500 transition-all duration-200 group-hover:w-full" />
+              {cs.url ? (
+                <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-ink-100 bg-ink-50">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`https://image.thum.io/get/width/720/crop/450/png/wait/4/noanimate/${cs.url}`}
+                    alt=""
+                    loading="lazy"
+                    aria-hidden="true"
+                    className="absolute inset-0 h-full w-full object-cover object-top grayscale-[35%] transition duration-500 ease-out group-hover:scale-[1.02] group-hover:grayscale-0"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-paper-50/40 via-transparent to-transparent transition-opacity duration-300 group-hover:opacity-0" />
                 </div>
-                <StatePill state={cs.state} />
-              </div>
-              <h3 className="mt-3 text-2xl font-extrabold tracking-tightest text-ink">
-                {cs.name}
-              </h3>
-              <p className="mt-1 text-sm text-ink-400">{cs.industry}</p>
-              <p className="mt-4 text-sm text-ink-500">{cs.summary}</p>
-              <div className="mt-5 flex items-center justify-between">
-                <span className="text-sm font-semibold text-ink">
-                  Read the case study →
-                </span>
-                {cs.url ? (
-                  <span className="font-mono text-[11px] uppercase tracking-widest text-ink-400">
-                    {new URL(cs.url).host}
+              ) : null}
+              <div className="flex flex-1 flex-col p-7">
+                <div className="flex items-center justify-between">
+                  <div className="font-mono text-xs font-bold uppercase tracking-widest text-ember-600">
+                    {cs.sku}
+                  </div>
+                  <StatePill state={cs.state} />
+                </div>
+                <h3 className="mt-3 text-2xl font-extrabold tracking-tightest text-ink">
+                  {cs.name}
+                </h3>
+                <p className="mt-1 text-sm text-ink-400">{cs.industry}</p>
+                <p className="mt-4 text-sm text-ink-500">{cs.summary}</p>
+                <div className="mt-auto flex items-center justify-between pt-5">
+                  <span className="text-sm font-semibold text-ink">
+                    Read the case study →
                   </span>
-                ) : null}
+                  {cs.url ? (
+                    <span className="font-mono text-[11px] uppercase tracking-widest text-ink-400">
+                      {new URL(cs.url).host}
+                    </span>
+                  ) : null}
+                </div>
               </div>
             </Link>
           ))}

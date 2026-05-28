@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SITE, PITCH, FAQ } from "@/lib/site";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { CountUp } from "@/components/motion/count-up";
 import { cn } from "@/lib/cn";
 
 export const metadata: Metadata = {
@@ -34,7 +35,7 @@ export default function ComparePage() {
 
 function Hero() {
   return (
-    <section className="container-page pt-14 pb-12 sm:pt-20 sm:pb-16">
+    <section className="grain container-page pt-14 pb-12 sm:pt-20 sm:pb-16">
       <div className="eyebrow mb-6">Day14 vs the alternatives</div>
       <h1 className="max-w-4xl text-[40px] font-extrabold leading-[1.05] tracking-tightest text-ink sm:text-[60px] lg:text-[72px]">
         Stop renting.{" "}
@@ -487,17 +488,17 @@ function FiveYearMath() {
               <dl className="mt-7 grid grid-cols-[1fr_max-content] gap-y-2 text-sm">
                 <dt className="text-ink-500">Upfront</dt>
                 <dd className="text-right font-semibold tnum text-ink">
-                  ${r.upfront.toLocaleString()}
+                  <CountUp to={r.upfront} prefix="$" />
                 </dd>
                 <dt className="text-ink-500">Monthly × 60</dt>
                 <dd className="text-right font-semibold tnum text-ink">
-                  ${r.monthlyTotal.toLocaleString()}
+                  <CountUp to={r.monthlyTotal} prefix="$" />
                 </dd>
                 <dt className="border-t border-ink-100 pt-3 text-ink">
                   5-year total
                 </dt>
                 <dd className="border-t border-ink-100 pt-3 text-right text-xl font-extrabold tnum text-ink">
-                  ${r.total.toLocaleString()}
+                  <CountUp to={r.total} prefix="$" />
                 </dd>
               </dl>
 
@@ -526,7 +527,7 @@ function FiveYearMath() {
           <p className="text-lg text-ink">
             Day14 costs{" "}
             <span className="tnum font-extrabold">
-              ${delta.toLocaleString()}
+              <CountUp to={delta} prefix="$" />
             </span>{" "}
             more than Jobber Connect over five years. That delta is what you
             pay for ownership. Year six onward your costs are flat. The SaaS

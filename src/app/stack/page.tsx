@@ -2,6 +2,7 @@ import Link from "next/link";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { loadEmpireSnapshot, describeAction, relativeAge } from "@/lib/empire-snapshot";
 
 export const metadata = {
   title: "The Day14 Stack — how a one-operator studio ships in 14 days",
@@ -12,6 +13,8 @@ export const metadata = {
     description: "How a one-operator studio ships in 14 days.",
   },
 };
+
+export const dynamic = "force-dynamic";
 
 const AGENTS = [
   { name: "CFO", role: "Daily P&L, cash flow, pricing recommendations." },
@@ -71,7 +74,10 @@ const PROOF = [
   },
 ];
 
-export default function StackPage() {
+export default async function StackPage() {
+  const snap = await loadEmpireSnapshot();
+  const hasLiveData = snap.runs_24h > 0 || snap.agent_count_total > 0;
+
   return (
     <>
       <SiteHeader />
@@ -89,6 +95,65 @@ export default function StackPage() {
             reporting, compliance, devops. We sell you the same stack.
           </p>
         </section>
+
+        {hasLiveData ? (
+          <section
+            className="mb-24 border border-ink-100 bg-ink text-paper"
+            aria-label="Live system activity"
+          >
+            <div className="grid grid-cols-1 gap-px bg-ink-700 sm:grid-cols-3">
+              <div className="bg-ink p-6">
+                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-paper-300/80">
+                  <span className="relative mr-2 inline-block h-1.5 w-1.5 align-middle">
+                    <span className="absolute inset-0 rounded-full bg-shipped-400" />
+                    <span className="absolute -inset-1 animate-ping rounded-full bg-shipped-400/40" />
+                  </span>
+                  Live · last 24 hours
+                </div>
+                <div className="mt-3 text-4xl font-extrabold tracking-tightest text-paper tnum">
+                  {snap.runs_24h.toLocaleString()}
+                </div>
+                <div className="mt-1 text-sm text-paper-200">agent runs across the empire</div>
+              </div>
+              <div className="bg-ink p-6">
+                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-paper-300/80">
+                  Workforce
+                </div>
+                <div className="mt-3 text-4xl font-extrabold tracking-tightest text-paper tnum">
+                  {snap.agent_count_healthy}
+                  <span className="text-paper-300/70">/{snap.agent_count_total}</span>
+                </div>
+                <div className="mt-1 text-sm text-paper-200">agents reporting healthy</div>
+              </div>
+              <div className="bg-ink p-6">
+                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-paper-300/80">
+                  Tenants
+                </div>
+                <div className="mt-3 text-4xl font-extrabold tracking-tightest text-paper tnum">
+                  {snap.tenant_count}
+                </div>
+                <div className="mt-1 text-sm text-paper-200">businesses on the stack</div>
+              </div>
+            </div>
+            {snap.recent.length > 0 ? (
+              <ul className="divide-y divide-ink-700 border-t border-ink-700">
+                {snap.recent.slice(0, 6).map((e, i) => (
+                  <li
+                    key={`${e.ts}-${i}`}
+                    className="grid grid-cols-[90px_140px_1fr] items-baseline gap-4 px-6 py-3 font-mono text-xs"
+                  >
+                    <span className="text-paper-300/70">{relativeAge(e.ts)}</span>
+                    <span className="text-ember-300">{e.actor}</span>
+                    <span className="text-paper-200/85">
+                      {describeAction(e)}
+                      <span className="text-paper-300/60"> · {e.tenant}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </section>
+        ) : null}
 
         <section className="mb-24">
           <div className="mb-10 max-w-2xl">

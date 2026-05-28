@@ -154,7 +154,9 @@
     @apply hover:border-ink-300 focus:border-ember-500 focus:outline-none focus:ring-2 focus:ring-ember-500/25;
   }
 
-  /* Marker — a flat ember underline used to mark key phrases in headlines. */
+  /* Marker — a flat ember underline used to mark key phrases in headlines.
+     Auto-paints in on first render (`marker-draw` keyframe). SSR + JS-off
+     visitors with reduced-motion see it fully drawn from the start. */
   .marker {
     @apply relative inline-block;
     background-image: linear-gradient(
@@ -164,6 +166,13 @@
       transparent 96%
     );
     background-repeat: no-repeat;
+    background-size: 0% 100%;
+    animation: marker-draw 0.7s cubic-bezier(0.2, 0.65, 0.3, 1) 0.25s forwards;
+  }
+  @keyframes marker-draw {
+    to {
+      background-size: 100% 100%;
+    }
   }
 
   /* Rule — thin hairline divider used between sections. */
@@ -208,9 +217,9 @@
   .text-aurora {
     background-image: linear-gradient(
       100deg,
-      theme("colors.ink") 20%,
+      theme("colors.ink.DEFAULT") 20%,
       theme("colors.ember.500") 50%,
-      theme("colors.ink") 80%
+      theme("colors.ink.DEFAULT") 80%
     );
     background-clip: text;
     -webkit-background-clip: text;
@@ -240,7 +249,28 @@
     }
   }
 
-  /* Honor reduced-motion globally — disable shimmer / marquee / hero entrance. */
+  /* Subtle grain texture — a single inline SVG noise overlay used to add
+     tactility to hero / accent sections without breaking flat-design.
+     Uses `mix-blend-mode: soft-light` so the same overlay reads correctly
+     on both warm-paper and ink-dark backgrounds. Low opacity keeps it
+     paper-texture, not film-grain. `pointer-events: none` keeps it
+     non-interactive. Apply via class `.grain` on any positioned parent. */
+  .grain {
+    position: relative;
+    isolation: isolate;
+  }
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.08;
+    mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.8 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
+    background-size: 200px 200px;
+  }
+
+  /* Honor reduced-motion globally — disable shimmer / marquee / hero entrance / marker draw. */
   @media (prefers-reduced-motion: reduce) {
     .text-aurora,
     .animate-deploy-marquee,
@@ -252,6 +282,10 @@
       opacity: 1 !important;
       transform: none !important;
       animation: none !important;
+    }
+    .marker {
+      animation: none !important;
+      background-size: 100% 100% !important;
     }
   }
 }
