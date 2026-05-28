@@ -49,11 +49,22 @@ ${DESIGN_TOKENS}
 
 /* ── KPI strip — line-divided strip, not floating boxes ─ */
 .admin-shell .kpi-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:0; margin-bottom:4px; border:1px solid var(--border); border-radius:var(--r-md); overflow:hidden; }
-.admin-shell .kpi { position:relative; background:var(--surface); border-right:1px solid var(--border); padding:18px 18px; transition:background 0.13s ease; }
+.admin-shell .kpi { position:relative; background:var(--surface); border-right:1px solid var(--border); padding:18px 18px; transition:background 0.13s ease;
+  animation:kpi-rise 0.42s cubic-bezier(0.2,0.65,0.3,1) backwards; }
+.admin-shell .kpi:nth-child(1) { animation-delay:0ms; }
+.admin-shell .kpi:nth-child(2) { animation-delay:70ms; }
+.admin-shell .kpi:nth-child(3) { animation-delay:140ms; }
+.admin-shell .kpi:nth-child(4) { animation-delay:210ms; }
+.admin-shell .kpi:nth-child(5) { animation-delay:280ms; }
+.admin-shell .kpi:nth-child(6) { animation-delay:350ms; }
 .admin-shell .kpi:last-child { border-right:none; }
 .admin-shell .kpi:hover { background:var(--surface-2); }
 .admin-shell .kpi::before { content:""; position:absolute; inset:0 auto auto 0; height:2px; width:0; background:var(--accent); transition:width 0.2s ease; }
 .admin-shell .kpi:hover::before { width:100%; }
+@keyframes kpi-rise {
+  from { opacity:0; transform:translateY(8px); }
+  to   { opacity:1; transform:translateY(0); }
+}
 .admin-shell .kpi-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--muted); margin-bottom:10px; }
 .admin-shell .kpi-value { font-size:27px; font-weight:800; letter-spacing:-0.04em; color:var(--text); line-height:1; font-variant-numeric:tabular-nums; }
 .admin-shell .kpi-sub { font-size:12px; color:var(--muted); margin-top:6px; }
@@ -155,11 +166,13 @@ ${DESIGN_TOKENS}
 .admin-shell .sys-value { font-weight:600; color:var(--text); }
 
 /* ── Mission Control banner + health board ───────────── */
-.admin-shell .mc-banner { display:flex; align-items:center; gap:13px; padding:14px 18px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); margin:0 0 20px; }
+.admin-shell .mc-banner { display:flex; align-items:center; gap:13px; padding:14px 18px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); margin:0 0 20px;
+  transition:border-left-color 0.4s ease, background-color 0.4s ease; }
 .admin-shell .mc-banner.ok { border-left:3px solid var(--green); }
 .admin-shell .mc-banner.warn { border-left:3px solid var(--amber); }
 .admin-shell .mc-banner.bad { border-left:3px solid var(--red); }
-.admin-shell .mc-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.admin-shell .mc-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0;
+  transition:background-color 0.4s ease; }
 .admin-shell .mc-dot.ok { background:var(--green); }
 .admin-shell .mc-dot.warn { background:var(--amber); }
 .admin-shell .mc-dot.bad { background:var(--red); }
@@ -170,10 +183,14 @@ ${DESIGN_TOKENS}
 .admin-shell .hbeat.down { border-left:2px solid var(--red); }
 .admin-shell .hbeat.stale { border-left:2px solid var(--amber); }
 .admin-shell .hbeat.healthy { border-left:2px solid var(--green); }
-.admin-shell .hbeat-dot { width:9px; height:9px; border-radius:50%; }
-.admin-shell .hbeat-dot.down { background:var(--red); }
-.admin-shell .hbeat-dot.stale { background:var(--amber); }
+.admin-shell .hbeat-dot { width:9px; height:9px; border-radius:50%; transform-origin:center; }
+.admin-shell .hbeat-dot.down { background:var(--red); animation:hbeat-pulse 1.8s ease-in-out infinite; }
+.admin-shell .hbeat-dot.stale { background:var(--amber); animation:hbeat-pulse 1.8s ease-in-out infinite; }
 .admin-shell .hbeat-dot.healthy { background:var(--green); }
+@keyframes hbeat-pulse {
+  0%, 100% { opacity:1; transform:scale(1); }
+  50%      { opacity:0.55; transform:scale(1.18); }
+}
 .admin-shell .hbeat-name { font-family:var(--mono); font-size:12px; font-weight:600; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .admin-shell .hbeat-when { font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums; }
 .admin-shell .hbeat-why { font-size:12px; color:var(--text-2); line-height:1.45; }
@@ -195,7 +212,14 @@ ${DESIGN_TOKENS}
 
 /* ── Ops / content / queue stat grids ────────────────── */
 .admin-shell .ops-grid, .admin-shell .content-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:0; border:1px solid var(--border); border-radius:var(--r-md); overflow:hidden; }
-.admin-shell .ops-stat, .admin-shell .content-stat { position:relative; background:var(--surface); border-right:1px solid var(--border); border-bottom:1px solid var(--border); padding:16px; transition:background 0.13s ease; }
+.admin-shell .ops-stat, .admin-shell .content-stat { position:relative; background:var(--surface); border-right:1px solid var(--border); border-bottom:1px solid var(--border); padding:16px; transition:background 0.13s ease;
+  animation:kpi-rise 0.42s cubic-bezier(0.2,0.65,0.3,1) backwards; }
+.admin-shell .ops-stat:nth-child(1), .admin-shell .content-stat:nth-child(1) { animation-delay:0ms; }
+.admin-shell .ops-stat:nth-child(2), .admin-shell .content-stat:nth-child(2) { animation-delay:70ms; }
+.admin-shell .ops-stat:nth-child(3), .admin-shell .content-stat:nth-child(3) { animation-delay:140ms; }
+.admin-shell .ops-stat:nth-child(4), .admin-shell .content-stat:nth-child(4) { animation-delay:210ms; }
+.admin-shell .ops-stat:nth-child(5), .admin-shell .content-stat:nth-child(5) { animation-delay:280ms; }
+.admin-shell .ops-stat:nth-child(6), .admin-shell .content-stat:nth-child(6) { animation-delay:350ms; }
 .admin-shell .ops-stat:hover, .admin-shell .content-stat:hover { background:var(--surface-2); }
 .admin-shell .ops-stat::before, .admin-shell .content-stat::before { content:""; position:absolute; inset:0 auto auto 0; height:2px; width:0; background:var(--accent); transition:width 0.2s ease; }
 .admin-shell .ops-stat:hover::before, .admin-shell .content-stat:hover::before { width:100%; }
@@ -280,6 +304,23 @@ ${DESIGN_TOKENS}
 @media (max-width: 768px) {
   .admin-shell .integ-row { grid-template-columns:12px 1fr auto; }
   .admin-shell .integ-row .integ-why { grid-column:2 / -1; }
+}
+
+/* ── Reduced motion — disable admin entrance + pulse animations ────── */
+@media (prefers-reduced-motion: reduce) {
+  .admin-shell .kpi,
+  .admin-shell .ops-stat,
+  .admin-shell .content-stat,
+  .admin-shell .hbeat-dot.down,
+  .admin-shell .hbeat-dot.stale {
+    animation:none !important;
+    opacity:1 !important;
+    transform:none !important;
+  }
+  .admin-shell .mc-banner,
+  .admin-shell .mc-dot {
+    transition:none !important;
+  }
 }
 
 /* ── Mobile ──────────────────────────────────────────── */

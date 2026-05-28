@@ -41,14 +41,17 @@ export const UI_CSS = `
 .d14-kpi-sub { font-size:12px; color:var(--muted); margin-top:6px; }
 
 /* ── Status banner ──────────────────────────────────── */
-.d14-banner { display:flex; align-items:center; gap:13px; padding:14px 18px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); }
+.d14-banner { display:flex; align-items:center; gap:13px; padding:14px 18px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); transition:border-left-color 0.4s ease, background-color 0.4s ease; }
 .d14-banner-ok { border-left:3px solid var(--green); }
 .d14-banner-warn { border-left:3px solid var(--amber); }
 .d14-banner-bad { border-left:3px solid var(--red); }
-.d14-banner-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.d14-banner-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; transition:background-color 0.4s ease; }
 .d14-banner-ok .d14-banner-dot { background:var(--green); }
 .d14-banner-warn .d14-banner-dot { background:var(--amber); }
 .d14-banner-bad .d14-banner-dot { background:var(--red); }
+@media (prefers-reduced-motion: reduce) {
+  .d14-banner, .d14-banner-dot { transition:none !important; }
+}
 .d14-banner-text { min-width:0; flex:1; }
 .d14-banner-headline { font-size:14px; font-weight:700; color:var(--text); letter-spacing:-0.01em; }
 .d14-banner-detail { font-size:12.5px; color:var(--muted); margin-top:2px; }

@@ -24,6 +24,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { EmptyState } from "@/components/ui";
 import type { ApprovalItem, ApprovalKind } from "@/lib/admin-approvals";
 
@@ -57,6 +58,7 @@ function ageLabel(min: number): string {
 
 function ApprovalRow({ item }: { item: ApprovalItem }) {
   const router = useRouter();
+  const reduce = useReducedMotion();
   const [state, setState] = useState<RowState>({ phase: "idle" });
 
   async function act(action: "approve" | "skip") {
@@ -109,7 +111,14 @@ function ApprovalRow({ item }: { item: ApprovalItem }) {
   const resolved = state.phase === "done";
 
   return (
-    <div className="opp-card" style={resolved ? { opacity: 0.6 } : undefined}>
+    <motion.div
+      layout
+      className="opp-card"
+      initial={reduce ? false : { opacity: 0, y: 6 }}
+      animate={{ opacity: resolved ? 0.6 : 1, y: 0 }}
+      exit={reduce ? { opacity: 0 } : { opacity: 0, y: -6 }}
+      transition={{ duration: reduce ? 0 : 0.22, ease: [0.2, 0.65, 0.3, 1] }}
+    >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: 14 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ marginBottom: 6, display: "flex", gap: 6, flexWrap: "wrap" }}>
@@ -180,7 +189,7 @@ function ApprovalRow({ item }: { item: ApprovalItem }) {
           {state.message}
         </div>
       ) : null}
-    </div>
+    </motion.div>
   );
 }
 
@@ -363,9 +372,11 @@ export function ApprovalsQueue({
                 {group.label} ({groupItems.length})
               </div>
             </div>
-            {groupItems.map((item) => (
-              <ApprovalRow key={item.key} item={item} />
-            ))}
+            <AnimatePresence initial={false} mode="popLayout">
+              {groupItems.map((item) => (
+                <ApprovalRow key={item.key} item={item} />
+              ))}
+            </AnimatePresence>
           </div>
         );
       })}
