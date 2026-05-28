@@ -224,12 +224,33 @@
     to { background-position: -200% 0; }
   }
 
-  /* Honor reduced-motion globally — disable shimmer / marquee. */
+  /* Hero entrance — phrases lift in from below in a single cascade on mount.
+     Used on the home page H1 once per pageview; never on scroll. */
+  .hero-phrase {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.4em);
+    animation: hero-rise 0.65s cubic-bezier(0.2, 0.65, 0.3, 1) forwards;
+  }
+
+  @keyframes hero-rise {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Honor reduced-motion globally — disable shimmer / marquee / hero entrance. */
   @media (prefers-reduced-motion: reduce) {
     .text-aurora,
     .animate-deploy-marquee,
     .animate-aurora-a,
     .animate-aurora-b {
+      animation: none !important;
+    }
+    .hero-phrase {
+      opacity: 1 !important;
+      transform: none !important;
       animation: none !important;
     }
   }

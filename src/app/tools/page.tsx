@@ -5,82 +5,125 @@ import { SiteFooter } from "@/components/site-footer";
 
 export const metadata = {
   title: "Free tools — Day14",
-  description: "Free tools and templates from Day14. The stack we use to ship in 14 days, available for anyone to study or steal.",
+  description:
+    "Free tools and templates from Day14. The stack we use to ship in 14 days, available for anyone to study or steal.",
 };
 
 const TOOLS = [
   {
     title: "Day14 Pricing Calculator",
-    desc: "Plug in your SaaS subscriptions (Jobber, Housecall Pro, Squarespace, GoHighLevel, etc.) — we'll calculate the 3-year cost vs Day14 + tell you when the break-even is.",
+    desc: "Plug in your SaaS subscriptions (Jobber, Housecall Pro, Squarespace, GoHighLevel). We calculate the 3-year cost vs Day14 and tell you when the break-even is.",
     href: "/tools/pricing-calculator",
-    icon: "🧮",
     status: "coming",
   },
   {
     title: "14-Day Build Plan Template",
-    desc: "The exact playbook we use to ship a Portal-tier project. Notion template + checklists + the order-form we send customers.",
+    desc: "The exact playbook we use to ship a Portal-tier project. Notion template, checklists, and the order form we send customers.",
     href: "/tools/build-plan",
-    icon: "📋",
     status: "coming",
   },
   {
     title: "Niche Validator",
-    desc: "Type a business idea. We Gemini-search for current competitors + market size signals + winning angles. Same engine we use internally.",
+    desc: "Type a business idea. We Gemini-search for current competitors, market-size signals, and winning angles. Same engine we use internally.",
     href: "/tools/niche-validator",
-    icon: "🎯",
     status: "coming",
   },
   {
     title: "Stack Auditor",
-    desc: "Paste your current website URL. We'll inspect your stack (analytics, hosting, ESP, CRM, payments) and tell you what's costing you 3x what it should.",
+    desc: "Paste your current website URL. We inspect your stack (analytics, hosting, ESP, CRM, payments) and tell you what is costing 3× what it should.",
     href: "/tools/stack-audit",
-    icon: "🔍",
     status: "coming",
   },
+];
+
+const ALREADY_PUBLIC = [
+  { href: "/api/feed.xml", label: "Live RSS feed", desc: "Every commit and agent action on the Day14 empire, in real time." },
+  { href: "/builds", label: "Public build logs", desc: "Every customer build is public from day one." },
+  { href: "/stack", label: "The Day14 stack", desc: "Full breakdown of the 20+ agents we run." },
+  { href: "/case-studies/hot-flash-co", label: "Hot Flash Co case study", desc: "How we used the stack to build an autonomous POD store in under a day." },
 ];
 
 export default function ToolsPage() {
   return (
     <>
-    <SiteHeader />
-    <main style={{ maxWidth: 1000, margin: "0 auto", padding: "80px 32px", fontFamily: "-apple-system, BlinkMacSystemFont, system-ui, sans-serif", color: "#2F2A33" }}>
-      <h1 style={{ fontSize: 48, letterSpacing: "-0.02em", marginBottom: 16, lineHeight: 1.1 }}>Free tools</h1>
-      <p style={{ fontSize: 19, color: "#7A6F8F", marginBottom: 48, lineHeight: 1.55, maxWidth: 720 }}>
-        Internal tools from the Day14 stack, open to anyone. Most of these power our customer builds — we figured if they save us hours, they'll save you hours.
-      </p>
+      <SiteHeader />
+      <main className="container-page py-20 sm:py-28">
+        <section className="mb-16 max-w-3xl">
+          <span className="eyebrow eyebrow-rule mb-4">Free tools</span>
+          <h1 className="mb-5">
+            Internal tools from the Day14 stack,{" "}
+            <span className="marker">open to anyone</span>.
+          </h1>
+          <p className="text-lg leading-relaxed text-ink-500 sm:text-xl">
+            Most of these power our customer builds. If they save us hours, they will save
+            you hours too.
+          </p>
+        </section>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 20, marginBottom: 64 }}>
-        {TOOLS.map((t) => (
-          <div key={t.title} style={{ background: "white", border: "1px solid #E5DDD0", borderRadius: 12, padding: 24, position: "relative", opacity: t.status === "coming" ? 0.85 : 1 }}>
-            <div style={{ fontSize: 36, marginBottom: 12 }}>{t.icon}</div>
-            <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 8, letterSpacing: "-0.01em" }}>{t.title}</h3>
-            <p style={{ fontSize: 14, color: "#666", lineHeight: 1.6, marginBottom: 16 }}>{t.desc}</p>
-            {t.status === "coming" ? (
-              <span style={{ display: "inline-block", padding: "4px 10px", background: "#FAF8F4", border: "1px solid #E5DDD0", borderRadius: 100, fontSize: 11, color: "#7A6F8F", textTransform: "uppercase", letterSpacing: "0.08em" }}>Coming soon</span>
-            ) : (
-              <Link href={t.href} style={{ color: "#2F2A33", fontSize: 14, fontWeight: 500 }}>Open tool →</Link>
-            )}
+        <section className="mb-20 grid grid-cols-1 gap-4 md:grid-cols-2">
+          {TOOLS.map((t) => (
+            <div key={t.title} className="card-pop relative">
+              <div className="mb-3 flex items-start justify-between gap-3">
+                <h3 className="text-lg font-bold leading-snug tracking-tighter">
+                  {t.title}
+                </h3>
+                {t.status === "coming" ? (
+                  <span className="badge whitespace-nowrap">Coming soon</span>
+                ) : null}
+              </div>
+              <p className="mb-4 text-sm leading-relaxed text-ink-500">{t.desc}</p>
+              {t.status !== "coming" ? (
+                <Link
+                  href={t.href}
+                  className="text-sm font-semibold text-ember-600 hover:text-ember-700"
+                >
+                  Open tool →
+                </Link>
+              ) : null}
+            </div>
+          ))}
+        </section>
+
+        <section className="mb-20 border border-ink-100 bg-paper-50 p-8 sm:p-12">
+          <div className="max-w-2xl">
+            <span className="eyebrow mb-3">Get notified</span>
+            <h2 className="mb-3">Email me when each one ships.</h2>
+            <p className="mb-6 text-base leading-relaxed text-ink-500">
+              Subscribe to the build log and I will send a note when each tool goes live
+              (along with everything else we are shipping).
+            </p>
+            <div className="max-w-md">
+              <NewsletterSignup source="tools-page" buttonText="Notify me" />
+            </div>
           </div>
-        ))}
-      </div>
+        </section>
 
-      <section style={{ background: "#FAF8F4", borderRadius: 16, padding: 32, marginBottom: 48 }}>
-        <h2 style={{ fontSize: 24, letterSpacing: "-0.01em", marginBottom: 12 }}>Tell me when these ship</h2>
-        <p style={{ color: "#666", marginBottom: 20, fontSize: 15 }}>Subscribe to the build log and I'll email you when each tool goes live (along with everything else we're shipping).</p>
-        <NewsletterSignup source="tools-page" buttonText="Notify me" />
-      </section>
-
-      <section>
-        <h2 style={{ fontSize: 24, letterSpacing: "-0.01em", marginBottom: 12 }}>Already public</h2>
-        <ul style={{ paddingLeft: 24, lineHeight: 2 }}>
-          <li><Link href="/api/feed.xml" style={{ color: "#7A6F8F" }}>Live RSS feed</Link> — every commit and agent action on the Day14 empire, in real time.</li>
-          <li><Link href="/builds" style={{ color: "#7A6F8F" }}>Public build logs</Link> — every customer build is public from day one.</li>
-          <li><Link href="/stack" style={{ color: "#7A6F8F" }}>The Day14 stack</Link> — full breakdown of the 20+ agents we run.</li>
-          <li><Link href="/case-studies/hot-flash-co" style={{ color: "#7A6F8F" }}>Hot Flash Co case study</Link> — how we used the stack to build an autonomous POD store in under a day.</li>
-        </ul>
-      </section>
-    </main>
-    <SiteFooter />
+        <section>
+          <div className="mb-8 max-w-2xl">
+            <span className="eyebrow mb-3">Already public</span>
+            <h2 className="mb-3">Open right now.</h2>
+          </div>
+          <ul className="divide-y divide-ink-100 border-y border-ink-100">
+            {ALREADY_PUBLIC.map((l) => (
+              <li key={l.href}>
+                <Link
+                  href={l.href}
+                  className="group flex flex-col gap-1 px-2 py-4 transition-colors duration-150 hover:bg-paper-50 sm:flex-row sm:items-baseline sm:gap-6"
+                >
+                  <span className="text-sm font-semibold text-ink group-hover:text-ember-600 sm:w-56 sm:shrink-0">
+                    {l.label}
+                    <span className="ml-1 text-ember-500 transition-transform duration-150 group-hover:translate-x-0.5 inline-block">
+                      →
+                    </span>
+                  </span>
+                  <span className="text-sm leading-relaxed text-ink-500">{l.desc}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </main>
+      <SiteFooter />
     </>
   );
 }

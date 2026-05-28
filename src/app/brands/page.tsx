@@ -38,51 +38,44 @@ export default async function BrandsIndex() {
   return (
     <>
       <SiteHeader />
-      <main
-        style={{
-          maxWidth: 1100,
-          margin: "0 auto",
-          padding: "80px 32px",
-          fontFamily: "-apple-system, BlinkMacSystemFont, system-ui, sans-serif",
-          color: "#2F2A33",
-          lineHeight: 1.6,
-        }}
-      >
-        <h1 style={{ fontSize: 44, letterSpacing: "-0.02em", marginBottom: 16 }}>Brands</h1>
-        <p style={{ fontSize: 18, color: "#7A6F8F", marginBottom: 48, lineHeight: 1.55, maxWidth: 640 }}>
-          Every business below was launched, designed, and is run day-to-day by the Day14 OS &mdash;
-          brand identity, storefront, content, and customer ops, all on autopilot.
-        </p>
+      <main className="container-page py-20 sm:py-28">
+        <section className="mb-16 max-w-3xl">
+          <span className="eyebrow eyebrow-rule mb-4">Brands</span>
+          <h1 className="mb-5">
+            Every business below is{" "}
+            <span className="marker">launched, designed, and run</span> by the Day14 OS.
+          </h1>
+          <p className="text-lg leading-relaxed text-ink-500 sm:text-xl">
+            Brand identity, storefront, content, customer ops — all on autopilot.
+          </p>
+        </section>
+
         {sites.length === 0 ? (
-          <p style={{ color: "#7A6F8F" }}>No brand sites published yet.</p>
+          <div className="border border-dashed border-ink-200 bg-paper-50 px-6 py-16 text-center">
+            <p className="text-sm text-ink-500">
+              No brand sites published yet. New brands appear here as they ship.
+            </p>
+          </div>
         ) : (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-              gap: 20,
-            }}
-          >
+          <div className="grid grid-cols-1 gap-px overflow-hidden border border-ink-100 bg-ink-100 sm:grid-cols-2 lg:grid-cols-3">
             {sites.map((s) => (
               <Link
                 key={s.slug}
                 href={`/brands/${s.slug}`}
-                style={{ textDecoration: "none", color: "inherit" }}
+                className="group block bg-paper p-6 transition-colors duration-150 hover:bg-paper-100"
               >
-                <article
-                  style={{
-                    border: "1px solid #E5DFD3",
-                    borderRadius: 14,
-                    padding: 28,
-                    height: "100%",
-                    background: "#fff",
-                  }}
-                >
-                  <h2 style={{ fontSize: 22, letterSpacing: "-0.01em", marginBottom: 8 }}>
+                <article className="relative">
+                  <span className="absolute left-0 top-0 h-px w-0 bg-ember-500 transition-[width] duration-200 ease-out group-hover:w-full" />
+                  <h2 className="mb-2 text-xl font-bold leading-snug tracking-tighter">
                     {s.display_name}
                   </h2>
-                  <p style={{ color: "#7A6F8F", fontSize: 15, margin: 0 }}>{s.tagline}</p>
-                  <div style={{ marginTop: 18, fontSize: 14, fontWeight: 600 }}>Visit site &rarr;</div>
+                  <p className="mb-6 text-sm leading-relaxed text-ink-500">{s.tagline}</p>
+                  <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-ember-600">
+                    Visit site
+                    <span className="transition-transform duration-150 group-hover:translate-x-0.5">
+                      →
+                    </span>
+                  </div>
                 </article>
               </Link>
             ))}

@@ -86,10 +86,16 @@ function Hero() {
         </div>
 
         <h1 className="max-w-4xl text-[2.75rem] font-extrabold leading-[1.0] tracking-tightest text-ink sm:text-[64px] lg:text-[78px]">
-          Real business platforms,{" "}
-          <span className="marker text-ink">owned by you</span>.
+          <span className="hero-phrase" style={{ animationDelay: "0ms" }}>
+            Real business platforms,
+          </span>{" "}
+          <span className="hero-phrase" style={{ animationDelay: "140ms" }}>
+            <span className="marker text-ink">owned by you</span>.
+          </span>
           <br className="hidden sm:block" />{" "}
-          Built in <span className="tnum text-ember-600">14 days</span>.
+          <span className="hero-phrase" style={{ animationDelay: "280ms" }}>
+            Built in <span className="tnum text-ember-600">14 days</span>.
+          </span>
         </h1>
 
         <p className="mt-7 max-w-2xl text-lg text-ink-500 sm:text-xl">
@@ -269,7 +275,7 @@ function Verticals() {
             <Link
               key={v.slug}
               href={`/verticals/${v.slug}`}
-              className="group relative flex h-full flex-col border-b border-r border-ink-100 bg-paper-50 p-7 transition-colors hover:bg-paper-100"
+              className="group relative flex h-full flex-col border-b border-r border-ink-100 bg-paper-50 p-7 transition-[background-color,transform] duration-200 ease-out hover:-translate-y-0.5 hover:bg-paper-100 motion-reduce:transform-none motion-reduce:hover:translate-y-0"
             >
               <span className="absolute inset-x-0 top-0 h-0.5 w-0 bg-ember-500 transition-all duration-200 group-hover:w-full" />
               <div className="font-mono text-xs font-bold uppercase tracking-[0.18em] text-ember-600">
@@ -686,7 +692,7 @@ function CaseStudies() {
             <Link
               key={cs.slug}
               href={`/case-studies/${cs.slug}`}
-              className="group relative block border-b border-r border-ink-100 bg-paper-50 p-7 transition-colors hover:bg-paper-100"
+              className="group relative block border-b border-r border-ink-100 bg-paper-50 p-7 transition-[background-color,transform] duration-200 ease-out hover:-translate-y-0.5 hover:bg-paper-100 motion-reduce:transform-none motion-reduce:hover:translate-y-0"
             >
               <span className="absolute inset-x-0 top-0 h-0.5 w-0 bg-ember-500 transition-all duration-200 group-hover:w-full" />
               <div className="flex items-center justify-between">
