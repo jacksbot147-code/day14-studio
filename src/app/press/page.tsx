@@ -60,7 +60,7 @@ export default function PressPage() {
           <span className="eyebrow lg:pt-2">One-liner</span>
           <p className="border-l-2 border-ember-300 pl-6 text-lg leading-relaxed text-ink sm:text-xl">
             A one-operator build studio shipping real business platforms in 14 days,
-            productized at $2,500–$10,000 — and using its own AI agent stack to do it.
+            productized at $2,500–$10,000, using its own AI agent stack to do it.
           </p>
         </section>
 
@@ -70,7 +70,7 @@ export default function PressPage() {
             <p>
               The agency model is broken: project managers, designers, frontend, backend,
               QA, account managers, 6-month timelines, $50k minimums. Day14 ships the same
-              output with one operator and a fleet of AI agents — in two weeks, at a fixed
+              output with one operator and a fleet of AI agents, in two weeks, at a fixed
               price, with the customer owning the code.
             </p>
             <p>
@@ -89,7 +89,7 @@ export default function PressPage() {
             Florida, he is the only human on the team. Day14's twenty-plus AI agents
             handle the rest: sales drafts, customer success, financial reporting, content
             production, compliance review, devops. Before Day14 he ran service businesses
-            directly — the playbook is now productized.
+            directly. The playbook is now productized.
           </p>
         </section>
 

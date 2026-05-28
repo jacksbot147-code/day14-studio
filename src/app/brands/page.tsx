@@ -46,7 +46,7 @@ export default async function BrandsIndex() {
             <span className="marker">launched, designed, and run</span> by the Day14 OS.
           </h1>
           <p className="text-lg leading-relaxed text-ink-500 sm:text-xl">
-            Brand identity, storefront, content, customer ops — all on autopilot.
+            Brand identity, storefront, content, customer ops. All on autopilot.
           </p>
         </section>
 

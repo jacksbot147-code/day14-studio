@@ -141,8 +141,8 @@ export default function StackPage() {
             <span className="eyebrow mb-3">Live proof</span>
             <h2 className="mb-3">The stack runs our own businesses too.</h2>
             <p className="text-base leading-relaxed text-ink-500">
-              Hot Flash Co is a perimenopause-humor POD store we built as a stress-test —
-              full autopilot from idea to first product in under a day.
+              Hot Flash Co is a perimenopause-humor POD store we built as a stress-test.
+              Full autopilot, idea to first product in under a day.
             </p>
           </div>
           <div className="grid grid-cols-1 gap-px overflow-hidden border border-ink-100 bg-ink-100 sm:grid-cols-3">

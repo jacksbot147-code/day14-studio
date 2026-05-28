@@ -15,7 +15,7 @@ export const metadata = {
 const EXPECT = [
   {
     label: "Daily build logs",
-    desc: "From active customer projects — public commits, day-by-day progress.",
+    desc: "From active customer projects. Public commits, day-by-day progress.",
   },
   {
     label: "Stack teardowns",
@@ -42,7 +42,7 @@ export default function NewsletterPage() {
             The Day14 <span className="marker">build log</span>.
           </h1>
           <p className="mb-10 text-lg leading-relaxed text-ink-500 sm:text-xl">
-            One email a week. What we shipped, what broke, what we would do differently —
+            One email a week. What we shipped, what broke, what we would do differently,
             plus a running tally of every business we are building on the Day14 stack. No
             filler, no &ldquo;here is what is new at our company.&rdquo;
           </p>
