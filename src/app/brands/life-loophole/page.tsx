@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { CATALOG } from "./catalog";
 import type { LoopholeEntry } from "./catalog";
+import { StaggerCtas } from "@/components/motion/stagger-ctas";
 
 /* ------------------------------------------------------------------ *
  * Life Loophole — brand landing site (day14.us/brands/life-loophole)
@@ -50,8 +51,8 @@ function hay(e: LoopholeEntry): string {
 const CSS = `
 .ll-root{
   --bg:#fbfaf7;--bg2:#f1f0ea;--card:#ffffff;--ink:#13211d;--ink2:#3b4a44;
-  --muted:#6a7872;--line:#e4e3db;--teal:#0f766e;--teal-dk:#0a4f49;
-  --teal-soft:#e3f0ee;--teal-tint:#f0f7f5;--gold:#b07d2b;--gold-soft:#f6eddc;
+  --muted:#5a685f;--line:#e4e3db;--teal:#0f766e;--teal-dk:#0a4f49;
+  --teal-soft:#e3f0ee;--teal-tint:#f0f7f5;--gold:#b07d2b;--gold-dk:#8a5b1d;--gold-soft:#f6eddc;
   --serif:Georgia,'Times New Roman',serif;
   --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
   background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;
@@ -164,7 +165,7 @@ html{scroll-behavior:smooth;}
 .ll-root .bdg{font-size:10px;font-weight:700;text-transform:uppercase;
   letter-spacing:.04em;padding:3px 7px;border-radius:5px;background:#eef1ef;color:var(--muted);}
 .ll-root .bdg.p{background:var(--teal-soft);color:var(--teal-dk);}
-.ll-root .bdg.pro{background:var(--gold-soft);color:var(--gold);}
+.ll-root .bdg.pro{background:var(--gold-soft);color:var(--gold-dk);}
 .ll-root .bdg.r-low{background:#e3f1ee;color:#0f766e;}
 .ll-root .bdg.r-medium{background:#fbf2dc;color:#9a6b00;}
 .ll-root .bdg.r-high{background:#fbe9e6;color:#b3402f;}
@@ -478,10 +479,10 @@ export default function LifeLoopholeSite() {
               explained in plain English — so you can stop overpaying and start using the system
               the way it was actually built to be used.
             </p>
-            <div className="cta">
+            <StaggerCtas className="cta">
               <a href="/brands/life-loophole/advisor" className="btn lg">Ask the advisor</a>
               <a href="#finder" className="btn ghost lg">Browse the finder</a>
-            </div>
+            </StaggerCtas>
             <div className="trust">
               <span><b>48</b> sourced strategies</span>
               <span><b>Every one legal</b> — and growing</span>

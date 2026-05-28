@@ -16,6 +16,13 @@ import { existsSync } from "node:fs";
 import { homedir } from "node:os";
 import { loadStore, money, auditRE } from "./brain.mjs";
 
+// Realty killswitch — set by scheduled task workday-t01 (2026-05-28) to stop
+// realty scans from burning tokens. Resume = delete the killswitch file.
+if (existsSync(path.join(homedir(), "Documents/studio/public/data/ops/.realty-killswitch"))) {
+  console.log("Realty paused — exiting");
+  process.exit(0);
+}
+
 export const BUILD_SPEC = {
   capability: "mao-offer-drafter",
   beyond: "From scored deal -> DRAFT offer with price + terms in one step. The 70% rule applied consistently across every property.",

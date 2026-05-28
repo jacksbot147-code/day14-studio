@@ -11,6 +11,17 @@
  * file edit + SKIP_TRACE_API_KEY in .env.local.
  */
 
+import path from "node:path";
+import { existsSync } from "node:fs";
+import { homedir } from "node:os";
+
+// Realty killswitch — set by scheduled task workday-t01 (2026-05-28) to stop
+// realty scans from burning tokens. Resume = delete the killswitch file.
+if (existsSync(path.join(homedir(), "Documents/studio/public/data/ops/.realty-killswitch"))) {
+  console.log("Realty paused — exiting");
+  process.exit(0);
+}
+
 export const BUILD_SPEC = {
   capability: "skip-trace",
   beyond: "Bridges a county parcel ID to a reachable owner contact — the missing edge between scored deals and outreach drafts.",

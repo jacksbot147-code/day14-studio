@@ -18,7 +18,7 @@ export const DESIGN_TOKENS = `
   /* Ember accent — aligns the admin with the day14.us marketing palette. */
   --accent:#e04617; --accent-text:#b5360f; --accent-soft:#fdeee9;
   --green:#15803d; --green-soft:#e7f6ec;
-  --gold:#b45309; --amber:#b45309; --amber-soft:#fbf0db;
+  --gold:#9a4708; --amber:#9a4708; --amber-soft:#fbf0db;
   --red:#dc2626; --red-soft:#fdeceb;
   --cyan:#0e7490; --purple:#7c3aed;
   /* Elevation used almost never — a single-pixel hairline, no blur. */
@@ -51,8 +51,8 @@ export const designTokenValues = {
   accentSoft: "#fdeee9",
   green: "#15803d",
   greenSoft: "#e7f6ec",
-  gold: "#b45309",
-  amber: "#b45309",
+  gold: "#9a4708",
+  amber: "#9a4708",
   amberSoft: "#fbf0db",
   red: "#dc2626",
   redSoft: "#fdeceb",

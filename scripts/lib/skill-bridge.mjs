@@ -33,8 +33,16 @@
 
 import { stripSlop, INLINE_RULE_COUNT, loadRulesFromSkillDir } from "./skills/stop-slop.mjs";
 import { invokeMarketingSkill } from "./skills/marketing-skills.mjs";
-import { invokeUiUxProMax } from "./skills/ui-ux-pro-max.mjs";
-import { invokeNanoBanana } from "./skills/cc-nano-banana.mjs";
+import { invokeUiUxProMax, invokeUxSkill } from "./skills/ui-ux-pro-max.mjs";
+import { invokeNanoBanana, generateImage as generateBananaImage } from "./skills/cc-nano-banana.mjs";
+
+// Re-export the runtime contract so daemons can call it directly without
+// going through the legacy { prompt, images, outDir } envelope.
+export { generateBananaImage };
+
+// Re-export the audit-shaped entry so daemons can import it from the bridge
+// without reaching into the per-skill module directly.
+export { invokeUxSkill };
 
 // ---- skill registry ------------------------------------------------------
 // Each entry: { kind, handler? }
@@ -95,10 +103,32 @@ const SKILLS = {
   "cc-nano-banana": {
     kind: "node",
     async handler(input, opts = {}) {
-      // Accept either `{ prompt, images?, outDir? }` or a bare string.
+      // Accept three input shapes:
+      //   - bare string                       -> { prompt }
+      //   - { prompt, size, style, tenant }   -> runtime contract (generateImage)
+      //   - { prompt, images?, outDir? }      -> legacy gemini-CLI shape
+      // We dispatch on the presence of `images` / `outDir` to keep
+      // back-compat with the original wrapper.
       const normalized =
-        typeof input === "string" ? { prompt: input } : input;
-      return invokeNanoBanana(normalized, opts);
+        typeof input === "string" ? { prompt: input } : input || {};
+      const looksLikeLegacy =
+        Array.isArray(normalized.images) || typeof normalized.outDir === "string";
+      if (looksLikeLegacy) {
+        return invokeNanoBanana(normalized, opts);
+      }
+      const gen = await generateBananaImage({
+        prompt: normalized.prompt,
+        size: normalized.size || opts.size,
+        style: normalized.style || opts.style,
+        tenant: normalized.tenant || opts.tenant,
+      });
+      return {
+        ok: gen.ok,
+        skill: "cc-nano-banana",
+        output: gen.path,
+        reason: gen.ok ? undefined : gen.reason,
+        meta: { path: gen.path, cached: gen.cached, via: "rest" },
+      };
     },
   },
   "framer-motion": {

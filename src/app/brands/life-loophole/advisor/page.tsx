@@ -68,8 +68,8 @@ const EXAMPLES: string[] = [
 const CSS = `
 .ll-root{
   --bg:#fbfaf7;--bg2:#f1f0ea;--card:#ffffff;--ink:#13211d;--ink2:#3b4a44;
-  --muted:#6a7872;--line:#e4e3db;--teal:#0f766e;--teal-dk:#0a4f49;
-  --teal-soft:#e3f0ee;--teal-tint:#f0f7f5;--gold:#b07d2b;--gold-soft:#f6eddc;
+  --muted:#5a685f;--line:#e4e3db;--teal:#0f766e;--teal-dk:#0a4f49;
+  --teal-soft:#e3f0ee;--teal-tint:#f0f7f5;--gold:#b07d2b;--gold-dk:#8a5b1d;--gold-soft:#f6eddc;
   --red-soft:#fbe9e6;--red:#b3402f;
   --serif:Georgia,'Times New Roman',serif;
   --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
@@ -155,7 +155,7 @@ const CSS = `
 .ll-root .bdg{font-size:10px;font-weight:700;text-transform:uppercase;
   letter-spacing:.04em;padding:3px 7px;border-radius:5px;
   background:#eef1ef;color:var(--muted);}
-.ll-root .bdg.pro{background:var(--gold-soft);color:var(--gold);}
+.ll-root .bdg.pro{background:var(--gold-soft);color:var(--gold-dk);}
 .ll-root .bdg.r-low{background:#e3f1ee;color:#0f766e;}
 .ll-root .bdg.r-medium{background:#fbf2dc;color:#9a6b00;}
 .ll-root .bdg.r-high{background:var(--red-soft);color:var(--red);}

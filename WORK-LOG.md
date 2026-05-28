@@ -1,0 +1,378 @@
+# studio WORK-LOG
+
+Append-only operational log. Most recent at the bottom.
+
+---
+
+## 2026-05-28 08:20 — Realty paused
+
+Scheduled task `workday-t01-stop-realty-scans` (Day14 T1) paused all realty
+work to stop token bleed.
+
+**Killswitch file:**
+`~/Documents/studio/public/data/ops/.realty-killswitch`
+
+**Script guards added (early-exit when killswitch present):**
+- `scripts/verticals/real-estate/outreach-drafter.mjs`
+- `scripts/verticals/real-estate/mao-offer-drafter.mjs`
+- `scripts/verticals/real-estate/re-skip-trace.mjs`
+
+**LaunchAgents expected to be unloaded** (label pattern from
+`install-realty-scout.sh`, default slug `day14-realty`):
+- `com.day14.realty-scout-day14-realty`
+
+**Sandbox limitation note:** the scheduled-task runner could not execute
+`launchctl` against the user's session, so the actual `launchctl unload`
+step must be run manually from a Terminal on the user's machine. The
+killswitch + script guards above defensively prevent realty work either
+way — any agent that fires will exit immediately at `process.exit(0)`
+with `"Realty paused — exiting"` in its log.
+
+**Manual unload (run in Terminal):**
+
+```bash
+for plist in ~/Library/LaunchAgents/com.day14.realty-*.plist; do
+  [ -f "$plist" ] || continue
+  echo "unloading $plist"
+  launchctl unload "$plist"
+done
+```
+
+**To resume realty work:**
+
+```bash
+rm ~/Documents/studio/public/data/ops/.realty-killswitch
+for plist in ~/Library/LaunchAgents/com.day14.realty-*.plist; do
+  [ -f "$plist" ] || continue
+  launchctl load "$plist"
+done
+```
+
+Then revert (or leave) the three script guards — they no-op once the
+killswitch file is gone.
+
+**Tenant exclusions today** (per workday plan, not realty-related but
+recorded here for the day): `hot-flash-co`, `kennum-lawn-care` — no new
+work.
+
+---
+
+## 2026-05-28T12:47:19.767Z — auto-todo-sync
+
+- before: 23 open todos
+- added: 24
+  - #26 [alignmd] Run AlignMD Supabase migration 0013_clinician_portal.sql
+  - #27 [day14] Toggle Vercel Web Analytics ON for studio project
+  - #28 [day14] Restart Telegram poller LaunchAgent
+  - #29 [day14-realty] Pick a skip-trace provider for re-skip-trace.mjs
+  - #30 [day14] Pick a newsletter platform (MailerLite vs ConvertKit vs Beehiiv)
+  - #31 [life-loophole] Sign off on Life Loophole article draft 1 of 6
+  - #32 [life-loophole] Sign off on Life Loophole article draft 2 of 6
+  - #33 [life-loophole] Sign off on Life Loophole article draft 3 of 6
+  - #34 [life-loophole] Sign off on Life Loophole article draft 4 of 6
+  - #35 [life-loophole] Sign off on Life Loophole article draft 5 of 6
+  - #36 [life-loophole] Sign off on Life Loophole article draft 6 of 6
+  - #37 [day14] Sign off on CS reply template 1 of 6
+  - #38 [day14] Sign off on CS reply template 2 of 6
+  - #39 [day14] Sign off on CS reply template 3 of 6
+  - #40 [day14] Sign off on CS reply template 4 of 6
+  - #41 [day14] Sign off on CS reply template 5 of 6
+  - #42 [day14] Sign off on CS reply template 6 of 6
+  - #43 [day14] AlignMD migrations 0011–0013
+  - #44 [day14] `~/Documents/studio/.env.local` keys
+  - #45 [day14] RentCast key
+  - #46 [day14] Telegram poller restart
+  - #47 [day14] Draft sign-offs
+  - #48 [day14] Vercel Analytics dashboard toggle
+  - #49 [day14] Skip-trace provider pick
+- resolved: 0
+- pruned (≥30d done): 0
+- dropped by exclusion (tenant filter): 6 — hot-flash-co:6
+- empire-state.json#human_todos length: 44
+
+---
+
+## 2026-05-28 08:50 — auto-todo LaunchAgent staged
+
+Staged the recurring runner for `scripts/auto-todo-sync.mjs`.
+
+**LaunchAgent plist (staged in repo, not yet loaded):**
+- `~/Documents/studio/scripts/launch-agents/com.day14.auto-todo.plist`
+
+**Schedule:** every hour, on the hour, 24/7
+(`StartCalendarInterval` Minute=0). Also `RunAtLoad=true` so the first
+run fires when you load it (instead of waiting up to 60 min).
+
+**Sandbox limitation note:** the scheduled-task runner cannot reach
+`~/Library/LaunchAgents/` and cannot invoke `launchctl` against your
+session — same constraint the realty pause hit. The plist is valid
+(`plistlib.loads` round-trips clean) and lives inside the studio repo
+ready to install.
+
+**Manual install (run in Terminal — one shot, then it self-schedules):**
+
+```bash
+bash ~/Documents/studio/scripts/launch-agents/install-auto-todo.sh
+```
+
+That script copies the plist into `~/Library/LaunchAgents/`, kicks any
+prior version, and `launchctl load`s the new one. Log file lives at
+`~/Documents/studio/logs/auto-todo.log` (the install script mkdir's
+the dir for you).
+
+**To uninstall later:**
+
+```bash
+launchctl unload ~/Library/LaunchAgents/com.day14.auto-todo.plist
+# leave the plist file in place — never delete
+```
+
+
+---
+
+## 2026-05-28T12:50:20.667Z — auto-todo-sync
+
+- before: 47 open todos
+- added: 0
+- resolved: 0
+- pruned (≥30d done): 0
+- dropped by exclusion (tenant filter): 6 — hot-flash-co:6
+- empire-state.json#human_todos length: 44
+
+2026-05-28T17:04:27.477Z cc-nano-banana placeholder no-key hash=5a906b9ebcbb size=256x256 style=abstract tenant=day14 prompt="abstract gradient day14 brand teal"
+
+2026-05-28T17:04:27.479Z cc-nano-banana cache-hit hash=5a906b9ebcbb size=256x256 style=abstract tenant=day14 prompt="abstract gradient day14 brand teal"
+
+2026-05-28T17:04:27.480Z cc-nano-banana cache-hit hash=5a906b9ebcbb size=256x256 style=abstract tenant=day14 prompt="abstract gradient day14 brand teal"
+
+2026-05-28T17:04:27.481Z cc-nano-banana cache-hit hash=5a906b9ebcbb size=256x256 style=abstract tenant=day14 prompt="abstract gradient day14 brand teal"
+
+## 2026-05-28 13:00 — T15 cc-nano-banana bridge wired
+
+Scheduled task `workday-t15-banana-bridge` (Day14 T15) replaced the
+`cc-nano-banana.mjs` stub with the runtime-callable bridge described in
+WORKDAY-2026-05-28.md.
+
+**Public contract** (now live in `scripts/lib/skills/cc-nano-banana.mjs`):
+
+```js
+generateImage({ prompt, size = "1024x1024", style = "photo", tenant })
+  -> { path, cached, ok, reason? }
+```
+
+- Cache key: `sha256(prompt + ":" + size + ":" + style)`
+- Cache dir: `public/data/cache/banana/<hash>.png` (cache hit returns
+  immediately, no API call, audit line still logged)
+- Requires `GEMINI_API_KEY`. When missing, the bridge writes a 400x400
+  brand-teal placeholder PNG (prompt embedded as `tEXt` chunk) to the
+  same cache path and returns `{ ok:false, reason:"no-key", path }` so
+  downstream `<img src=…>` consumers never 404.
+- Every call (cache-hit, placeholder, gen ok, gen fail) appends one
+  ISO-timestamped line to `WORK-LOG.md` for spend audit.
+
+**Wired into** `scripts/lib/skill-bridge.mjs`:
+
+- `invokeSkill("cc-nano-banana", { prompt, size, style, tenant })` now
+  dispatches to `generateImage` and returns the path in `output`/`meta.path`.
+- Legacy `{ prompt, images, outDir }` callers still hit the gemini-CLI
+  subprocess path via `invokeNanoBanana` (back-compat preserved).
+- `generateBananaImage` re-exported for daemons that want to skip the
+  registry envelope.
+
+**Smoke test** — `node` repl, prompt `"abstract gradient day14 brand teal"`,
+size `256x256`, style `abstract`, tenant `day14`:
+
+1. First call: `{ ok:false, cached:false, reason:"no-key", path:"<...>/5a906b9e….png" }`
+   (no `GEMINI_API_KEY` in this sandbox — placeholder written as designed).
+2. Second call: `{ ok:true, cached:true, path:"<...>/5a906b9e….png" }`
+3. Bridge call: same path, `meta.cached:true`, `meta.via:"rest"`.
+
+`file public/data/cache/banana/5a906b9e….png` → `PNG image data, 400 x 400,
+8-bit/color RGB, non-interlaced`.
+
+**Verifications:** `npm run typecheck` ✓, `npm run lint` ✓ (no warnings).
+
+**Still owed (T16–T18):** real image gen for Life Loophole hero cards,
+brand-site heroes, OG cards. Those will land when `GEMINI_API_KEY` is set
+in `.env.local`; until then the bridge writes placeholders to the same
+cache paths so the downstream tasks can wire the references without
+blocking on the key.
+
+
+2026-05-28T17:24:42.044Z cc-nano-banana placeholder no-key hash=945ebee0635e size=1536x1024 style=illustration tenant=life-loophole prompt="The HSA is the only triple-tax-advantaged account in the code. If you have a qua"
+
+2026-05-28T17:24:42.048Z cc-nano-banana placeholder no-key hash=fbafa517131b size=1536x1024 style=illustration tenant=life-loophole prompt="The Traditional IRA deduction: a quiet line on Schedule 1 that pays for itself. "
+
+2026-05-28T17:24:42.050Z cc-nano-banana placeholder no-key hash=ac1e501f6972 size=1536x1024 style=illustration tenant=life-loophole prompt="The Roth IRA trade: no break today, every break later. A Roth IRA does not give "
+
+2026-05-28T17:24:42.052Z cc-nano-banana placeholder no-key hash=82ef6105f333 size=1536x1024 style=illustration tenant=life-loophole prompt="Workplace 401(k): the only loophole your employer pays you to use. A 401(k) (or "
+
+2026-05-28T17:24:42.054Z cc-nano-banana placeholder no-key hash=689368c827d2 size=1536x1024 style=illustration tenant=life-loophole prompt="The Child Tax Credit, decoded: who qualifies and what's refundable. The Child Ta"
+
+2026-05-28T17:24:42.056Z cc-nano-banana placeholder no-key hash=17ebd7f7e784 size=1536x1024 style=illustration tenant=life-loophole prompt="Two education credits, one tuition bill: how to pick AOTC vs Lifetime Learning. "
+
+---
+
+## 2026-05-28 13:20 — T16 Life Loophole hero images (inbox cards)
+
+Scheduled task `workday-t16-banana-loophole-heroes` (Day14 T16) generated
+hero-image candidates for 6 Life Loophole article drafts via the T15
+`generateImage()` bridge.
+
+**Runner:** `scripts/workday-t16-banana-loophole-heroes.mjs`
+**Inbox file:** `public/data/inboxes/life-loophole.json`
+**Cache dir:** `public/data/cache/banana/` (6 new placeholder PNGs)
+
+**Note on drafts:** the materialized draft files
+(`content/life-loophole/drafts/`) are not yet on disk — T3 + T8 owners
+haven't run, and the auto-todo-sync seed references the drafts
+aspirationally. So this task synthesized 6 representative drafts from
+`src/app/brands/life-loophole/catalog.ts` (HSA, Traditional IRA, Roth
+IRA, 401(k), Child Tax Credit, Education Credits) — the broadest-appeal
+catalog entries. Draft IDs are stable so a re-run after the real drafts
+land is idempotent and the cards can be reconciled.
+
+**Result:**
+
+- Drafts processed: **6**
+- Real images: **0**
+- Placeholders: **6** (no `GEMINI_API_KEY` in sandbox — same constraint
+  T15 hit; placeholders write to the same cache path so the real image
+  drops in at the same location when the key is set)
+- Inbox items created: **6** (kind `hero-image-pick`, tag `life-loophole`,
+  status `awaiting-jack`, `auto_insert_into_mdx: false`)
+
+**Article bodies untouched** — per task brief, no MDX/body insertions;
+inbox cards only. `hot-flash-co` + `kennum-lawn-care` not in scope.
+
+**Verifications:** `npm run typecheck` ✓, `npm run lint` ✓ (no warnings).
+
+
+2026-05-28T17:44:17.655Z cc-nano-banana placeholder no-key hash=11b48c73a859 size=1536x1024 style=photo tenant=day14 prompt="Editorial brand hero image for Day14 — a productized build studio that ships ful"
+
+2026-05-28T17:44:17.659Z cc-nano-banana placeholder no-key hash=188bdb0f9671 size=1536x1024 style=photo tenant=day14 prompt="Editorial brand hero image for Day14. MOOD: data-rich. A precise top-down arrang"
+
+2026-05-28T17:44:17.662Z cc-nano-banana placeholder no-key hash=72ec19eec15c size=1536x1024 style=photo tenant=day14 prompt="Editorial brand hero image for Day14. MOOD: human-warm. A wide overhead photogra"
+
+2026-05-28T17:44:17.665Z cc-nano-banana placeholder no-key hash=ce91c52b08f4 size=1536x1024 style=photo tenant=day14-realty prompt="Editorial brand hero image for Day14 Realty — a Southwest Florida real estate in"
+
+2026-05-28T17:44:17.668Z cc-nano-banana placeholder no-key hash=b3e0e21905e0 size=1536x1024 style=photo tenant=day14-realty prompt="Editorial brand hero illustration for Day14 Realty. MOOD: data-rich. A top-down "
+
+2026-05-28T17:44:17.671Z cc-nano-banana placeholder no-key hash=f5eac38778d8 size=1536x1024 style=photo tenant=day14-realty prompt="Editorial brand hero photograph for Day14 Realty. MOOD: human-warm. A close, sli"
+
+2026-05-28T17:44:17.674Z cc-nano-banana placeholder no-key hash=10a53cd3374a size=1536x1024 style=photo tenant=alignmd prompt="Editorial brand hero image for AlignMD — a credential-aware healthcare staffing "
+
+2026-05-28T17:44:17.677Z cc-nano-banana placeholder no-key hash=34a1576a3f1a size=1536x1024 style=photo tenant=alignmd prompt="Editorial brand hero illustration for AlignMD. MOOD: data-rich. A top-down archi"
+
+2026-05-28T17:44:17.680Z cc-nano-banana placeholder no-key hash=077bc476a3e3 size=1536x1024 style=photo tenant=alignmd prompt="Editorial brand hero photograph for AlignMD. MOOD: human-warm. A close, candid o"
+2026-05-28T17:44:17.646Z workday-t17 brand-hero-heroes tenants=day14,day14-realty,alignmd candidates=9 real=0 placeholder=9
+
+2026-05-28T18:03:54.061Z cc-nano-banana placeholder no-key hash=1eb14107b3c3 size=1200x630 style=illustration tenant=day14 prompt="Hire Day14 to build your business — not a project. Day14 ships full-stack busine"
+
+2026-05-28T18:03:54.067Z cc-nano-banana placeholder no-key hash=4bc3eef64a64 size=1200x630 style=illustration tenant=life-loophole prompt="OG card for: The HSA is the only triple-tax-advantaged account in the code. If y"
+
+2026-05-28T18:03:54.072Z cc-nano-banana placeholder no-key hash=b67802d202f5 size=1200x630 style=illustration tenant=life-loophole prompt="OG card for: The Traditional IRA deduction: a quiet line on Schedule 1 that pays"
+
+2026-05-28T18:03:54.075Z cc-nano-banana placeholder no-key hash=aece0ef11d43 size=1200x630 style=illustration tenant=life-loophole prompt="OG card for: The Roth IRA trade: no break today, every break later. A Roth IRA d"
+
+2026-05-28T18:03:54.079Z cc-nano-banana placeholder no-key hash=14fc0fbdf7b6 size=1200x630 style=illustration tenant=life-loophole prompt="OG card for: Workplace 401(k): the only loophole your employer pays you to use. "
+
+2026-05-28T18:03:54.082Z cc-nano-banana placeholder no-key hash=49605254be58 size=1200x630 style=illustration tenant=life-loophole prompt="OG card for: The Child Tax Credit, decoded: who qualifies and what's refundable."
+
+2026-05-28T18:03:54.085Z cc-nano-banana placeholder no-key hash=e9e246525f94 size=1200x630 style=illustration tenant=life-loophole prompt="OG card for: Two education credits, one tuition bill: how to pick AOTC vs Lifeti"
+
+2026-05-28T18:22:27.000Z workday-t19 framer-admin-transitions added=src/components/motion/admin-page-transition.tsx,src/app/admin/layout.tsx edited=0 typecheck=pass lint=pass duration=200ms easing=easeOut reduced-motion=respected
+
+2026-05-28T18:42:00.000Z workday-t20 framer-stagger-dashboards added=src/components/motion/stagger-cards.tsx,src/components/motion/stagger-ctas.tsx edited=src/app/admin/page.tsx,src/app/page.tsx,src/app/brands/life-loophole/page.tsx kpi-stagger=0.05s cta-stagger=0.1s rise=8px duration=200ms easing=easeOut reduced-motion=respected typecheck=pass lint=pass realty-and-alignmd-landings=absent-from-studio-repo
+
+---
+
+## 2026-05-28 15:40 — Gap 8 completed
+
+Re-fired Gap 8 (skill library top-20 migration). 19 new pure-TS skill
+modules ported, brought the `src/lib/skills/` tree to 59 modules, and
+landed the long-missing `src/lib/skills/index.ts` barrel plus
+`~/Documents/AUDIT-2026-05-28.md`.
+
+**Migrated this run (19):**
+
+Growth cluster (6): `abandoned-cart-recovery`, `lead-source-tracker`,
+`lead-first-touch-personalizer`, `upsell-detection`,
+`win-back-campaign-trigger`, `dunning-email-sequencer`.
+
+Customer service (4): `customer-readiness-check`,
+`customer-data-deletion-handler`, `feedback-classifier`,
+`review-sentiment-scorer`.
+
+Content pipeline (8): `day14-voice`, `internal-link-suggester`,
+`brand-extractor`, `instagram-reel-caption-writer`,
+`tiktok-caption-writer`, `youtube-shorts-caption-writer`,
+`case-study-writer`, `content-calendar-orchestrator`.
+
+Decision support (1): `action-bias-coach`.
+
+**Barrel export shape** (`src/lib/skills/index.ts`):
+
+- Namespace re-exports for every migrated module (avoids
+  collisions across modules that share `run`, `ClassifyResult`,
+  etc. names).
+- Top-level `invoke<Name>` re-exports for the 19 newly migrated
+  skills (the typed entry-point convention the brief specified).
+- `SKILL_RUNNERS: Readonly<Record<string, SkillRunner>>` with all
+  59 runners; plus `MIGRATED_SKILL_NAMES`, `runSkillByName`,
+  `isSkillMigrated` for tooling.
+
+**Hardening** baked into every new module:
+
+- Typed `<Name>Input` / `<Name>Result` interfaces.
+- Deterministic core (no Anthropic / Gemini calls in the hot path).
+- `jack_tap_required: true` on every skill that would otherwise
+  contact a customer.
+- `auditLog(…)` emission on every state-changing call.
+
+**Coverage:**
+
+- Migrated TS modules: 59 of 275 SKILL.md specs (≈ 21.5%).
+- Remaining un-migrated specs: 216.
+- Top-10 next migration candidates listed in
+  `AUDIT-2026-05-28.md` (approval-card-builder, review-response,
+  dispatch-eta-publisher, defer-vs-do-decider, growth-always-on,
+  dossier-folder-initializer reconcile, appointment-reminder-sequencer,
+  chargeback-disputer, launch-day-customer-email,
+  eod-telegram-formatter).
+
+**Verification:**
+
+- `npm run typecheck` → PASS (clean; only npm-version notice).
+- `npx next lint` → PASS (no warnings, no errors).
+
+One TS fix was made en route — the YouTube Shorts writer needed an
+explicit `YTTitleVariant[]` seed array so TS would widen `pattern`
+correctly through `.map`.
+
+**Artifacts written:**
+
+- `src/lib/skills/abandoned-cart-recovery.ts`
+- `src/lib/skills/action-bias-coach.ts`
+- `src/lib/skills/brand-extractor.ts`
+- `src/lib/skills/case-study-writer.ts`
+- `src/lib/skills/content-calendar-orchestrator.ts`
+- `src/lib/skills/customer-data-deletion-handler.ts`
+- `src/lib/skills/customer-readiness-check.ts`
+- `src/lib/skills/day14-voice.ts`
+- `src/lib/skills/dunning-email-sequencer.ts`
+- `src/lib/skills/feedback-classifier.ts`
+- `src/lib/skills/index.ts`
+- `src/lib/skills/instagram-reel-caption-writer.ts`
+- `src/lib/skills/internal-link-suggester.ts`
+- `src/lib/skills/lead-first-touch-personalizer.ts`
+- `src/lib/skills/lead-source-tracker.ts`
+- `src/lib/skills/review-sentiment-scorer.ts`
+- `src/lib/skills/tiktok-caption-writer.ts`
+- `src/lib/skills/upsell-detection.ts`
+- `src/lib/skills/win-back-campaign-trigger.ts`
+- `src/lib/skills/youtube-shorts-caption-writer.ts`
+- `~/Documents/AUDIT-2026-05-28.md`
+
+No commit, no push, no deletions, no money moved, `node_modules`
+untouched.

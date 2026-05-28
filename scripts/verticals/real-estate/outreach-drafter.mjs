@@ -19,6 +19,13 @@ import { homedir } from "node:os";
 import { loadStore, money, auditRE } from "./brain.mjs";
 import { llmCall } from "../../_generic/llm-call.mjs";
 
+// Realty killswitch — set by scheduled task workday-t01 (2026-05-28) to stop
+// realty scans from burning tokens. Resume = delete the killswitch file.
+if (existsSync(path.join(homedir(), "Documents/studio/public/data/ops/.realty-killswitch"))) {
+  console.log("Realty paused — exiting");
+  process.exit(0);
+}
+
 export const BUILD_SPEC = {
   capability: "outreach-drafter",
   beyond: "First-contact letter drafts that respect TCPA + fair-housing law — you go from a scored deal to a reviewable seller letter in one step.",

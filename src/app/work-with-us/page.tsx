@@ -17,11 +17,20 @@ export const metadata: Metadata = {
     url: `https://${SITE.domain}/work-with-us`,
     siteName: SITE.brand,
     type: "website",
+    images: [
+      {
+        url: "/og/work-with-us.png",
+        width: 1200,
+        height: 630,
+        alt: `${TITLE} — ${SITE.brand}`,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: `${TITLE} — ${SITE.brand}`,
     description: DESCRIPTION,
+    images: ["/og/work-with-us.png"],
   },
 };
 
@@ -396,7 +405,7 @@ function FinalCta() {
             </Link>
             <a
               href={SITE.bookingUrl}
-              className="mt-3 inline-flex w-full items-center justify-center rounded border border-paper-200/40 px-5 py-3 text-sm font-semibold text-paper transition hover:bg-paper/10"
+              className="mt-3 inline-flex w-full items-center justify-center rounded border border-paper-200/40 px-5 py-3 text-sm font-semibold text-paper transition hover:bg-paper/10 focus-visible:ring-offset-ink"
             >
               Or book a 30-min intro call
             </a>

@@ -10,7 +10,16 @@
  * guidance. Degrades gracefully when the plugin or the API key is missing.
  *
  * Public surface:
+ *   invokeUxSkill(skillName, { filePaths, viewportPx, viewport, task? }, opts?)
+ *     -> Promise<Result>
+ *     // T11 audit-shaped entry: routes to a specific sub-skill and folds
+ *     //   the on-disk source files in as context. `viewportPx` accepts a
+ *     //   number (e.g. 1280) or { width, height }; `viewport` accepts a
+ *     //   label like "desktop" / "tablet" / "mobile".
+ *
  *   invokeUiUxProMax({ task, context }, opts?) -> Promise<Result>
+ *     // Original generic entry retained for backwards compat.
+ *
  *   loadUiUxSkills(opts?)  -> Promise<{ ok, skills, source }>
  *   pickUiUxSkill(task, skills) -> { skill, score } | null
  */
@@ -248,6 +257,280 @@ export async function invokeUiUxProMax(input, opts = {}) {
       subSkillScore: picked.score,
       model: opts.model || MODEL,
       availableSubSkills: loaded.skills.length,
+    },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// T11 audit-shaped entry: invokeUxSkill(skillName, { filePaths, viewportPx,
+// viewport, task? }, opts?)
+// ---------------------------------------------------------------------------
+//
+// This is the signature the autonomous /admin/* audit pipeline calls. It maps
+// a caller-supplied sub-skill hint (e.g. "audit", "ui-styling", "design-system")
+// to one of the SKILL.md files in the ui-ux-pro-max plugin, reads the source
+// files off disk, and asks Anthropic for severity-ranked UX findings.
+//
+// Degradation contract:
+//   * plugin missing  -> { ok:false, reason:"... plugin not found ..." }
+//   * no ANTHROPIC_API_KEY -> { ok:false, reason:"no Anthropic key", meta }
+//     (still returns the chosen sub-skill + file count so the caller can log)
+//   * everything reachable -> { ok:true, output, meta:{ subSkill, files, ... } }
+
+const MAX_FILE_BYTES = 60_000; // hard cap per file — keeps prompts bounded
+const MAX_TOTAL_BYTES = 220_000; // hard cap across all attached files
+
+/** Score sub-skills against a free-form hint, then a domain fallback. */
+function pickByHint(hint, skills) {
+  if (!Array.isArray(skills) || skills.length === 0) return null;
+  const h = String(hint || "").toLowerCase().trim();
+  if (!h) return { skill: skills[0], score: 0 };
+
+  // 1. Exact match on sub-skill name / folder name.
+  for (const s of skills) {
+    if (s.name && s.name.toLowerCase() === h) return { skill: s, score: 99 };
+  }
+  // 2. Substring of folder/name.
+  for (const s of skills) {
+    if (s.name && s.name.toLowerCase().includes(h)) return { skill: s, score: 50 };
+    if (s.path && s.path.toLowerCase().includes(`/${h}/`)) return { skill: s, score: 40 };
+  }
+  // 3. "audit" / "review" / "critique" → prefer ui-styling, then design-system.
+  if (/(audit|review|critique|assess|inspection|a11y|accessibility)/.test(h)) {
+    for (const want of ["ui-styling", "design-system", "ui-ux-pro-max"]) {
+      const s = skills.find((x) => x.name === want);
+      if (s) return { skill: s, score: 25 };
+    }
+  }
+  // 4. Fall back to the token scorer on the hint string.
+  return pickUiUxSkill(hint, skills) || { skill: skills[0], score: 0 };
+}
+
+/** Normalise viewport input to a single label + a pixel dimension hint. */
+function normaliseViewport({ viewportPx, viewport }) {
+  let widthPx = null;
+  let heightPx = null;
+  if (typeof viewportPx === "number" && Number.isFinite(viewportPx)) {
+    widthPx = viewportPx;
+  } else if (viewportPx && typeof viewportPx === "object") {
+    if (typeof viewportPx.width === "number") widthPx = viewportPx.width;
+    if (typeof viewportPx.height === "number") heightPx = viewportPx.height;
+  }
+  let label = typeof viewport === "string" && viewport.trim() ? viewport.trim() : "";
+  if (!label && typeof widthPx === "number") {
+    if (widthPx <= 480) label = "mobile";
+    else if (widthPx <= 820) label = "tablet";
+    else label = "desktop";
+  }
+  return { label: label || "desktop", widthPx, heightPx };
+}
+
+/** Read a single file safely; returns { path, ok, content?, reason? }. */
+async function safeReadFile(filePath) {
+  try {
+    const stat = await fs.stat(filePath);
+    if (!stat.isFile()) {
+      return { path: filePath, ok: false, reason: "not a regular file" };
+    }
+    if (stat.size > MAX_FILE_BYTES * 4) {
+      // Read just the head + tail of very large files.
+      const fh = await fs.open(filePath, "r");
+      try {
+        const headBuf = Buffer.alloc(MAX_FILE_BYTES / 2);
+        const tailBuf = Buffer.alloc(MAX_FILE_BYTES / 2);
+        await fh.read(headBuf, 0, headBuf.length, 0);
+        await fh.read(
+          tailBuf,
+          0,
+          tailBuf.length,
+          Math.max(0, stat.size - tailBuf.length)
+        );
+        const content =
+          headBuf.toString("utf8") +
+          `\n\n/* …${stat.size - MAX_FILE_BYTES} bytes elided… */\n\n` +
+          tailBuf.toString("utf8");
+        return { path: filePath, ok: true, content, truncated: true, bytes: stat.size };
+      } finally {
+        await fh.close();
+      }
+    }
+    const text = await fs.readFile(filePath, "utf8");
+    if (text.length > MAX_FILE_BYTES) {
+      return {
+        path: filePath,
+        ok: true,
+        content: text.slice(0, MAX_FILE_BYTES) + "\n/* …elided… */\n",
+        truncated: true,
+        bytes: text.length,
+      };
+    }
+    return { path: filePath, ok: true, content: text, truncated: false, bytes: text.length };
+  } catch (err) {
+    return { path: filePath, ok: false, reason: err?.message || String(err) };
+  }
+}
+
+/** Build the audit-shaped user message from file reads + viewport metadata. */
+function buildAuditUserMessage({ task, filesPayload, viewport, extraContext }) {
+  const lines = [];
+  lines.push(
+    task ||
+      "Audit the attached source for UX issues. Return findings ranked by severity (CRITICAL / HIGH / MED / LOW) with file:line anchors where possible. Cover: accessibility (contrast, focus, alt text, semantics, labels), keyboard nav, hierarchy + scannability, error/empty states, touch targets, motion, copy clarity."
+  );
+  lines.push("");
+  lines.push(`Viewport: ${viewport.label}${viewport.widthPx ? ` (${viewport.widthPx}px)` : ""}`);
+  if (extraContext) {
+    const ctxStr =
+      typeof extraContext === "string"
+        ? extraContext
+        : JSON.stringify(extraContext, null, 2);
+    lines.push("");
+    lines.push("Context:");
+    lines.push(ctxStr);
+  }
+  lines.push("");
+  lines.push("--- SOURCE FILES ---");
+  for (const f of filesPayload) {
+    lines.push("");
+    lines.push(`### FILE: ${f.path}${f.truncated ? "  (truncated)" : ""}`);
+    if (f.ok) {
+      // Fence with a unique-ish marker so model can't get confused by ``` inside.
+      lines.push("````tsx");
+      lines.push(f.content);
+      lines.push("````");
+    } else {
+      lines.push(`(unable to read: ${f.reason})`);
+    }
+  }
+  return lines.join("\n");
+}
+
+/**
+ * @param {string} skillName  e.g. "audit", "ui-styling", "design-system"
+ * @param {{ filePaths?: string[], viewportPx?: number|{width:number,height?:number},
+ *          viewport?: string, task?: string, context?: any }} input
+ * @param {object} [opts]
+ */
+export async function invokeUxSkill(skillName, input = {}, opts = {}) {
+  const skillHint =
+    typeof skillName === "string" && skillName.trim() ? skillName.trim() : "audit";
+  const filePaths = Array.isArray(input.filePaths) ? input.filePaths : [];
+  const viewport = normaliseViewport({
+    viewportPx: input.viewportPx,
+    viewport: input.viewport,
+  });
+
+  // 1. Plugin discovery — same as the generic entry point.
+  const loaded = await loadUiUxSkills({ pluginRoot: opts.pluginRoot });
+  if (!loaded.ok) {
+    return {
+      ok: false,
+      skill: SKILL_NAME,
+      reason: loaded.reason,
+      searched: loaded.searched,
+    };
+  }
+  if (loaded.skills.length === 0) {
+    return {
+      ok: false,
+      skill: SKILL_NAME,
+      reason: "no SKILL.md files found in ui-ux-pro-max plugin",
+      source: loaded.source,
+    };
+  }
+  const picked = pickByHint(skillHint, loaded.skills);
+  if (!picked || !picked.skill) {
+    return {
+      ok: false,
+      skill: SKILL_NAME,
+      reason: `no matching sub-skill for hint "${skillHint}"`,
+    };
+  }
+
+  // 2. Read files — concurrent, capped, never throws.
+  const fileResults = [];
+  let totalBytes = 0;
+  for (const p of filePaths) {
+    const r = await safeReadFile(p);
+    if (r.ok && r.content) {
+      if (totalBytes + r.content.length > MAX_TOTAL_BYTES) {
+        fileResults.push({
+          ...r,
+          truncated: true,
+          content:
+            r.content.slice(0, Math.max(0, MAX_TOTAL_BYTES - totalBytes)) +
+            "\n/* …elided to fit budget… */\n",
+        });
+        totalBytes = MAX_TOTAL_BYTES;
+        break;
+      }
+      totalBytes += r.content.length;
+    }
+    fileResults.push(r);
+  }
+  const fileMeta = fileResults.map((f) => ({
+    path: f.path,
+    ok: f.ok,
+    bytes: f.bytes || 0,
+    truncated: !!f.truncated,
+    reason: f.ok ? undefined : f.reason,
+  }));
+
+  // 3. No-op gracefully without an API key — caller still gets enough meta
+  //    to log what would have happened.
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return {
+      ok: false,
+      skill: SKILL_NAME,
+      reason: "no Anthropic key",
+      meta: {
+        picked: { name: picked.skill.name, score: picked.score },
+        skillHint,
+        viewport,
+        availableSubSkills: loaded.skills.length,
+        files: fileMeta,
+        attachedBytes: totalBytes,
+      },
+    };
+  }
+
+  // 4. Call Anthropic with the chosen SKILL.md body as system prompt and the
+  //    files + viewport context as the user message.
+  const system = buildSystemPrompt(picked.skill);
+  const user = buildAuditUserMessage({
+    task: input.task,
+    filesPayload: fileResults,
+    viewport,
+    extraContext: input.context,
+  });
+  const result = await callAnthropic({ system, user, opts });
+  if (!result.ok) {
+    return {
+      ok: false,
+      skill: SKILL_NAME,
+      reason: result.reason,
+      detail: result.detail,
+      meta: {
+        picked: { name: picked.skill.name, score: picked.score },
+        skillHint,
+        viewport,
+        files: fileMeta,
+      },
+    };
+  }
+  return {
+    ok: true,
+    skill: SKILL_NAME,
+    output: result.text,
+    meta: {
+      subSkill: picked.skill.name,
+      subSkillScore: picked.score,
+      skillHint,
+      viewport,
+      model: opts.model || MODEL,
+      availableSubSkills: loaded.skills.length,
+      files: fileMeta,
+      attachedBytes: totalBytes,
     },
   };
 }

@@ -3,6 +3,7 @@ import { loadEmpireState, fetchPrintifyProducts } from "@/lib/admin-state";
 import { AdminNav, ADMIN_CSS, SiteCta, SITE_URL, PageHint } from "./layout-bits";
 import { OperatorTodosPanel } from "./operator-todos-panel";
 import { Card, EmptyState, StatusBanner, type StatusTone } from "@/components/ui";
+import { StaggerCards } from "@/components/motion/stagger-cards";
 
 export const metadata = {
   title: "Day14 — Command Center",
@@ -131,7 +132,7 @@ export default async function AdminOverview() {
 
       <SiteCta url={SITE_URL} label="View day14.us" />
 
-      <div className="kpi-grid" style={{ gridTemplateColumns: "repeat(5,1fr)" }}>
+      <StaggerCards className="kpi-grid" style={{ gridTemplateColumns: "repeat(5,1fr)" }}>
         <div className="kpi">
           <div className="kpi-label">Revenue</div>
           <div className="kpi-value">{money(totalRevenue)}</div>
@@ -163,7 +164,7 @@ export default async function AdminOverview() {
             {down.length > 0 ? `${down.length} down` : stale.length > 0 ? `${stale.length} behind` : "all healthy"}
           </div>
         </div>
-      </div>
+      </StaggerCards>
 
       <div className="section-header">
         <div className="section-title">

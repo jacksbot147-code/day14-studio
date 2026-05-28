@@ -9,6 +9,7 @@ import { ScrollFade } from "@/components/motion/scroll-fade";
 import { CountUp } from "@/components/motion/count-up";
 import { CyclingWord } from "@/components/motion/cycling-word";
 import { HeroAurora } from "@/components/motion/hero-aurora";
+import { StaggerCtas } from "@/components/motion/stagger-ctas";
 import { DeployStrip } from "@/components/deploy-strip";
 
 const SHIP_CYCLE = [
@@ -113,14 +114,14 @@ function Hero() {
           </span>
         </p>
 
-        <div className="mt-9 flex flex-wrap items-center gap-3">
+        <StaggerCtas className="mt-9 flex flex-wrap items-center gap-3">
           <a href={SITE.bookingUrl} className="btn-ember">
             Book a 30-min intro call
           </a>
           <a href="#sku" className="btn-ghost">
             See what we build →
           </a>
-        </div>
+        </StaggerCtas>
 
         {/* Proof strip — a true bordered grid divided by internal rules. */}
         <div className="mt-14 grid max-w-3xl grid-cols-2 border-l border-t border-ink-100 sm:grid-cols-4">

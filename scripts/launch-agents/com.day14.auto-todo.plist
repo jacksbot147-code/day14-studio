@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.day14.auto-todo</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>-lc</string>
+    <string>cd "$HOME/Documents/studio" &amp;&amp; /usr/local/bin/node scripts/auto-todo-sync.mjs &gt;&gt; "$HOME/Documents/studio/logs/auto-todo.log" 2&gt;&amp;1</string>
+  </array>
+
+  <!-- Run every hour, on the hour, 24/7. -->
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Minute</key>
+    <integer>0</integer>
+  </dict>
+
+  <!-- Fire once at load so we don't have to wait up to an hour after install. -->
+  <key>RunAtLoad</key>
+  <true/>
+
+  <!-- Cap the process — this should be a quick read/reconcile, never long-running. -->
+  <key>ExitTimeOut</key>
+  <integer>300</integer>
+
+  <!-- Keep stdout/stderr funneled into the log file via the shell redirect above
+       and ALSO into LaunchAgent-managed files so launchctl logs surface failures
+       even when the script bombs before opening the log. -->
+  <key>StandardOutPath</key>
+  <string>/tmp/com.day14.auto-todo.out</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/com.day14.auto-todo.err</string>
+
+  <!-- Inherit a sane PATH for tools the script may shell out to. -->
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+</dict>
+</plist>
