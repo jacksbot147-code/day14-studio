@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "tenant": "day14",
+  "id": "issue-2-build-log-live",
+  "source_ref": "docs/outreach/newsletter-drafts.md#issue-2--why-im-publishing-the-build-log-live-on-purpose",
+  "kind": "newsletter-issue",
+  "generated_at": "2026-05-28T15:20:00.000Z",
+  "generated_by": "scheduled-task workday-t10-marketing-subject-lines — assistant fallback (marketing-skills bridge unavailable from daemon shell: no ANTHROPIC_API_KEY, no plugin root on disk)",
+  "skill": "subject-line",
+  "skill_invocation": "invokeMarketingSkill('subject-line', { intro, audience, voice }, { variants: 5 })",
+  "skill_status": "fallback-local",
+  "input": {
+    "intro": "Every active Day14 build has a public URL anyone can watch in real time — commit shas, screenshots, daily one-paragraph customer updates at day14.us/builds/{customer-slug}. The issue argues that radical transparency is the strongest marketing move available to a one-person build studio: prospects keep asking 'is this real,' a live commit log answers in one scroll, agencies can only show curated decks, and every commit doubles as content. The competitor-copy fear is overstated — judgment is the moat, not the code.",
+    "audience": "Operators evaluating builders for their own business (skeptical, burned-before), plus indie-hacker readers interested in productized-services marketing tactics.",
+    "voice": "Operator, anti-jargon, anti-agency. Confident without bravado. No exclamation points. No 'we'. Signed '— Jack / Day14'."
+  },
+  "current_subject": null,
+  "variants": [
+    {
+      "id": "n2-v1",
+      "subject": "Every Day14 build has a public URL. Here's why.",
+      "char_count": 48,
+      "rationale": "Leads with the unusual, concrete fact. The 'here's why' tail makes the body the payoff — strong open-rate hook."
+    },
+    {
+      "id": "n2-v2",
+      "subject": "Agencies show a deck. I show the commits.",
+      "char_count": 42,
+      "rationale": "Compresses the issue's central contrast into seven words. Verb-first on both sides. The kind of line that quotes well in a retweet."
+    },
+    {
+      "id": "n2-v3",
+      "subject": "Is this real? A live build-log answers in one scroll.",
+      "char_count": 53,
+      "rationale": "Quotes the question prospects actually ask and previews the punchline. Curiosity gap closed on click — good for engaged-list opens."
+    },
+    {
+      "id": "n2-v4",
+      "subject": "The strongest marketing move for a one-person shop",
+      "char_count": 50,
+      "rationale": "Promises a tactic, names the reader (one-person shop) in the subject. Reads like an operator's note to a peer."
+    },
+    {
+      "id": "n2-v5",
+      "subject": "Why I publish every commit on every build",
+      "char_count": 41,
+      "rationale": "First-person, plain, specific. The 'why' frame promises an argument rather than a brag."
+    }
+  ],
+  "constraints": [
+    "No exclamation points.",
+    "No 'we' — it's Jack solo.",
+    "Mobile preview safe (target <=55 chars).",
+    "Specific over abstract."
+  ],
+  "approval": {
+    "status": "awaiting-jack",
+    "inbox_kind": "subject-line-pick",
+    "auto_replace_in_source": false
+  }
+}

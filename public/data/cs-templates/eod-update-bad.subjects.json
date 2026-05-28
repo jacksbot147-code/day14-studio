@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "tenant": "day14",
+  "id": "eod-update-bad",
+  "source_ref": "docs/overnight/03-customer-comms-pack.md#14b-eod-update--bad-day",
+  "kind": "cs-reply-template",
+  "generated_at": "2026-05-28T15:20:00.000Z",
+  "generated_by": "scheduled-task workday-t10-marketing-subject-lines — assistant fallback (marketing-skills bridge unavailable from daemon shell: no ANTHROPIC_API_KEY, no plugin root on disk)",
+  "skill": "subject-line",
+  "skill_invocation": "invokeMarketingSkill('subject-line', { topic, scenario, voice }, { variants: 3 })",
+  "skill_status": "fallback-local",
+  "input": {
+    "topic": "End-of-day update on a day where a ticket slipped. Name the slip, reassure on launch date (buffer is there for this).",
+    "scenario": "Sent at 5pm ET by the build agent when planned-vs-shipped delta exceeds one ticket. Customer trust hinges on Jack naming the miss without spin.",
+    "voice": "Operator. Honest about the slip. No spin. No 'unfortunately'. Signed '— Jack / Day14'."
+  },
+  "current_subject": "Day {{n}} — slower than I wanted",
+  "variants": [
+    {
+      "id": "cs-1.4b-v1",
+      "subject": "Day {{n}} — slower than I wanted",
+      "char_count": null,
+      "rationale": "Keep the current line. First-person admission earns trust precisely because it skips the corporate hedge."
+    },
+    {
+      "id": "cs-1.4b-v2",
+      "subject": "Day {{n}} — slipped a ticket, still on track",
+      "char_count": null,
+      "rationale": "Names the slip AND the reassurance in one breath. The customer gets the full update before they open."
+    },
+    {
+      "id": "cs-1.4b-v3",
+      "subject": "Day {{n}} — burning some of the buffer today",
+      "char_count": null,
+      "rationale": "Reframes the slip as a planned-for cost, which it is. Reinforces that the SOW has a buffer and Jack knows where he stands against it."
+    }
+  ],
+  "constraints": [
+    "No 'unfortunately' / 'apologies for the delay'.",
+    "Name the slip; don't hide it.",
+    "No exclamation points."
+  ],
+  "approval": {
+    "status": "awaiting-jack",
+    "inbox_kind": "subject-line-pick",
+    "auto_replace_in_source": false
+  }
+}

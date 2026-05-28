@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "tenant": "day14",
+  "id": "launched",
+  "source_ref": "docs/overnight/03-customer-comms-pack.md#15-launched",
+  "kind": "cs-reply-template",
+  "generated_at": "2026-05-28T15:20:00.000Z",
+  "generated_by": "scheduled-task workday-t10-marketing-subject-lines — assistant fallback (marketing-skills bridge unavailable from daemon shell: no ANTHROPIC_API_KEY, no plugin root on disk)",
+  "skill": "subject-line",
+  "skill_invocation": "invokeMarketingSkill('subject-line', { topic, scenario, voice }, { variants: 3 })",
+  "skill_status": "fallback-local",
+  "input": {
+    "topic": "Launch day: production URL live, Stripe in live mode, SMS on, balance invoice queued for tomorrow 9am ET.",
+    "scenario": "Build agent has flipped status='launched' after the day-14 QA pass and the Stripe live-mode flip. Customer receives the receipt-style email.",
+    "voice": "Operator. Receipt-style — what's on, what's tested, what's queued. 'Welcome to Day14' instead of 'congratulations'. Signed '— Jack / Day14'."
+  },
+  "current_subject": "{{business_name}} is live",
+  "variants": [
+    {
+      "id": "cs-1.5-v1",
+      "subject": "{{business_name}} is live",
+      "char_count": null,
+      "rationale": "Keep the current line. Three words, the only ones that matter on launch day. Customer-business-name as the subject anchor is unbeatable for opens."
+    },
+    {
+      "id": "cs-1.5-v2",
+      "subject": "{{business_name}} is live at {{production_url}}",
+      "char_count": null,
+      "rationale": "Puts the URL itself in the subject so the customer can copy/share without opening. Best for desktop-mail clients."
+    },
+    {
+      "id": "cs-1.5-v3",
+      "subject": "Day 14 — {{business_name}} shipped",
+      "char_count": null,
+      "rationale": "Closes the loop on the day-count promised in every prior CS email. Verb 'shipped' (not 'launched') keeps the operator voice consistent."
+    }
+  ],
+  "constraints": [
+    "Token-safe: keep handlebars intact.",
+    "No 'congratulations' / 'we did it'.",
+    "No exclamation points."
+  ],
+  "approval": {
+    "status": "awaiting-jack",
+    "inbox_kind": "subject-line-pick",
+    "auto_replace_in_source": false
+  }
+}

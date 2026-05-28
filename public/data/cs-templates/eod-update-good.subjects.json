@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "tenant": "day14",
+  "id": "eod-update-good",
+  "source_ref": "docs/overnight/03-customer-comms-pack.md#14a-eod-update--good-day",
+  "kind": "cs-reply-template",
+  "generated_at": "2026-05-28T15:20:00.000Z",
+  "generated_by": "scheduled-task workday-t10-marketing-subject-lines — assistant fallback (marketing-skills bridge unavailable from daemon shell: no ANTHROPIC_API_KEY, no plugin root on disk)",
+  "skill": "subject-line",
+  "skill_invocation": "invokeMarketingSkill('subject-line', { topic, scenario, voice }, { variants: 3 })",
+  "skill_status": "fallback-local",
+  "input": {
+    "topic": "End-of-day customer update on a day where the build is on or ahead of plan. Names what shipped, what's next, links preview + build log.",
+    "scenario": "Sent at 5pm ET by the build agent on a 'good day' (planned-vs-shipped delta within one ticket). Customer reads in the evening, wants the receipt without ceremony.",
+    "voice": "Operator. 5pm, 37 words, no fluff. Signed '— Jack / Day14'."
+  },
+  "current_subject": "Day {{n}} — {{one_thing_shipped_short}}",
+  "variants": [
+    {
+      "id": "cs-1.4a-v1",
+      "subject": "Day {{n}} — {{one_thing_shipped_short}}",
+      "char_count": null,
+      "rationale": "Keep the current line. Day-count is the calendar anchor; the shipped-thing token guarantees the subject is uniquely informative every day."
+    },
+    {
+      "id": "cs-1.4a-v2",
+      "subject": "Day {{n}} update — shipped {{thing_1}}",
+      "char_count": null,
+      "rationale": "Adds the verb 'shipped' so the customer sees forward motion in the subject. Still mobile-safe with reasonable {{thing_1}} values."
+    },
+    {
+      "id": "cs-1.4a-v3",
+      "subject": "EOD {{n}}: on track for {{launch_date}}",
+      "char_count": null,
+      "rationale": "Skips per-day detail in favor of the trust signal customers care about most — am I going to launch on time. Useful for the final third of the build."
+    }
+  ],
+  "constraints": [
+    "Token-safe: keep handlebars intact.",
+    "No exclamation points.",
+    "Target <=50 chars after token interpolation."
+  ],
+  "approval": {
+    "status": "awaiting-jack",
+    "inbox_kind": "subject-line-pick",
+    "auto_replace_in_source": false
+  }
+}

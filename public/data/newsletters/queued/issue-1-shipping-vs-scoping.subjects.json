@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "tenant": "day14",
+  "id": "issue-1-shipping-vs-scoping",
+  "source_ref": "docs/outreach/newsletter-drafts.md#issue-1--shipping-vs-scoping",
+  "kind": "newsletter-issue",
+  "generated_at": "2026-05-28T15:20:00.000Z",
+  "generated_by": "scheduled-task workday-t10-marketing-subject-lines — assistant fallback (marketing-skills bridge unavailable from daemon shell: no ANTHROPIC_API_KEY, no plugin root on disk)",
+  "skill": "subject-line",
+  "skill_invocation": "invokeMarketingSkill('subject-line', { intro, audience, voice }, { variants: 5 })",
+  "skill_status": "fallback-local",
+  "input": {
+    "intro": "I run a build studio called Day14 out of Southwest Florida. The premise is simple: a full business platform — marketing site, customer portal, billing, admin app, AI chatbot — shipped in 14 calendar days, fixed price, you own the code. This newsletter is the thing I wish I'd been reading three years ago when I was getting quoted $40k and 6 months by agencies. Issue #1 argues that scoping — not building — is what kills agency projects.",
+    "audience": "SWFL operators (and adjacent small-business owners) who have been quoted by agencies, are skeptical of SaaS lock-in, and want a fast fixed-price productized build. Secondary: indie-hacker / one-operator readers who care about productized services.",
+    "voice": "Operator, anti-jargon, anti-agency, anti-SaaS. Specific numbers (14 days, fixed price). No exclamation points. No 'we' (it's Jack, not a team). No 'transform your business'. Signed '— Jack / Day14'."
+  },
+  "current_subject": null,
+  "variants": [
+    {
+      "id": "n1-v1",
+      "subject": "Scoping is what kills agency projects",
+      "char_count": 37,
+      "rationale": "Lifts the issue's strongest line verbatim. Provocative, specific, and reframes the whole agency-vs-productized debate in one sentence — high open-rate hook for the target audience."
+    },
+    {
+      "id": "n1-v2",
+      "subject": "Why I quote 14 days, fixed price — and ship",
+      "char_count": 44,
+      "rationale": "Leads with the two pillars (timeline + price model) and ends on the proof verb ('ship'). Reads like an operator note, not a marketer's hook."
+    },
+    {
+      "id": "n1-v3",
+      "subject": "$40k, 6 months, nothing built. There's a better way.",
+      "char_count": 52,
+      "rationale": "Pulls the specific agency quote from the intro — the number is the bait. The 'better way' tail is intentionally plain so it doesn't tip into infomercial."
+    },
+    {
+      "id": "n1-v4",
+      "subject": "Shipping vs scoping — the whole job",
+      "char_count": 35,
+      "rationale": "Distills the issue title into a tighter line and ends on a claim that earns the open. Short enough for mobile preview without truncation."
+    },
+    {
+      "id": "n1-v5",
+      "subject": "What one operator can ship in two weeks",
+      "char_count": 39,
+      "rationale": "Anchored on the unique-positioning fact (one operator, fixed window). Reads as a curiosity hook for readers who are tired of agency-team pitches."
+    }
+  ],
+  "constraints": [
+    "No exclamation points.",
+    "No 'we' — it's Jack solo.",
+    "Mobile preview safe (target <=55 chars).",
+    "Specific over abstract."
+  ],
+  "approval": {
+    "status": "awaiting-jack",
+    "inbox_kind": "subject-line-pick",
+    "auto_replace_in_source": false
+  }
+}

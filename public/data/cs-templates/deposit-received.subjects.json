@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "tenant": "day14",
+  "id": "deposit-received",
+  "source_ref": "docs/overnight/03-customer-comms-pack.md#11-deposit-received",
+  "kind": "cs-reply-template",
+  "generated_at": "2026-05-28T15:20:00.000Z",
+  "generated_by": "scheduled-task workday-t10-marketing-subject-lines — assistant fallback (marketing-skills bridge unavailable from daemon shell: no ANTHROPIC_API_KEY, no plugin root on disk)",
+  "skill": "subject-line",
+  "skill_invocation": "invokeMarketingSkill('subject-line', { topic, scenario, voice }, { variants: 3 })",
+  "skill_status": "fallback-local",
+  "input": {
+    "topic": "Stripe deposit received — 14-day build clock starts now. Intake form link + preview-URL ETA in the body.",
+    "scenario": "Transactional confirmation triggered by Stripe checkout.session.completed (metadata event=deposit). Customer just paid. Goal: confirm receipt, kick off the 14-day clock, set 18-hour expectations.",
+    "voice": "Operator. No 'thank you for choosing us' — Jack already has the money. Plain, concrete, signed '— Jack / Day14'."
+  },
+  "current_subject": "Got your deposit. Build clock starts now.",
+  "variants": [
+    {
+      "id": "cs-1.1-v1",
+      "subject": "Deposit in. 14-day clock starts today.",
+      "char_count": 38,
+      "rationale": "Two short clauses, both pure receipt. Names the day-count explicitly so the customer's expectation is anchored before they open the body."
+    },
+    {
+      "id": "cs-1.1-v2",
+      "subject": "Got it — building starts now",
+      "char_count": 28,
+      "rationale": "Shortest of the three. Mobile-preview safe. Reads like a text message, not an email — fits the Day14 operator voice."
+    },
+    {
+      "id": "cs-1.1-v3",
+      "subject": "Deposit received — two things from me in 18 hours",
+      "char_count": 49,
+      "rationale": "Curiosity hook on 'two things' previews the numbered list in the body. The 18-hour figure earns the open by promising specific next steps."
+    }
+  ],
+  "constraints": [
+    "No 'thank you' / 'thanks for'.",
+    "No exclamation points.",
+    "Operator tone — concrete and brief."
+  ],
+  "approval": {
+    "status": "awaiting-jack",
+    "inbox_kind": "subject-line-pick",
+    "auto_replace_in_source": false
+  }
+}

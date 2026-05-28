@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "tenant": "day14",
+  "id": "intake-form-link",
+  "source_ref": "docs/overnight/03-customer-comms-pack.md#12-intake-form-link",
+  "kind": "cs-reply-template",
+  "generated_at": "2026-05-28T15:20:00.000Z",
+  "generated_by": "scheduled-task workday-t10-marketing-subject-lines — assistant fallback (marketing-skills bridge unavailable from daemon shell: no ANTHROPIC_API_KEY, no plugin root on disk)",
+  "skill": "subject-line",
+  "skill_invocation": "invokeMarketingSkill('subject-line', { topic, scenario, voice }, { variants: 3 })",
+  "skill_status": "fallback-local",
+  "input": {
+    "topic": "One-page intake form. 8 minutes. The 14-day clock pauses until it's in.",
+    "scenario": "Sent 60s after deposit-received, or as a nudge if the intake is still empty 24h in. The customer needs to complete an 8-minute form before the build clock can resume.",
+    "voice": "Operator. Names the consequence ('clock pauses') instead of nagging. No 'please' / 'kindly'. Signed '— Jack / Day14'."
+  },
+  "current_subject": "Intake form — 8 minutes, one page",
+  "variants": [
+    {
+      "id": "cs-1.2-v1",
+      "subject": "Your intake form — 8 minutes, one page",
+      "char_count": 38,
+      "rationale": "Keeps the time-cost in the subject ('8 minutes') so the customer doesn't dismiss it as a long form. 'One page' reinforces the low-friction promise."
+    },
+    {
+      "id": "cs-1.2-v2",
+      "subject": "One page, 8 minutes — then the clock starts",
+      "char_count": 43,
+      "rationale": "Leads with the friction-relief, ends on the consequence. The 'then' structure makes the cause-and-effect explicit without scolding."
+    },
+    {
+      "id": "cs-1.2-v3",
+      "subject": "Intake link inside — clock paused until I have it",
+      "char_count": 49,
+      "rationale": "Names the SOW reality up front ('clock paused'). 'Intake link inside' tells the customer exactly what action the email is asking for."
+    }
+  ],
+  "constraints": [
+    "No 'please' / 'kindly' / 'we need'.",
+    "No exclamation points.",
+    "Name the consequence; don't nag."
+  ],
+  "approval": {
+    "status": "awaiting-jack",
+    "inbox_kind": "subject-line-pick",
+    "auto_replace_in_source": false
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "tenant": "day14",
+  "id": "preview-ready",
+  "source_ref": "docs/overnight/03-customer-comms-pack.md#13-preview-ready",
+  "kind": "cs-reply-template",
+  "generated_at": "2026-05-28T15:20:00.000Z",
+  "generated_by": "scheduled-task workday-t10-marketing-subject-lines — assistant fallback (marketing-skills bridge unavailable from daemon shell: no ANTHROPIC_API_KEY, no plugin root on disk)",
+  "skill": "subject-line",
+  "skill_invocation": "invokeMarketingSkill('subject-line', { topic, scenario, voice }, { variants: 3 })",
+  "skill_status": "fallback-local",
+  "input": {
+    "topic": "Preview deploy is live. Invite criticism early — better now than launch day. Build log linked.",
+    "scenario": "Build agent has pushed the preview deploy and written preview_url to the customers table. Customer should look, react, and flag issues while there's still time.",
+    "voice": "Operator. Invites criticism without sounding insecure. Plain. Signed '— Jack / Day14'."
+  },
+  "current_subject": "Preview is up — take a look",
+  "variants": [
+    {
+      "id": "cs-1.3-v1",
+      "subject": "Preview is up — take a look",
+      "char_count": 27,
+      "rationale": "Keep the current line. Tested-feeling, short, mobile-safe, no jargon. Strong default."
+    },
+    {
+      "id": "cs-1.3-v2",
+      "subject": "Your preview is live — rough edges welcome",
+      "char_count": 42,
+      "rationale": "Sets the expectation that this is a draft, not a launch. 'Rough edges welcome' explicitly invites the criticism the body is asking for."
+    },
+    {
+      "id": "cs-1.3-v3",
+      "subject": "Preview link inside — pages so far + build log",
+      "char_count": 47,
+      "rationale": "Three concrete payloads in the subject (preview, pages, build log) — high signal for a customer who's been watching for this exact email."
+    }
+  ],
+  "constraints": [
+    "No exclamation points.",
+    "Invite feedback; don't beg.",
+    "Plain, operator tone."
+  ],
+  "approval": {
+    "status": "awaiting-jack",
+    "inbox_kind": "subject-line-pick",
+    "auto_replace_in_source": false
+  }
+}
