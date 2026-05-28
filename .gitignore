@@ -24,4 +24,8 @@ next-env.d.ts
 # vercel
 .vercel
 .env*
+
+# Realty ops snapshot is ~110 MB (too big for git). The slim summary file
+# stays tracked so the hosted /admin/realty has data on Vercel.
 public/data/ops/day14-realty.json
+!public/data/ops/day14-realty-summary.json

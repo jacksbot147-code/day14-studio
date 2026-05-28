@@ -5,12 +5,16 @@
  * Delivery is best-effort: Resend email -> Telegram -> server log.
  */
 import { NextRequest, NextResponse } from "next/server";
+import { writeBrandInbox } from "@/lib/brand-inbox";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+const SLUG_RE = /^[a-z0-9][a-z0-9._-]*$/i;
+
 function slugFromPath(req: NextRequest): string {
-  return req.nextUrl.pathname.split("/")[3] || "unknown";
+  const raw = req.nextUrl.pathname.split("/")[3] || "unknown";
+  return SLUG_RE.test(raw) ? raw : "unknown";
 }
 
 function page(title: string, message: string): NextResponse {
@@ -104,6 +108,25 @@ export async function POST(req: NextRequest) {
 
   const delivered = await deliver(slug, name || "(no name)", email, message);
 
+  // Land the submission in the per-tenant inbox so it surfaces in
+  // /admin/inbox. Best-effort: a failed write must not break the user's
+  // "thanks, we'll be in touch" experience. Kennum's contact form is the
+  // quote-request entry point; the others are general contact.
+  const inboxKind = slug === "kennum-lawn-care" ? "quote" : "contact";
+  const inboxResult = await writeBrandInbox({
+    tenant: slug,
+    kind: inboxKind,
+    payload: {
+      name: name || "(no name)",
+      email,
+      message,
+      delivered_via_external: delivered,
+    },
+  });
+  if (!inboxResult.ok) {
+    console.log(`[brand-contact:${slug}] inbox write failed: ${inboxResult.error || "unknown"}`);
+  }
+
   if (!isJson) return page("Message sent", "Thanks for reaching out &mdash; we'll get back to you soon.");
-  return NextResponse.json({ ok: true, delivered }, { status: 200 });
+  return NextResponse.json({ ok: true, delivered, inbox: inboxResult.ok }, { status: 200 });
 }

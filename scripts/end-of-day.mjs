@@ -43,6 +43,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
+import { invokeSkill } from "./lib/skill-bridge.mjs";
 
 // ---- args ----------------------------------------------------------------
 const DRY_RUN =
@@ -483,8 +484,29 @@ async function compose() {
 
 // ---- main ----------------------------------------------------------------
 async function main() {
-  const { markdown, today, totals, tenantsActive } = await compose();
+  const composed = await compose();
+  const { today, totals, tenantsActive } = composed;
+  let { markdown } = composed;
   const outPath = path.join(DAILY_DIR, `${today}.md`);
+
+  // Run the report prose through the stop-slop skill bridge before we write
+  // or print. Deterministic Node port — no API call. Failures degrade to the
+  // unfiltered report; either way we log the strip count for the heartbeat.
+  let slopStripped = 0;
+  let slopRules = 0;
+  try {
+    const result = await invokeSkill("stop-slop", markdown);
+    if (result.ok) {
+      markdown = result.output;
+      slopStripped = result.meta?.totalStripped || 0;
+      slopRules = result.meta?.ruleCount || 0;
+    }
+  } catch (err) {
+    console.warn("[end-of-day] stop-slop bridge failed:", err.message);
+  }
+  console.log(
+    `[end-of-day] stop-slop: stripped=${slopStripped} rules=${slopRules}`
+  );
 
   if (DRY_RUN) {
     console.log(`[end-of-day] DRY RUN — would write ${outPath}`);

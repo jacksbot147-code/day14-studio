@@ -33,6 +33,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
+import { invokeSkill } from "./lib/skill-bridge.mjs";
 
 // ---- dry-run flag (does NOT queue a Telegram ping) ----
 const DRY_RUN =
@@ -805,9 +806,29 @@ async function main() {
 
   const summary = await compose();
 
+  // Run the briefing prose through the stop-slop skill bridge before we
+  // write or ping. The bridge routes to a deterministic Node port — no API
+  // call — so this is safe in autonomous contexts. Failures degrade silently
+  // (we use the raw briefing) and we log the strip count either way.
+  let slopStripped = 0;
+  let slopRules = 0;
+  try {
+    const result = await invokeSkill("stop-slop", summary.briefing);
+    if (result.ok) {
+      summary.briefing = result.output;
+      slopStripped = result.meta?.totalStripped || 0;
+      slopRules = result.meta?.ruleCount || 0;
+    }
+  } catch (err) {
+    console.warn("[morning-briefing] stop-slop bridge failed:", err.message);
+  }
+
   const dateStr = new Date().toISOString().slice(0, 10);
   const briefingPath = path.join(FOUNDER, `briefing-${dateStr}.md`);
   await fs.writeFile(briefingPath, summary.briefing, "utf8");
+  console.log(
+    `[morning-briefing] stop-slop: stripped=${slopStripped} rules=${slopRules}`
+  );
 
   // --dry-run: write the briefing file but never queue a Telegram message.
   const queued = DRY_RUN

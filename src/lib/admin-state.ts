@@ -270,15 +270,86 @@ export interface TenantOps {
   freshness?: REFreshness;
   dealstages?: Record<string, DealStageEntry>;
   buyerprofile?: BuyerProfile;
+  /** Set when the snapshot was hydrated from the slim summary, not the full
+   *  ops snapshot. Read-only fields like evaluations may be truncated. */
+  summary_only?: boolean;
 }
 
-/** The synced ops snapshot for one tenant (public/data/ops/<slug>.json). */
+/** Realty-summary shape — what sync-realty-summary.mjs emits. Small enough
+ *  to commit (≤ 2 MB) so the hosted /admin/realty has data even when the
+ *  full 110+ MB ops snapshot is gitignored. */
+interface RealtySummary {
+  slug?: string;
+  generated_at?: string;
+  counts?: {
+    total_properties?: number;
+    a_tier?: number;
+    b_tier?: number;
+    c_tier?: number;
+    hot_leads?: number;
+    by_tier?: Record<string, number>;
+    by_county?: Record<string, number>;
+  };
+  top_a_deals?: Array<{
+    id: string;
+    address: string;
+    city?: string;
+    score: number;
+    tier: string;
+    best_play: string;
+    value_cents: number;
+    signals?: string[];
+    county?: string;
+  }>;
+  freshness?: REFreshness;
+}
+
+function summaryToOps(summary: RealtySummary): TenantOps {
+  const evaluations: REEvaluation[] = (summary.top_a_deals ?? []).map((d) => ({
+    property_id: d.id,
+    address: d.address,
+    city: d.city,
+    value_cents: d.value_cents,
+    score: d.score,
+    tier: d.tier,
+    best_play: d.best_play,
+    signals: d.signals ?? [],
+    flip: { arv_cents: 0, repairs_cents: 0, mao_cents: 0, est_profit_cents: 0, score: 0 },
+    rental: { monthly_rent_cents: 0, cap_rate_pct: 0, rent_to_value_pct: 0, score: 0 },
+    wholesale: { equity_cents: 0, equity_pct: 0, score: 0 },
+  }));
+  return {
+    slug: summary.slug,
+    generated_at: summary.generated_at,
+    evaluations,
+    freshness: summary.freshness,
+    summary_only: true,
+  };
+}
+
+/** The synced ops snapshot for one tenant (public/data/ops/<slug>.json).
+ *
+ *  Falls back to a slim summary file when the full snapshot is missing —
+ *  notably day14-realty, whose full ops file is 110+ MB and gitignored. */
 export async function loadTenantOps(slug: string): Promise<TenantOps> {
   const f = path.join(process.cwd(), "public/data/ops", `${slug}.json`);
   try {
     return JSON.parse(await fs.readFile(f, "utf8")) as TenantOps;
   } catch {
-    return {};
+    // Fall back to a slim summary file (currently only emitted for realty).
+    const summaryPath = path.join(
+      process.cwd(),
+      "public/data/ops",
+      `${slug}-summary.json`,
+    );
+    try {
+      const summary = JSON.parse(
+        await fs.readFile(summaryPath, "utf8"),
+      ) as RealtySummary;
+      return summaryToOps(summary);
+    } catch {
+      return {};
+    }
   }
 }
 

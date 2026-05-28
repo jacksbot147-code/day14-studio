@@ -31,7 +31,13 @@ const BIZ = path.join(HOME, "Documents/businesses");
 const STUDIO_DRAFTS = path.join(HOME, "Documents/studio/docs/seeds/skills/_drafts");
 const EXPANSION_INBOX = path.join(BIZ, "_shared/expansion-requests");
 
-export type ApprovalKind = "todo" | "social" | "skill" | "expansion" | "opportunity";
+export type ApprovalKind =
+  | "todo"
+  | "social"
+  | "skill"
+  | "expansion"
+  | "opportunity"
+  | "inbox";
 
 export interface ApprovalItem {
   /** Stable React key — unique across the whole queue. */
@@ -280,6 +286,84 @@ export async function collectAllApprovals(
       skipLabel: "Skip",
       telegramHint: `bootstrap-pitch ${o.id}`,
     });
+  }
+
+  // ── Brand-site inbound: contact, quote, subscribe, checklist ─────────────
+  // Each tenant has an inbox/ tree where the brand-site route handlers drop
+  // <ts>-<kind>.json with status "open". We surface those here so every
+  // form submission lands in /admin/inbox with the right tenant tag.
+  const INBOX_KIND_LABEL: Record<string, string> = {
+    contact: "Contact form",
+    quote: "Quote request",
+    subscribe: "Newsletter signup",
+    checklist: "Checklist signup",
+  };
+  for (const t of state.tenants) {
+    const inboxDir = path.join(BIZ, t.slug, "inbox");
+    if (!existsSync(inboxDir)) continue;
+    const files = (await fs.readdir(inboxDir).catch(() => [] as string[]))
+      .filter((f) => f.endsWith(".json") && !f.endsWith(".tmp"))
+      .slice(0, 50);
+    for (const f of files) {
+      try {
+        const raw = await fs.readFile(path.join(inboxDir, f), "utf8");
+        const data = JSON.parse(raw) as {
+          id?: string;
+          ts?: string;
+          kind?: string;
+          tenant?: string;
+          status?: string;
+          payload?: Record<string, unknown>;
+        };
+        if (data?.status !== "open") continue;
+        const id: string = data.id || f.replace(/\.json$/, "");
+        const kind = String(data.kind || "contact");
+        const typeLabel = INBOX_KIND_LABEL[kind] || "Inbound";
+        const payload = data.payload || {};
+        const name =
+          typeof payload.name === "string" && payload.name
+            ? payload.name
+            : (typeof payload.company === "string" ? payload.company : "");
+        const emailField =
+          typeof payload.email === "string" ? payload.email : "";
+        const messageField =
+          typeof payload.message === "string"
+            ? payload.message
+            : (typeof payload.source === "string" ? payload.source : "");
+        const titleBase = name
+          ? `${typeLabel} — ${name}`
+          : emailField
+            ? `${typeLabel} — ${emailField}`
+            : typeLabel;
+        items.push({
+          key: `inbox-${t.slug}-${id}`,
+          kind: "inbox",
+          id: `${t.slug}/${id}`,
+          urgency: kind === "subscribe" ? "low" : "normal",
+          typeLabel,
+          business: t.display_name,
+          tenant: t.slug,
+          title: titleBase,
+          reason:
+            kind === "quote"
+              ? "New quote request from the brand site — waiting on your reply."
+              : kind === "subscribe"
+                ? "New newsletter signup from the brand site."
+                : kind === "checklist"
+                  ? "New checklist lead from the brand site."
+                  : "New contact form submission from the brand site.",
+          preview: clip(
+            messageField || emailField || JSON.stringify(payload),
+            220,
+          ),
+          ageMin: ageMinFrom(data.ts, now),
+          approveLabel: "Mark handled",
+          skipLabel: "Dismiss",
+        });
+      } catch {
+        /* skip unreadable inbox file */
+      }
+    }
   }
 
   // High urgency first, then by age (newest first) within a bucket.

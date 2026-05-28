@@ -86,6 +86,12 @@ html{scroll-behavior:smooth;}
 .ll-root nav .btn{padding:9px 15px;}
 .ll-root .hero{padding:78px 0 64px;
   background:radial-gradient(900px 380px at 78% -8%,var(--teal-soft),transparent 70%);}
+.ll-root .hero-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:40px;align-items:center;}
+.ll-root .hero-copy{min-width:0;}
+.ll-root .hero-art{min-width:0;display:flex;justify-content:center;}
+.ll-root .hero-art img{width:100%;max-width:480px;height:auto;display:block;
+  border-radius:18px;border:1px solid var(--line);background:var(--card);
+  box-shadow:0 1px 0 rgba(15,118,110,.04);}
 .ll-root .hero h1{font-size:52px;max-width:15ch;margin:16px 0 0;}
 .ll-root .hero .sub{font-size:18px;color:var(--ink2);max-width:54ch;margin:20px 0 26px;}
 .ll-root .hero .cta{display:flex;gap:12px;flex-wrap:wrap;}
@@ -104,8 +110,9 @@ html{scroll-behavior:smooth;}
 .ll-root .toggles{display:flex;flex-wrap:wrap;gap:9px;}
 .ll-root .toggle{font-size:13.5px;padding:9px 14px;border-radius:999px;cursor:pointer;
   background:var(--bg);color:var(--ink2);border:1px solid var(--line);
-  user-select:none;transition:.12s;}
+  user-select:none;transition:background-color .16s ease-out,border-color .16s ease-out,color .16s ease-out,transform .12s ease-out;}
 .ll-root .toggle:hover{border-color:var(--teal);}
+.ll-root .toggle:active{transform:scale(.96);}
 .ll-root .toggle.on{background:var(--teal);color:#fff;border-color:var(--teal);}
 .ll-root .finder-bar{display:flex;align-items:baseline;gap:8px;margin:22px 0 6px;
   padding-top:18px;border-top:1px solid var(--line);}
@@ -130,7 +137,12 @@ html{scroll-behavior:smooth;}
 .ll-root .weave-btn:disabled{opacity:.6;cursor:default;}
 .ll-root .weave-intro{font-size:12.5px;color:var(--muted);margin-bottom:10px;}
 .ll-root .weave-out{margin-top:14px;background:var(--teal-tint);border:1px solid var(--line);
-  border-left:3px solid var(--teal);border-radius:10px;padding:16px 18px;}
+  border-left:3px solid var(--teal);border-radius:10px;padding:16px 18px;
+  animation:weave-rise .36s cubic-bezier(.2,.65,.3,1);}
+@keyframes weave-rise{
+  from{opacity:0;transform:translateY(8px);}
+  to{opacity:1;transform:translateY(0);}
+}
 .ll-root .weave-h{font-family:var(--serif);font-size:18px;color:var(--teal-dk);margin-bottom:8px;}
 .ll-root .weave-body p{font-size:13.5px;color:var(--ink2);margin:0 0 9px;}
 .ll-root .weave-disc{font-size:11.5px;color:var(--muted);font-style:italic;margin-top:4px;}
@@ -138,8 +150,14 @@ html{scroll-behavior:smooth;}
   border:1px solid var(--line);border-radius:8px;padding:12px 14px;}
 .ll-root .cards{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
 .ll-root .card{background:var(--card);border:1px solid var(--line);border-radius:12px;
-  padding:15px 16px;cursor:pointer;transition:.12s;}
+  padding:15px 16px;cursor:pointer;
+  transition:border-color .14s ease-out,box-shadow .14s ease-out;
+  animation:card-rise .32s cubic-bezier(.2,.65,.3,1) backwards;}
 .ll-root .card:hover{border-color:var(--teal);}
+@keyframes card-rise{
+  from{opacity:0;transform:translateY(6px);}
+  to{opacity:1;transform:translateY(0);}
+}
 .ll-root .card .nm{font-size:15px;font-weight:700;letter-spacing:-0.01em;}
 .ll-root .card .sm{font-size:13px;color:var(--muted);margin-top:5px;}
 .ll-root .badges{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;}
@@ -150,9 +168,12 @@ html{scroll-behavior:smooth;}
 .ll-root .bdg.r-low{background:#e3f1ee;color:#0f766e;}
 .ll-root .bdg.r-medium{background:#fbf2dc;color:#9a6b00;}
 .ll-root .bdg.r-high{background:#fbe9e6;color:#b3402f;}
-.ll-root .card .detail{display:none;margin-top:12px;padding-top:12px;
-  border-top:1px solid var(--line);}
-.ll-root .card.open .detail{display:block;}
+.ll-root .card .detail{max-height:0;opacity:0;overflow:hidden;
+  margin-top:0;padding-top:0;border-top:1px solid transparent;
+  transition:max-height .34s ease-out,opacity .22s ease-out .04s,
+    margin-top .34s ease-out,padding-top .34s ease-out,border-top-color .34s ease-out;}
+.ll-root .card.open .detail{max-height:1200px;opacity:1;
+  margin-top:12px;padding-top:12px;border-top-color:var(--line);}
 .ll-root .card.open{cursor:default;}
 .ll-root .detail .drow{margin-bottom:9px;}
 .ll-root .detail .k{font-size:10.5px;font-weight:700;text-transform:uppercase;
@@ -218,6 +239,11 @@ html{scroll-behavior:smooth;}
 .ll-root .foot .frow{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;}
 .ll-root .foot .fbrand{font-family:var(--serif);font-size:17px;color:#fff;}
 .ll-root .foot .disc{margin-top:16px;line-height:1.7;max-width:80ch;}
+@media(max-width:860px){
+  .ll-root .hero-grid{grid-template-columns:1fr;gap:24px;}
+  .ll-root .hero-art{order:-1;}
+  .ll-root .hero-art img{max-width:360px;}
+}
 @media(max-width:760px){
   .ll-root .hero h1{font-size:34px;} .ll-root .hero{padding:50px 0 40px;}
   .ll-root .sec-head h2{font-size:25px;} .ll-root section{padding:44px 0;}
@@ -226,12 +252,21 @@ html{scroll-behavior:smooth;}
   .ll-root nav .links{display:none;}
   .ll-root .get h2{font-size:25px;}
 }
+@media(prefers-reduced-motion:reduce){
+  .ll-root .card,.ll-root .weave-out{animation:none!important;}
+  .ll-root .toggle:active{transform:none!important;}
+  .ll-root .card .detail{transition:none!important;}
+}
 `;
 
-function StrategyCard({ e }: { e: LoopholeEntry }) {
+function StrategyCard({ e, idx }: { e: LoopholeEntry; idx: number }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className={open ? "card open" : "card"} onClick={() => setOpen((o) => !o)}>
+    <div
+      className={open ? "card open" : "card"}
+      onClick={() => setOpen((o) => !o)}
+      style={{ animationDelay: `${Math.min(idx, 12) * 35}ms` }}
+    >
       <div className="nm">{e.name}</div>
       <div className="sm">{e.summary}</div>
       <div className="badges">
@@ -368,7 +403,7 @@ function LoopholeFinder() {
         {results.length === 0 ? (
           <div className="empty">{emptyMsg}</div>
         ) : (
-          results.map((e) => <StrategyCard key={e.id} e={e} />)
+          results.map((e, i) => <StrategyCard key={e.id} e={e} idx={i} />)
         )}
       </div>
       {results.length >= 2 ? (
@@ -434,22 +469,27 @@ export default function LifeLoopholeSite() {
 
       {/* HERO */}
       <header className="hero">
-        <div className="wrap">
-          <div className="eyebrow">Tax strategy, decoded &middot; A Day14 company</div>
-          <h1>The tax code is full of legal advantages. Most people never find theirs.</h1>
-          <p className="sub">
-            Life Loophole shows you the legitimate, IRS-sourced strategies that fit your life —
-            explained in plain English — so you can stop overpaying and start using the system
-            the way it was actually built to be used.
-          </p>
-          <div className="cta">
-            <a href="/brands/life-loophole/advisor" className="btn lg">Ask the advisor</a>
-            <a href="#finder" className="btn ghost lg">Browse the finder</a>
+        <div className="wrap hero-grid">
+          <div className="hero-copy">
+            <div className="eyebrow">Tax strategy, decoded &middot; A Day14 company</div>
+            <h1>Legal advantages hide in the tax code. Most people never find theirs.</h1>
+            <p className="sub">
+              Life Loophole shows you the legitimate, IRS-sourced strategies that fit your life —
+              explained in plain English — so you can stop overpaying and start using the system
+              the way it was actually built to be used.
+            </p>
+            <div className="cta">
+              <a href="/brands/life-loophole/advisor" className="btn lg">Ask the advisor</a>
+              <a href="#finder" className="btn ghost lg">Browse the finder</a>
+            </div>
+            <div className="trust">
+              <span><b>48</b> sourced strategies</span>
+              <span><b>Every one legal</b> — and growing</span>
+              <span><b>Built on the IRS code</b>, not opinions</span>
+            </div>
           </div>
-          <div className="trust">
-            <span><b>48</b> sourced strategies</span>
-            <span><b>Every one legal</b> — and growing</span>
-            <span><b>Built on the IRS code</b>, not opinions</span>
+          <div className="hero-art" aria-hidden="true">
+            <img src="/brands/life-loophole/hero.svg" alt="" loading="eager" />
           </div>
         </div>
       </header>
@@ -666,10 +706,29 @@ export default function LifeLoopholeSite() {
             className="signup"
             onSubmit={(ev) => {
               ev.preventDefault();
+              const formEl = ev.currentTarget;
+              const data = new FormData(formEl);
+              const email = String(data.get("email") || "").trim();
               setJoined(true);
+              if (!email) return;
+              // Fire-and-forget — the UI already says success. The inbox
+              // write happens server-side regardless of the user's path.
+              fetch("/api/brands/life-loophole/checklist", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email }),
+              }).catch(() => {
+                /* best-effort */
+              });
             }}
           >
-            <input type="email" placeholder="you@email.com" required aria-label="Email address" />
+            <input
+              type="email"
+              name="email"
+              placeholder="you@email.com"
+              required
+              aria-label="Email address"
+            />
             <button type="submit" className="btn lg">Send me the checklist</button>
           </form>
           {joined ? (

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import { SITE, PITCH } from "@/lib/site";
 import { ChatWidget } from "@/components/chat-widget";
@@ -70,6 +71,7 @@ export default function RootLayout({
       <body>
         <RouteTransition>{children}</RouteTransition>
         <ChatWidget />
+        <Analytics />
       </body>
     </html>
   );

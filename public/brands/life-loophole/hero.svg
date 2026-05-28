@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-label="">
+  <title>Layers of the tax code with a highlighted legal strategy</title>
+
+  <!-- Background paper -->
+  <rect width="480" height="360" fill="#fbfaf7"/>
+
+  <!-- Subtle ledger lines (very faint, full width) -->
+  <g stroke="#e4e3db" stroke-width="1" opacity="0.45">
+    <line x1="0" y1="48" x2="480" y2="48"/>
+    <line x1="0" y1="72" x2="480" y2="72"/>
+    <line x1="0" y1="96" x2="480" y2="96"/>
+    <line x1="0" y1="120" x2="480" y2="120"/>
+    <line x1="0" y1="144" x2="480" y2="144"/>
+    <line x1="0" y1="168" x2="480" y2="168"/>
+    <line x1="0" y1="192" x2="480" y2="192"/>
+    <line x1="0" y1="216" x2="480" y2="216"/>
+    <line x1="0" y1="240" x2="480" y2="240"/>
+    <line x1="0" y1="264" x2="480" y2="264"/>
+    <line x1="0" y1="288" x2="480" y2="288"/>
+    <line x1="0" y1="312" x2="480" y2="312"/>
+  </g>
+
+  <!-- Watermark section symbol, far upper-left, very low contrast -->
+  <text x="-8" y="78" font-family="Georgia, 'Times New Roman', serif"
+        font-size="120" fill="#0a4f49" opacity="0.06" font-weight="400">§</text>
+
+  <!-- Nested code "layers" — three stacked rounded cards, slight diagonal stagger,
+       conveying depth without floating shadows. Hairline-defined, brand-grounded. -->
+
+  <!-- Back card (lightest) -->
+  <rect x="100" y="74" width="280" height="216" rx="10" ry="10"
+        fill="#ffffff" stroke="#e4e3db" stroke-width="1"/>
+
+  <!-- Mid card (teal tint, slightly forward) -->
+  <rect x="110" y="86" width="280" height="216" rx="10" ry="10"
+        fill="#f0f7f5" stroke="#0f766e" stroke-opacity="0.22" stroke-width="1"/>
+
+  <!-- Front card (white, teal hairline) -->
+  <rect x="120" y="98" width="280" height="216" rx="10" ry="10"
+        fill="#ffffff" stroke="#0f766e" stroke-opacity="0.55" stroke-width="1"/>
+
+  <!-- Front-card content: a serif section symbol + a column of "code rows" -->
+
+  <!-- Large § anchor, top-left of front card -->
+  <text x="138" y="160" font-family="Georgia, 'Times New Roman', serif"
+        font-size="58" fill="#0a4f49" font-weight="400">§</text>
+
+  <!-- Small mono labels under the § (representing tax code section refs) -->
+  <g font-family="'JetBrains Mono', ui-monospace, monospace" font-size="9"
+     font-weight="700" letter-spacing="0.8" fill="#6a7872">
+    <text x="138" y="178">§ 401(k)</text>
+    <text x="138" y="192">§ 199A</text>
+    <text x="138" y="206">§ 121</text>
+    <text x="138" y="220">§ 1031</text>
+  </g>
+
+  <!-- "Code rows" on the right side of front card — most are subtle teal
+       (the tax code as a whole), a small subset is gold (the legal
+       advantages that fit you). -->
+  <g>
+    <!-- Subtle teal rows -->
+    <rect x="220" y="118" width="160" height="10" rx="2" fill="#d8ebe6"/>
+    <rect x="220" y="134" width="148" height="10" rx="2" fill="#d8ebe6"/>
+    <!-- Highlighted: gold loophole found -->
+    <rect x="220" y="150" width="156" height="10" rx="2" fill="#b07d2b"/>
+    <rect x="220" y="166" width="142" height="10" rx="2" fill="#d8ebe6"/>
+    <rect x="220" y="182" width="160" height="10" rx="2" fill="#d8ebe6"/>
+    <!-- Highlighted: gold loophole found -->
+    <rect x="220" y="198" width="150" height="10" rx="2" fill="#b07d2b"/>
+    <rect x="220" y="214" width="138" height="10" rx="2" fill="#d8ebe6"/>
+    <rect x="220" y="230" width="160" height="10" rx="2" fill="#d8ebe6"/>
+    <rect x="220" y="246" width="146" height="10" rx="2" fill="#d8ebe6"/>
+    <!-- Highlighted: gold loophole found -->
+    <rect x="220" y="262" width="158" height="10" rx="2" fill="#b07d2b"/>
+    <rect x="220" y="278" width="140" height="10" rx="2" fill="#d8ebe6"/>
+    <rect x="220" y="294" width="160" height="10" rx="2" fill="#d8ebe6"/>
+  </g>
+
+  <!-- Gold accent stripe on left edge of front card — "legal" emphasis -->
+  <rect x="120" y="98" width="3" height="216" fill="#b07d2b"/>
+</svg>

@@ -6,12 +6,16 @@
  */
 import { NextRequest, NextResponse } from "next/server";
 import { subscribe } from "@/lib/mailerlite";
+import { writeBrandInbox } from "@/lib/brand-inbox";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+const SLUG_RE = /^[a-z0-9][a-z0-9._-]*$/i;
+
 function slugFromPath(req: NextRequest): string {
-  return req.nextUrl.pathname.split("/")[3] || "unknown";
+  const raw = req.nextUrl.pathname.split("/")[3] || "unknown";
+  return SLUG_RE.test(raw) ? raw : "unknown";
 }
 
 function page(title: string, message: string): NextResponse {
@@ -52,6 +56,21 @@ export async function POST(req: NextRequest) {
   }
 
   const result = await subscribe({ email, source: `brand:${slug}` });
+
+  // Land in the per-tenant inbox too — even when MailerLite succeeds, this
+  // is the signal Jack's queue uses to surface fresh signups in /admin/inbox.
+  const inboxResult = await writeBrandInbox({
+    tenant: slug,
+    kind: "subscribe",
+    payload: {
+      email,
+      source: `brand:${slug}`,
+      mailerlite_ok: result.ok,
+    },
+  });
+  if (!inboxResult.ok) {
+    console.log(`[brand-subscribe:${slug}] inbox write failed: ${inboxResult.error || "unknown"}`);
+  }
 
   if (!isJson) {
     return result.ok

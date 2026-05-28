@@ -13,6 +13,7 @@
 import { NextRequest } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase-server";
 import { logAction } from "@/lib/work-register";
+import { writeBrandInbox } from "@/lib/brand-inbox";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -109,6 +110,24 @@ export async function POST(req: NextRequest) {
     invoked_skill: "intake-parser",
     notes: body.sku ? `sku=${body.sku}` : "no_sku",
   });
+
+  // Land in the day14 tenant inbox so the unified Approvals queue sees it.
+  const inboxResult = await writeBrandInbox({
+    tenant: "day14",
+    kind: "contact",
+    payload: {
+      submission_id: submissionId,
+      source: body.source || "intake-form",
+      sku: body.sku || null,
+      email,
+      company,
+      fields: body.fields,
+      ip,
+    },
+  });
+  if (!inboxResult.ok) {
+    console.log(`[intake] inbox write failed: ${inboxResult.error || "unknown"}`);
+  }
 
   return Response.json({
     received: true,

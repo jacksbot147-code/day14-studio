@@ -48,7 +48,7 @@ const SKILLS_DRAFTS = path.join(SKILLS_DIR, "_drafts");
 const EXPANSION_INBOX = path.join(SHARED, "expansion-requests");
 const OPPORTUNITIES = path.join(SHARED, "opportunities");
 
-const KINDS = ["todo", "social", "skill", "expansion", "opportunity"] as const;
+const KINDS = ["todo", "social", "skill", "expansion", "opportunity", "inbox"] as const;
 type Kind = (typeof KINDS)[number];
 const ACTIONS = ["approve", "skip"] as const;
 type Action = (typeof ACTIONS)[number];
@@ -267,6 +267,58 @@ async function handleOpportunity(id: string, action: Action): Promise<Result> {
   };
 }
 
+// ── inbox: mark a brand-site inbound item handled / dismissed ───────────────
+// The id is shaped "<tenant>/<recordId>" — collectAllApprovals emits it that
+// way so the write side can locate the file without scanning every tenant.
+// Both segments are path-traversal-guarded before joining.
+async function handleInbox(id: string, action: Action): Promise<Result> {
+  const parts = id.split("/");
+  if (parts.length !== 2) {
+    return { ok: false, message: "inbox id must be <tenant>/<recordId>" };
+  }
+  const tenant = parts[0] ?? "";
+  const recordId = parts[1] ?? "";
+  if (!isSafeSegment(tenant) || !isSafeSegment(recordId)) {
+    return { ok: false, message: "invalid inbox id" };
+  }
+  const inboxDir = path.join(BIZ, tenant, "inbox");
+  if (!existsSync(inboxDir)) {
+    return { ok: false, message: `no inbox for tenant: ${tenant}` };
+  }
+  // The on-disk filename is `${recordId}-${kind}.json`. We do not know the
+  // kind here, so scan once for any file that starts with recordId-.
+  let match: string | null = null;
+  try {
+    const entries = await fs.readdir(inboxDir);
+    match =
+      entries.find((f) => f.startsWith(`${recordId}-`) && f.endsWith(".json")) ||
+      null;
+  } catch {
+    return { ok: false, message: "could not read the tenant inbox" };
+  }
+  if (!match) return { ok: false, message: `no inbox record: ${id}` };
+
+  const filePath = path.join(inboxDir, match);
+  const data = await readJson<{ status?: string }>(filePath);
+  if (!data) return { ok: false, message: "could not read the inbox record" };
+  data.status = action === "approve" ? "handled" : "dismissed";
+  (data as Record<string, unknown>)[
+    action === "approve" ? "handled_at" : "dismissed_at"
+  ] = new Date().toISOString();
+  try {
+    await fs.writeFile(filePath, JSON.stringify(data, null, 2));
+  } catch {
+    return { ok: false, message: "could not save the inbox record" };
+  }
+  return {
+    ok: true,
+    message:
+      action === "approve"
+        ? `Marked handled: ${tenant} inbox ${recordId}`
+        : `Dismissed: ${tenant} inbox ${recordId}`,
+  };
+}
+
 export async function POST(req: NextRequest) {
   // Auth — the same admin-session cookie the dashboard is gated behind.
   const password = process.env.ADMIN_PASSWORD;
@@ -324,6 +376,9 @@ export async function POST(req: NextRequest) {
         break;
       case "opportunity":
         result = await handleOpportunity(id, action as Action);
+        break;
+      case "inbox":
+        result = await handleInbox(id, action as Action);
         break;
       default:
         result = { ok: false, message: "unknown kind" };
