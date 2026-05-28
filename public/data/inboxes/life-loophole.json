@@ -1,13 +1,14 @@
 {
   "schema_version": 1,
   "tenant": "life-loophole",
-  "generated_at": "2026-05-28T17:24:42.057Z",
-  "generated_by": "scheduled-task workday-t16-banana-loophole-heroes — generateImage() via cc-nano-banana bridge",
+  "generated_at": "2026-05-28T22:04:56.467Z",
+  "generated_by": "scheduled-task workday-e1-refire-t3-t8 — materializeDraft() + invokeMarketingSkill()",
   "notes": [
     "Drafts synthesized from src/app/brands/life-loophole/catalog.ts because content/life-loophole/drafts/ is not yet materialized on disk.",
     "Article MDX/body is NOT modified by this task — inbox cards only.",
     "Each generatedPath is relative to the studio repo root.",
-    "Placeholder cards (is_placeholder=true) appear when GEMINI_API_KEY is unset; cache path is stable so re-running with the key drops in the real image at the same location."
+    "Placeholder cards (is_placeholder=true) appear when GEMINI_API_KEY is unset; cache path is stable so re-running with the key drops in the real image at the same location.",
+    "2026-05-28 18:00 — E1 T3+T8 refire: added 6 headline-pick items via scripts/workday-e1-refire-t3-t8.mjs."
   ],
   "items": [
     {
@@ -150,6 +151,222 @@
       "gen_reason": "no-key",
       "cached": false,
       "created_at": "2026-05-28T17:24:42.057Z",
+      "status": "awaiting-jack",
+      "priority": "medium",
+      "auto_insert_into_mdx": false
+    },
+    {
+      "id": "inbox-life-loophole-2026-05-28-headline-ll-2026-05-28-001-hsa-contribution",
+      "kind": "headline-pick",
+      "tenant": "life-loophole",
+      "tags": [
+        "life-loophole",
+        "headline"
+      ],
+      "title": "Pick a headline — The HSA is the only triple-tax-advantaged account in the code",
+      "summary": "[needs-API-key] 3 placeholder headline variants written — set ANTHROPIC_API_KEY and re-run to get real variants from the headline-rewriter skill. (reason: marketing-skills plugin not found on disk)",
+      "draftId": "ll-2026-05-28-001-hsa-contribution",
+      "catalogId": "hsa-contribution",
+      "slug": "hsa-triple-tax-advantage",
+      "draftPath": "content/life-loophole/drafts/hsa-triple-tax-advantage.md",
+      "variantsPath": "content/life-loophole/drafts/hsa-triple-tax-advantage.variants.json",
+      "originalTitle": "The HSA is the only triple-tax-advantaged account in the code",
+      "variants": [
+        {
+          "text": "[needs-API-key] The HSA is the only triple-tax-advantaged account in the code",
+          "rationale": "placeholder #1 — strategy: keep original (control)"
+        },
+        {
+          "text": "[needs-API-key] What the HSA is the only triple-tax-advantaged account in the code really buys you",
+          "rationale": "placeholder #2 — strategy: outcome-led reframe"
+        },
+        {
+          "text": "[needs-API-key] One paragraph on hsa contribution, none of the jargon",
+          "rationale": "placeholder #3 — strategy: anti-jargon promise"
+        }
+      ],
+      "is_placeholder": true,
+      "created_at": "2026-05-28T22:04:56.477Z",
+      "status": "awaiting-jack",
+      "priority": "medium",
+      "auto_insert_into_mdx": false
+    },
+    {
+      "id": "inbox-life-loophole-2026-05-28-headline-ll-2026-05-28-002-traditional-ira",
+      "kind": "headline-pick",
+      "tenant": "life-loophole",
+      "tags": [
+        "life-loophole",
+        "headline"
+      ],
+      "title": "Pick a headline — The Traditional IRA deduction: a quiet line on Schedule 1 that pays for itself",
+      "summary": "[needs-API-key] 3 placeholder headline variants written — set ANTHROPIC_API_KEY and re-run to get real variants from the headline-rewriter skill. (reason: marketing-skills plugin not found on disk)",
+      "draftId": "ll-2026-05-28-002-traditional-ira",
+      "catalogId": "traditional-ira-deduction",
+      "slug": "traditional-ira-deduction",
+      "draftPath": "content/life-loophole/drafts/traditional-ira-deduction.md",
+      "variantsPath": "content/life-loophole/drafts/traditional-ira-deduction.variants.json",
+      "originalTitle": "The Traditional IRA deduction: a quiet line on Schedule 1 that pays for itself",
+      "variants": [
+        {
+          "text": "[needs-API-key] The Traditional IRA deduction: a quiet line on Schedule 1 that pays for itself",
+          "rationale": "placeholder #1 — strategy: keep original (control)"
+        },
+        {
+          "text": "[needs-API-key] What the Traditional IRA deduction: a quiet line on Schedule 1 that pays for itself really buys you",
+          "rationale": "placeholder #2 — strategy: outcome-led reframe"
+        },
+        {
+          "text": "[needs-API-key] One paragraph on traditional ira deduction, none of the jargon",
+          "rationale": "placeholder #3 — strategy: anti-jargon promise"
+        }
+      ],
+      "is_placeholder": true,
+      "created_at": "2026-05-28T22:04:56.478Z",
+      "status": "awaiting-jack",
+      "priority": "medium",
+      "auto_insert_into_mdx": false
+    },
+    {
+      "id": "inbox-life-loophole-2026-05-28-headline-ll-2026-05-28-003-roth-ira",
+      "kind": "headline-pick",
+      "tenant": "life-loophole",
+      "tags": [
+        "life-loophole",
+        "headline"
+      ],
+      "title": "Pick a headline — The Roth IRA trade: no break today, every break later",
+      "summary": "[needs-API-key] 3 placeholder headline variants written — set ANTHROPIC_API_KEY and re-run to get real variants from the headline-rewriter skill. (reason: marketing-skills plugin not found on disk)",
+      "draftId": "ll-2026-05-28-003-roth-ira",
+      "catalogId": "roth-ira-contribution",
+      "slug": "roth-ira-tradeoff",
+      "draftPath": "content/life-loophole/drafts/roth-ira-tradeoff.md",
+      "variantsPath": "content/life-loophole/drafts/roth-ira-tradeoff.variants.json",
+      "originalTitle": "The Roth IRA trade: no break today, every break later",
+      "variants": [
+        {
+          "text": "[needs-API-key] The Roth IRA trade: no break today, every break later",
+          "rationale": "placeholder #1 — strategy: keep original (control)"
+        },
+        {
+          "text": "[needs-API-key] What the Roth IRA trade: no break today, every break later really buys you",
+          "rationale": "placeholder #2 — strategy: outcome-led reframe"
+        },
+        {
+          "text": "[needs-API-key] One paragraph on roth ira contribution, none of the jargon",
+          "rationale": "placeholder #3 — strategy: anti-jargon promise"
+        }
+      ],
+      "is_placeholder": true,
+      "created_at": "2026-05-28T22:04:56.479Z",
+      "status": "awaiting-jack",
+      "priority": "medium",
+      "auto_insert_into_mdx": false
+    },
+    {
+      "id": "inbox-life-loophole-2026-05-28-headline-ll-2026-05-28-004-employer-401k",
+      "kind": "headline-pick",
+      "tenant": "life-loophole",
+      "tags": [
+        "life-loophole",
+        "headline"
+      ],
+      "title": "Pick a headline — Workplace 401(k): the only loophole your employer pays you to use",
+      "summary": "[needs-API-key] 3 placeholder headline variants written — set ANTHROPIC_API_KEY and re-run to get real variants from the headline-rewriter skill. (reason: marketing-skills plugin not found on disk)",
+      "draftId": "ll-2026-05-28-004-employer-401k",
+      "catalogId": "employer-401k-contribution",
+      "slug": "workplace-401k-match",
+      "draftPath": "content/life-loophole/drafts/workplace-401k-match.md",
+      "variantsPath": "content/life-loophole/drafts/workplace-401k-match.variants.json",
+      "originalTitle": "Workplace 401(k): the only loophole your employer pays you to use",
+      "variants": [
+        {
+          "text": "[needs-API-key] Workplace 401(k): the only loophole your employer pays you to use",
+          "rationale": "placeholder #1 — strategy: keep original (control)"
+        },
+        {
+          "text": "[needs-API-key] What Workplace 401(k): the only loophole your employer pays you to use really buys you",
+          "rationale": "placeholder #2 — strategy: outcome-led reframe"
+        },
+        {
+          "text": "[needs-API-key] One paragraph on employer 401k contribution, none of the jargon",
+          "rationale": "placeholder #3 — strategy: anti-jargon promise"
+        }
+      ],
+      "is_placeholder": true,
+      "created_at": "2026-05-28T22:04:56.479Z",
+      "status": "awaiting-jack",
+      "priority": "medium",
+      "auto_insert_into_mdx": false
+    },
+    {
+      "id": "inbox-life-loophole-2026-05-28-headline-ll-2026-05-28-005-child-tax-credit",
+      "kind": "headline-pick",
+      "tenant": "life-loophole",
+      "tags": [
+        "life-loophole",
+        "headline"
+      ],
+      "title": "Pick a headline — The Child Tax Credit, decoded: who qualifies and what's refundable",
+      "summary": "[needs-API-key] 3 placeholder headline variants written — set ANTHROPIC_API_KEY and re-run to get real variants from the headline-rewriter skill. (reason: marketing-skills plugin not found on disk)",
+      "draftId": "ll-2026-05-28-005-child-tax-credit",
+      "catalogId": "child-tax-credit",
+      "slug": "child-tax-credit-decoded",
+      "draftPath": "content/life-loophole/drafts/child-tax-credit-decoded.md",
+      "variantsPath": "content/life-loophole/drafts/child-tax-credit-decoded.variants.json",
+      "originalTitle": "The Child Tax Credit, decoded: who qualifies and what's refundable",
+      "variants": [
+        {
+          "text": "[needs-API-key] The Child Tax Credit, decoded: who qualifies and what's refundable",
+          "rationale": "placeholder #1 — strategy: keep original (control)"
+        },
+        {
+          "text": "[needs-API-key] What the Child Tax Credit, decoded: who qualifies and what's refundable really buys you",
+          "rationale": "placeholder #2 — strategy: outcome-led reframe"
+        },
+        {
+          "text": "[needs-API-key] One paragraph on child tax credit, none of the jargon",
+          "rationale": "placeholder #3 — strategy: anti-jargon promise"
+        }
+      ],
+      "is_placeholder": true,
+      "created_at": "2026-05-28T22:04:56.480Z",
+      "status": "awaiting-jack",
+      "priority": "medium",
+      "auto_insert_into_mdx": false
+    },
+    {
+      "id": "inbox-life-loophole-2026-05-28-headline-ll-2026-05-28-006-education-credits",
+      "kind": "headline-pick",
+      "tenant": "life-loophole",
+      "tags": [
+        "life-loophole",
+        "headline"
+      ],
+      "title": "Pick a headline — Two education credits, one tuition bill: how to pick AOTC vs Lifetime Learning",
+      "summary": "[needs-API-key] 3 placeholder headline variants written — set ANTHROPIC_API_KEY and re-run to get real variants from the headline-rewriter skill. (reason: marketing-skills plugin not found on disk)",
+      "draftId": "ll-2026-05-28-006-education-credits",
+      "catalogId": "education-credits",
+      "slug": "education-credits-aotc-vs-llc",
+      "draftPath": "content/life-loophole/drafts/education-credits-aotc-vs-llc.md",
+      "variantsPath": "content/life-loophole/drafts/education-credits-aotc-vs-llc.variants.json",
+      "originalTitle": "Two education credits, one tuition bill: how to pick AOTC vs Lifetime Learning",
+      "variants": [
+        {
+          "text": "[needs-API-key] Two education credits, one tuition bill: how to pick AOTC vs Lifetime Learning",
+          "rationale": "placeholder #1 — strategy: keep original (control)"
+        },
+        {
+          "text": "[needs-API-key] What Two education credits, one tuition bill: how to pick AOTC vs Lifetime Learning really buys you",
+          "rationale": "placeholder #2 — strategy: outcome-led reframe"
+        },
+        {
+          "text": "[needs-API-key] One paragraph on education credits, none of the jargon",
+          "rationale": "placeholder #3 — strategy: anti-jargon promise"
+        }
+      ],
+      "is_placeholder": true,
+      "created_at": "2026-05-28T22:04:56.481Z",
       "status": "awaiting-jack",
       "priority": "medium",
       "auto_insert_into_mdx": false
