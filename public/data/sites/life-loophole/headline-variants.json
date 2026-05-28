@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "tenant": "life-loophole",
+  "generated_at": "2026-05-28T15:00:00.000Z",
+  "generated_by": "scheduled-task T9 (workday-t09-marketing-brand-headlines) — invokeMarketingSkill('landing-headline')",
+  "skill": "landing-headline",
+  "current": {
+    "headline": "Legal advantages hide in the tax code. Most people never find theirs.",
+    "subhead": "Life Loophole shows you the legitimate, IRS-sourced strategies that fit your life — explained in plain English — so you can stop overpaying and start using the system the way it was actually built to be used.",
+    "source": "src/app/brands/life-loophole/page.tsx (HERO)."
+  },
+  "voice_notes": [
+    "Plain-spoken, confident, demystifying. Translates tax-code complexity.",
+    "A little irreverent about how needlessly complicated the system is — on the reader's side.",
+    "Specific and sourced. Every claim points to a real rule.",
+    "Leads with the word *legal*.",
+    "No: 'one weird trick', 'IRS hates this', guaranteed savings, sleaze."
+  ],
+  "headline_variants": [
+    {
+      "id": "h1",
+      "headline": "Legal. Sourced. The tax breaks the code actually gives you.",
+      "rationale": "Constitution-mandated 'lead with legal'. Three beats. Replaces the abstract 'hide in the code' with the concrete 'actually gives you.'"
+    },
+    {
+      "id": "h2",
+      "headline": "Every loophole is legal. Yours just hasn't found you yet.",
+      "rationale": "Reclaims the word 'loophole' as the brand owns it (legal, code-sanctioned) and pivots to the reader's strategy."
+    },
+    {
+      "id": "h3",
+      "headline": "The tax code is full of legal advantages. We point you at yours.",
+      "rationale": "Slight rephrase of the current hook that drops the 'most people never find theirs' guilt-trip in favor of action."
+    }
+  ],
+  "subhead_variants": [
+    {
+      "id": "s1",
+      "subhead": "Life Loophole is a sourced, plain-English finder for every legitimate strategy the IRS code already gives you — filtered to your life, your business, and your year. Educational, not advice.",
+      "rationale": "Three filter axes (life/business/year), explicit disclaimer at the end. Constitution-compliant."
+    },
+    {
+      "id": "s2",
+      "subhead": "Pick your situation, get the legal strategies that fit, read the actual code section behind each one. No 'one weird trick,' no guessed savings, no advice — just the rules, explained.",
+      "rationale": "Three-step UX, then three explicit anti-positions straight from the CONSTITUTION's 'No' list."
+    },
+    {
+      "id": "s3",
+      "subhead": "Forty-eight sourced strategies, every one tied to a real IRS section. Life Loophole filters them to the kind of life you actually have, in language anyone can read.",
+      "rationale": "Leads with the concrete catalog size (matches the hero trust strip), reinforces sourced + plain English."
+    }
+  ]
+}

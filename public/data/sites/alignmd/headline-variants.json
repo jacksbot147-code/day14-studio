@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "tenant": "alignmd",
+  "generated_at": "2026-05-28T15:00:00.000Z",
+  "generated_by": "scheduled-task T9 (workday-t09-marketing-brand-headlines) — invokeMarketingSkill('landing-headline')",
+  "skill": "landing-headline",
+  "current": {
+    "headline": "Precision Matching for Modern Healthcare",
+    "subhead": "Two-sided healthcare staffing platform — clinicians (NP/PA/MD/DO/CRNA/PT/OT/SLP) matched to facility jobs by a credential-aware, rule-based match score.",
+    "source": "businesses/alignmd/ops/build.json (no CONSTITUTION.md present — voice derived from build.json + admin pages)."
+  },
+  "voice_notes": [
+    "Precise, healthcare-professional, credential-aware.",
+    "Concrete on the role types (NP/PA/MD/DO/CRNA/PT/OT/SLP) and compact-license logic.",
+    "No staffing-agency cliches ('top talent', 'we care about you').",
+    "Leads with rules + verification, not vibes."
+  ],
+  "headline_variants": [
+    {
+      "id": "h1",
+      "headline": "Credentialed clinicians, matched to the role on day one.",
+      "rationale": "Replaces the soft 'precision matching' with two concrete promises: credentialing + day-one fit."
+    },
+    {
+      "id": "h2",
+      "headline": "Match scoring that reads the license, not just the resume.",
+      "rationale": "Foregrounds the credential-aware ranking engine — AlignMD's actual moat."
+    },
+    {
+      "id": "h3",
+      "headline": "Faster healthcare staffing, without skipping a credential check.",
+      "rationale": "Names the trade-off the category usually fudges and resolves it. Two-clause structure for skimmers."
+    }
+  ],
+  "subhead_variants": [
+    {
+      "id": "s1",
+      "subhead": "AlignMD ranks every NP, PA, MD, DO, CRNA, PT, OT, and SLP against your facility's role with a transparent, credential-aware match score — and tracks every license, expiration, and compact-state allowance under it.",
+      "rationale": "Keeps the full role list from the current line, adds the expiration + compact tracking (a real differentiator)."
+    },
+    {
+      "id": "s2",
+      "subhead": "A two-sided staffing platform built around the credentials, not around the click. Facilities post the role, AlignMD ranks the candidates, and the licensure rules are checked before the submission ever lands.",
+      "rationale": "Anti-position opener, then a clean three-step flow. Cleaner for a hero subhead than the current line."
+    },
+    {
+      "id": "s3",
+      "subhead": "Open roles get a ranked, credential-checked shortlist within minutes. AlignMD knows the difference between NP and PA, between compact and single-state, and between today's license and the one that expires next month.",
+      "rationale": "Leads with the operator outcome, then uses three concrete distinctions to prove the rule-engine claim."
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "tenant": "day14-realty",
+  "generated_at": "2026-05-28T15:00:00.000Z",
+  "generated_by": "scheduled-task T9 (workday-t09-marketing-brand-headlines) — invokeMarketingSkill('landing-headline')",
+  "skill": "landing-headline",
+  "current": {
+    "headline": null,
+    "subhead": null,
+    "note": "No live brand-site landing for day14-realty yet — variants below are first-pass options for when the site lands. Voice derived from REALTY-ADVANCEMENT-PLAN.md + REALTY-LAUNCH-RUNBOOK.md (operator voice, county-data-grounded, no opinions)."
+  },
+  "voice_notes": [
+    "Operator voice — real records, not vibes.",
+    "Specific to SW Florida county feeds (Collier, Lee, Charlotte, Sarasota, Manatee).",
+    "Lean on the hourly scout + transparent deal score, not on hype.",
+    "No 'find your dream home' / no broker theatre."
+  ],
+  "headline_variants": [
+    {
+      "id": "h1",
+      "headline": "Southwest Florida deal flow, scored from real county data.",
+      "rationale": "Geography + data-source + scoring in one line. Anchors the brand in its actual moat."
+    },
+    {
+      "id": "h2",
+      "headline": "Every parcel in five counties, ranked the moment it moves.",
+      "rationale": "Foregrounds coverage + cadence — the hourly scout's two real differentiators."
+    },
+    {
+      "id": "h3",
+      "headline": "The deals are hiding in the records. We score them hourly.",
+      "rationale": "Plain-spoken hook with a clear claim. Pairs the operator voice with the hourly cadence."
+    }
+  ],
+  "subhead_variants": [
+    {
+      "id": "s1",
+      "subhead": "Day14 Realty pulls fresh county records and AVM rents across Collier, Lee, Charlotte, Sarasota, and Manatee — then scores every parcel against a real investor model, hour by hour.",
+      "rationale": "Names the counties + the data sources + the model. Most concrete option."
+    },
+    {
+      "id": "s2",
+      "subhead": "An hourly scout reads every SW Florida county feed, runs a transparent deal score, and surfaces the parcels that actually pencil. No MLS guessing, no junk leads.",
+      "rationale": "Leads with the mechanism, ends on two anti-positions that mirror the day14 core voice."
+    },
+    {
+      "id": "s3",
+      "subhead": "Real records, real AVMs, a transparent deal score. Day14 Realty does the parcel-by-parcel work so the only thing left is the conversation with the seller.",
+      "rationale": "Triple-beat opener mirrors the headline structure of the day14 core site. Ends on the operator deliverable."
+    }
+  ]
+}
