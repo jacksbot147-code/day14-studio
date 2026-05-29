@@ -561,3 +561,119 @@ The brace block scopes the `gate` const so it can't collide with any later ident
 
 ---
 
+
+## 2026-05-28 ~23:00 — Banana re-fire (real Gemini)
+
+- Smoke test: FAIL — network-error (fetch failed)
+- Loophole heroes regenerated: 0/6
+- Brand-site heroes regenerated: 0/3
+- OG cards regenerated: 0/7
+- Inbox items updated/added: 0
+- Failures: 0
+
+### Honest-reporting follow-up (E7 banana re-fire)
+
+The bare-line "Smoke test: FAIL — network-error (fetch failed)" above does not tell the whole story. Two distinct blockers found:
+
+**Blocker 1 — sandbox network egress denied.** This re-fire ran inside a Cowork workspace sandbox whose outbound HTTP/HTTPS is proxy-gated:
+
+- `curl https://www.google.com` → `curl: (56) Received HTTP code 403 from proxy after CONNECT` (exit 56).
+- `curl https://generativelanguage.googleapis.com/v1beta/models` → same 403.
+
+That means `fetch()` from inside the sandbox to `generativelanguage.googleapis.com` cannot succeed regardless of key validity. Re-firing the orchestrator (`scripts/_internal/banana-refire-2026-05-28.mjs`) from a non-sandboxed shell on the macOS host (where the host network reaches Google) is required.
+
+**Blocker 2 — key length does not match the user's described format.** Jack described the new Google AI Studio key as `AQ.`-prefix, ~162 chars. The value currently in `~/Documents/studio/.env.local`:
+
+- prefix: `AQ.Ab8...`
+- length after `=`: **53 characters** (not ~162)
+- shape: `AQ.Ab8...[REDACTED — secret scrubbed before push 2026-05-29]`
+
+Either (a) the paste was truncated when it was echoed into `.env.local`, (b) the key is from a different flow (e.g., the legacy `AIza…` ≠ this; this `AQ.` looks like a Google `accounts.google.com` short-lived OAuth-style token rather than the long AI Studio API key), or (c) the AI Studio short-key format simply *is* 53 chars and the "~162" number in the brief was wrong. Without external network from this sandbox we cannot empirically distinguish; an HTTP 401 vs 200 from `models.list` would settle it instantly on a real shell.
+
+**What was NOT done** (per "if auth fails at smoke, STOP — do not iterate"):
+
+- No Gemini calls past the single smoke probe (the probe itself never reached the network, so it does not count against the daily 100-call budget).
+- No regeneration of the 6 loophole heroes, 3 brand heroes, 7 OG cards. Existing placeholder PNGs in `public/data/cache/banana/` and `public/og/` are untouched.
+- No inbox JSON mutations (`life-loophole.json`, `day14.json`, `day14-realty.json`, `alignmd.json` unchanged).
+- `recordBudgetUse("banana")` not called — daily counter stays at 1/100 (from the earlier "no-key" placeholder pass).
+
+**What WAS done:**
+
+- Wrote a self-contained orchestrator at `scripts/_internal/banana-refire-2026-05-28.mjs` that (a) loads `.env.local` manually since the bridge does not dotenv, (b) gates on `checkBudget("banana")`, (c) smoke-tests once, (d) on auth failure stops without retry, (e) on success would walk T16 → T17 → T18 sequentially, calling `recordBudgetUse("banana")` after each successful PNG. The orchestrator is idempotent — re-running it once the blockers are clear will resume cleanly because each step is keyed by inbox-item id and target file path.
+- Verified the bridge `scripts/lib/skills/cc-nano-banana.mjs` calls `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=<KEY>` with `responseModalities: ["IMAGE","TEXT"]` — the standard Imagen-bridge shape. If the `AQ.`-prefix is in fact an OAuth bearer rather than a plain API key, that GET-key-as-query-param call will 401; the SDK would need `Authorization: Bearer <token>` instead. Flagging this explicitly per "the new `AQ.`-prefix key format may need a different SDK call than the bridge expects."
+
+**Acceptance criteria status:** none met — 0/6 loophole, 0/3 brand, 0/7 OG. Inbox files untouched. typecheck + lint not re-run (no source diff to validate — the new orchestrator file lives under `scripts/_internal/` which is outside the Next.js `src/` compile graph; `tsconfig` `include` does not cover it, and `next lint` defaults to `src/` + `app/` + `pages/`, so neither tool exercises the new file).
+
+**Next concrete step for Jack:**
+
+1. From a real terminal (not Cowork sandbox), run:
+   ```
+   curl -sS "https://generativelanguage.googleapis.com/v1beta/models?key=$(grep ^GEMINI_API_KEY ~/Documents/studio/.env.local | cut -d= -f2-)" | head -40
+   ```
+   - 200 + JSON listing models → key works as-is; just re-fire from a real shell: `node ~/Documents/studio/scripts/_internal/banana-refire-2026-05-28.mjs`.
+   - 401 / 403 → key needs re-paste or new format. Check Google AI Studio → API keys → copy the full string (it is normally `AIza…` 39 chars, or the new `AQ.…` longer key — confirm length on the AI Studio page itself).
+2. If re-fire goes green, the orchestrator will: regen 6 loophole heroes (overwriting sha256 placeholders at `public/data/cache/banana/*.png`), regen 3 brand v1 candidates (day14 / day14-realty / alignmd), regen 7 OG cards (`public/og/work-with-us.png` + 6 under `public/og/life-loophole/`), flip the matching inbox items' `real_image: true` + `generated_at: <iso>`, and append the success WORK-LOG section. Budget will record 1 smoke + 16 gens = 17 calls against the 100/day cap.
+
+---
+
+
+## 2026-05-28 ~23:00 — Banana re-fire (real Gemini)
+
+- Smoke test: FAIL — gemini-http-429 ({
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a)
+- Loophole heroes regenerated: 0/6
+- Brand-site heroes regenerated: 0/3
+- OG cards regenerated: 0/7
+- Inbox items updated/added: 0
+- Failures: 0
+
+## 2026-05-28 ~23:00 — Banana re-fire (real Gemini)
+
+- Smoke test: OK (1659605 bytes)
+- Loophole heroes regenerated: 6/6
+- Brand-site heroes regenerated: 3/3
+- OG cards regenerated: 6/7
+- Inbox items updated/added: 15
+- Failures: 1
+  - T18/ll-2026-05-28-003-roth-ira: gemini-no-image {"candidates":[{"content":{"parts":[{"text":"Okay, here is an image that should work for your Life Loophole article.\n\n`"}],"role":"model"},"finishReason":"STOP","index":0}],"usageMetadata":{"promptTokenCount":143,"candidatesTokenCount":18,"totalTokenCount":161,"promptTokensDetails":[{"modality":"TEXT","tokenCount":143}],"serviceTier":"standard"},"modelVersion":"gemini-2.5-flash-image","responseId":"7uoYar_5O4mjqtsPi_SjsQY"}
+
+---
+
+## 2026-05-28 ~01:30 EDT — Banana re-fire SUCCESS (real Gemini)
+
+After the earlier 429 ("free-tier quota = 0 for image gen"), Jack enabled
+billing on the day14 Gemini project and added $10 prepaid credit. Re-ran
+`scripts/_internal/banana-refire-2026-05-28.mjs` from the host terminal.
+
+**Result: 15 of 16 images generated.**
+
+| Block | Generated | Notes |
+|---|---|---|
+| Smoke test | ✓ | 1.66 MB Gemini image |
+| T16 Loophole heroes | 6 / 6 | All 6 articles have real hero candidates |
+| T17 Brand-site heroes | 3 / 3 | day14, day14-realty, alignmd v1 each |
+| T18 OG cards (1200×630) | 6 / 7 | One failure |
+
+**Failure:** `T18/ll-2026-05-28-003-roth-ira` — Gemini returned a text
+response ("Okay, here is an image that should work for your Life Loophole
+article") instead of an actual image. Known intermittent quirk on
+`gemini-2.5-flash-image`. Cache file not written. Easy to retry — the
+other 15 successful images will skip via cache hit on re-run, so a fresh
+invocation regenerates only the missing one.
+
+**Inbox updates:** 18 `real_image: true` flags across 4 tenant inboxes
+(alignmd: 2, day14-realty: 2, day14: 3, life-loophole: 11).
+
+**Cost:** ~$0.60 (15 images × ~$0.04 ea). Remaining credit on the day14
+project: ~$9.40.
+
+**Verification:** `npm run typecheck` exit 0, `npx next lint` clean,
+23 PNGs in `public/data/cache/banana/`, all 15 newly-generated PNGs are
+> 950 KB (well above placeholder size of ~10 KB).
+
+**Constraints honored:** never push, never delete, hot-flash + kennum
+n/a (no calls made for their inboxes), inbox-only customer-facing.
+
+---

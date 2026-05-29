@@ -153,9 +153,12 @@
           "requested_size": "1536x1024",
           "requested_style": "photo",
           "generatedPath": "public/data/cache/banana/11b48c73a859bfc6d34c61e0e6f00ecf0e09e62d32ba4aaedf56f50b3e9457dd.png",
-          "is_placeholder": true,
-          "gen_reason": "no-key",
-          "cached": false
+          "is_placeholder": false,
+          "gen_reason": "real-gemini",
+          "cached": false,
+          "real_image": true,
+          "generated_at": "2026-05-29T01:24:33.465Z",
+          "bytes": 1837530
         },
         {
           "id": "v2",
@@ -185,7 +188,34 @@
       "created_at": "2026-05-28T17:44:17.646Z",
       "status": "awaiting-jack",
       "priority": "medium",
-      "auto_apply_to_landing": false
+      "auto_apply_to_landing": false,
+      "real_image": true,
+      "last_regen_at": "2026-05-29T01:24:33.465Z"
+    },
+    {
+      "id": "inbox-day14-2026-05-28-og-work-with-us",
+      "kind": "og-card-pick",
+      "tenant": "day14",
+      "tags": [
+        "day14",
+        "og-card",
+        "T18"
+      ],
+      "title": "Review OG card — work-with-us",
+      "summary": "OG card (1200x630) regenerated via real Gemini for work-with-us. Saved to public/og/work-with-us.png.",
+      "slug": "work-with-us",
+      "generatedPath": "public/og/work-with-us.png",
+      "prompt": "OG/social card image for Day14 — Work with us page. Day14 is a productized build studio that ships full branded business platforms (marketing site, customer portal, billing, admin app, AI chatbot) in 14 days. The image is a landscape composition (1200x630, 16:9 aspect-ish) featuring a confident, premium editorial illustration on warm paper background (#F8F6F1) with hairline ink linework forming an architectural schematic of layered platforms. One restrained ember-orange (#FF5C28) accent. No text, no logos, no UI. Anti-SaaS, anti-agency, builder-y, builder-confident. Photographic-quality editorial render.",
+      "requested_size": "1200x630",
+      "requested_style": "photo",
+      "is_placeholder": false,
+      "real_image": true,
+      "generated_at": "2026-05-29T01:24:51.331Z",
+      "gen_reason": "real-gemini",
+      "cached": false,
+      "bytes": 1535594,
+      "status": "awaiting-jack",
+      "priority": "medium"
     }
   ]
 }
