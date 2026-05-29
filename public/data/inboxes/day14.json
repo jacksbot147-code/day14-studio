@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "tenant": "day14",
-  "generated_at": "2026-05-28T17:44:17.646Z",
+  "generated_at": "2026-05-29T04:46:38.890Z",
   "generated_by": "scheduled-task workday-t10-marketing-subject-lines",
   "items": [
     {
@@ -216,6 +216,150 @@
       "bytes": 1535594,
       "status": "awaiting-jack",
       "priority": "medium"
+    },
+    {
+      "id": "inbox-day14-2026-05-29-cs-body-deposit-received",
+      "kind": "cs-body-pick",
+      "tenant": "day14",
+      "subject_kind": "cs-reply-template",
+      "title": "Pick a body variant — CS template: deposit-received",
+      "summary": "[needs-API-key] 2 placeholder body variants written — re-run after wiring the emails sub-skill to populate. Anchor subject: \"Got your deposit. Build clock starts now.\". (reason: marketing-skills plugin not found on disk)",
+      "source_ref": "docs/overnight/03-customer-comms-pack.md#11-deposit-received",
+      "variants_file": "public/data/cs-templates/deposit-received.body-variants.json",
+      "variant_count": 2,
+      "anchor_subject": "Got your deposit. Build clock starts now.",
+      "current_body_excerpt": "Got your deposit. {{customer_first_name}}, the 14-day clock starts today.",
+      "is_placeholder": true,
+      "tags": [
+        "day14",
+        "cs-body",
+        "O5",
+        "marketing-skills:emails"
+      ],
+      "created_at": "2026-05-29T04:46:38.883Z",
+      "status": "awaiting-jack",
+      "priority": "medium",
+      "auto_replace_in_source": false
+    },
+    {
+      "id": "inbox-day14-2026-05-29-cs-body-eod-update-bad",
+      "kind": "cs-body-pick",
+      "tenant": "day14",
+      "subject_kind": "cs-reply-template",
+      "title": "Pick a body variant — CS template: eod-update-bad",
+      "summary": "[needs-API-key] 2 placeholder body variants written — re-run after wiring the emails sub-skill to populate. Anchor subject: \"Day {{n}} — slower than I wanted\". (reason: marketing-skills plugin not found on disk)",
+      "source_ref": "docs/overnight/03-customer-comms-pack.md#14b-eod-update--bad-day",
+      "variants_file": "public/data/cs-templates/eod-update-bad.body-variants.json",
+      "variant_count": 2,
+      "anchor_subject": "Day {{n}} — slower than I wanted",
+      "current_body_excerpt": "Slower day. {{blocker_short_description}} took longer than the estimate.",
+      "is_placeholder": true,
+      "tags": [
+        "day14",
+        "cs-body",
+        "O5",
+        "marketing-skills:emails"
+      ],
+      "created_at": "2026-05-29T04:46:38.885Z",
+      "status": "awaiting-jack",
+      "priority": "medium",
+      "auto_replace_in_source": false
+    },
+    {
+      "id": "inbox-day14-2026-05-29-cs-body-eod-update-good",
+      "kind": "cs-body-pick",
+      "tenant": "day14",
+      "subject_kind": "cs-reply-template",
+      "title": "Pick a body variant — CS template: eod-update-good",
+      "summary": "[needs-API-key] 2 placeholder body variants written — re-run after wiring the emails sub-skill to populate. Anchor subject: \"Day {{n}} — {{one_thing_shipped_short}}\". (reason: marketing-skills plugin not found on disk)",
+      "source_ref": "docs/overnight/03-customer-comms-pack.md#14a-eod-update--good-day",
+      "variants_file": "public/data/cs-templates/eod-update-good.body-variants.json",
+      "variant_count": 2,
+      "anchor_subject": "Day {{n}} — {{one_thing_shipped_short}}",
+      "current_body_excerpt": "Today: shipped {{thing_1}} and {{thing_2}}.",
+      "is_placeholder": true,
+      "tags": [
+        "day14",
+        "cs-body",
+        "O5",
+        "marketing-skills:emails"
+      ],
+      "created_at": "2026-05-29T04:46:38.887Z",
+      "status": "awaiting-jack",
+      "priority": "medium",
+      "auto_replace_in_source": false
+    },
+    {
+      "id": "inbox-day14-2026-05-29-cs-body-intake-form-link",
+      "kind": "cs-body-pick",
+      "tenant": "day14",
+      "subject_kind": "cs-reply-template",
+      "title": "Pick a body variant — CS template: intake-form-link",
+      "summary": "[needs-API-key] 2 placeholder body variants written — re-run after wiring the emails sub-skill to populate. Anchor subject: \"Intake form — 8 minutes, one page\". (reason: marketing-skills plugin not found on disk)",
+      "source_ref": "docs/overnight/03-customer-comms-pack.md#12-intake-form-link",
+      "variants_file": "public/data/cs-templates/intake-form-link.body-variants.json",
+      "variant_count": 2,
+      "anchor_subject": "Intake form — 8 minutes, one page",
+      "current_body_excerpt": "Here's the intake: {{intake_url}}",
+      "is_placeholder": true,
+      "tags": [
+        "day14",
+        "cs-body",
+        "O5",
+        "marketing-skills:emails"
+      ],
+      "created_at": "2026-05-29T04:46:38.887Z",
+      "status": "awaiting-jack",
+      "priority": "medium",
+      "auto_replace_in_source": false
+    },
+    {
+      "id": "inbox-day14-2026-05-29-cs-body-launched",
+      "kind": "cs-body-pick",
+      "tenant": "day14",
+      "subject_kind": "cs-reply-template",
+      "title": "Pick a body variant — CS template: launched",
+      "summary": "[needs-API-key] 2 placeholder body variants written — re-run after wiring the emails sub-skill to populate. Anchor subject: \"{{business_name}} is live\". (reason: marketing-skills plugin not found on disk)",
+      "source_ref": "docs/overnight/03-customer-comms-pack.md#15-launched",
+      "variants_file": "public/data/cs-templates/launched.body-variants.json",
+      "variant_count": 2,
+      "anchor_subject": "{{business_name}} is live",
+      "current_body_excerpt": "{{business_name}} is live at {{production_url}}.",
+      "is_placeholder": true,
+      "tags": [
+        "day14",
+        "cs-body",
+        "O5",
+        "marketing-skills:emails"
+      ],
+      "created_at": "2026-05-29T04:46:38.889Z",
+      "status": "awaiting-jack",
+      "priority": "medium",
+      "auto_replace_in_source": false
+    },
+    {
+      "id": "inbox-day14-2026-05-29-cs-body-preview-ready",
+      "kind": "cs-body-pick",
+      "tenant": "day14",
+      "subject_kind": "cs-reply-template",
+      "title": "Pick a body variant — CS template: preview-ready",
+      "summary": "[needs-API-key] 2 placeholder body variants written — re-run after wiring the emails sub-skill to populate. Anchor subject: \"Preview is up — take a look\". (reason: marketing-skills plugin not found on disk)",
+      "source_ref": "docs/overnight/03-customer-comms-pack.md#13-preview-ready",
+      "variants_file": "public/data/cs-templates/preview-ready.body-variants.json",
+      "variant_count": 2,
+      "anchor_subject": "Preview is up — take a look",
+      "current_body_excerpt": "Preview is live: {{preview_url}}",
+      "is_placeholder": true,
+      "tags": [
+        "day14",
+        "cs-body",
+        "O5",
+        "marketing-skills:emails"
+      ],
+      "created_at": "2026-05-29T04:46:38.890Z",
+      "status": "awaiting-jack",
+      "priority": "medium",
+      "auto_replace_in_source": false
     }
   ]
 }

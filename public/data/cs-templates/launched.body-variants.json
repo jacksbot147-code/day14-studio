@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "tenant": "day14",
+  "id": "launched",
+  "kind": "cs-reply-body-variants",
+  "source_ref": "docs/overnight/03-customer-comms-pack.md#15-launched",
+  "generated_at": "2026-05-29T04:46:38.888Z",
+  "generated_by": "scheduled-task workday-o5-cs-body-variants",
+  "skill": "emails",
+  "skill_invocation": "invokeMarketingSkill(\"emails\", { subjectLine, customerContext, brandVoice, intent: \"alternate phrasing\", originalBody }, { variants: 2 })",
+  "skill_status": "fallback-local",
+  "anchor_subject": "{{business_name}} is live",
+  "brand_voice": "Operator. Jack writes the email, not 'we'. No 'thank you for choosing us' — the deposit already cleared. Plain, concrete, no exclamation points. Signed '— Jack / Day14'.",
+  "input": {
+    "subjectLine": "{{business_name}} is live",
+    "intent": "alternate phrasing",
+    "customerContext": {
+      "tenant": "day14",
+      "templateId": "launched",
+      "sourceRef": "docs/overnight/03-customer-comms-pack.md#15-launched",
+      "scenario": "Build agent has flipped status='launched' after the day-14 QA pass and the Stripe live-mode flip. Customer receives the receipt-style email.",
+      "topic": "Launch day: production URL live, Stripe in live mode, SMS on, balance invoice queued for tomorrow 9am ET.",
+      "constraints": [
+        "Token-safe: keep handlebars intact.",
+        "No 'congratulations' / 'we did it'.",
+        "No exclamation points."
+      ]
+    }
+  },
+  "originalBody": "{{business_name}} is live at {{production_url}}.\n\nStripe is in live mode. SMS notifications are on. Customer portal magic-link login tested with a fake account and a real one.\n\nI'll watch the first 72 hours of real traffic and ping you if anything looks off.\n\nBalance invoice for ${{balance_amount}} is queued — Stripe sends it tomorrow at 9am ET. Monthly hosting (${{monthly_amount}}/mo) starts today.\n\nWelcome to Day14.\n\n— Jack\nDay14",
+  "variants": [
+    {
+      "body": "[needs-API-key] Variant 1 of launched — tighter receipt-style rewrite of:\n\n{{business_name}} is live at {{production_url}}.\n\n[…rest of original preserved verbatim — re-run with marketing-skills:emails wired to populate.]",
+      "rationale": "placeholder #1 — strategy: tight-receipt (one-line acknowledgement, numbered next steps)",
+      "tone": "tight-receipt"
+    },
+    {
+      "body": "[needs-API-key] Variant 2 of launched — warmer-ops rewrite of:\n\n{{business_name}} is live at {{production_url}}.\n\n[…rest of original preserved verbatim — re-run with marketing-skills:emails wired to populate.]",
+      "rationale": "placeholder #2 — strategy: warmer-ops (single sentence of context before the next step)",
+      "tone": "warmer-ops"
+    }
+  ],
+  "source": "[needs-API-key]",
+  "ok": false,
+  "reason": "marketing-skills plugin not found on disk",
+  "meta": null,
+  "approval": {
+    "status": "awaiting-jack",
+    "inbox_kind": "cs-body-pick",
+    "auto_replace_in_source": false
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "tenant": "day14",
+  "id": "intake-form-link",
+  "kind": "cs-reply-body-variants",
+  "source_ref": "docs/overnight/03-customer-comms-pack.md#12-intake-form-link",
+  "generated_at": "2026-05-29T04:46:38.887Z",
+  "generated_by": "scheduled-task workday-o5-cs-body-variants",
+  "skill": "emails",
+  "skill_invocation": "invokeMarketingSkill(\"emails\", { subjectLine, customerContext, brandVoice, intent: \"alternate phrasing\", originalBody }, { variants: 2 })",
+  "skill_status": "fallback-local",
+  "anchor_subject": "Intake form — 8 minutes, one page",
+  "brand_voice": "Operator. Jack writes the email, not 'we'. No 'thank you for choosing us' — the deposit already cleared. Plain, concrete, no exclamation points. Signed '— Jack / Day14'.",
+  "input": {
+    "subjectLine": "Intake form — 8 minutes, one page",
+    "intent": "alternate phrasing",
+    "customerContext": {
+      "tenant": "day14",
+      "templateId": "intake-form-link",
+      "sourceRef": "docs/overnight/03-customer-comms-pack.md#12-intake-form-link",
+      "scenario": "Sent 60s after deposit-received, or as a nudge if the intake is still empty 24h in. The customer needs to complete an 8-minute form before the build clock can resume.",
+      "topic": "One-page intake form. 8 minutes. The 14-day clock pauses until it's in.",
+      "constraints": [
+        "No 'please' / 'kindly' / 'we need'.",
+        "No exclamation points.",
+        "Name the consequence; don't nag."
+      ]
+    }
+  },
+  "originalBody": "Here's the intake: {{intake_url}}\n\nOne page. Logo, services, pricing, photos, service area. That's the whole input.\n\nIf you have brand assets already, drag them into the upload field. If you don't, I'll work from what's on your current site or your Instagram — say which.\n\nAim for tonight. The 14-day clock pauses until I have it, per the SOW.\n\n— Jack\nDay14",
+  "variants": [
+    {
+      "body": "[needs-API-key] Variant 1 of intake-form-link — tighter receipt-style rewrite of:\n\nHere's the intake: {{intake_url}}\n\n[…rest of original preserved verbatim — re-run with marketing-skills:emails wired to populate.]",
+      "rationale": "placeholder #1 — strategy: tight-receipt (one-line acknowledgement, numbered next steps)",
+      "tone": "tight-receipt"
+    },
+    {
+      "body": "[needs-API-key] Variant 2 of intake-form-link — warmer-ops rewrite of:\n\nHere's the intake: {{intake_url}}\n\n[…rest of original preserved verbatim — re-run with marketing-skills:emails wired to populate.]",
+      "rationale": "placeholder #2 — strategy: warmer-ops (single sentence of context before the next step)",
+      "tone": "warmer-ops"
+    }
+  ],
+  "source": "[needs-API-key]",
+  "ok": false,
+  "reason": "marketing-skills plugin not found on disk",
+  "meta": null,
+  "approval": {
+    "status": "awaiting-jack",
+    "inbox_kind": "cs-body-pick",
+    "auto_replace_in_source": false
+  }
+}

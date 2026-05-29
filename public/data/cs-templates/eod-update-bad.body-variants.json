@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "tenant": "day14",
+  "id": "eod-update-bad",
+  "kind": "cs-reply-body-variants",
+  "source_ref": "docs/overnight/03-customer-comms-pack.md#14b-eod-update--bad-day",
+  "generated_at": "2026-05-29T04:46:38.884Z",
+  "generated_by": "scheduled-task workday-o5-cs-body-variants",
+  "skill": "emails",
+  "skill_invocation": "invokeMarketingSkill(\"emails\", { subjectLine, customerContext, brandVoice, intent: \"alternate phrasing\", originalBody }, { variants: 2 })",
+  "skill_status": "fallback-local",
+  "anchor_subject": "Day {{n}} — slower than I wanted",
+  "brand_voice": "Operator. Jack writes the email, not 'we'. No 'thank you for choosing us' — the deposit already cleared. Plain, concrete, no exclamation points. Signed '— Jack / Day14'.",
+  "input": {
+    "subjectLine": "Day {{n}} — slower than I wanted",
+    "intent": "alternate phrasing",
+    "customerContext": {
+      "tenant": "day14",
+      "templateId": "eod-update-bad",
+      "sourceRef": "docs/overnight/03-customer-comms-pack.md#14b-eod-update--bad-day",
+      "scenario": "Sent at 5pm ET by the build agent when planned-vs-shipped delta exceeds one ticket. Customer trust hinges on Jack naming the miss without spin.",
+      "topic": "End-of-day update on a day where a ticket slipped. Name the slip, reassure on launch date (buffer is there for this).",
+      "constraints": [
+        "No 'unfortunately' / 'apologies for the delay'.",
+        "Name the slip; don't hide it.",
+        "No exclamation points."
+      ]
+    }
+  },
+  "originalBody": "Slower day. {{blocker_short_description}} took longer than the estimate.\n\nWhat's done: {{progress_made}}.\nWhat slipped to tomorrow: {{slipped_item}}.\n\nStill on track for launch {{launch_date}} — the buffer's there for exactly this.\n\nPreview: {{preview_url}}.\n\n— Jack\nDay14",
+  "variants": [
+    {
+      "body": "[needs-API-key] Variant 1 of eod-update-bad — tighter receipt-style rewrite of:\n\nSlower day. {{blocker_short_description}} took longer than the estimate.\n\n[…rest of original preserved verbatim — re-run with marketing-skills:emails wired to populate.]",
+      "rationale": "placeholder #1 — strategy: tight-receipt (one-line acknowledgement, numbered next steps)",
+      "tone": "tight-receipt"
+    },
+    {
+      "body": "[needs-API-key] Variant 2 of eod-update-bad — warmer-ops rewrite of:\n\nSlower day. {{blocker_short_description}} took longer than the estimate.\n\n[…rest of original preserved verbatim — re-run with marketing-skills:emails wired to populate.]",
+      "rationale": "placeholder #2 — strategy: warmer-ops (single sentence of context before the next step)",
+      "tone": "warmer-ops"
+    }
+  ],
+  "source": "[needs-API-key]",
+  "ok": false,
+  "reason": "marketing-skills plugin not found on disk",
+  "meta": null,
+  "approval": {
+    "status": "awaiting-jack",
+    "inbox_kind": "cs-body-pick",
+    "auto_replace_in_source": false
+  }
+}

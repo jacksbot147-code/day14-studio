@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "tenant": "day14",
+  "id": "eod-update-good",
+  "kind": "cs-reply-body-variants",
+  "source_ref": "docs/overnight/03-customer-comms-pack.md#14a-eod-update--good-day",
+  "generated_at": "2026-05-29T04:46:38.886Z",
+  "generated_by": "scheduled-task workday-o5-cs-body-variants",
+  "skill": "emails",
+  "skill_invocation": "invokeMarketingSkill(\"emails\", { subjectLine, customerContext, brandVoice, intent: \"alternate phrasing\", originalBody }, { variants: 2 })",
+  "skill_status": "fallback-local",
+  "anchor_subject": "Day {{n}} — {{one_thing_shipped_short}}",
+  "brand_voice": "Operator. Jack writes the email, not 'we'. No 'thank you for choosing us' — the deposit already cleared. Plain, concrete, no exclamation points. Signed '— Jack / Day14'.",
+  "input": {
+    "subjectLine": "Day {{n}} — {{one_thing_shipped_short}}",
+    "intent": "alternate phrasing",
+    "customerContext": {
+      "tenant": "day14",
+      "templateId": "eod-update-good",
+      "sourceRef": "docs/overnight/03-customer-comms-pack.md#14a-eod-update--good-day",
+      "scenario": "Sent at 5pm ET by the build agent on a 'good day' (planned-vs-shipped delta within one ticket). Customer reads in the evening, wants the receipt without ceremony.",
+      "topic": "End-of-day customer update on a day where the build is on or ahead of plan. Names what shipped, what's next, links preview + build log.",
+      "constraints": [
+        "Token-safe: keep handlebars intact.",
+        "No exclamation points.",
+        "Target <=50 chars after token interpolation."
+      ]
+    }
+  },
+  "originalBody": "Today: shipped {{thing_1}} and {{thing_2}}.\n\nTomorrow: {{thing_3}}.\n\nPreview: {{preview_url}}. Build log: {{buildlog_url}}.\n\nOn track for launch {{launch_date}}.\n\n— Jack\nDay14",
+  "variants": [
+    {
+      "body": "[needs-API-key] Variant 1 of eod-update-good — tighter receipt-style rewrite of:\n\nToday: shipped {{thing_1}} and {{thing_2}}.\n\n[…rest of original preserved verbatim — re-run with marketing-skills:emails wired to populate.]",
+      "rationale": "placeholder #1 — strategy: tight-receipt (one-line acknowledgement, numbered next steps)",
+      "tone": "tight-receipt"
+    },
+    {
+      "body": "[needs-API-key] Variant 2 of eod-update-good — warmer-ops rewrite of:\n\nToday: shipped {{thing_1}} and {{thing_2}}.\n\n[…rest of original preserved verbatim — re-run with marketing-skills:emails wired to populate.]",
+      "rationale": "placeholder #2 — strategy: warmer-ops (single sentence of context before the next step)",
+      "tone": "warmer-ops"
+    }
+  ],
+  "source": "[needs-API-key]",
+  "ok": false,
+  "reason": "marketing-skills plugin not found on disk",
+  "meta": null,
+  "approval": {
+    "status": "awaiting-jack",
+    "inbox_kind": "cs-body-pick",
+    "auto_replace_in_source": false
+  }
+}

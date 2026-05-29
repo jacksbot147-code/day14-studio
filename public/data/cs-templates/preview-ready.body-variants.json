@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "tenant": "day14",
+  "id": "preview-ready",
+  "kind": "cs-reply-body-variants",
+  "source_ref": "docs/overnight/03-customer-comms-pack.md#13-preview-ready",
+  "generated_at": "2026-05-29T04:46:38.889Z",
+  "generated_by": "scheduled-task workday-o5-cs-body-variants",
+  "skill": "emails",
+  "skill_invocation": "invokeMarketingSkill(\"emails\", { subjectLine, customerContext, brandVoice, intent: \"alternate phrasing\", originalBody }, { variants: 2 })",
+  "skill_status": "fallback-local",
+  "anchor_subject": "Preview is up — take a look",
+  "brand_voice": "Operator. Jack writes the email, not 'we'. No 'thank you for choosing us' — the deposit already cleared. Plain, concrete, no exclamation points. Signed '— Jack / Day14'.",
+  "input": {
+    "subjectLine": "Preview is up — take a look",
+    "intent": "alternate phrasing",
+    "customerContext": {
+      "tenant": "day14",
+      "templateId": "preview-ready",
+      "sourceRef": "docs/overnight/03-customer-comms-pack.md#13-preview-ready",
+      "scenario": "Build agent has pushed the preview deploy and written preview_url to the customers table. Customer should look, react, and flag issues while there's still time.",
+      "topic": "Preview deploy is live. Invite criticism early — better now than launch day. Build log linked.",
+      "constraints": [
+        "No exclamation points.",
+        "Invite feedback; don't beg.",
+        "Plain, operator tone."
+      ]
+    }
+  },
+  "originalBody": "Preview is live: {{preview_url}}\n\nBuilt from your intake. Pages so far: {{pages_shipped_list}}. Mobile and desktop both done.\n\nThings that look off, copy that's wrong, photos in the wrong spot — text me or reply here. I'd rather hear it now than on launch day.\n\nPublic build log (every commit, every change): {{buildlog_url}}.\n\nMore tomorrow.\n\n— Jack\nDay14",
+  "variants": [
+    {
+      "body": "[needs-API-key] Variant 1 of preview-ready — tighter receipt-style rewrite of:\n\nPreview is live: {{preview_url}}\n\n[…rest of original preserved verbatim — re-run with marketing-skills:emails wired to populate.]",
+      "rationale": "placeholder #1 — strategy: tight-receipt (one-line acknowledgement, numbered next steps)",
+      "tone": "tight-receipt"
+    },
+    {
+      "body": "[needs-API-key] Variant 2 of preview-ready — warmer-ops rewrite of:\n\nPreview is live: {{preview_url}}\n\n[…rest of original preserved verbatim — re-run with marketing-skills:emails wired to populate.]",
+      "rationale": "placeholder #2 — strategy: warmer-ops (single sentence of context before the next step)",
+      "tone": "warmer-ops"
+    }
+  ],
+  "source": "[needs-API-key]",
+  "ok": false,
+  "reason": "marketing-skills plugin not found on disk",
+  "meta": null,
+  "approval": {
+    "status": "awaiting-jack",
+    "inbox_kind": "cs-body-pick",
+    "auto_replace_in_source": false
+  }
+}

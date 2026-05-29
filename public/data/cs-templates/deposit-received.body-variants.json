@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "tenant": "day14",
+  "id": "deposit-received",
+  "kind": "cs-reply-body-variants",
+  "source_ref": "docs/overnight/03-customer-comms-pack.md#11-deposit-received",
+  "generated_at": "2026-05-29T04:46:38.882Z",
+  "generated_by": "scheduled-task workday-o5-cs-body-variants",
+  "skill": "emails",
+  "skill_invocation": "invokeMarketingSkill(\"emails\", { subjectLine, customerContext, brandVoice, intent: \"alternate phrasing\", originalBody }, { variants: 2 })",
+  "skill_status": "fallback-local",
+  "anchor_subject": "Got your deposit. Build clock starts now.",
+  "brand_voice": "Operator. Jack writes the email, not 'we'. No 'thank you for choosing us' — the deposit already cleared. Plain, concrete, no exclamation points. Signed '— Jack / Day14'.",
+  "input": {
+    "subjectLine": "Got your deposit. Build clock starts now.",
+    "intent": "alternate phrasing",
+    "customerContext": {
+      "tenant": "day14",
+      "templateId": "deposit-received",
+      "sourceRef": "docs/overnight/03-customer-comms-pack.md#11-deposit-received",
+      "scenario": "Transactional confirmation triggered by Stripe checkout.session.completed (metadata event=deposit). Customer just paid. Goal: confirm receipt, kick off the 14-day clock, set 18-hour expectations.",
+      "topic": "Stripe deposit received — 14-day build clock starts now. Intake form link + preview-URL ETA in the body.",
+      "constraints": [
+        "No 'thank you' / 'thanks for'.",
+        "No exclamation points.",
+        "Operator tone — concrete and brief."
+      ]
+    }
+  },
+  "originalBody": "Got your deposit. {{customer_first_name}}, the 14-day clock starts today.\n\nTwo things from me in the next 18 hours:\n\n1. The intake form — one page, 8 minutes: {{intake_url}}\n2. A preview URL on a *.day14.dev subdomain, by tomorrow 6pm ET\n\nThen a one-paragraph update from me every weekday at 6pm ET until launch.\n\nFaster than email for anything urgent: text me at {{jack_phone}}.\n\n— Jack\nDay14",
+  "variants": [
+    {
+      "body": "[needs-API-key] Variant 1 of deposit-received — tighter receipt-style rewrite of:\n\nGot your deposit. {{customer_first_name}}, the 14-day clock starts today.\n\n[…rest of original preserved verbatim — re-run with marketing-skills:emails wired to populate.]",
+      "rationale": "placeholder #1 — strategy: tight-receipt (one-line acknowledgement, numbered next steps)",
+      "tone": "tight-receipt"
+    },
+    {
+      "body": "[needs-API-key] Variant 2 of deposit-received — warmer-ops rewrite of:\n\nGot your deposit. {{customer_first_name}}, the 14-day clock starts today.\n\n[…rest of original preserved verbatim — re-run with marketing-skills:emails wired to populate.]",
+      "rationale": "placeholder #2 — strategy: warmer-ops (single sentence of context before the next step)",
+      "tone": "warmer-ops"
+    }
+  ],
+  "source": "[needs-API-key]",
+  "ok": false,
+  "reason": "marketing-skills plugin not found on disk",
+  "meta": null,
+  "approval": {
+    "status": "awaiting-jack",
+    "inbox_kind": "cs-body-pick",
+    "auto_replace_in_source": false
+  }
+}
