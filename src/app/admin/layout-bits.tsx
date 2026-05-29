@@ -11,7 +11,7 @@ export const ADMIN_CSS = `
  * The :root token block is sourced from src/lib/design-tokens.ts so the
  * admin and per-brand sites share one canonical palette + geometry. */
 ${DESIGN_TOKENS}
-.admin-shell { font:14px/1.55 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background:var(--bg); color:var(--text); padding:40px 24px 96px; max-width:1200px; margin:0 auto; min-height:100vh; -webkit-font-smoothing:antialiased; }
+.admin-shell { font:14px/1.55 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background:var(--bg); color:var(--text); padding:40px 24px 96px; max-width:1200px; margin:0 auto; min-height:100vh; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
 .admin-shell h1 { font-size:32px; font-weight:800; letter-spacing:-0.04em; margin:0 0 4px; color:var(--text); line-height:1.05; }
 .admin-shell h3 { font-size:15px; font-weight:700; letter-spacing:-0.02em; color:var(--text); margin:0; }
 .admin-shell .sub { color:var(--muted); font-size:13px; margin-bottom:24px; padding-bottom:20px; border-bottom:1px solid var(--border); }
@@ -345,6 +345,15 @@ ${DESIGN_TOKENS}
   .admin-shell .search-input { min-width:100%; }
   .admin-shell .hbeat { grid-template-columns:12px 1fr auto; }
   .admin-shell .hbeat .hbeat-why { grid-column:2 / -1; }
+  /* Mobile tap targets — WCAG 2.5.5 / Apple HIG 44px minimum (T14 refire). */
+  .admin-shell .nav a { padding:13px 16px; min-height:44px; box-sizing:border-box; display:inline-flex; align-items:center; }
+  .admin-shell .nav a.nav-site { padding:11px 14px; min-height:44px; }
+  .admin-shell .todo-done-btn { padding:13px 18px; min-height:44px; }
+  .admin-shell .todo-copy-btn { padding:11px 14px; min-height:44px; font-size:12px; }
+  .admin-shell .todo-expand-link { padding:13px 0; min-height:44px; font-size:12px; }
+  .admin-shell .section-link { padding:12px 4px; display:inline-flex; align-items:center; min-height:44px; }
+  .admin-shell .filter-chip { padding:11px 14px; min-height:44px; }
+  .admin-shell .site-cta { padding:13px 18px; min-height:44px; }
 }
 `;
 

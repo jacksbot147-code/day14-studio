@@ -1,0 +1,303 @@
+{
+  "_meta": {
+    "purpose": "Maps every scheduled-task ID to the on-disk + work-log + inbox evidence its SKILL.md promises to produce. The morning briefing's verify-evidence pass uses this manifest to catch phantom-success runs (a task that returned 0 but didn't actually land its artifacts).",
+    "generated_for": "Day14 OS — workday + evening extension, 2026-05-28",
+    "seeded_by": "scheduled-task workday-e5-evidence-based-briefing",
+    "schema": {
+      "mustExist": "array of absolute paths (or ~/-prefixed paths) that must exist on disk after the task runs",
+      "mustAppendTo": "array of { file, sectionTitleSubstring } — file must contain a markdown heading whose text includes the substring (case-sensitive)",
+      "mustHaveInboxItem": "array of { tenant, kind, minCount } — public/data/inboxes/<tenant>.json must contain at least minCount items where item.kind === kind"
+    },
+    "notes": "Paths are written canonical to Jack's home (~/Documents/studio/...). The verifier expands ~/ at runtime. Hot-flash-co and kennum-lawn-care are excluded from new work today, so no expectations reference those tenants."
+  },
+  "tasks": {
+    "workday-t01-stop-realty-scans": {
+      "mustExist": [
+        "~/Documents/studio/public/data/ops/.realty-killswitch",
+        "~/Documents/studio/scripts/verticals/real-estate/outreach-drafter.mjs",
+        "~/Documents/COMMANDS-FOR-JACK.md"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "Realty paused" }
+      ],
+      "mustHaveInboxItem": []
+    },
+    "workday-t02-auto-todo-generator": {
+      "mustExist": [
+        "~/Documents/studio/scripts/auto-todo-sync.mjs",
+        "~/Documents/studio/scripts/launch-agents/com.day14.auto-todo.plist"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "auto-todo" }
+      ],
+      "mustHaveInboxItem": []
+    },
+    "workday-t03-stop-slop-loophole": {
+      "mustExist": [
+        "~/Documents/studio/scripts/lib/skills/stop-slop.mjs",
+        "~/Documents/studio/content/life-loophole/drafts"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "T3" }
+      ],
+      "mustHaveInboxItem": []
+    },
+    "workday-t04-stop-slop-brand-copy": {
+      "mustExist": [
+        "~/Documents/studio/scripts/lib/skills/stop-slop.mjs"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "T4" }
+      ],
+      "mustHaveInboxItem": []
+    },
+    "workday-t05-stop-slop-ship-gate": {
+      "mustExist": [
+        "~/Documents/studio/src/app/admin/ship/page.tsx"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "T5" }
+      ],
+      "mustHaveInboxItem": []
+    },
+    "workday-t06-stop-slop-cs-outreach": {
+      "mustExist": [
+        "~/Documents/studio/scripts/verticals/real-estate/outreach-drafter.mjs"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "T6" }
+      ],
+      "mustHaveInboxItem": []
+    },
+    "workday-t07-marketing-skills-bridge": {
+      "mustExist": [
+        "~/Documents/studio/scripts/lib/skills/marketing-skills.mjs",
+        "~/Documents/studio/scripts/lib/skill-bridge.mjs"
+      ],
+      "mustAppendTo": [],
+      "mustHaveInboxItem": []
+    },
+    "workday-t08-marketing-loophole-headlines": {
+      "mustExist": [
+        "~/Documents/studio/content/life-loophole/drafts"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "T8" }
+      ],
+      "mustHaveInboxItem": [
+        { "tenant": "life-loophole", "kind": "headline-pick", "minCount": 6 }
+      ]
+    },
+    "workday-t09-marketing-brand-headlines": {
+      "mustExist": [],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "T9" }
+      ],
+      "mustHaveInboxItem": [
+        { "tenant": "day14", "kind": "landing-headline-pick", "minCount": 1 },
+        { "tenant": "day14-realty", "kind": "landing-headline-pick", "minCount": 1 },
+        { "tenant": "alignmd", "kind": "landing-headline-pick", "minCount": 1 },
+        { "tenant": "life-loophole", "kind": "landing-headline-pick", "minCount": 1 }
+      ]
+    },
+    "workday-t10-marketing-subject-lines": {
+      "mustExist": [],
+      "mustAppendTo": [],
+      "mustHaveInboxItem": [
+        { "tenant": "day14", "kind": "subject-line-pick", "minCount": 8 }
+      ]
+    },
+    "workday-t11-ui-ux-bridge-admin-audit": {
+      "mustExist": [
+        "~/Documents/studio/scripts/lib/skills/ui-ux-pro-max.mjs",
+        "~/Documents/UX-AUDIT-2026-05-28.md"
+      ],
+      "mustAppendTo": [],
+      "mustHaveInboxItem": []
+    },
+    "workday-t12-ui-ux-landings-audit": {
+      "mustExist": [
+        "~/Documents/UX-AUDIT-2026-05-28.md"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/UX-AUDIT-2026-05-28.md", "sectionTitleSubstring": "Landing-page audit" }
+      ],
+      "mustHaveInboxItem": []
+    },
+    "workday-t13-ux-mechanical-fixes": {
+      "mustExist": [
+        "~/Documents/UX-AUDIT-2026-05-28.md"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/UX-AUDIT-2026-05-28.md", "sectionTitleSubstring": "Mechanical fixes applied" }
+      ],
+      "mustHaveInboxItem": []
+    },
+    "workday-t14-mobile-breakpoint-sweep": {
+      "mustExist": [
+        "~/Documents/UX-AUDIT-2026-05-28.md"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/UX-AUDIT-2026-05-28.md", "sectionTitleSubstring": "Mobile" }
+      ],
+      "mustHaveInboxItem": []
+    },
+    "workday-t15-banana-bridge": {
+      "mustExist": [
+        "~/Documents/studio/scripts/lib/skills/cc-nano-banana.mjs",
+        "~/Documents/studio/scripts/lib/skill-bridge.mjs"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "cc-nano-banana" }
+      ],
+      "mustHaveInboxItem": []
+    },
+    "workday-t16-banana-loophole-heroes": {
+      "mustExist": [],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "T16" }
+      ],
+      "mustHaveInboxItem": [
+        { "tenant": "life-loophole", "kind": "hero-image-pick", "minCount": 6 }
+      ]
+    },
+    "workday-t17-banana-brand-heroes": {
+      "mustExist": [],
+      "mustAppendTo": [],
+      "mustHaveInboxItem": [
+        { "tenant": "day14", "kind": "brand-hero-pick", "minCount": 1 },
+        { "tenant": "day14-realty", "kind": "brand-hero-pick", "minCount": 1 },
+        { "tenant": "alignmd", "kind": "brand-hero-pick", "minCount": 1 }
+      ]
+    },
+    "workday-t18-banana-og-cards": {
+      "mustExist": [
+        "~/Documents/studio/public/og/work-with-us.png",
+        "~/Documents/studio/public/og/life-loophole"
+      ],
+      "mustAppendTo": [],
+      "mustHaveInboxItem": []
+    },
+    "workday-t19-framer-admin-transitions": {
+      "mustExist": [
+        "~/Documents/studio/src/app/admin/layout.tsx",
+        "~/Documents/studio/src/components/motion/admin-page-transition.tsx"
+      ],
+      "mustAppendTo": [],
+      "mustHaveInboxItem": []
+    },
+    "workday-t20-framer-stagger-dashboards": {
+      "mustExist": [
+        "~/Documents/studio/src/components/motion/stagger-cards.tsx",
+        "~/Documents/studio/src/components/motion/stagger-ctas.tsx"
+      ],
+      "mustAppendTo": [],
+      "mustHaveInboxItem": []
+    },
+    "workday-t21-claude-mem-sketch": {
+      "mustExist": [
+        "~/Documents/PLAN-CLAUDE-MEM.md",
+        "~/Documents/studio/scripts/lib/skills/claude-mem.mjs"
+      ],
+      "mustAppendTo": [],
+      "mustHaveInboxItem": []
+    },
+    "workday-t22-plugin-bridge-readme": {
+      "mustExist": [
+        "~/Documents/studio/scripts/lib/skills/README.md"
+      ],
+      "mustAppendTo": [],
+      "mustHaveInboxItem": []
+    },
+    "workday-t23-gap8-refire": {
+      "mustExist": [
+        "~/Documents/studio/src/lib/skills/index.ts",
+        "~/Documents/AUDIT-2026-05-28.md"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "Gap 8 completed" }
+      ],
+      "mustHaveInboxItem": []
+    },
+    "workday-t24-eod-verifier": {
+      "mustExist": [
+        "~/Documents/EOD-2026-05-28.md"
+      ],
+      "mustAppendTo": [],
+      "mustHaveInboxItem": []
+    },
+    "workday-e1-refire-t3-t8-loophole": {
+      "mustExist": [
+        "~/Documents/studio/content/life-loophole/drafts/hsa-triple-tax-advantage.md",
+        "~/Documents/studio/content/life-loophole/drafts/traditional-ira-deduction.md",
+        "~/Documents/studio/content/life-loophole/drafts/roth-ira-tradeoff.md",
+        "~/Documents/studio/content/life-loophole/drafts/workplace-401k-match.md",
+        "~/Documents/studio/content/life-loophole/drafts/child-tax-credit-decoded.md",
+        "~/Documents/studio/content/life-loophole/drafts/education-credits-aotc-vs-llc.md",
+        "~/Documents/studio/scripts/lib/draft-writer.mjs"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "E1 T3+T8 refire" }
+      ],
+      "mustHaveInboxItem": [
+        { "tenant": "life-loophole", "kind": "headline-pick", "minCount": 6 }
+      ]
+    },
+    "workday-e2-refire-t14-mobile-sweep": {
+      "mustExist": [
+        "~/Documents/UX-AUDIT-2026-05-28.md"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/UX-AUDIT-2026-05-28.md", "sectionTitleSubstring": "Mobile" },
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "E2 T14 refire" }
+      ],
+      "mustHaveInboxItem": []
+    },
+    "workday-e3-approvals-kind-filter": {
+      "mustExist": [
+        "~/Documents/studio/src/app/admin/inbox/page.tsx"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "E3 approvals kind filter" }
+      ],
+      "mustHaveInboxItem": []
+    },
+    "workday-e4-commands-for-jack-pattern": {
+      "mustExist": [
+        "~/Documents/studio/scripts/lib/jack-actions.mjs",
+        "~/Documents/COMMANDS-FOR-JACK.md"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "E4 jack-actions pattern" }
+      ],
+      "mustHaveInboxItem": []
+    },
+    "workday-e5-evidence-based-briefing": {
+      "mustExist": [
+        "~/Documents/studio/scripts/lib/verify-evidence.mjs",
+        "~/Documents/studio/scripts/scheduled-task-expectations.json"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "E5 evidence-based briefing" }
+      ],
+      "mustHaveInboxItem": []
+    },
+    "workday-e6-realty-budget-json": {
+      "mustExist": [
+        "~/Documents/studio/public/data/ops/.budget.json",
+        "~/Documents/studio/scripts/lib/budget-gate.mjs"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "E6 budget gate" }
+      ],
+      "mustHaveInboxItem": []
+    },
+    "workday-e7-banana-refire-conditional": {
+      "mustExist": [],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "E7" }
+      ],
+      "mustHaveInboxItem": []
+    }
+  }
+}

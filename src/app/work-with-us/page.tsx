@@ -343,7 +343,7 @@ function PricingShape() {
               See the{" "}
               <a
                 href="/#sku"
-                className="font-medium text-ink underline-offset-2 hover:underline"
+                className="font-medium text-ink underline decoration-ember-300 underline-offset-4 transition-colors hover:decoration-ember-500"
               >
                 SKU board on the homepage
               </a>{" "}

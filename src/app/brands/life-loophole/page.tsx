@@ -252,6 +252,12 @@ html{scroll-behavior:smooth;}
   .ll-root .three,.ll-root .steps,.ll-root .proof-cards{grid-template-columns:1fr;}
   .ll-root nav .links{display:none;}
   .ll-root .get h2{font-size:25px;}
+  /* Mobile tap targets — WCAG 2.5.5 / Apple HIG 44px minimum (T14 refire). */
+  .ll-root .btn{padding:13px 20px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;}
+  .ll-root nav .btn{padding:12px 18px;min-height:44px;}
+  .ll-root .toggle{padding:12px 16px;min-height:44px;display:inline-flex;align-items:center;}
+  .ll-root .finder-search{padding:14px 15px;min-height:44px;}
+  .ll-root .signup input{min-height:44px;}
 }
 @media(prefers-reduced-motion:reduce){
   .ll-root .card,.ll-root .weave-out{animation:none!important;}

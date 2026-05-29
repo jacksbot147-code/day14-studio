@@ -1,7 +1,45 @@
 import { loadEmpireState } from "@/lib/admin-state";
 import { AdminNav, ADMIN_CSS, PageHint } from "../layout-bits";
 import { ApprovalsQueue, type TenantOption } from "./approvals-queue";
-import { collectAllApprovals } from "@/lib/admin-approvals";
+import { collectAllApprovals, type ApprovalItem } from "@/lib/admin-approvals";
+
+/**
+ * Kind-filter chip row (server-rendered).
+ *
+ * The approvals queue now mixes the original `inbox` cards with picker cards
+ * pushed by the marketing/banana skills — subject-line picks (T10), headline
+ * picks (T8), brand-hero picks (T17), OG-card picks (T18), and loophole-hero
+ * picks (T16). When the queue grows, scanning for "just the headline picks"
+ * or "just the OG cards" is faster than scrolling past the inbox items, so
+ * we add a `?kind=<value>` chip filter above the list.
+ *
+ * Server-component-friendly: each chip is a plain `<a>` link, no client JS.
+ * Counts are computed from the *unfiltered* queue so chips don't blank-out
+ * when one is selected. `tenant` is preserved across kind navigation so the
+ * kind filter composes with the existing tenant chip.
+ */
+const KIND_CHIPS: { label: string; value: string | null }[] = [
+  { label: "All", value: null },
+  { label: "Inbox", value: "inbox" },
+  { label: "Subject Line", value: "subject-line-pick" },
+  { label: "Headline", value: "headline-pick" },
+  { label: "Brand Hero", value: "brand-hero-pick" },
+  { label: "OG Card", value: "og-card-pick" },
+  { label: "Loophole Hero", value: "loophole-hero-pick" },
+];
+
+function buildHref(kind: string | null, tenant: string | null): string {
+  const sp = new URLSearchParams();
+  if (kind) sp.set("kind", kind);
+  if (tenant) sp.set("tenant", tenant);
+  const qs = sp.toString();
+  return qs ? `?${qs}` : "?";
+}
+
+function countByKind(items: ApprovalItem[], kind: string | null): number {
+  if (kind == null) return items.length;
+  return items.filter((i) => (i.kind as string) === kind).length;
+}
 
 export const metadata = {
   title: "Approvals — Day14 Admin",
@@ -30,12 +68,15 @@ export const dynamic = "force-dynamic";
  */
 
 interface PageProps {
-  searchParams: Promise<{ tenant?: string | string[] }>;
+  searchParams: Promise<{
+    tenant?: string | string[];
+    kind?: string | string[];
+  }>;
 }
 
 export default async function InboxPage({ searchParams }: PageProps) {
   const state = await loadEmpireState();
-  const items = await collectAllApprovals(state);
+  const allItems = await collectAllApprovals(state);
 
   // The tenant chip row is built from the empire-state tenant list so it
   // stays stable across renders even when a tenant currently has zero items.
@@ -55,6 +96,19 @@ export default async function InboxPage({ searchParams }: PageProps) {
       : knownSlug
         ? (rawTenant as string)
         : null;
+
+  // Resolve the kind filter from the URL. Only honor values from KIND_CHIPS
+  // so a stray ?kind=foo doesn't blank the queue silently.
+  const rawKind = Array.isArray(params.kind) ? params.kind[0] : params.kind;
+  const activeKind: string | null = KIND_CHIPS.some((c) => c.value === rawKind)
+    ? (rawKind as string)
+    : null;
+
+  // Apply kind filter to the items we hand to the queue, but compute chip
+  // counts from the unfiltered set so each chip always shows its real total.
+  const items: ApprovalItem[] = activeKind
+    ? allItems.filter((i) => (i.kind as string) === activeKind)
+    : allItems;
 
   const counts = {
     high: items.filter((i) => i.urgency === "high").length,
@@ -106,6 +160,55 @@ export default async function InboxPage({ searchParams }: PageProps) {
           <div className="kpi-value">{counts.opportunity}</div>
         </div>
       </div>
+
+      <nav
+        aria-label="Filter by kind"
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 6,
+          marginTop: 24,
+          paddingBottom: 16,
+          borderBottom: "1px solid var(--border)",
+        }}
+      >
+        {KIND_CHIPS.map((chip) => {
+          const isActive =
+            chip.value === activeKind || (chip.value === null && activeKind === null);
+          const count = countByKind(allItems, chip.value);
+          return (
+            <a
+              key={chip.label}
+              href={buildHref(chip.value, initialTenant === "unassigned" ? null : initialTenant)}
+              aria-current={isActive ? "page" : undefined}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "5px 11px",
+                fontSize: 12,
+                fontWeight: 600,
+                lineHeight: 1.2,
+                borderRadius: "var(--r-sm)",
+                border: `1px solid ${isActive ? "var(--accent)" : "var(--border)"}`,
+                background: isActive ? "var(--accent-soft)" : "var(--surface)",
+                color: isActive ? "var(--accent-text)" : "var(--text-2)",
+              }}
+            >
+              <span>{chip.label}</span>
+              <span
+                style={{
+                  fontVariantNumeric: "tabular-nums",
+                  color: isActive ? "var(--accent-text)" : "var(--muted)",
+                  fontWeight: 500,
+                }}
+              >
+                ({count})
+              </span>
+            </a>
+          );
+        })}
+      </nav>
 
       <div style={{ marginTop: 24 }}>
         <ApprovalsQueue items={items} tenants={tenants} initialTenant={initialTenant} />

@@ -509,6 +509,119 @@ docstring):
 
 ---
 
+## Budget gate
+
+Middle gear between the binary realty killswitch and unlimited daemon
+traffic. Lives one directory up at
+[`scripts/lib/budget-gate.mjs`](../budget-gate.mjs) — not a skill bridge,
+but documented here because every skill-side caller (`marketing-skills`,
+`cc-nano-banana`, and the realty drafters that import them) routes
+through the same per-domain budget contract.
+
+**Files.**
+
+- `public/data/ops/.budget.json` — seed shape, hand-edited / scheduled-task
+  edited. Keys: `realty`, `marketing_skills`, `banana`. Per-domain shape
+  is `{ max_calls_per_hour, max_calls_per_day, paused?, paused_reason? }`.
+- `public/data/ops/.budget-counters.json` — daemon-written counters.
+  Atomic temp-then-rename. Shape per domain: `{ hour_bucket: "YYYY-MM-DDTHH",
+  hour_count: <int>, day_bucket: "YYYY-MM-DD", day_count: <int> }`.
+
+**Surface.**
+
+```js
+import { checkBudget, recordBudgetUse } from "../lib/budget-gate.mjs";
+
+const gate = await checkBudget("realty");
+if (!gate.allowed) {
+  console.log(`Realty budget gate: ${gate.reason} — exiting`);
+  process.exit(0);
+}
+// …do the work…
+await recordBudgetUse("realty");
+```
+
+`checkBudget(domain)` is non-mutating — it reads the budget config and
+current counters and returns `{ allowed, reason }`. Callers MUST call
+`recordBudgetUse(domain)` after a successful call to advance the
+counters (the gate doesn't auto-increment so a single check can guard
+a batch).
+
+**Semantics.**
+
+- **Paused domain** (`paused: true`) → `{ allowed: false, reason:
+  "paused: <paused_reason>" }`. This is the soft equivalent of the
+  realty killswitch — flip a single JSON field instead of creating a
+  file. Today's `.budget.json` seeds `realty` as paused.
+- **Hour cap reached** → `{ allowed: false, reason: "hour-cap-reached
+  (N/M)" }`. Bucket resets on the hour
+  (`hour_bucket: "YYYY-MM-DDTHH"`), so the counter snaps back to 0 the
+  moment the clock crosses an hour boundary.
+- **Day cap reached** → `{ allowed: false, reason: "day-cap-reached
+  (N/M)" }`. Bucket resets at local midnight in America/New_York
+  (matches the rest of the studio's scheduled-task TZ).
+- **Cap of 0** (e.g. realty's `max_calls_per_hour: 0`) → treated as
+  "no calls allowed" — the soft pause. Zero is intentional, not a
+  sentinel for "unlimited".
+- **Missing `.budget.json`** → `{ allowed: true, reason:
+  "no-budget-config" }`. Fail-open — the killswitch is the hard stop,
+  this is the governor. A torn install shouldn't break daemons.
+- **Domain not in `.budget.json`** → `{ allowed: true, reason:
+  "domain-not-configured" }`. Same fail-open rationale; opt-in
+  governance.
+
+**Killswitch interaction.** Both checks run, killswitch first as a
+fast-path. The killswitch is a single `existsSync` (no IO past the
+stat); the budget gate is an `await readJSON`. So the order in every
+wired daemon is:
+
+```js
+if (existsSync(KILLSWITCH_PATH)) { … process.exit(0); }   // fast path
+const gate = await checkBudget("realty");                   // middle gear
+if (!gate.allowed) { … process.exit(0); }
+```
+
+Deleting the killswitch alone is NOT enough to resume realty —
+`.budget.json`'s `realty.paused` also has to flip to `false` (or the
+realty block deleted from `.budget.json` entirely, which falls through
+to `domain-not-configured` = allowed).
+
+**Where wired.** Per Day14 E6 (2026-05-28):
+
+- `scripts/verticals/real-estate/outreach-drafter.mjs`
+- `scripts/verticals/real-estate/mao-offer-drafter.mjs`
+- `scripts/verticals/real-estate/re-skip-trace.mjs`
+
+All three exit clean (`process.exit(0)` + log line) on `!allowed`. The
+gate is at module top level via top-level await — same fail-fast
+shape as the killswitch check, so `node <file>` from a launchd plist
+returns 0 with a single log line and burns no tokens.
+
+`marketing_skills` and `banana` carry non-zero caps in the seed but
+aren't yet wired into callers. Pattern is the same: import
+`checkBudget` + `recordBudgetUse`, gate at the entry point, record on
+success. Wiring is a follow-up sweep.
+
+**How to add a new caller.**
+
+```js
+import { checkBudget, recordBudgetUse } from "../lib/budget-gate.mjs";
+
+const gate = await checkBudget("banana");
+if (!gate.allowed) {
+  console.log(`banana budget gate: ${gate.reason} — skipping`);
+  return { ok: false, reason: gate.reason };
+}
+// …generate the image…
+await recordBudgetUse("banana");
+```
+
+For a callsite that's deep inside a long-running daemon (not a
+single-shot script), prefer `return { ok: false, reason }` over
+`process.exit(0)` so the outer loop can carry on with non-gated work.
+
+---
+
 ## Skill registry
 
 Every name registered in `skill-bridge.mjs`'s `SKILLS` table, in

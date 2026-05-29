@@ -34,6 +34,11 @@ import path from "node:path";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
 import { invokeSkill } from "./lib/skill-bridge.mjs";
+import { pendingJackActionsCount } from "./lib/jack-actions.mjs";
+import {
+  verifyTaskCompletion,
+  loadExpectations,
+} from "./lib/verify-evidence.mjs";
 
 // ---- dry-run flag (does NOT queue a Telegram ping) ----
 const DRY_RUN =
@@ -417,6 +422,41 @@ function actionLine(headline, surface) {
   return `- ${headline}\n  → Act: [${surface.label}](${surface.url})`;
 }
 
+// ---- gather: phantom completions (evidence-based check) -----------------
+// E5 — promote the EOD verifier's pattern. For every scheduled task that has
+// declared expectations in `scheduled-task-expectations.json`, check whether
+// the on-disk + work-log + inbox evidence actually landed. A scheduled task
+// that fired since the last briefing but produced no evidence shows up as a
+// phantom completion — the morning shows Jack the gap instead of waiting
+// until 16:00 EOD.
+//
+// Inputs:
+//   - `recentlyFiredIds` — an optional Set of taskIds that fired since the
+//     last briefing. If we have no firing-log on hand (today's reality), we
+//     fall back to checking every task in the manifest; that's still useful
+//     because today's EOD found 7 ⚠ tasks the same way.
+//
+// Output: array of `{ taskId, missing[] }` for tasks that lack evidence.
+async function gatherPhantomCompletions(recentlyFiredIds = null) {
+  const exps = await loadExpectations();
+  const phantoms = [];
+  for (const [taskId, exp] of exps.entries()) {
+    if (recentlyFiredIds && !recentlyFiredIds.has(taskId)) continue;
+    try {
+      const result = await verifyTaskCompletion({ taskId, ...exp });
+      if (!result.ok) phantoms.push(result);
+    } catch (err) {
+      // A verifier crash is itself a phantom — surface it, don't swallow.
+      phantoms.push({
+        taskId,
+        ok: false,
+        missing: [`verifier threw: ${err && err.message ? err.message : err}`],
+      });
+    }
+  }
+  return phantoms;
+}
+
 // ---- compose briefing ----
 async function compose() {
   const empireSize = await countEmpire();
@@ -429,6 +469,12 @@ async function compose() {
   const circuit = await readMetaCircuit();
   const skillAudit = await gatherSkillAudit();
   const e2e = await gatherE2eResults();
+  // E5 — phantom-completion check across the scheduled-task manifest. We
+  // currently pass `null` for the recently-fired set (we don't yet record
+  // per-task firings on disk); the verifier scans every declared task. The
+  // hit-rate on today's run would be 7/22 — the same set the EOD verifier
+  // caught. Cheap to compute (all reads, small files).
+  const phantomCompletions = await gatherPhantomCompletions(null).catch(() => []);
 
   // Approvals-queue sources — the same things /admin/inbox aggregates.
   const todos = await gatherOperatorTodos();
@@ -575,6 +621,15 @@ async function compose() {
 
   const estMin = Math.min(40, Math.round(needsCount * 1.2 + 3));
 
+  // Pending Jack actions — surface-to-Jack pattern (E4). Counts unstruck
+  // `- [ ]` items in ~/Documents/COMMANDS-FOR-JACK.md so Jack sees
+  // sandbox-blocked shell ops (launchctl, sudo, secrets) right at the top
+  // of the briefing instead of finding them after a missed task fires.
+  const jackActions = await pendingJackActionsCount().catch(() => ({
+    total: 0,
+    high: 0,
+  }));
+
   const now = new Date();
   const dateStr = now.toISOString().slice(0, 10);
   const dayName = now.toLocaleDateString("en-US", {
@@ -623,6 +678,13 @@ async function compose() {
   // ── At a glance ───────────────────────────────────────────────────────────
   out.push(`## At a glance`);
   out.push(`- Needs you: **${needsCount}** (${urgentItems.length} urgent)`);
+  out.push(
+    `- Pending Jack actions: **${jackActions.total}** (${jackActions.high} high-urgency) — see \`~/Documents/COMMANDS-FOR-JACK.md\``
+  );
+  out.push(
+    `- Phantom completions: **${phantomCompletions.length}** ` +
+      `(scheduled tasks lacking evidence — see "Phantom completions" section)`
+  );
   out.push(`- Systems: ${systemColor}`);
   out.push(`- Empire size: ${empireSize} skills`);
   out.push(
@@ -631,6 +693,26 @@ async function compose() {
     }`
   );
   out.push("");
+
+  // ── PHANTOM COMPLETIONS — evidence-based snag check (E5) ──────────────────
+  // Scheduled tasks that returned "done" but lack the on-disk + work-log +
+  // inbox evidence their SKILL.md promised. Surfacing this at 07:30 means
+  // Jack catches phantom-success runs in the morning instead of finding them
+  // at 16:00 EOD. Skip the section entirely if zero phantoms.
+  if (phantomCompletions.length) {
+    out.push(`## Phantom completions (${phantomCompletions.length})`);
+    out.push(
+      `_Scheduled tasks that fired but left no on-disk / work-log / inbox ` +
+        `evidence. Verifier ran against \`scripts/scheduled-task-expectations.json\`._`
+    );
+    for (const p of phantomCompletions) {
+      out.push(`- ⚠ \`${p.taskId}\``);
+      for (const reason of p.missing) {
+        out.push(`    - ${reason}`);
+      }
+    }
+    out.push("");
+  }
 
   // ── ACT FIRST — urgent / operational ──────────────────────────────────────
   if (urgentItems.length) {
@@ -744,6 +826,7 @@ async function compose() {
     topItem,
     systemColor,
     estMin,
+    phantomCount: phantomCompletions.length,
   };
 }
 
@@ -840,7 +923,7 @@ async function main() {
     `[morning-briefing] needs_you=${summary.needsCount} ` +
       `urgent=${summary.urgentCount} decisions=${summary.decisionCount} ` +
       `routine=${summary.routineCount} systems=${summary.systemColor} ` +
-      `est_min=${summary.estMin}`
+      `est_min=${summary.estMin} phantom=${summary.phantomCount}`
   );
   console.log(
     `[morning-briefing] telegram_queued=${queued}${

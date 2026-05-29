@@ -18,12 +18,26 @@ import { existsSync } from "node:fs";
 import { homedir } from "node:os";
 import { loadStore, money, auditRE } from "./brain.mjs";
 import { llmCall } from "../../_generic/llm-call.mjs";
+import { checkBudget } from "../../lib/budget-gate.mjs";
 
 // Realty killswitch — set by scheduled task workday-t01 (2026-05-28) to stop
 // realty scans from burning tokens. Resume = delete the killswitch file.
+// Killswitch is the fast-path (binary, fully paused). The budget gate below
+// is the middle gear — per-hour + per-day caps from `.budget.json`.
 if (existsSync(path.join(homedir(), "Documents/studio/public/data/ops/.realty-killswitch"))) {
   console.log("Realty paused — exiting");
   process.exit(0);
+}
+
+// Budget gate (E6) — soft governor on top of the killswitch. With the
+// realty domain seeded as paused in `.budget.json`, this exits cleanly
+// even if the killswitch file is gone but the budget is still 0/0.
+{
+  const gate = await checkBudget("realty");
+  if (!gate.allowed) {
+    console.log(`Realty budget gate: ${gate.reason} — exiting`);
+    process.exit(0);
+  }
 }
 
 export const BUILD_SPEC = {
