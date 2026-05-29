@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "tenant": "day14-realty",
-  "generated_at": "2026-05-28T17:44:17.646Z",
+  "generated_at": "2026-05-29T06:48:47.768Z",
   "generated_by": "scheduled-task workday-t17-brand-hero-heroes (T17, 13:40 EDT)",
   "items": [
     {
@@ -30,7 +30,18 @@
           "cached": false,
           "real_image": true,
           "generated_at": "2026-05-29T01:24:39.793Z",
-          "bytes": 1523935
+          "bytes": 1523935,
+          "base_prompt": "Editorial brand hero image for Day14 Realty — a Southwest Florida real estate intelligence brand that scores deals hourly from real county property records. MOOD: calm authority. A still-life overhead photograph of a manila county property record folder, slightly weathered, a corner of a hand-marked parcel map visible, a small ink stamp, a pen — laid out on warm paper (#F8F6F1) with disciplined negative space. The framing is architectural and confident, low warm light, no clutter. A single small ember-orange (#FF5C28) stamp or tag appears on the corner of the folder — the only saturated color. No legible text in the image, no logos, no broker imagery, no stock-photo houses, no smiling agents. 1536x1024, premium documentary photography, anti-broker, county-clerk-grounded.",
+          "enrichment_via": "fallback",
+          "enrichment_reason": "marketing-skills plugin not found on disk",
+          "enriched_prompt": true,
+          "regenerated_at": "2026-05-29T06:48:47.768Z",
+          "enriched_prompt_text": "Editorial brand hero image for Day14 Realty — a Southwest Florida real estate intelligence brand that scores deals hourly from real county property records. MOOD: calm authority. A still-life overhead photograph of a manila county property record folder, slightly weathered, a corner of a hand-marked parcel map visible, a small ink stamp, a pen — laid out on warm paper (#F8F6F1) with disciplined negative space. The framing is architectural and confident, low warm light, no clutter. A single small ember-orange (#FF5C28) stamp or tag appears on the corner of the folder — the only saturated color. No legible text in the image, no logos, no broker imagery, no stock-photo houses, no smiling agents. 1536x1024, premium documentary photography, anti-broker, county-clerk-grounded.\n\n--- Composition refinements (O8 enrichment) ---\nPalette anchor: paper #F8F6F1, ink #0B0B0A, single accent #FF5C28 — ember-orange reserved for the deal score / scoring annotation, never decorative.\n\nCompetitor-positioning constraints (what this image must NOT be):\n  - anti-broker theatre — no smiling agents, no dream-home photography, no MLS aesthetic\n  - county-clerk grounded — deed-first, MLS-secondary\n  - no realty-cliche stock — no for-sale signs, no handshake, no key handoff\n  - operator voice — primary-source records over staged listings\n\nCompositional rules the render must honor:\n  - still-life or top-down only — no perspective hero shots\n  - warm low-key lighting (golden hour or window light), no flash\n  - documentary-photography framing — single subject, generous breathing room\n  - ember accent appears once, smallest element in frame\n\nRender contract: photographic editorial quality, 1536x1024, sharp focus, no synthetic blur or HDR, no over-saturation. Treat every additional constraint above as binding — do not relax them for visual interest.",
+          "o8_render_attempted": true,
+          "o8_render_ok": false,
+          "o8_render_reason": "cache-hit",
+          "o8_render_path": "public/data/cache/banana/596f72bcfd64f3df450ddbb7afcd8d0dc6c8367c9ef2b0144f6c51cdf09dc50e.png",
+          "o8_render_bytes": 3432
         },
         {
           "id": "v2",
@@ -62,7 +73,8 @@
       "priority": "medium",
       "auto_apply_to_landing": false,
       "real_image": true,
-      "last_regen_at": "2026-05-29T01:24:39.793Z"
+      "last_regen_at": "2026-05-29T01:24:39.793Z",
+      "last_o8_regen_at": "2026-05-29T06:48:47.768Z"
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "tenant": "alignmd",
-  "generated_at": "2026-05-28T17:44:17.646Z",
+  "generated_at": "2026-05-29T06:48:47.768Z",
   "generated_by": "scheduled-task workday-t17-brand-hero-heroes (T17, 13:40 EDT)",
   "items": [
     {
@@ -30,7 +30,18 @@
           "cached": false,
           "real_image": true,
           "generated_at": "2026-05-29T01:24:45.513Z",
-          "bytes": 1302422
+          "bytes": 1302422,
+          "base_prompt": "Editorial brand hero image for AlignMD — a credential-aware healthcare staffing platform that matches clinicians (NP, PA, MD, DO, CRNA, PT, OT, SLP) to facility roles using a transparent, rule-based match score. MOOD: calm authority. A still-life overhead photograph of a clean clinical desk in soft warm-white light: a stack of fanned-out license cards (blank, no real names or numbers, no legible text), a small magnifying loupe, a fountain pen, a single sealed envelope. Disciplined negative space, near-square edges, no drop shadows. Color palette: soft warm-white (#F7F5F2), deep ink (#0B1220), and a single restrained warm-coral accent (#E26D5A) on one small object (a tag or seal). No visible text, no logos, no stock-medical imagery (no stethoscopes, no smiling doctors). 1536x1024, premium documentary photography, credential-grade.",
+          "enrichment_via": "fallback",
+          "enrichment_reason": "marketing-skills plugin not found on disk",
+          "enriched_prompt": true,
+          "regenerated_at": "2026-05-29T06:48:47.768Z",
+          "enriched_prompt_text": "Editorial brand hero image for AlignMD — a credential-aware healthcare staffing platform that matches clinicians (NP, PA, MD, DO, CRNA, PT, OT, SLP) to facility roles using a transparent, rule-based match score. MOOD: calm authority. A still-life overhead photograph of a clean clinical desk in soft warm-white light: a stack of fanned-out license cards (blank, no real names or numbers, no legible text), a small magnifying loupe, a fountain pen, a single sealed envelope. Disciplined negative space, near-square edges, no drop shadows. Color palette: soft warm-white (#F7F5F2), deep ink (#0B1220), and a single restrained warm-coral accent (#E26D5A) on one small object (a tag or seal). No visible text, no logos, no stock-medical imagery (no stethoscopes, no smiling doctors). 1536x1024, premium documentary photography, credential-grade.\n\n--- Composition refinements (O8 enrichment) ---\nPalette anchor: paper #F7F5F2, ink #0B1220, single accent #E26D5A — warm coral — clinical-distinct from Day14 ember; appears once, on a tag/seal/lanyard.\n\nCompetitor-positioning constraints (what this image must NOT be):\n  - anti-staffing-agency cliché — no stethoscopes, no smiling clinicians, no scrubs branding\n  - credential-grounded — license cards, seals, signature, verification artifacts\n  - rule-based match score, not vibes — the engine is the brand\n  - compact-license aware (NLC/eNLC/PT Compact/PSY); transparent over agency-opaque\n\nCompositional rules the render must honor:\n  - soft warm-white background, deep-ink subject — high tonal contrast, low chroma\n  - documentary still-life — no portraits, no scrubs, no hospital interiors\n  - single-subject framing with disciplined negative space\n  - coral accent once, on a small artifact (seal, lanyard clip, tag)\n\nRender contract: photographic editorial quality, 1536x1024, sharp focus, no synthetic blur or HDR, no over-saturation. Treat every additional constraint above as binding — do not relax them for visual interest.",
+          "o8_render_attempted": true,
+          "o8_render_ok": false,
+          "o8_render_reason": "cache-hit",
+          "o8_render_path": "public/data/cache/banana/cf51b422e78cb49a97ddecd7969b2082f40d618abf9bc371173a5876c5aa1591.png",
+          "o8_render_bytes": 3556
         },
         {
           "id": "v2",
@@ -62,7 +73,8 @@
       "priority": "medium",
       "auto_apply_to_landing": false,
       "real_image": true,
-      "last_regen_at": "2026-05-29T01:24:45.513Z"
+      "last_regen_at": "2026-05-29T01:24:45.513Z",
+      "last_o8_regen_at": "2026-05-29T06:48:47.768Z"
     }
   ]
 }
