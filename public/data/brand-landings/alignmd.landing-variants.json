@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "tenant": "alignmd",
+  "generated_at": "2026-05-29T04:00:00.000Z",
+  "generated_by": "scheduled-task O4 (overnight-o4-t9-landing-headlines refire) — invokeMarketingSkill('landing-headline')",
+  "skill": "landing-headline",
+  "intent": "increase conversion",
+  "source": {
+    "page": "alignmd/src/app/page.tsx (lp-hero)",
+    "voice": "businesses/alignmd/ops/build.json (no CONSTITUTION.md yet; voice derived from build.json tagline + summary + FEATURES copy)"
+  },
+  "originalH1": "Precision matching for modern healthcare staffing.",
+  "originalSubhead": "AlignMD treats credentialing, licensure and procedure competency as first-class data — so every clinician–job match is one you can actually place.",
+  "originalBodyFirstParagraph": "Every clinician–job pair gets a transparent fit percentage across licensure, specialty, schedule and procedures — explainable, never a black box.",
+  "brandVoice": [
+    "Precise, healthcare-professional, credential-aware.",
+    "Concrete on role types (NP/PA/MD/DO/CRNA/PT/OT/SLP) and compact-license logic.",
+    "No staffing-agency clichés ('top talent', 'we care about you').",
+    "Leads with rules + verification, not vibes — every match has to be defensible."
+  ],
+  "variants": [
+    {
+      "id": "v1",
+      "h1": "Every match score is one you can defend.",
+      "subhead": "AlignMD scores every clinician–job pair across licensure, specialty, schedule, and procedures — a transparent percentage you can show the facility, the credentialing board, and the placement file. Never a black box.",
+      "rationale": "Reframes the original 'precision matching' into the operator outcome that actually drives credentialer conversion: defensibility. The subhead lists the four scoring dimensions (specificity = credibility for this audience) and closes on the explicit anti-position ('never a black box') that competitors can't truthfully claim. Strongest conversion bet for credentialing leads who arrived through 'transparent match' searches."
+    },
+    {
+      "id": "v2",
+      "h1": "Credentials first. Match score second. Placements that actually clear.",
+      "subhead": "AlignMD checks the license, the compact eligibility, the DEA, the board certs, and the procedure log before the match score ever ranks the candidate — so the shortlist you send the facility is the shortlist that actually gets placed.",
+      "rationale": "Three-clause H1 mirrors the platform's actual sequencing logic (verification → matching → placement). Converts the facility-decision-maker who has been burned by 'top talent' agencies surfacing candidates with lapsed credentials. The explicit license list inside the subhead is differentiator-as-proof — competitors can't list those specifics without sounding rote."
+    },
+    {
+      "id": "v3",
+      "h1": "NP, PA, MD, DO, CRNA, PT, OT, SLP — matched on credentials, not on adjectives.",
+      "subhead": "AlignMD is a rule-based, credential-aware staffing platform. Facility posts the role, AlignMD ranks the eligible clinicians with a transparent fit score, and every expiry, compact state, and procedure log is checked before submission. Built compliance-first.",
+      "rationale": "H1 leads with the eight role types — instantly tells the credentialer 'this platform actually understands my scope of practice.' The subhead is a three-beat flow (post → rank → check) followed by the trust seal ('built compliance-first'). Best for inbound credentialing-conference traffic where the visitor is filtering for genuine healthcare expertise vs. generic staffing SaaS."
+    }
+  ]
+}

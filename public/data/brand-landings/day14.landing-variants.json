@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "tenant": "day14",
+  "generated_at": "2026-05-29T04:00:00.000Z",
+  "generated_by": "scheduled-task O4 (overnight-o4-t9-landing-headlines refire) — invokeMarketingSkill('landing-headline')",
+  "skill": "landing-headline",
+  "intent": "increase conversion",
+  "source": {
+    "page": "studio/src/app/page.tsx (Hero)",
+    "voice": "studio/src/lib/site.ts (SITE.tagline + PITCH.oneLiner + PITCH.vsSaaS + PITCH.vsAgency)"
+  },
+  "originalH1": "Real business platforms, owned by you. Built in 14 days.",
+  "originalSubhead": "Day14 builds you a complete branded business platform — marketing site, customer portal, billing, admin app, AI chatbot — in 14 days. Fixed price. You own the code, the domain, the data. Not a SaaS subscription. Not a Squarespace template. A real product, with your name on the repo.",
+  "originalBodyFirstParagraph": "Jobber rents you a back-office for $99/mo forever. Squarespace rents you a brochure. We build you something that is yours.",
+  "brandVoice": [
+    "Editorial, confident, anti-SaaS, anti-agency.",
+    "Specific numbers (14 days, fixed price, 3 SKUs).",
+    "Leads with ownership (your repo, your domain, your data).",
+    "One-operator, Southwest Florida, no jargon."
+  ],
+  "variants": [
+    {
+      "id": "v1",
+      "h1": "Own the whole business platform. In 14 days. At a fixed price.",
+      "subhead": "Day14 ships you the marketing site, customer portal, billing flow, admin app, and AI chatbot — every line of code is yours when we hand over the repo. No SaaS rent. No nine-month agency runway.",
+      "rationale": "Tightens the original three-beat tagline into the offer's three sharpest facts (ownership, timeline, fixed price) — each beat clears one objection in order. Body follows with a stack list (proof) and ends on the two anti-positions (differentiation). Best for conversion because it leads with the decision the visitor has to make: own vs. rent."
+    },
+    {
+      "id": "v2",
+      "h1": "The whole stack, shipped in two weeks. Your repo. Your domain. Your data.",
+      "subhead": "One operator, one fixed price, fourteen days. Day14 builds the marketing site, the portal, the billing, the admin app, and the AI chatbot — then hands you the keys, the code, and the deploy button.",
+      "rationale": "Foregrounds the deliverable (whole stack) + cadence (two weeks), then triples the ownership claim into three concrete nouns the visitor cares about. Subhead mirrors the day14 'one operator / one price / 14 days' cadence Jack uses verbatim in PITCH.vsAgency. Higher conversion bet for visitors who came from a 'build vs. agency' search intent."
+    },
+    {
+      "id": "v3",
+      "h1": "Skip the SaaS subscription. Skip the agency timeline. Ship a real business platform in 14 days.",
+      "subhead": "Day14 turns your business into software at a fixed price. Marketing site, customer portal, billing, admin app, AI chatbot — productized, shipped, and yours. Your name on the repo when we're done.",
+      "rationale": "Direct anti-position H1 — converts the highest-intent visitors who arrived already comparing Day14 against Jobber / Squarespace / agency bids. Two parallel 'Skip' clauses do the comparison shopping in the headline so the subhead is free to enumerate the deliverable. Best for paid-traffic landings where the comparison is already in the visitor's head."
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "tenant": "day14-realty",
+  "generated_at": "2026-05-29T04:00:00.000Z",
+  "generated_by": "scheduled-task O4 (overnight-o4-t9-landing-headlines refire) — invokeMarketingSkill('landing-headline')",
+  "skill": "landing-headline",
+  "intent": "increase conversion",
+  "source": {
+    "page": "no live /brands/day14-realty landing yet (realty killswitch active; admin-only at /admin/realty)",
+    "voice": "businesses/day14-realty/REALTY-ADVANCEMENT-PLAN.md + REALTY-LAUNCH-RUNBOOK.md"
+  },
+  "originalH1": null,
+  "originalSubhead": null,
+  "originalBodyFirstParagraph": null,
+  "note": "Realty is paused by ops killswitch and has no public landing on disk. These variants are first-pass conversion-focused options for when the page lands — anchored to the actual scoring engine + SW Florida county coverage so they can survive contact with the operator voice.",
+  "brandVoice": [
+    "Operator voice — real records, not vibes.",
+    "Specific to SW Florida county feeds (Collier, Lee, Charlotte, Sarasota, Manatee).",
+    "Lean on the hourly scout + transparent deal score, not on broker theatre.",
+    "Anti-MLS-flexing, anti-'find your dream home', pro-actual-deal-flow."
+  ],
+  "variants": [
+    {
+      "id": "v1",
+      "h1": "Every SW Florida parcel, scored hourly, ranked the way investors actually buy.",
+      "subhead": "Day14 Realty pulls fresh records and AVM rents from Collier, Lee, Charlotte, Sarasota, and Manatee — then ranks every parcel against a transparent deal score, every hour. No MLS, no junk leads, no waiting for the next email blast.",
+      "rationale": "Conversion-tuned: the H1 names the geography + cadence + ranking model in one beat (the three things an investor visitor is filtering for). Subhead delivers the proof (counties, sources, transparent score) and ends on three anti-positions that mirror Day14's anti-SaaS / anti-agency core voice. Highest expected lift for the 'I want deal flow, not a portal' investor."
+    },
+    {
+      "id": "v2",
+      "h1": "Deal flow that reads the county records, not the listing photos.",
+      "subhead": "An hourly scout ingests every SW Florida parcel feed, runs a credentialed deal score, and surfaces only the ones that pencil at today's rents. You get a ranked queue. You don't get the MLS's leftovers.",
+      "rationale": "Opens with a sharp anti-MLS hook the target audience already believes — converts the 'I'm tired of Zillow' investor segment. Closes the subhead with a benefit-statement ('ranked queue, not leftovers') instead of a feature list, which traditionally outperforms feature-stacked subheads for off-platform real-estate audiences."
+    },
+    {
+      "id": "v3",
+      "h1": "Five counties. Every parcel. One transparent deal score, refreshed hourly.",
+      "subhead": "Day14 Realty turns the public record into a ranked buy list — county data in, scored opportunities out, every hour. Built by one operator who actually runs the numbers, not a SaaS dashboard that just visualizes the MLS.",
+      "rationale": "Cadenced numeric H1 (5 / every / 1 / hourly) reads like a stat strip — proven format for investor conversion. Subhead anchors the value chain ('public record in → scored opps out') in language that's easier to forward to a partner than abstract pitch lines. The 'one operator' close echoes Day14's core trust signal."
+    }
+  ]
+}
