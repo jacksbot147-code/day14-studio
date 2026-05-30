@@ -31,3 +31,7 @@
 [2026-05-25 17:00 ET] daily-eod COMPLETE → eod-2026-05-25.md, confidence: 0.3
 [2026-05-25 23:00 ET] nightly-polish COMPLETE → polish-2026-05-25.md, confidence: 0.9 (overwrites earlier same-day entry; same conclusions, no site changes between runs)
 [2026-05-27 09:00 ET] daily-kickoff COMPLETE → kickoff-2026-05-27.md, confidence: 0.85
+[2026-05-28 23:00 ET] nightly-polish COMPLETE → polish-2026-05-28.md, confidence: 0.9
+[2026-05-29 09:00 ET] daily-kickoff COMPLETE → kickoff-2026-05-29.md, confidence: 0.85
+[2026-05-30 23:00 ET] nightly-polish COMPLETE → polish-2026-05-30.md, confidence: 0.9
+[2026-05-29 17:00 ET] daily-eod COMPLETE → eod-2026-05-29.md, confidence: 0.25 (ran late — fired overnight into May 30)

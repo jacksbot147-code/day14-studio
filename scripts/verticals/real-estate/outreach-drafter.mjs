@@ -19,11 +19,16 @@ import { homedir } from "node:os";
 import { loadStore, money, auditRE } from "./brain.mjs";
 import { llmCall } from "../../_generic/llm-call.mjs";
 import { checkBudget } from "../../lib/budget-gate.mjs";
+import { stripSlop } from "../../lib/skills/stop-slop.mjs";
 
 // Realty killswitch — set by scheduled task workday-t01 (2026-05-28) to stop
 // realty scans from burning tokens. Resume = delete the killswitch file.
 // Killswitch is the fast-path (binary, fully paused). The budget gate below
 // is the middle gear — per-hour + per-day caps from `.budget.json`.
+// The stripSlop wire (O3 T6 refire, 2026-05-28 23:20 EDT) lives AFTER the
+// killswitch check by design — when realty is paused we exit before any
+// drafting work, so the slop gate only ever runs on bodies that survived
+// both gates and reached the LLM/template stage below.
 if (existsSync(path.join(homedir(), "Documents/studio/public/data/ops/.realty-killswitch"))) {
   console.log("Realty paused — exiting");
   process.exit(0);
@@ -221,6 +226,16 @@ export async function operate({ slug = "day14-realty", propertyId } = {}) {
     source = "template (no ANTHROPIC_API_KEY)";
   }
 
+  // O3 T6 refire (2026-05-28): stop-slop gate on the letter body before
+  // it lands in renderLetter(). Deterministic + offline — safe under the
+  // realty killswitch path because we never reach here when paused.
+  const slopResult = stripSlop(body);
+  body = slopResult.cleaned;
+  const slopRemovedCount = slopResult.removed.reduce((sum, r) => sum + r.count, 0);
+  if (slopRemovedCount > 0) {
+    source = `${source} + stop-slop (-${slopRemovedCount})`;
+  }
+
   const md = renderLetter({ property, buyer, body, source });
   const outDir = path.join(BIZ, slug, "outreach", "drafts");
   await fs.mkdir(outDir, { recursive: true });
@@ -233,6 +248,7 @@ export async function operate({ slug = "day14-realty", propertyId } = {}) {
     property_id: property.property_id || property.id,
     source,
     path: outPath,
+    slop_stripped: slopRemovedCount,
   });
 
   return { ok: true, path: outPath, source, value: money(property.value_cents) };

@@ -1,26 +1,158 @@
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { SITE, PITCH, SKUS, STATS, TIMELINE, FAQ, CASE_STUDIES, VERTICALS } from "@/lib/site";
-import { BUILDS, dayOfFourteen, type Build } from "@/lib/builds";
+import { SITE } from "@/lib/site";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { cn } from "@/lib/cn";
 import { ScrollFade } from "@/components/motion/scroll-fade";
 import { CountUp } from "@/components/motion/count-up";
-import { CyclingWord } from "@/components/motion/cycling-word";
 import { HeroAurora } from "@/components/motion/hero-aurora";
 import { StaggerCtas } from "@/components/motion/stagger-ctas";
 import { DeployStrip } from "@/components/deploy-strip";
+import { WaitlistForm } from "@/components/WaitlistForm";
 
-const SHIP_CYCLE = [
-  "marketing sites",
-  "customer portals",
-  "admin apps",
-  "billing flows",
-  "AI chatbots",
-  "SMS reminders",
-  "photo-proof pipelines",
-  "the whole stack",
+/**
+ * Home page — Day14 OS pivot day, May 29 2026.
+ *
+ * Pitches Day14 OS as the multi-tenant operating system for one operator
+ * running several businesses. Existing build-studio messaging moves to
+ * /work-with-us (still linked from the footer). The pivot copy here is
+ * the public bet — landing page + Loom + manifesto + waitlist.
+ *
+ * Constraints honored: NO new dependencies, reuse design tokens, single
+ * page, framer-motion via the existing motion/* components.
+ */
+
+// Placeholder Loom URL — Jack pastes the real one post-record.
+// Empty string renders a styled "ready to embed" frame.
+const LOOM_EMBED_URL = "";
+
+// Page-level metadata overrides the layout defaults for the home route.
+// Other routes (case studies, about, etc.) keep the layout defaults.
+const TITLE = "Day14 OS — The operating system for solopreneurs running multiple businesses";
+const DESCRIPTION =
+  "One operator. Six businesses. One operating system. Multi-tenant studio with marketing sites, portals, billing, admin app, scheduled agents, and an evidence-verified work-log. Waitlist open until Sunday.";
+
+export const metadata: Metadata = {
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    type: "website",
+    siteName: SITE.brand,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
+};
+
+// Day14 OS at a glance — used in the hero proof strip.
+const OS_STATS = {
+  tenants: 6,
+  agentsPerDay: 24,
+  shippedChanges: 400,
+  attentionHoursPerDay: 4,
+};
+
+// Three case studies for the OS pitch. Inline so we don't disturb the
+// legacy CASE_STUDIES used by the /case-studies pages.
+const OS_CASE_STUDIES: Array<{
+  slug: string;
+  name: string;
+  vertical: string;
+  state: "Live" | "Preview" | "Internal";
+  screenshot: string;
+  result: string;
+}> = [
+  {
+    slug: "alignmd",
+    name: "AlignMD",
+    vertical: "B2B SaaS · Healthcare staffing",
+    state: "Live",
+    screenshot:
+      "Clinician portal — credential checklist + intake parser running over a candidate resume, dossier auto-generating into the right panel.",
+    result:
+      "Credential-aware intake that used to take 40 minutes per clinician now takes 4. Same admin app the operator uses for the other five businesses.",
+  },
+  {
+    slug: "hot-flash-co",
+    name: "Hot Flash Co",
+    vertical: "D2C brand · Wellness, peri/menopause",
+    state: "Live",
+    screenshot:
+      "Brand site hero with menopause-positive editorial photography, product grid, MailerLite-wired waitlist, AI chatbot answering symptom questions.",
+    result:
+      "Brand-led D2C site built to look like it came from a 20-person team. Lives in the same OS as the SaaS tenant — different brand, same admin.",
+  },
+  {
+    slug: "life-loophole",
+    name: "Life Loophole",
+    vertical: "Content business · Personal-finance education",
+    state: "Live",
+    screenshot:
+      "Article archive of 30+ drafts on an editorial template, with the scheduled-task panel showing the daily content agent's last run.",
+    result:
+      "A scheduled agent drafts essays nightly to the brand voice. Operator reviews and ships from the inbox. One content business running on autopilot.",
+  },
+];
+
+const OS_STEPS = [
+  {
+    n: "01",
+    title: "Add a tenant",
+    body:
+      "One config entry. The OS picks up the tenant everywhere — admin dashboard, inbox routing, deploy strip, scheduled tasks, work-log.",
+  },
+  {
+    n: "02",
+    title: "Schedule the agents",
+    body:
+      "Daily briefing, content drafts, image generation, deploy commit, EOD evidence check. Each agent writes to the work-log when it ships, surfaces to the inbox when it can't.",
+  },
+  {
+    n: "03",
+    title: "Live in the inbox",
+    body:
+      "The operator's job is one screen: /admin/inbox. Everything else is either automated or evidence-verified. If it's not in the inbox, it doesn't need you.",
+  },
+];
+
+type OsTier = {
+  name: string;
+  price: string;
+  cadence: string;
+  tenants: string;
+  bestFor: string;
+  popular?: boolean;
+};
+
+const OS_TIERS: OsTier[] = [
+  {
+    name: "Solo",
+    price: "$79",
+    cadence: "/mo",
+    tenants: "1 tenant",
+    bestFor: "One operator, one business, wants the OS but only needs one slot.",
+  },
+  {
+    name: "Portfolio",
+    price: "$299",
+    cadence: "/mo",
+    tenants: "Up to 5 tenants",
+    bestFor: "One operator, two to five businesses. The shape this OS was built for.",
+    popular: true,
+  },
+  {
+    name: "Founder",
+    price: "$999",
+    cadence: "/mo",
+    tenants: "Unlimited tenants",
+    bestFor: "Heavy users. Onboarding session, direct line, closes at 100 signups.",
+  },
 ];
 
 export default function HomePage() {
@@ -30,15 +162,12 @@ export default function HomePage() {
       <main>
         <Hero />
         <DeployStrip />
-        <ScrollFade><LiveDemo /></ScrollFade>
-        <ScrollFade><Verticals /></ScrollFade>
-        <ScrollFade><SkuSection /></ScrollFade>
-        <ScrollFade><HowItWorks /></ScrollFade>
-        <TrustStrip />
-        <ScrollFade><NowBuilding /></ScrollFade>
+        <ScrollFade><LoomDemo /></ScrollFade>
         <ScrollFade><CaseStudies /></ScrollFade>
-        <ScrollFade><FaqSection /></ScrollFade>
-        <ScrollFade><FinalCta /></ScrollFade>
+        <ScrollFade><HowItWorks /></ScrollFade>
+        <ScrollFade><Pricing /></ScrollFade>
+        <ScrollFade><Waitlist /></ScrollFade>
+        <ScrollFade><FooterCta /></ScrollFade>
       </main>
       <SiteFooter />
     </>
@@ -46,7 +175,7 @@ export default function HomePage() {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Section heading — editorial: eyebrow-rule, big display title, lead          */
+/* Section heading — reused editorial pattern                                  */
 /* -------------------------------------------------------------------------- */
 
 function SectionHead({
@@ -70,7 +199,7 @@ function SectionHead({
 }
 
 /* -------------------------------------------------------------------------- */
-/* Hero — asymmetric, line-framed, dramatic editorial type                    */
+/* Hero                                                                       */
 /* -------------------------------------------------------------------------- */
 
 function Hero() {
@@ -83,73 +212,62 @@ function Hero() {
             <span className="absolute inset-0 rounded-full bg-ember-500" />
             <span className="absolute -inset-1 animate-ping rounded-full bg-ember-500/40" />
           </span>
-          A one-operator build studio · {SITE.location}
+          A pivot announcement · {SITE.location}
         </div>
 
         <h1 className="max-w-4xl text-[2.75rem] font-extrabold leading-[1.0] tracking-tightest text-ink sm:text-[64px] lg:text-[78px]">
           <span className="hero-phrase" style={{ animationDelay: "0ms" }}>
-            Real business platforms,
+            One operator.
           </span>{" "}
           <span className="hero-phrase" style={{ animationDelay: "140ms" }}>
-            <span className="marker text-ink">owned by you</span>.
+            Six businesses.
           </span>
           <br className="hidden sm:block" />{" "}
           <span className="hero-phrase" style={{ animationDelay: "280ms" }}>
-            Built in <span className="tnum text-ember-600">14 days</span>.
+            One <span className="marker text-ink">operating system</span>.
           </span>
         </h1>
 
         <p className="mt-7 max-w-2xl text-lg text-ink-500 sm:text-xl">
-          {PITCH.oneLiner}
+          Day14 OS is the multi-tenant studio I built to run every business I own from a single worktree. Marketing sites, customer portals, billing, admin app, scheduled agents, an inbox that only surfaces things a human has to decide.
         </p>
 
         <p className="mt-3 max-w-2xl text-base text-ink-400 sm:text-lg">
-          {PITCH.vsSaaS}
-        </p>
-
-        <p className="mt-6 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-ink-500">
-          <span>We ship</span>
-          <span className="inline-flex items-baseline rounded-sm border border-ink-200 bg-paper-50 px-2 py-1 normal-case tracking-normal text-sm font-semibold text-ember-600">
-            <CyclingWord words={SHIP_CYCLE} />
-          </span>
+          Today I&rsquo;m opening the waitlist. The signal closes Sunday at 14:00 EDT.
         </p>
 
         <StaggerCtas className="mt-9 flex flex-wrap items-center gap-3">
-          <a href={SITE.bookingUrl} className="btn-ember">
-            Book a 30-min intro call
+          <a href="#waitlist" className="btn-ember">
+            Join the waitlist
           </a>
-          <a href="#sku" className="btn-ghost">
-            See what we build →
+          <a href="#loom" className="btn-ghost">
+            Watch the 4-minute demo ↓
           </a>
         </StaggerCtas>
 
-        {/* Proof strip — a true bordered grid divided by internal rules. */}
+        {/* Proof strip — same bordered grid pattern as before. */}
         <div className="mt-14 grid max-w-3xl grid-cols-2 border-l border-t border-ink-100 sm:grid-cols-4">
           <Stat
-            label="Avg actual ship"
+            label="Tenants on the OS"
+            value={<CountUp to={OS_STATS.tenants} />}
+          />
+          <Stat
+            label="Agents per day"
+            value={<CountUp to={OS_STATS.agentsPerDay} />}
+          />
+          <Stat
+            label="Verified shipped"
             value={
               <>
-                <CountUp to={STATS.avgShipDays} /> days
+                <CountUp to={OS_STATS.shippedChanges} />+
               </>
             }
           />
           <Stat
-            label="Guaranteed by"
+            label="Operator hrs / day"
             value={
               <>
-                day <CountUp to={STATS.guaranteeDays} />
-              </>
-            }
-          />
-          <Stat
-            label="Live builds"
-            value={<CountUp to={STATS.liveBuilds} />}
-          />
-          <Stat
-            label="Starting at"
-            value={
-              <>
-                $<CountUp to={STATS.startingPriceUsd} />
+                &le; <CountUp to={OS_STATS.attentionHoursPerDay} />
               </>
             }
           />
@@ -159,13 +277,7 @@ function Hero() {
   );
 }
 
-function Stat({
-  label,
-  value,
-}: {
-  label: string;
-  value: ReactNode;
-}) {
+function Stat({ label, value }: { label: string; value: ReactNode }) {
   return (
     <div className="border-b border-r border-ink-100 px-4 py-4">
       <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-400">
@@ -179,39 +291,28 @@ function Stat({
 }
 
 /* -------------------------------------------------------------------------- */
-/* Live demo embed                                                            */
+/* Loom demo embed                                                            */
 /* -------------------------------------------------------------------------- */
 
-function LiveDemo() {
+function LoomDemo() {
   return (
-    <section className="container-page py-20 sm:py-24">
+    <section id="loom" className="container-page py-20 sm:py-24">
       <div className="grid gap-10 md:grid-cols-[1fr_1.4fr] md:gap-12">
         <div>
-          <div className="eyebrow eyebrow-rule mb-5">The proof</div>
+          <div className="eyebrow eyebrow-rule mb-5">Watch the system run · 4 min</div>
           <h2 className="text-3xl font-extrabold tracking-tightest text-ink sm:text-4xl">
-            A real customer build. Live, public, taking payments.
+            A real Monday morning. Six businesses. No standups.
           </h2>
           <p className="mt-5 text-ink-500">
-            Splash Jacks Pools is customer #0. Full marketing site, SEO city
-            pages, AI chatbot, customer portal with self-reschedule, operator
-            admin app with route scheduler and photo proof, Stripe billing
-            end-to-end. Two weeks, one operator. Go poke around.
+            I open the admin dashboard, the inbox shows me three things to approve, I approve them, the scheduled tasks fire, and by noon every business has shipped something. No team, no project manager, no Notion archaeology. The OS is the manager.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
-            <a
-              href="https://splashjackspools.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary"
-            >
-              Open splashjackspools.com ↗
+            <a href="#waitlist" className="btn-primary">
+              Join the waitlist →
             </a>
-            <Link
-              href="/case-studies/splash-jacks-pools"
-              className="btn-ghost"
-            >
-              Read the case study
-            </Link>
+            <a href="#case-studies" className="btn-ghost">
+              See the tenants
+            </a>
           </div>
         </div>
 
@@ -222,344 +323,37 @@ function LiveDemo() {
               <span className="h-2 w-2 rounded-sm bg-ink-200" />
               <span className="h-2 w-2 rounded-sm bg-ink-200" />
             </div>
-            <div className="font-mono text-xs text-ink-400">
-              splashjackspools.com
-            </div>
-            <div className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-shipped-600">
-              <span className="h-1.5 w-1.5 rounded-full bg-shipped-500" />
-              Live
+            <div className="font-mono text-xs text-ink-400">loom · day14-os demo</div>
+            <div className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-ember-600">
+              <span className="h-1.5 w-1.5 rounded-full bg-ember-500" />
+              4 min
             </div>
           </div>
-          <div className="relative aspect-[4/3] w-full">
-            {/*
-              Embedded iframe of the live customer build. Some sites set
-              X-Frame-Options / CSP that block embedding — if Splash Jacks
-              denies framing we fall through to the link above.
-            */}
-            <iframe
-              src="https://splashjackspools.com"
-              title="Splash Jacks Pools — live customer build"
-              loading="lazy"
-              className="absolute inset-0 h-full w-full"
-            />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/* Verticals — who we build for                                               */
-/* -------------------------------------------------------------------------- */
-
-function Verticals() {
-  return (
-    <section id="verticals" className="border-t border-ink-100 py-20 sm:py-24">
-      <div className="container-page">
-        <SectionHead
-          eyebrow="Who we build for"
-          title="Three kinds of business. One playbook."
-          lead={
-            <>
-              We&rsquo;ve productized the build for three customer shapes. If
-              your business looks like one of these, we already know the stack,
-              the pitfalls, and the launch path. If it doesn&rsquo;t, we&rsquo;ll
-              tell you on the call.
-            </>
-          }
-        />
-
-        {/* True bordered grid — divided by internal rules, not floating cards. */}
-        <div className="mt-12 grid border-l border-t border-ink-100 md:grid-cols-3">
-          {VERTICALS.map((v) => (
-            <Link
-              key={v.slug}
-              href={`/verticals/${v.slug}`}
-              className="group relative flex h-full flex-col border-b border-r border-ink-100 bg-paper-50 p-7 transition-[background-color,transform] duration-200 ease-out hover:-translate-y-0.5 hover:bg-paper-100 motion-reduce:transform-none motion-reduce:hover:translate-y-0"
-            >
-              <span className="absolute inset-x-0 top-0 h-0.5 w-0 bg-ember-500 transition-all duration-200 group-hover:w-full" />
-              <div className="font-mono text-xs font-bold uppercase tracking-[0.18em] text-ember-600">
-                {v.shortName}
-              </div>
-              <h3 className="mt-2 text-2xl font-extrabold tracking-tightest text-ink">
-                {v.name}
-              </h3>
-              <p className="mt-3 text-sm text-ink-500">{v.tagline}</p>
-
-              <div className="eyebrow mb-2 mt-6 text-[10px]">A few examples</div>
-              <ul className="flex flex-wrap gap-1.5">
-                {v.examples.slice(0, 5).map((ex) => (
-                  <li
-                    key={ex}
-                    className="rounded-sm border border-ink-100 bg-paper px-2 py-0.5 text-xs text-ink-600"
-                  >
-                    {ex}
-                  </li>
-                ))}
-                {v.examples.length > 5 ? (
-                  <li className="rounded-sm border border-ink-100 bg-paper px-2 py-0.5 text-xs text-ink-400">
-                    +{v.examples.length - 5} more
-                  </li>
-                ) : null}
-              </ul>
-
-              <div className="mt-auto pt-6 text-sm font-semibold text-ink">
-                See what we build for {v.shortName.toLowerCase()} →
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/* SKU pricing cards                                                          */
-/* -------------------------------------------------------------------------- */
-
-function SkuSection() {
-  return (
-    <section id="sku" className="border-y border-ink-100 bg-paper-50 py-20 sm:py-24">
-      <div className="container-page">
-        <SectionHead
-          eyebrow="Three SKUs, fixed prices"
-          title="Sign on Tuesday. Live by the second Friday — or your deposit refunds."
-          lead={
-            <>
-              No &ldquo;let me get back to you with a quote.&rdquo; Productized
-              scope, productized price. Anything outside the SKU is $200/hr or
-              rolls into a Platform upgrade.
-            </>
-          }
-        />
-
-        {/* Bordered pricing grid — one continuous frame, divided by rules. */}
-        <div className="mt-12 grid border-l border-t border-ink-200 md:grid-cols-3">
-          {SKUS.map((sku) => (
-            <article
-              key={sku.id}
-              className={cn(
-                "relative flex flex-col border-b border-r border-ink-200 p-7",
-                sku.popular ? "bg-ink text-paper" : "bg-paper",
-              )}
-            >
-              {sku.popular ? (
-                <div className="absolute right-0 top-0 bg-ember-500 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-white">
-                  Most popular
-                </div>
-              ) : null}
-
-              <div className="flex items-baseline justify-between gap-3">
-                <h3
-                  className={cn(
-                    "text-2xl font-extrabold tracking-tightest",
-                    sku.popular ? "text-paper" : "text-ink",
-                  )}
-                >
-                  {sku.name}
-                </h3>
-                <div
-                  className={cn(
-                    "font-mono text-xs uppercase tracking-widest",
-                    sku.popular ? "text-paper-300" : "text-ink-400",
-                  )}
-                >
-                  ships in {sku.shipsIn}
-                </div>
-              </div>
-
-              <p
-                className={cn(
-                  "mt-2 text-sm",
-                  sku.popular ? "text-paper-200" : "text-ink-500",
-                )}
-              >
-                {sku.blurb}
-              </p>
-
-              <div className="mt-6 flex items-baseline gap-1.5 tnum">
-                <span
-                  className={cn(
-                    "text-4xl font-extrabold tracking-tightest",
-                    sku.popular ? "text-paper" : "text-ink",
-                  )}
-                >
-                  ${sku.oneTime.toLocaleString()}
-                </span>
-                <span
-                  className={cn(
-                    "text-sm font-medium",
-                    sku.popular ? "text-paper-300" : "text-ink-400",
-                  )}
-                >
-                  one-time
-                </span>
-              </div>
-              <div
-                className={cn(
-                  "mt-1 font-mono text-xs tnum",
-                  sku.popular ? "text-paper-300" : "text-ink-400",
-                )}
-              >
-                + ${sku.monthly}/mo hosting + maintenance
-              </div>
-
-              <a
-                href={SITE.bookingUrl}
-                className={cn(
-                  "mt-6 w-full",
-                  sku.popular ? "btn-ember" : "btn-primary",
-                )}
-              >
-                Book intro call
-              </a>
-
-              <div
-                className={cn(
-                  "my-7 h-px w-full",
-                  sku.popular ? "bg-paper-200/20" : "bg-ink-100",
-                )}
+          <div className="relative aspect-[16/9] w-full">
+            {LOOM_EMBED_URL ? (
+              <iframe
+                src={LOOM_EMBED_URL}
+                title="Day14 OS — 4-minute demo"
+                loading="lazy"
+                allow="fullscreen"
+                className="absolute inset-0 h-full w-full"
               />
-
-              <div
-                className={cn(
-                  "mb-3 font-mono text-[11px] font-bold uppercase tracking-[0.22em]",
-                  sku.popular ? "text-ember-300" : "text-ember-600",
-                )}
-              >
-                Best for
+            ) : (
+              <div className="absolute inset-0 grid place-items-center p-6 text-center">
+                <div>
+                  <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink-400">
+                    Loom · ready to embed
+                  </div>
+                  <p className="mt-3 max-w-sm text-sm text-ink-500">
+                    Demo recording in progress. Paste the Loom share URL into{" "}
+                    <code className="rounded bg-paper-100 px-1.5 py-0.5 font-mono text-xs text-ink">
+                      LOOM_EMBED_URL
+                    </code>{" "}
+                    in <code className="font-mono text-xs">page.tsx</code>.
+                  </p>
+                </div>
               </div>
-              <p
-                className={cn(
-                  "text-sm",
-                  sku.popular ? "text-paper-200" : "text-ink-500",
-                )}
-              >
-                {sku.bestFor}
-              </p>
-
-              <div
-                className={cn(
-                  "mb-3 mt-6 font-mono text-[11px] font-bold uppercase tracking-[0.22em]",
-                  sku.popular ? "text-ember-300" : "text-ember-600",
-                )}
-              >
-                What&rsquo;s in it
-              </div>
-              <ul
-                className={cn(
-                  "space-y-0",
-                  sku.popular ? "text-paper-200" : "text-ink-700",
-                )}
-              >
-                {sku.features.map((f) => (
-                  <li
-                    key={f}
-                    className={cn(
-                      "flex gap-2.5 border-t py-2.5 text-sm",
-                      sku.popular ? "border-paper-200/15" : "border-ink-100",
-                    )}
-                  >
-                    <span
-                      aria-hidden
-                      className="mt-1.5 inline-block h-1.5 w-1.5 shrink-0 bg-ember-500"
-                    />
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </div>
-
-        <p className="mt-10 font-mono text-xs uppercase tracking-widest text-ink-400">
-          50% on signature · 50% on launch · 30-day cancel · you own the code
-        </p>
-      </div>
-    </section>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/* How it works — 14-day timeline                                             */
-/* -------------------------------------------------------------------------- */
-
-function HowItWorks() {
-  return (
-    <section id="how" className="border-t border-ink-100 py-20 sm:py-24">
-      <div className="container-page">
-        <SectionHead
-          eyebrow="How it works"
-          title="14 days, end to end."
-          lead={
-            <>
-              Every project runs the same playbook. No surprises, no scope
-              creep, no standing meetings.
-            </>
-          }
-        />
-
-        {/* Timeline — connected rows divided by hairline rules, no floating. */}
-        <ol className="mt-12 border-t border-ink-100">
-          {TIMELINE.map((step, i) => (
-            <li
-              key={step.day}
-              className="group relative grid items-baseline gap-3 border-b border-ink-100 py-6 transition-colors hover:bg-paper-50 sm:grid-cols-[150px_minmax(0,1fr)_2fr] sm:gap-8 sm:py-7"
-            >
-              <span className="absolute inset-y-0 left-0 w-0.5 scale-y-0 bg-ember-500 transition-transform duration-200 group-hover:scale-y-100" />
-              <div className="font-mono text-xs font-bold uppercase tracking-[0.18em] text-ember-600 tnum sm:pl-4">
-                {step.day}
-              </div>
-              <div className="text-lg font-bold tracking-tighter text-ink">
-                {step.title}
-              </div>
-              <div className="flex items-baseline gap-6 text-ink-500">
-                <span>{step.body}</span>
-                <span
-                  aria-hidden
-                  className="ml-auto hidden shrink-0 font-mono text-xs text-ink-300 tnum sm:block sm:pr-4"
-                >
-                  {String(i + 1).padStart(2, "0")} / {String(TIMELINE.length).padStart(2, "0")}
-                </span>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </section>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/* Trust strip                                                                */
-/* -------------------------------------------------------------------------- */
-
-function TrustStrip() {
-  const STACK = [
-    "Next.js",
-    "TypeScript",
-    "Postgres",
-    "Stripe",
-    "Supabase",
-    "Vercel",
-    "Anthropic",
-  ];
-  return (
-    <section className="border-y border-ink-100 bg-paper-50 py-12">
-      <div className="container-page">
-        <div className="grid items-center gap-6 sm:grid-cols-[auto_1fr]">
-          <div className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-ink-400">
-            Same stack as
-            <br className="hidden sm:block" /> Vercel, Linear, Cash App
-          </div>
-          <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-lg font-bold tracking-tighter text-ink-300 sm:justify-end">
-            {STACK.map((name) => (
-              <span key={name} className="transition-colors hover:text-ink">
-                {name}
-              </span>
-            ))}
+            )}
           </div>
         </div>
       </div>
@@ -568,119 +362,7 @@ function TrustStrip() {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Now building — public build-log teaser                                     */
-/* -------------------------------------------------------------------------- */
-
-function NowBuilding() {
-  // Show up to 2 in-progress builds; if none, render an empty-state CTA.
-  const inProgress = BUILDS.filter((b) => b.status === "in-progress").slice(0, 2);
-
-  return (
-    <section id="now-building" className="border-t border-ink-100 py-20 sm:py-24">
-      <div className="container-page">
-        <SectionHead
-          eyebrow={
-            <>
-              <span className="relative inline-block h-1.5 w-1.5">
-                <span className="absolute inset-0 rounded-full bg-ember-500" />
-                <span className="absolute -inset-1 animate-ping rounded-full bg-ember-500/40" />
-              </span>
-              Now building · public from day one
-            </>
-          }
-          title="Watch a 14-day build, in real time."
-          lead={
-            <>
-              Every active customer build is on a public page from Day 1.
-              Day-by-day commits, the same EOD update the customer gets, the
-              preview URL once it&rsquo;s live. No agency does this.
-            </>
-          }
-        />
-
-        {inProgress.length === 0 ? (
-          <div className="mt-12 border border-dashed border-ink-200 bg-paper-50 p-10 text-center">
-            <p className="mx-auto max-w-md text-ink-500">
-              No active builds right now — three slots open this month. Book an
-              intro call to claim one.
-            </p>
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-              <a href={SITE.bookingUrl} className="btn-ember">
-                Book a 30-min intro call
-              </a>
-              <Link href="/builds" className="btn-ghost">
-                See past builds →
-              </Link>
-            </div>
-          </div>
-        ) : (
-          <>
-            <div className="mt-12 grid border-l border-t border-ink-100 md:grid-cols-2">
-              {inProgress.map((b) => (
-                <NowBuildingCard key={b.slug} build={b} />
-              ))}
-            </div>
-            <div className="mt-8">
-              <Link
-                href="/builds"
-                className="font-mono text-xs uppercase tracking-widest text-ink-500 transition-colors hover:text-ink"
-              >
-                See the full build log →
-              </Link>
-            </div>
-          </>
-        )}
-      </div>
-    </section>
-  );
-}
-
-function NowBuildingCard({ build }: { build: Build }) {
-  const day = dayOfFourteen(build);
-  const progressPct = Math.min(100, Math.round((day / 14) * 100));
-  const verticalLabel =
-    build.vertical === "custom" ? "Custom" : build.vertical.replace("-", " ");
-  return (
-    <Link
-      href={`/builds/${build.slug}`}
-      className="group relative block border-b border-r border-ink-100 bg-paper-50 p-7 transition-colors hover:bg-paper-100"
-    >
-      <span
-        className="absolute inset-x-0 top-0 h-0.5 bg-ember-500 transition-all duration-300 ease-out group-hover:!w-full"
-        style={{ width: `${progressPct}%` }}
-      />
-      <div className="flex items-center justify-between">
-        <div className="font-mono text-xs font-bold uppercase tracking-widest text-ember-600">
-          {build.sku} · {verticalLabel}
-        </div>
-        <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-ink-500">
-          <span className="relative inline-block h-1.5 w-1.5">
-            <span className="absolute inset-0 rounded-full bg-ember-500" />
-            <span className="absolute -inset-1 animate-ping rounded-full bg-ember-500/40" />
-          </span>
-          In progress
-        </span>
-      </div>
-      <h3 className="mt-3 text-2xl font-extrabold tracking-tightest text-ink">
-        {build.customerName}
-      </h3>
-      <div className="mt-1 flex items-baseline gap-3 font-mono text-xs uppercase tracking-widest text-ink-400 tnum">
-        <span>
-          Day <span className="text-ink">{day}</span> of 14
-        </span>
-        <span className="text-ink-300">·</span>
-        <span>{progressPct}% there</span>
-      </div>
-      <p className="mt-4 text-sm text-ink-500">{build.currentStatus}</p>
-      <div className="mt-5 text-sm font-semibold text-ink">
-        Read the build log →
-      </div>
-    </Link>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/* Case studies                                                               */
+/* Case studies — three tenants                                                */
 /* -------------------------------------------------------------------------- */
 
 function CaseStudies() {
@@ -688,67 +370,53 @@ function CaseStudies() {
     <section id="case-studies" className="border-t border-ink-100 py-20 sm:py-24">
       <div className="container-page">
         <SectionHead
-          eyebrow="Three live builds, three SKUs"
-          title="The work, on the public internet."
+          eyebrow="Three tenants, three businesses, one OS"
+          title="Live, running, taking real money."
           lead={
             <>
-              A service-business platform, a brand-heavy event site, and a
-              two-sided marketplace — all shipped, all live, all examples of
-              what Day14 builds inside the standard SKUs.
+              The OS is multi-tenant from the metal up. These three businesses share the same admin app, the same inbox, and the same evidence verifier. They look like three companies because they are.
             </>
           }
         />
 
         <div className="mt-12 grid border-l border-t border-ink-100 md:grid-cols-3">
-          {CASE_STUDIES.map((cs) => (
-            <Link
+          {OS_CASE_STUDIES.map((cs) => (
+            <article
               key={cs.slug}
-              href={`/case-studies/${cs.slug}`}
-              className="group relative flex flex-col overflow-hidden border-b border-r border-ink-100 bg-paper-50 transition-[background-color,transform] duration-200 ease-out hover:-translate-y-0.5 hover:bg-paper-100 motion-reduce:transform-none motion-reduce:hover:translate-y-0"
+              className="relative flex flex-col overflow-hidden border-b border-r border-ink-100 bg-paper-50"
             >
-              <span className="absolute inset-x-0 top-0 z-10 h-0.5 w-0 bg-ember-500 transition-all duration-200 group-hover:w-full" />
-              {cs.url ? (
-                <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-ink-100 bg-ink-50">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`https://image.thum.io/get/width/720/crop/450/png/wait/4/noanimate/${cs.url}`}
-                    alt=""
-                    loading="lazy"
-                    aria-hidden="true"
-                    className="absolute inset-0 h-full w-full object-cover object-top grayscale-[35%] transition duration-500 ease-out group-hover:scale-[1.02] group-hover:grayscale-0"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-paper-50/40 via-transparent to-transparent transition-opacity duration-300 group-hover:opacity-0" />
-                </div>
-              ) : null}
+              <span className="absolute inset-x-0 top-0 z-10 h-0.5 w-full bg-ember-500/30" />
               <div className="flex flex-1 flex-col p-7">
                 <div className="flex items-center justify-between">
                   <div className="font-mono text-xs font-bold uppercase tracking-widest text-ember-600">
-                    {cs.sku}
+                    {cs.name}
                   </div>
                   <StatePill state={cs.state} />
                 </div>
                 <h3 className="mt-3 text-2xl font-extrabold tracking-tightest text-ink">
-                  {cs.name}
+                  {cs.vertical}
                 </h3>
-                <p className="mt-1 text-sm text-ink-400">{cs.industry}</p>
-                <p className="mt-4 text-sm text-ink-500">{cs.summary}</p>
-                <div className="mt-auto flex items-center justify-between pt-5">
-                  <span className="text-sm font-semibold text-ink">
-                    Read the case study →
+                <p className="mt-4 text-sm text-ink-500">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-400">
+                    Screenshot
                   </span>
-                  {cs.url ? (
-                    <span className="font-mono text-[11px] uppercase tracking-widest text-ink-400">
-                      {new URL(cs.url).host}
-                    </span>
-                  ) : null}
-                </div>
+                  <br />
+                  {cs.screenshot}
+                </p>
+                <p className="mt-5 text-sm font-semibold text-ink">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ember-600">
+                    Result
+                  </span>
+                  <br />
+                  {cs.result}
+                </p>
               </div>
-            </Link>
+            </article>
           ))}
         </div>
 
         <p className="mt-10 font-mono text-xs uppercase tracking-widest text-ink-400">
-          Your business is the fourth. Three slots open this month.
+          Same OS. Same inbox. Same evidence verifier. Three completely different businesses.
         </p>
       </div>
     </section>
@@ -770,44 +438,193 @@ function StatePill({ state }: { state: "Live" | "Preview" | "Internal" }) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* FAQ                                                                        */
+/* How it works — 3 steps                                                      */
 /* -------------------------------------------------------------------------- */
 
-function FaqSection() {
+function HowItWorks() {
   return (
-    <section id="faq" className="border-t border-ink-100 bg-paper-50 py-20 sm:py-24">
+    <section id="how" className="border-t border-ink-100 bg-paper-50 py-20 sm:py-24">
       <div className="container-page">
         <SectionHead
-          eyebrow="Frequently asked"
-          title="The twelve questions every small-business owner asks."
+          eyebrow="How the OS actually works"
+          title="Three primitives. Everything else is a consequence."
         />
 
-        {/* Accordion — a continuous list divided by hairline rules. */}
-        <div className="mt-12 border-t border-ink-100">
-          {FAQ.map((item, i) => (
-            <details
-              key={item.q}
-              className="group border-b border-ink-100 open:bg-paper"
+        <ol className="mt-12 grid border-l border-t border-ink-100 md:grid-cols-3">
+          {OS_STEPS.map((s) => (
+            <li
+              key={s.n}
+              className="relative flex flex-col border-b border-r border-ink-100 bg-paper p-7"
             >
-              <summary className="flex cursor-pointer list-none items-start justify-between gap-4 py-5">
-                <div>
-                  <span className="font-mono text-xs text-ink-400 tnum">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="ml-3 text-lg font-bold tracking-tighter text-ink">
-                    {item.q}
-                  </span>
-                </div>
-                <span
-                  aria-hidden
-                  className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-sm border border-ink-200 font-mono text-sm text-ink-500 transition group-open:rotate-45 group-open:border-ember-500 group-open:bg-ember-500 group-open:text-white"
-                >
-                  +
-                </span>
-              </summary>
-              <div className="pb-5 pl-9 pr-10 text-ink-500">{item.a}</div>
-            </details>
+              <span className="absolute inset-x-0 top-0 h-0.5 w-12 bg-ember-500" />
+              <div className="font-mono text-xs font-bold uppercase tracking-[0.18em] text-ember-600 tnum">
+                {s.n}
+              </div>
+              <h3 className="mt-3 text-2xl font-extrabold tracking-tightest text-ink">
+                {s.title}
+              </h3>
+              <p className="mt-4 text-sm text-ink-500">{s.body}</p>
+            </li>
           ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/* Pricing teaser                                                              */
+/* -------------------------------------------------------------------------- */
+
+function Pricing() {
+  return (
+    <section id="pricing" className="border-t border-ink-100 py-20 sm:py-24">
+      <div className="container-page">
+        <SectionHead
+          eyebrow="Founder pricing — open until 100 signups"
+          title="Three tiers. Pick one."
+          lead={
+            <>
+              Founder pricing locks for the first 100 signups. After that the Founder tier closes; Portfolio becomes the top public tier.
+            </>
+          }
+        />
+
+        <div className="mt-12 grid border-l border-t border-ink-200 md:grid-cols-3">
+          {OS_TIERS.map((tier) => (
+            <article
+              key={tier.name}
+              className={cn(
+                "relative flex flex-col border-b border-r border-ink-200 p-7",
+                tier.popular ? "bg-ink text-paper" : "bg-paper",
+              )}
+            >
+              {tier.popular ? (
+                <div className="absolute right-0 top-0 bg-ember-500 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-white">
+                  Built for this shape
+                </div>
+              ) : null}
+
+              <h3
+                className={cn(
+                  "text-2xl font-extrabold tracking-tightest",
+                  tier.popular ? "text-paper" : "text-ink",
+                )}
+              >
+                {tier.name}
+              </h3>
+              <p
+                className={cn(
+                  "mt-1 font-mono text-xs uppercase tracking-widest",
+                  tier.popular ? "text-paper-300" : "text-ink-400",
+                )}
+              >
+                {tier.tenants}
+              </p>
+
+              <div className="mt-6 flex items-baseline gap-1 tnum">
+                <span
+                  className={cn(
+                    "text-4xl font-extrabold tracking-tightest",
+                    tier.popular ? "text-paper" : "text-ink",
+                  )}
+                >
+                  {tier.price}
+                </span>
+                <span
+                  className={cn(
+                    "text-sm font-medium",
+                    tier.popular ? "text-paper-300" : "text-ink-400",
+                  )}
+                >
+                  {tier.cadence}
+                </span>
+              </div>
+
+              <a
+                href="#waitlist"
+                className={cn(
+                  "mt-6 w-full",
+                  tier.popular ? "btn-ember" : "btn-primary",
+                )}
+              >
+                Join the waitlist
+              </a>
+
+              <div
+                className={cn(
+                  "my-7 h-px w-full",
+                  tier.popular ? "bg-paper-200/20" : "bg-ink-100",
+                )}
+              />
+
+              <div
+                className={cn(
+                  "mb-3 font-mono text-[11px] font-bold uppercase tracking-[0.22em]",
+                  tier.popular ? "text-ember-300" : "text-ember-600",
+                )}
+              >
+                Best for
+              </div>
+              <p
+                className={cn(
+                  "text-sm",
+                  tier.popular ? "text-paper-200" : "text-ink-500",
+                )}
+              >
+                {tier.bestFor}
+              </p>
+            </article>
+          ))}
+        </div>
+
+        <p className="mt-10 font-mono text-xs uppercase tracking-widest text-ink-400">
+          No drip campaign · No upsell · Founder tier closes at 100 signups
+        </p>
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/* Waitlist                                                                    */
+/* -------------------------------------------------------------------------- */
+
+function Waitlist() {
+  return (
+    <section
+      id="waitlist"
+      className="border-t border-ink-100 bg-paper-50 py-20 sm:py-24"
+    >
+      <div className="container-page">
+        <div className="grid items-start gap-10 md:grid-cols-[1fr_1fr] md:gap-16">
+          <div>
+            <div className="eyebrow eyebrow-rule mb-5">The 24-hour signal</div>
+            <h2 className="text-3xl font-extrabold tracking-tightest text-ink sm:text-[2.5rem] sm:leading-[1.05]">
+              I&rsquo;m opening the waitlist today. The signal closes Sunday.
+            </h2>
+            <p className="mt-5 text-ink-500">
+              If 50+ operators want this by Sunday at 14:00 EDT, I start onboarding next week. If fewer, I refocus on the strongest tenant and the OS stays private tooling. Either answer is useful. The point of the waitlist is to find out.
+            </p>
+          </div>
+
+          <div className="rounded-lg border border-ink-200 bg-paper p-7">
+            <div className="font-mono text-xs font-bold uppercase tracking-[0.22em] text-ember-600">
+              Day14 OS · waitlist
+            </div>
+            <h3 className="mt-2 text-xl font-extrabold tracking-tightest text-ink">
+              One email, Sunday.
+            </h3>
+            <p className="mt-2 text-sm text-ink-500">
+              I&rsquo;ll send one email Sunday with where the signal landed, and maybe one more on launch day. That&rsquo;s the whole sequence.
+            </p>
+            <div className="mt-5">
+              <WaitlistForm />
+            </div>
+            <p className="mt-3 font-mono text-[11px] text-ink-400">
+              No drip campaign. No upsell. Unsubscribe is a one-click reply.
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -815,10 +632,10 @@ function FaqSection() {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Final CTA                                                                  */
+/* Footer CTA — legacy 14-day SKU link preserved                               */
 /* -------------------------------------------------------------------------- */
 
-function FinalCta() {
+function FooterCta() {
   return (
     <section className="border-t border-ink-100 py-20 sm:py-24">
       <div className="container-page">
@@ -827,24 +644,19 @@ function FinalCta() {
           <div className="relative grid items-center gap-10 md:grid-cols-[1.4fr_1fr]">
             <div>
               <div className="eyebrow eyebrow-rule mb-5 text-ember-300">
-                Talk to a builder
+                The day-job, still on offer
               </div>
-              <h2 className="text-3xl font-extrabold tracking-tightest text-paper sm:text-[2.75rem] sm:leading-[1.03]">
-                30 minutes. No deck. Just the live demo and a fixed price.
+              <h2 className="text-3xl font-extrabold tracking-tightest text-paper sm:text-[2.5rem] sm:leading-[1.05]">
+                Want a single 14-day build instead? That offer still stands.
               </h2>
               <p className="mt-5 max-w-xl text-paper-200">
-                We pull up splashjackspools.com on the call, you tell us your
-                business, we tell you which SKU fits and what we&rsquo;d ship in
-                14 days. If it&rsquo;s not a fit we say so on the call.
+                The build studio that funded Day14 OS is still taking three customers a month. Fixed-price 14-day platforms — site, portal, admin app, billing. Same operator, same agents, different deliverable.
               </p>
             </div>
             <div className="flex flex-col gap-3">
-              <a
-                href={SITE.bookingUrl}
-                className="btn-ember w-full justify-center text-base"
-              >
-                Book a 30-min intro call
-              </a>
+              <Link href="/work-with-us" className="btn-ember w-full justify-center text-base">
+                See the 14-day SKUs →
+              </Link>
               <a
                 href={`mailto:${SITE.email}`}
                 className="inline-flex w-full items-center justify-center rounded-sm border border-paper-200/30 px-5 py-3 text-sm font-semibold text-paper transition-colors hover:border-paper-200/60 hover:bg-paper/5"

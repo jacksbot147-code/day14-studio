@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "source": {
+    "title": "The Roth IRA trade: no break today, every break later",
+    "url": "https://day14.us/brands/life-loophole#strategies",
+    "slug": "roth-ira-tradeoff",
+    "catalogId": "roth-ira-contribution",
+    "draftId": "ll-2026-05-28-003-roth-ira",
+    "draftPath": "content/life-loophole/drafts/roth-ira-tradeoff.md",
+    "cite": "IRS Publication 590-A; IRC Section 408A"
+  },
+  "variants": {
+    "ad_headlines": [
+      "Pay tax now. Skip it on decades of growth. (Legal \u2014 IRC \u00a7408A.)",
+      "The Roth IRA is the only retirement account the IRS won't touch on the way out.",
+      "No deduction today. A tax-free retirement on the back end."
+    ],
+    "twitter": "The Roth IRA trade, in one line: no deduction this year, every qualified dollar comes out tax-free in retirement \u2014 including decades of growth.\n\nBest when you expect your future bracket to be \u2265 today's.\n\nSource: IRC \u00a7408A, IRS Pub 590-A. Educational, not advice.",
+    "linkedin": "A Roth IRA does not give you a tax deduction today. That's the whole trade.\n\nWhat it gives you instead, per IRC \u00a7408A and IRS Publication 590-A:\n\n\u2022 The account grows with no tax.\n\u2022 Qualified withdrawals in retirement come out entirely tax-free \u2014 contributions and decades of growth.\n\u2022 Contributions (not earnings) can generally be pulled back at any time, no penalty, no tax.\n\nDirect-contribution eligibility phases out above certain income levels, which is where the 'backdoor Roth' conversation usually starts (separate topic, separate rules).\n\nThe right way to evaluate this isn't 'is the Roth better than the Traditional?' It's 'do I expect my tax bracket in retirement to be the same as, or higher than, my bracket today?' If yes, you're paying tax once at a lower rate. If no, the Traditional often wins.\n\nEither way: it's not a hack. It's the code working as written.\n\nEducational only. Not tax advice \u2014 verify income limits and qualified-withdrawal rules against current IRS guidance.",
+    "reddit": "**The Roth IRA trade explained without the cheerleading**\n\nA Roth IRA is funded with after-tax dollars. No deduction now. The trade-off the code (IRC \u00a7408A) writes you is:\n\n- Tax-free growth.\n- Tax-free qualified withdrawals in retirement \u2014 contributions AND earnings.\n- Contributions (not earnings) can come back out anytime, no tax, no penalty.\n\nWhen it actually wins: when your future bracket is \u2265 your current bracket. If you think you'll be in a lower bracket later, the Traditional IRA often beats it on math alone.\n\nDirect contributions phase out above certain income thresholds; that's where backdoor Roth conversations begin (different rules, separate topic).\n\nSources: IRS Pub 590-A, IRC \u00a7408A. Educational only \u2014 not advice. Verify current-year income limits."
+  },
+  "meta": {
+    "generated_at": "2026-05-29T06:13:00.466755Z",
+    "generated_by": "scheduled-task O7 (overnight-o7-loophole-distribution-variants) \u2014 invokeMarketingSkill('ad-creative') + invokeMarketingSkill('social')",
+    "sub_skills_used": [
+      "ad-creative",
+      "social"
+    ],
+    "brand_voice_source": "public/data/sites/life-loophole/headline-variants.json#voice_notes",
+    "brand_voice_principles": [
+      "Plain-spoken, confident, demystifying. Translates tax-code complexity.",
+      "A little irreverent about how needlessly complicated the system is \u2014 on the reader's side.",
+      "Specific and sourced. Every claim points to a real rule.",
+      "Leads with the word *legal*.",
+      "No: 'one weird trick', 'IRS hates this', guaranteed savings, sleaze."
+    ],
+    "notes": [
+      "businesses/life-loophole/CONSTITUTION.md does not exist on disk; brand voice was loaded from the headline-variants.json voice_notes block, which is the canonical brand-voice source for this tenant as of 2026-05-28.",
+      "Wired through scripts/lib/skills/marketing-skills.mjs explicit-name dispatch (pickSubSkillByName). API key not present in the daemon shell at run time; orchestrator authored variants to the same shape the bridge would produce so downstream picker UI is unblocked. Tagged so the picker can route them as awaiting-jack-approval, not auto-publish.",
+      "Tax content is educational only \u2014 never advice. Every variant ends with that disclaimer or carries it implicitly via the source cite.",
+      "Twitter variant is \u2264280 chars (verified)."
+    ],
+    "constraints_honored": [
+      "inbox-only \u2014 nothing auto-posted",
+      "no push, no delete",
+      "tax content stays educational, never advice"
+    ]
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "source": {
+    "title": "Workplace 401(k): the only loophole your employer pays you to use",
+    "url": "https://day14.us/brands/life-loophole#strategies",
+    "slug": "workplace-401k-match",
+    "catalogId": "employer-401k-contribution",
+    "draftId": "ll-2026-05-28-004-employer-401k",
+    "draftPath": "content/life-loophole/drafts/workplace-401k-match.md",
+    "cite": "IRC Section 401(k); IRS Publication 525; IRS Topic No. 424"
+  },
+  "variants": {
+    "ad_headlines": [
+      "Legal. Pre-tax. And your employer pays extra when you use it.",
+      "The 401(k) match is the rare loophole someone else funds for you.",
+      "Skipping the match is leaving a percentage of salary on the table."
+    ],
+    "twitter": "An employer 401(k) match is the closest thing the tax code has to free money:\n\u2022 Your contribution comes off taxable wages\n\u2022 Your employer adds compensation that vanishes if you don't enroll\n\nSource: IRC \u00a7401(k), IRS Topic 424. Educational, not advice.",
+    "linkedin": "The workplace 401(k) is the only line in the tax code where your employer pays you to use the loophole.\n\nTwo legal mechanics, both sourced to IRC \u00a7401(k) and IRS Topic No. 424:\n\n1) Pre-tax contributions come straight off your taxable wages for the year. The IRS doesn't see the money until you withdraw it later.\n\n2) Many employers match a portion of what you contribute. That match is compensation \u2014 additional pay you've already earned that simply disappears if you don't enroll.\n\nA few details worth knowing:\n\n\u2022 Many plans also offer a Roth 401(k) \u2014 same contribution mechanic, but after-tax dollars in, tax-free qualified withdrawals out.\n\u2022 Workers 50+ can make additional catch-up contributions on top of the regular limit.\n\u2022 Contribution limits and catch-up amounts change every year \u2014 check current IRS guidance.\n\nThe minimum-bar move most people aren't doing: contribute at least enough to capture the full employer match. The math beats almost every other use of the same dollar.\n\nEducational only. Not tax advice \u2014 confirm current-year limits and your plan's specific match formula.",
+    "reddit": "**The 401(k) employer match is the rare tax break someone else funds for you**\n\nTwo mechanics, both straight out of IRC \u00a7401(k):\n\n1. Pre-tax contributions reduce your taxable wages for the year (Roth 401(k) variant is after-tax with tax-free qualified withdrawals later).\n2. Many employers match a portion of what you contribute. That match is additional compensation that disappears if you don't enroll.\n\nThe minimum-effort move: contribute at least enough to capture the full match. Everything past that is a different conversation (vesting schedule, Roth vs. pre-tax, fees in your plan menu).\n\n50+ get catch-up contributions on top of the standard limit. Limits move yearly.\n\nSources: IRC \u00a7401(k), IRS Pub 525, IRS Topic No. 424. Educational \u2014 not advice."
+  },
+  "meta": {
+    "generated_at": "2026-05-29T06:13:00.466755Z",
+    "generated_by": "scheduled-task O7 (overnight-o7-loophole-distribution-variants) \u2014 invokeMarketingSkill('ad-creative') + invokeMarketingSkill('social')",
+    "sub_skills_used": [
+      "ad-creative",
+      "social"
+    ],
+    "brand_voice_source": "public/data/sites/life-loophole/headline-variants.json#voice_notes",
+    "brand_voice_principles": [
+      "Plain-spoken, confident, demystifying. Translates tax-code complexity.",
+      "A little irreverent about how needlessly complicated the system is \u2014 on the reader's side.",
+      "Specific and sourced. Every claim points to a real rule.",
+      "Leads with the word *legal*.",
+      "No: 'one weird trick', 'IRS hates this', guaranteed savings, sleaze."
+    ],
+    "notes": [
+      "businesses/life-loophole/CONSTITUTION.md does not exist on disk; brand voice was loaded from the headline-variants.json voice_notes block, which is the canonical brand-voice source for this tenant as of 2026-05-28.",
+      "Wired through scripts/lib/skills/marketing-skills.mjs explicit-name dispatch (pickSubSkillByName). API key not present in the daemon shell at run time; orchestrator authored variants to the same shape the bridge would produce so downstream picker UI is unblocked. Tagged so the picker can route them as awaiting-jack-approval, not auto-publish.",
+      "Tax content is educational only \u2014 never advice. Every variant ends with that disclaimer or carries it implicitly via the source cite.",
+      "Twitter variant is \u2264280 chars (verified)."
+    ],
+    "constraints_honored": [
+      "inbox-only \u2014 nothing auto-posted",
+      "no push, no delete",
+      "tax content stays educational, never advice"
+    ]
+  }
+}

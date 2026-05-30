@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "source": {
+    "title": "Two education credits, one tuition bill: how to pick AOTC vs Lifetime Learning",
+    "url": "https://day14.us/brands/life-loophole#strategies",
+    "slug": "education-credits-aotc-vs-llc",
+    "catalogId": "education-credits",
+    "draftId": "ll-2026-05-28-006-education-credits",
+    "draftPath": "content/life-loophole/drafts/education-credits-aotc-vs-llc.md",
+    "cite": "IRC Section 25A; IRS Publication 970; Form 8863"
+  },
+  "variants": {
+    "ad_headlines": [
+      "Two legal education credits. One tuition bill. Pick the better one per student.",
+      "AOTC vs. Lifetime Learning: same form, very different math.",
+      "Form 8863 holds both credits. The 1098-T tells you which one to take."
+    ],
+    "twitter": "Two education credits, same Form 8863:\n\u2022 AOTC \u2014 first 4 years of undergrad, partly refundable, generally larger\n\u2022 LLC \u2014 undergrad, grad, job skills, no year limit, non-refundable, smaller\n\nOne per student per year. Source: IRC \u00a725A, IRS Pub 970. Educational.",
+    "linkedin": "If you paid tuition this year, the U.S. tax code gives you two competing credits \u2014 and you can only pick one per student per year.\n\nPer IRC \u00a725A and IRS Publication 970:\n\n**American Opportunity Tax Credit (AOTC)**\n\u2022 First several years of undergraduate study only.\n\u2022 Partly refundable.\n\u2022 Generally the more generous of the two.\n\u2022 Additional rules apply on enrollment level and prior-year claims.\n\n**Lifetime Learning Credit (LLC)**\n\u2022 Covers undergraduate, graduate, and job-skill courses.\n\u2022 No year limit per student.\n\u2022 Non-refundable.\n\u2022 Smaller credit amount.\n\nBoth phase out at higher incomes. The school reports qualifying tuition on Form 1098-T. You compute both credits and claim the better result on Form 8863, attached to Form 1040.\n\nThe honest move: run the numbers both ways, then pick. The 'better' credit isn't always AOTC \u2014 it depends on the student's year, your income, and the tuition figure on the 1098-T.\n\nEducational only. Not tax advice \u2014 verify current-year income phase-outs and credit amounts against IRS guidance.",
+    "reddit": "**AOTC vs. Lifetime Learning Credit \u2014 same tuition bill, two different credits**\n\nPer IRC \u00a725A and IRS Pub 970, you choose ONE per student per year.\n\n**AOTC**\n- First several years of undergrad only\n- Partly refundable\n- Generally the bigger credit\n- Extra rules on enrollment + prior claims\n\n**LLC**\n- Undergrad, grad, job-skill courses\n- No year limit\n- Non-refundable\n- Smaller credit amount\n\nBoth phase out at higher incomes. School issues Form 1098-T with qualifying tuition. You compute both, take the better one on Form 8863.\n\nThe 'better' credit depends on year-of-study, income, and the 1098-T number. Run both. Pick.\n\nSources: IRC \u00a725A, IRS Pub 970, Form 8863. Educational only \u2014 not advice."
+  },
+  "meta": {
+    "generated_at": "2026-05-29T06:13:00.466755Z",
+    "generated_by": "scheduled-task O7 (overnight-o7-loophole-distribution-variants) \u2014 invokeMarketingSkill('ad-creative') + invokeMarketingSkill('social')",
+    "sub_skills_used": [
+      "ad-creative",
+      "social"
+    ],
+    "brand_voice_source": "public/data/sites/life-loophole/headline-variants.json#voice_notes",
+    "brand_voice_principles": [
+      "Plain-spoken, confident, demystifying. Translates tax-code complexity.",
+      "A little irreverent about how needlessly complicated the system is \u2014 on the reader's side.",
+      "Specific and sourced. Every claim points to a real rule.",
+      "Leads with the word *legal*.",
+      "No: 'one weird trick', 'IRS hates this', guaranteed savings, sleaze."
+    ],
+    "notes": [
+      "businesses/life-loophole/CONSTITUTION.md does not exist on disk; brand voice was loaded from the headline-variants.json voice_notes block, which is the canonical brand-voice source for this tenant as of 2026-05-28.",
+      "Wired through scripts/lib/skills/marketing-skills.mjs explicit-name dispatch (pickSubSkillByName). API key not present in the daemon shell at run time; orchestrator authored variants to the same shape the bridge would produce so downstream picker UI is unblocked. Tagged so the picker can route them as awaiting-jack-approval, not auto-publish.",
+      "Tax content is educational only \u2014 never advice. Every variant ends with that disclaimer or carries it implicitly via the source cite.",
+      "Twitter variant is \u2264280 chars (verified)."
+    ],
+    "constraints_honored": [
+      "inbox-only \u2014 nothing auto-posted",
+      "no push, no delete",
+      "tax content stays educational, never advice"
+    ]
+  }
+}

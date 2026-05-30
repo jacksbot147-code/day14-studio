@@ -29,3 +29,8 @@ next-env.d.ts
 # stays tracked so the hosted /admin/realty has data on Vercel.
 public/data/ops/day14-realty.json
 !public/data/ops/day14-realty-summary.json
+
+# Budget gate runtime state — rolling per-hour + per-day counters managed
+# by scripts/lib/budget-gate.mjs. The seed config (.budget.json) is
+# tracked; the counters file is runtime-only.
+public/data/ops/.budget-counters.json

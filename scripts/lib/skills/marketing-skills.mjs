@@ -27,8 +27,10 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
+import { checkBudget, recordBudgetUse } from "../budget-gate.mjs";
 
 const SKILL_NAME = "marketing-skills";
+const BUDGET_DOMAIN = "marketing_skills";
 
 // Canonical plugin locations — try both with and without the hyphen, since
 // the marketplace.json drop has historically used `marketingskills/`.
@@ -166,6 +168,91 @@ export function pickSubSkill(task, skills) {
   return best;
 }
 
+/**
+ * Look up a sub-skill by exact folder name (case-insensitive). Used by the
+ * explicit-routing entry point — callers that already know which SKILL.md
+ * they want shouldn't be at the mercy of the lexical scorer.
+ *
+ * Exported for tests + dispatch table use.
+ */
+export function pickSubSkillByName(name, skills) {
+  if (!name || !Array.isArray(skills) || skills.length === 0) return null;
+  const want = String(name).toLowerCase();
+  for (const s of skills) {
+    if (String(s.name || "").toLowerCase() === want) {
+      return { skill: s, score: 999, matchedBy: "exact-name" };
+    }
+  }
+  return null;
+}
+
+// ---- explicit sub-skill prompt templates ---------------------------------
+// Switch table: maps explicit sub-skill names (the first arg to the new
+// invokeMarketingSkill signature) to a function that turns the caller's
+// structured input into the user-message string. The SKILL.md body still
+// drives the system prompt — these templates only shape the user turn so
+// the model gets a stable, JSON-friendly request shape.
+//
+// Add a new case here when wiring a new sub-skill explicitly. Default
+// fallback (unmapped sub-skill names) falls through to the generic
+// "task + JSON.stringify(context)" builder.
+
+const SUB_SKILL_PROMPT_BUILDERS = {
+  emails: buildEmailsUserPrompt,
+};
+
+/**
+ * Build the user-message for the `emails` sub-skill body-variant request.
+ * Expected input shape:
+ *   { subjectLine, customerContext, brandVoice, intent, originalBody? }
+ * Opts:
+ *   { variants?: number }  — default 2
+ *
+ * Output contract (what we ask the model to produce): a JSON array of
+ * exactly `variants` objects of shape { body, rationale, tone }. The
+ * caller will parse this with a permissive JSON extractor and fall back
+ * to placeholder variants on parse failure.
+ */
+function buildEmailsUserPrompt(input, opts) {
+  const variants = Number.isInteger(opts?.variants) && opts.variants > 0 ? opts.variants : 2;
+  const subjectLine = input?.subjectLine ?? "";
+  const intent = input?.intent ?? "alternate phrasing";
+  const customerContext = input?.customerContext ?? {};
+  const brandVoice = input?.brandVoice ?? "";
+  const originalBody = input?.originalBody ?? "";
+  const parts = [];
+  parts.push(`Task: produce ${variants} alternate email-body variants for a CS reply template.`);
+  parts.push(`Intent: ${intent}.`);
+  parts.push(``);
+  parts.push(`Anchor subject line (do not rewrite — bodies must work under this exact subject):`);
+  parts.push(`  "${subjectLine}"`);
+  if (originalBody) {
+    parts.push(``);
+    parts.push(`Original body (the body you are producing alternates to):`);
+    parts.push(originalBody);
+  }
+  parts.push(``);
+  parts.push(`Customer context:`);
+  parts.push(typeof customerContext === "string" ? customerContext : JSON.stringify(customerContext, null, 2));
+  parts.push(``);
+  parts.push(`Brand voice:`);
+  parts.push(typeof brandVoice === "string" ? brandVoice : JSON.stringify(brandVoice, null, 2));
+  parts.push(``);
+  parts.push(`Output contract — return ONLY a JSON array, no prose framing:`);
+  parts.push(`[`);
+  parts.push(`  { "body": "<full body text, plain markdown, signature included>",`);
+  parts.push(`    "rationale": "<one-sentence why this variant pulls a different lever>",`);
+  parts.push(`    "tone": "<short label, e.g. 'tight-receipt' / 'warmer' / 'more-numeric'>" },`);
+  parts.push(`  …${variants} items total`);
+  parts.push(`]`);
+  parts.push(``);
+  parts.push(`Constraints:`);
+  parts.push(`- Preserve all {{placeholders}} verbatim — never substitute.`);
+  parts.push(`- Match the brand voice and the constraints encoded in the SKILL body.`);
+  parts.push(`- Bodies must remain coherent under the anchor subject line above.`);
+  return parts.join("\n");
+}
+
 // ---- Anthropic call ------------------------------------------------------
 
 const MODEL = "claude-haiku-4-5-20251001";
@@ -232,18 +319,51 @@ async function callAnthropic({ system, user, opts }) {
 // ---- main entry ----------------------------------------------------------
 
 /**
- * @param {{ task: string, context?: any }} input
- * @param {object} [opts]
+ * Two supported call shapes:
+ *
+ *   // Generic (legacy) — lexical picker chooses the sub-skill:
+ *   invokeMarketingSkill({ task: string, context?: any }, opts?)
+ *
+ *   // Explicit (new) — first arg names the sub-skill folder, second arg
+ *   // is the structured input the registered prompt-builder consumes:
+ *   invokeMarketingSkill("emails", { subjectLine, customerContext, brandVoice, intent }, { variants: 2 })
+ *
+ * The explicit form bypasses the lexical scorer (no missed routing on
+ * keyword overlap) and lets each sub-skill define a canonical input
+ * shape via the SUB_SKILL_PROMPT_BUILDERS switch table. If the named
+ * sub-skill isn't found on disk, the explicit form falls back to the
+ * lexical picker over the same name so old call sites that pass a
+ * sub-skill hint as a task string still route somewhere reasonable.
+ *
+ * @param {string | { task: string, context?: any }} taskOrSubSkill
+ * @param {any} [contextOrOpts]
+ * @param {object} [maybeOpts]
  * @param {string} [opts.pluginRoot] override autodiscovery
  * @param {string} [opts.model] override the default Haiku model
  * @param {number} [opts.maxTokens]
+ * @param {number} [opts.variants] forwarded to the prompt-builder for the explicit form
  */
-export async function invokeMarketingSkill(input, opts = {}) {
+export async function invokeMarketingSkill(taskOrSubSkill, contextOrOpts, maybeOpts) {
+  // ---- normalize call shape -------------------------------------------
+  let input;
+  let opts;
+  let explicitSubSkill = null;
+  if (typeof taskOrSubSkill === "string") {
+    // New explicit form: invokeMarketingSkill("emails", structuredInput, opts)
+    explicitSubSkill = taskOrSubSkill;
+    const structuredInput = contextOrOpts ?? {};
+    opts = maybeOpts ?? {};
+    input = { task: `${explicitSubSkill}: structured invocation`, context: structuredInput };
+  } else {
+    // Legacy form: invokeMarketingSkill({ task, context }, opts)
+    input = taskOrSubSkill;
+    opts = contextOrOpts ?? {};
+  }
   if (!input || typeof input.task !== "string" || !input.task.trim()) {
     return {
       ok: false,
       skill: SKILL_NAME,
-      reason: "marketing-skills expects { task: string, context?: any }",
+      reason: "marketing-skills expects { task: string, context?: any } or (subSkillName, input, opts)",
     };
   }
   const loaded = await loadMarketingSkills({ pluginRoot: opts.pluginRoot });
@@ -258,7 +378,16 @@ export async function invokeMarketingSkill(input, opts = {}) {
       source: loaded.source,
     };
   }
-  const picked = pickSubSkill(input.task, loaded.skills);
+  // Explicit pick wins if provided AND the named folder exists. Otherwise
+  // fall back to the lexical scorer (so a sub-skill name that's missing
+  // from disk doesn't hard-fail — it just degrades to the generic path).
+  let picked = null;
+  if (explicitSubSkill) {
+    picked = pickSubSkillByName(explicitSubSkill, loaded.skills);
+  }
+  if (!picked) {
+    picked = pickSubSkill(input.task, loaded.skills);
+  }
   if (!picked || !picked.skill) {
     return { ok: false, skill: SKILL_NAME, reason: "no matching sub-skill" };
   }
@@ -273,8 +402,38 @@ export async function invokeMarketingSkill(input, opts = {}) {
       },
     };
   }
+  // Budget gate (E6) — soft governor before the paid model call. The
+  // killswitch is fast-path; this is the per-hour + per-day cap from
+  // `.budget.json`. Skip the gate when `opts.skipBudget === true` (used
+  // by tests + dry-run paths).
+  if (opts.skipBudget !== true) {
+    const gate = await checkBudget(BUDGET_DOMAIN);
+    if (!gate.allowed) {
+      return {
+        ok: false,
+        skill: SKILL_NAME,
+        reason: `budget-gate: ${gate.reason}`,
+        meta: {
+          picked: { name: picked.skill.name, score: picked.score },
+          availableSubSkills: loaded.skills.length,
+          budgetDomain: BUDGET_DOMAIN,
+        },
+      };
+    }
+  }
   const system = buildSystemPrompt(picked.skill);
-  const user = buildUserMessage(input);
+  // Switch case: registered explicit sub-skills (e.g. "emails") get a
+  // canonical user-message builder. Everything else falls through to the
+  // generic "task + JSON.stringify(context)" shape from buildUserMessage.
+  let user;
+  const builder = explicitSubSkill
+    ? SUB_SKILL_PROMPT_BUILDERS[explicitSubSkill.toLowerCase()]
+    : null;
+  if (builder) {
+    user = builder(input.context, opts);
+  } else {
+    user = buildUserMessage(input);
+  }
   const result = await callAnthropic({ system, user, opts });
   if (!result.ok) {
     return {
@@ -285,6 +444,14 @@ export async function invokeMarketingSkill(input, opts = {}) {
       meta: { picked: { name: picked.skill.name, score: picked.score } },
     };
   }
+  // Only record on success — failed model calls don't consume budget.
+  if (opts.skipBudget !== true) {
+    try {
+      await recordBudgetUse(BUDGET_DOMAIN, 1);
+    } catch {
+      // counters are best-effort; never let a counter write fail the call.
+    }
+  }
   return {
     ok: true,
     skill: SKILL_NAME,
@@ -292,6 +459,8 @@ export async function invokeMarketingSkill(input, opts = {}) {
     meta: {
       subSkill: picked.skill.name,
       subSkillScore: picked.score,
+      subSkillMatch: picked.matchedBy || "lexical",
+      explicitSubSkill: explicitSubSkill || null,
       model: opts.model || MODEL,
       availableSubSkills: loaded.skills.length,
     },

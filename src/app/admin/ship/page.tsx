@@ -4,6 +4,12 @@ import path from "node:path";
 import { homedir } from "node:os";
 import { AdminNav, ADMIN_CSS, PageHint } from "../layout-bits";
 import { Card, EmptyState, Kpi, StatusBanner } from "@/components/ui";
+import {
+  checkSlopAction,
+  readCurrentPreview,
+  SLOP_GATE_THRESHOLD,
+  type SlopPreviewSnapshot,
+} from "./publish-action";
 
 export const metadata = {
   title: "Ship — Day14 Admin",
@@ -231,11 +237,12 @@ export default async function ShipPage() {
   // run sequentially inside their helpers.
   const tscBin = path.join(STUDIO, "node_modules", ".bin", "tsc");
   const nextBin = path.join(STUDIO, "node_modules", ".bin", "next");
-  const [tsc, lint, studioGit, alignmdGit] = await Promise.all([
+  const [tsc, lint, studioGit, alignmdGit, slopPreview] = await Promise.all([
     runCmd(tscBin, ["--noEmit"], STUDIO, 90_000),
     runCmd(nextBin, ["lint"], STUDIO, 90_000),
     gitSnapshot(STUDIO),
     gitSnapshot(ALIGNMD),
+    readCurrentPreview(),
   ]);
 
   // ── Build verdict ────────────────────────────────────────
@@ -375,6 +382,15 @@ export default async function ShipPage() {
         <BuildResultCard title="npx tsc --noEmit" result={tsc} />
         <BuildResultCard title="npx next lint" result={lint} />
       </div>
+
+      {/* ── 1b. Pre-publish slop gate ─────────────────────── */}
+      <div className="section-header" id="publish-gate">
+        <div className="section-title">Pre-publish slop gate</div>
+        <span className="section-link" style={{ pointerEvents: "none", color: "var(--muted)" }}>
+          blocks publish if &gt;{SLOP_GATE_THRESHOLD} phrases stripped without override
+        </span>
+      </div>
+      <SlopGateSection snapshot={slopPreview} />
 
       {/* ── 2. What's uncommitted ─────────────────────────── */}
       <div className="section-header">
@@ -653,6 +669,271 @@ function FileList({
         ))}
       </ul>
     </div>
+  );
+}
+
+/* ─── Slop-gate UI (server component) ─────────────────────── */
+
+function SlopGateSection({ snapshot }: { snapshot: SlopPreviewSnapshot | null }) {
+  // Two server-side forms share the same action — the `intent` hidden input
+  // distinguishes preview vs. publish. No client-side state required.
+  return (
+    <div className="panel-grid" style={{ gridTemplateColumns: "1fr 1fr", marginBottom: 24 }}>
+      <Card title="Paste content to check before publish">
+        <form action={checkSlopAction}>
+          <input type="hidden" name="intent" value="preview" />
+          <textarea
+            name="content"
+            defaultValue={snapshot?.original ?? ""}
+            placeholder="Paste the article, landing-page copy, email body, or any content destined for a live surface."
+            rows={10}
+            style={{
+              width: "100%",
+              fontFamily: "var(--mono)",
+              fontSize: 12.5,
+              lineHeight: 1.5,
+              padding: "10px 12px",
+              border: "1px solid var(--border)",
+              borderRadius: "var(--r-sm)",
+              background: "var(--surface-2)",
+              color: "var(--text)",
+              resize: "vertical",
+              boxSizing: "border-box",
+            }}
+          />
+          <div style={{ marginTop: 10, display: "flex", gap: 8, alignItems: "center" }}>
+            <button
+              type="submit"
+              style={{
+                padding: "8px 14px",
+                fontSize: 13,
+                fontWeight: 600,
+                border: "1px solid var(--border)",
+                borderRadius: "var(--r-sm)",
+                background: "var(--surface-3, var(--surface-2))",
+                color: "var(--text)",
+                cursor: "pointer",
+              }}
+            >
+              Check for slop
+            </button>
+            <span style={{ fontSize: 12, color: "var(--muted)" }}>
+              Runs <code>stripSlop()</code> server-side. Nothing is published.
+            </span>
+          </div>
+        </form>
+      </Card>
+
+      <div>
+        <SlopPreviewResult snapshot={snapshot} />
+      </div>
+    </div>
+  );
+}
+
+function SlopPreviewResult({ snapshot }: { snapshot: SlopPreviewSnapshot | null }) {
+  if (!snapshot) {
+    return (
+      <EmptyState
+        icon="✎"
+        headline="No content checked yet."
+        hint={
+          <>
+            Paste content on the left and hit <strong>Check for slop</strong>. If
+            <code> stripSlop()</code> removes more than {SLOP_GATE_THRESHOLD} phrases,
+            the publish button below will require an explicit override checkbox.
+          </>
+        }
+      />
+    );
+  }
+
+  const overThreshold = snapshot.totalRemoved > SLOP_GATE_THRESHOLD;
+
+  if (snapshot.intent === "publish" && snapshot.blocked) {
+    return (
+      <Card title="Publish blocked by slop gate" aside={<span style={{ color: "var(--red)", fontWeight: 700 }}>BLOCKED</span>}>
+        <StatusBanner
+          tone="bad"
+          headline={`Publish blocked — ${snapshot.totalRemoved} phrases removed, override required`}
+          detail={
+            <>
+              <code>stripSlop()</code> stripped more than {SLOP_GATE_THRESHOLD} phrases
+              from the content. Tick <strong>&ldquo;I&rsquo;ve reviewed slop removals&rdquo;</strong>
+              below and resubmit to push through anyway, or rewrite the content and re-check.
+            </>
+          }
+        />
+        <RemovedPhrasesList removed={snapshot.removed} />
+        <PublishForm snapshot={snapshot} overThreshold={overThreshold} />
+      </Card>
+    );
+  }
+
+  if (snapshot.intent === "publish" && !snapshot.blocked) {
+    return (
+      <Card title="Publish queued" aside={<span style={{ color: "var(--green)", fontWeight: 700 }}>QUEUED</span>}>
+        <StatusBanner
+          tone="ok"
+          headline={`Queued to inbox — ${snapshot.totalRemoved} phrases stripped`}
+          detail={
+            <>
+              Cleaned content was written to the day14 publish-queue inbox
+              {snapshot.override ? " (override checkbox was ticked)" : " (under threshold — no override needed)"}.
+              No live surface was touched.
+            </>
+          }
+        />
+        <RemovedPhrasesList removed={snapshot.removed} />
+      </Card>
+    );
+  }
+
+  // Preview-only result.
+  return (
+    <Card
+      title="Preview result"
+      aside={
+        <span
+          style={{
+            color: overThreshold ? "var(--amber)" : "var(--green)",
+            fontWeight: 700,
+          }}
+        >
+          {snapshot.totalRemoved} stripped
+        </span>
+      }
+    >
+      <StatusBanner
+        tone={overThreshold ? "warn" : "ok"}
+        headline={
+          overThreshold
+            ? `${snapshot.totalRemoved} phrases stripped — over the ${SLOP_GATE_THRESHOLD}-phrase threshold`
+            : `${snapshot.totalRemoved} phrase${snapshot.totalRemoved === 1 ? "" : "s"} stripped — under threshold, publish is clear`
+        }
+        detail={
+          overThreshold
+            ? "Review the removed phrases below. Publish will be blocked until you tick the override checkbox."
+            : "You can publish without override. The cleaned version below will be queued to the inbox."
+        }
+      />
+      <RemovedPhrasesList removed={snapshot.removed} />
+      <PublishForm snapshot={snapshot} overThreshold={overThreshold} />
+    </Card>
+  );
+}
+
+function RemovedPhrasesList({
+  removed,
+}: {
+  removed: SlopPreviewSnapshot["removed"];
+}) {
+  if (removed.length === 0) {
+    return (
+      <div style={{ fontSize: 12.5, color: "var(--muted)", margin: "10px 0" }}>
+        No slop phrases found. <code>stripSlop()</code> made zero edits.
+      </div>
+    );
+  }
+  return (
+    <div style={{ margin: "12px 0" }}>
+      <div
+        style={{
+          fontSize: 10,
+          fontWeight: 700,
+          textTransform: "uppercase",
+          letterSpacing: "0.12em",
+          color: "var(--muted)",
+          marginBottom: 8,
+        }}
+      >
+        Removed phrases ({removed.length} distinct)
+      </div>
+      <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
+        {removed.map((r) => (
+          <li
+            key={r.phrase}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              padding: "4px 0",
+              borderBottom: "1px solid var(--border)",
+              fontSize: 12.5,
+            }}
+          >
+            <span style={{ fontFamily: "var(--mono)", color: "var(--text)" }}>{r.phrase}</span>
+            <span style={{ color: "var(--accent-text)", fontVariantNumeric: "tabular-nums" }}>
+              ×{r.count}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function PublishForm({
+  snapshot,
+  overThreshold,
+}: {
+  snapshot: SlopPreviewSnapshot;
+  overThreshold: boolean;
+}) {
+  // The form resubmits the ORIGINAL content (not the cleaned one) — the
+  // server action re-runs stripSlop deterministically so the audit trail
+  // matches what the user actually wrote.
+  return (
+    <form action={checkSlopAction} style={{ marginTop: 14 }}>
+      <input type="hidden" name="intent" value="publish" />
+      <input type="hidden" name="content" value={snapshot.original} />
+      {overThreshold ? (
+        <label
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 8,
+            padding: "10px 12px",
+            border: "1px solid var(--amber)",
+            borderRadius: "var(--r-sm)",
+            background: "rgba(217, 165, 53, 0.08)",
+            fontSize: 12.5,
+            marginBottom: 10,
+            cursor: "pointer",
+          }}
+        >
+          <input
+            type="checkbox"
+            name="override"
+            required
+            defaultChecked={snapshot.override}
+            style={{ marginTop: 2 }}
+          />
+          <span>
+            <strong>I&rsquo;ve reviewed slop removals.</strong> Required because{" "}
+            <code>stripSlop()</code> removed {snapshot.totalRemoved} phrases —
+            more than the {SLOP_GATE_THRESHOLD}-phrase threshold.
+          </span>
+        </label>
+      ) : null}
+      <button
+        type="submit"
+        style={{
+          padding: "8px 14px",
+          fontSize: 13,
+          fontWeight: 600,
+          border: "1px solid var(--border)",
+          borderRadius: "var(--r-sm)",
+          background: overThreshold ? "rgba(217, 165, 53, 0.18)" : "var(--surface-3, var(--surface-2))",
+          color: "var(--text)",
+          cursor: "pointer",
+        }}
+      >
+        {overThreshold ? "Override + publish (inbox queue)" : "Publish (inbox queue)"}
+      </button>
+      <span style={{ marginLeft: 10, fontSize: 12, color: "var(--muted)" }}>
+        Writes the cleaned content to <code>~/Documents/businesses/day14/inbox/publish-queue/</code>. Never touches a live surface.
+      </span>
+    </form>
   );
 }
 

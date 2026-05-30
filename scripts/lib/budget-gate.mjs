@@ -190,24 +190,41 @@ export async function checkBudget(domain, { now = new Date() } = {}) {
 }
 
 /**
- * recordBudgetUse(domain) — increments the per-domain per-hour + per-day
- * counters by 1. Atomic temp-then-rename write. Snaps the bucket keys
- * to the current hour/day before incrementing, so a counter that crossed
- * a clock boundary while idle resets cleanly.
+ * recordBudgetUse(domain, n = 1) — increments the per-domain per-hour +
+ * per-day counters by `n`. Atomic temp-then-rename write. Snaps the
+ * bucket keys to the current hour/day before incrementing, so a counter
+ * that crossed a clock boundary while idle resets cleanly.
+ *
+ * `n` is clamped to a non-negative integer. Callers can either omit it
+ * (legacy single-call sites) or pass an explicit batch size when one
+ * logical operation maps to multiple billable calls.
  *
  * Returns the post-increment counter snapshot for the domain.
  */
-export async function recordBudgetUse(domain, { now = new Date() } = {}) {
+export async function recordBudgetUse(domain, nOrOpts = 1, maybeOpts) {
   if (!domain || typeof domain !== "string") {
     throw new Error("recordBudgetUse: domain (string) is required");
   }
+  // Back-compat: old call sites use recordBudgetUse(domain, { now }).
+  // New call sites use recordBudgetUse(domain, n) or
+  // recordBudgetUse(domain, n, { now }).
+  let n = 1;
+  let opts = {};
+  if (typeof nOrOpts === "number") {
+    n = nOrOpts;
+    opts = maybeOpts || {};
+  } else if (nOrOpts && typeof nOrOpts === "object") {
+    opts = nOrOpts;
+  }
+  const inc = Math.max(0, Math.floor(Number(n) || 0));
+  const { now = new Date() } = opts;
   const counters = await loadCounters();
   const snap = refreshBucket(counters[domain], now);
   const next = {
     hour_bucket: snap.hour_bucket,
-    hour_count: snap.hour_count + 1,
+    hour_count: snap.hour_count + inc,
     day_bucket: snap.day_bucket,
-    day_count: snap.day_count + 1,
+    day_count: snap.day_count + inc,
   };
   counters[domain] = next;
   await atomicWriteJSON(COUNTERS_PATH, counters);

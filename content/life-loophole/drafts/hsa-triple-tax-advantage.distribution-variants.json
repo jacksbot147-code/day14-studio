@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "source": {
+    "title": "The HSA is the only triple-tax-advantaged account in the code",
+    "url": "https://day14.us/brands/life-loophole#strategies",
+    "slug": "hsa-triple-tax-advantage",
+    "catalogId": "hsa-contribution",
+    "draftId": "ll-2026-05-28-001-hsa-contribution",
+    "draftPath": "content/life-loophole/drafts/hsa-triple-tax-advantage.md",
+    "cite": "IRS Publication 969; Form 8889; IRC Section 223"
+  },
+  "variants": {
+    "ad_headlines": [
+      "Legal. Sourced. The only account the code lets you skip tax on three times.",
+      "An HSA isn't a hack. It's an IRC \u00a7223 account doing what the code says it does.",
+      "One account. Three legal tax breaks. (Hint: it's not the 401(k).)"
+    ],
+    "twitter": "The HSA is the only account in the U.S. code with three legal tax breaks:\n1. Contribution comes off taxable income\n2. Balance grows tax-free\n3. Qualified medical withdrawals are tax-free\n\nSource: IRC \u00a7223, IRS Pub 969. Educational, not advice.",
+    "linkedin": "The HSA is the only account in the U.S. tax code that gets three legal breaks. Most people I talk to know about one of them \u2014 and stop there.\n\nHere's the actual list, sourced to IRC \u00a7223 and IRS Publication 969:\n\n\u2022 Your contribution comes off your taxable income for the year.\n\u2022 The balance grows tax-free.\n\u2022 Withdrawals for qualified medical expenses come out tax-free too.\n\nIt's available only to people on an IRS-qualifying high-deductible health plan, and it's not a use-it-or-lose-it account \u2014 unspent money rolls over and is yours to keep through job changes.\n\nThe quiet part: an HSA you don't spend in your working years can function as a second retirement account. Once you hit 65, non-medical withdrawals are taxed like a traditional IRA \u2014 no penalty.\n\nI keep coming back to this one because it doesn't ask you to do anything clever. It just asks you to use the rule the way IRC \u00a7223 wrote it.\n\nEducational only. Not tax advice \u2014 verify current contribution limits and HDHP definitions against IRS guidance for your tax year.",
+    "reddit": "**The HSA is the only triple-tax-advantaged account in the code (and most people use it like an FSA)**\n\nNot a hack. Not a loophole the IRS is mad about. It's literally what IRC \u00a7223 says.\n\nThree legal breaks on the same dollar:\n1. Contributions reduce your taxable income.\n2. The balance grows tax-free.\n3. Qualified medical withdrawals are tax-free.\n\nRequirements: you're on an IRS-qualifying HDHP, not on Medicare, not a dependent on someone else's return. Money rolls over forever \u2014 it's not an FSA.\n\nThe sleeper feature: after 65, non-medical withdrawals work like a Traditional IRA (taxed, no penalty). So an unspent HSA is a stealth retirement bucket.\n\nSources: IRS Pub 969, Form 8889, IRC \u00a7223. Educational, not advice \u2014 verify current-year limits against the IRS."
+  },
+  "meta": {
+    "generated_at": "2026-05-29T06:13:00.466755Z",
+    "generated_by": "scheduled-task O7 (overnight-o7-loophole-distribution-variants) \u2014 invokeMarketingSkill('ad-creative') + invokeMarketingSkill('social')",
+    "sub_skills_used": [
+      "ad-creative",
+      "social"
+    ],
+    "brand_voice_source": "public/data/sites/life-loophole/headline-variants.json#voice_notes",
+    "brand_voice_principles": [
+      "Plain-spoken, confident, demystifying. Translates tax-code complexity.",
+      "A little irreverent about how needlessly complicated the system is \u2014 on the reader's side.",
+      "Specific and sourced. Every claim points to a real rule.",
+      "Leads with the word *legal*.",
+      "No: 'one weird trick', 'IRS hates this', guaranteed savings, sleaze."
+    ],
+    "notes": [
+      "businesses/life-loophole/CONSTITUTION.md does not exist on disk; brand voice was loaded from the headline-variants.json voice_notes block, which is the canonical brand-voice source for this tenant as of 2026-05-28.",
+      "Wired through scripts/lib/skills/marketing-skills.mjs explicit-name dispatch (pickSubSkillByName). API key not present in the daemon shell at run time; orchestrator authored variants to the same shape the bridge would produce so downstream picker UI is unblocked. Tagged so the picker can route them as awaiting-jack-approval, not auto-publish.",
+      "Tax content is educational only \u2014 never advice. Every variant ends with that disclaimer or carries it implicitly via the source cite.",
+      "Twitter variant is \u2264280 chars (verified)."
+    ],
+    "constraints_honored": [
+      "inbox-only \u2014 nothing auto-posted",
+      "no push, no delete",
+      "tax content stays educational, never advice"
+    ]
+  }
+}

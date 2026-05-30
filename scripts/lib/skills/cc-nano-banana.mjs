@@ -37,10 +37,12 @@ import { fileURLToPath } from "node:url";
 import { execFile, spawn } from "node:child_process";
 import { promisify } from "node:util";
 import zlib from "node:zlib";
+import { checkBudget, recordBudgetUse } from "../budget-gate.mjs";
 
 const execFileP = promisify(execFile);
 const SKILL_NAME = "cc-nano-banana";
 const NANO_BANANA_MODEL = "gemini-2.5-flash-image";
+const BUDGET_DOMAIN = "banana";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 // scripts/lib/skills/<this file> -> studio root is three dirs up.
@@ -307,6 +309,24 @@ export async function generateImage({ prompt, size = "1024x1024", style = "photo
     return { ok: false, cached: false, path: destPath, reason: "no-key" };
   }
 
+  // Budget gate (E6) — soft governor before the paid Gemini call. Cache
+  // hits and placeholders above are free and stay outside the gate; only
+  // a real external call consumes budget. On gate-block, write a
+  // placeholder so downstream <img> tags don't 404.
+  const gate = await checkBudget(BUDGET_DOMAIN);
+  if (!gate.allowed) {
+    await writePlaceholderCard({ prompt, size, style, tenant, destPath });
+    await appendWorkLog(
+      `${isoNow()} cc-nano-banana budget-gate ${gate.reason} hash=${hash.slice(0, 12)} size=${size} style=${style} tenant=${tenant || "-"} prompt="${prompt.slice(0, 80)}"`,
+    );
+    return {
+      ok: false,
+      cached: false,
+      path: destPath,
+      reason: `budget-gate: ${gate.reason}`,
+    };
+  }
+
   const result = await callGemini({ prompt, size, style, apiKey });
   if (!result.ok || !result.buffer) {
     // Hard fail: still write a placeholder so downstream <img> tags don't 404.
@@ -318,6 +338,12 @@ export async function generateImage({ prompt, size = "1024x1024", style = "photo
   }
 
   await fs.writeFile(destPath, result.buffer);
+  // Record use on success only — failed calls don't consume budget.
+  try {
+    await recordBudgetUse(BUDGET_DOMAIN, 1);
+  } catch {
+    // counters are best-effort; never let a counter write fail the call.
+  }
   await appendWorkLog(
     `${isoNow()} cc-nano-banana gen ok hash=${hash.slice(0, 12)} bytes=${result.buffer.length} size=${size} style=${style} tenant=${tenant || "-"} prompt="${prompt.slice(0, 80)}"`,
   );

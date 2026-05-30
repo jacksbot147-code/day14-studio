@@ -298,6 +298,124 @@
         { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "E7" }
       ],
       "mustHaveInboxItem": []
+    },
+    "overnight-o1-t4-brand-site-stop-slop": {
+      "mustExist": [
+        "~/Documents/studio/scripts/lib/skills/stop-slop.mjs",
+        "~/Documents/studio/scripts/_generic/brand-site-builder.mjs"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "O1" }
+      ],
+      "mustHaveInboxItem": []
+    },
+    "overnight-o2-t5-ship-publish-gate": {
+      "mustExist": [
+        "~/Documents/studio/src/app/admin/ship/page.tsx",
+        "~/Documents/studio/src/app/admin/ship/publish-action.ts"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "O2" }
+      ],
+      "mustHaveInboxItem": []
+    },
+    "overnight-o3-t6-cs-realty-stop-slop": {
+      "mustExist": [
+        "~/Documents/studio/scripts/lib/cs-template-writer.mjs",
+        "~/Documents/studio/scripts/verticals/real-estate/outreach-drafter.mjs"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "O3" }
+      ],
+      "mustHaveInboxItem": []
+    },
+    "overnight-o4-t9-landing-headlines": {
+      "mustExist": [
+        "~/Documents/studio/public/data/brand-landings/day14.landing-variants.json",
+        "~/Documents/studio/public/data/brand-landings/day14-realty.landing-variants.json",
+        "~/Documents/studio/public/data/brand-landings/alignmd.landing-variants.json"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "O4" }
+      ],
+      "mustHaveInboxItem": [
+        { "tenant": "day14", "kind": "landing-headline-pick", "minCount": 1 },
+        { "tenant": "day14-realty", "kind": "landing-headline-pick", "minCount": 1 },
+        { "tenant": "alignmd", "kind": "landing-headline-pick", "minCount": 1 }
+      ]
+    },
+    "overnight-o5-cs-body-variants": {
+      "mustExist": [
+        "~/Documents/studio/public/data/cs-templates/deposit-received.body-variants.json",
+        "~/Documents/studio/public/data/cs-templates/eod-update-bad.body-variants.json",
+        "~/Documents/studio/public/data/cs-templates/eod-update-good.body-variants.json",
+        "~/Documents/studio/public/data/cs-templates/intake-form-link.body-variants.json",
+        "~/Documents/studio/public/data/cs-templates/launched.body-variants.json",
+        "~/Documents/studio/public/data/cs-templates/preview-ready.body-variants.json"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "O5" }
+      ],
+      "mustHaveInboxItem": [
+        { "tenant": "day14", "kind": "cs-body-pick", "minCount": 6 }
+      ]
+    },
+    "overnight-o6-brand-coherence-pass": {
+      "mustExist": [
+        "~/Documents/UX-AUDIT-2026-05-28.md"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "O6" },
+        { "file": "~/Documents/UX-AUDIT-2026-05-28.md", "sectionTitleSubstring": "Brand-coherence pass" }
+      ],
+      "mustHaveInboxItem": []
+    },
+    "overnight-o7-loophole-distribution-variants": {
+      "mustExist": [
+        "~/Documents/studio/content/life-loophole/drafts/hsa-triple-tax-advantage.distribution-variants.json",
+        "~/Documents/studio/content/life-loophole/drafts/traditional-ira-deduction.distribution-variants.json",
+        "~/Documents/studio/content/life-loophole/drafts/roth-ira-tradeoff.distribution-variants.json",
+        "~/Documents/studio/content/life-loophole/drafts/workplace-401k-match.distribution-variants.json",
+        "~/Documents/studio/content/life-loophole/drafts/child-tax-credit-decoded.distribution-variants.json",
+        "~/Documents/studio/content/life-loophole/drafts/education-credits-aotc-vs-llc.distribution-variants.json"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "O7" }
+      ],
+      "mustHaveInboxItem": [
+        { "tenant": "life-loophole", "kind": "social-variant-pick", "minCount": 6 }
+      ]
+    },
+    "overnight-o8-brand-hero-composition": {
+      "mustExist": [
+        "~/Documents/studio/scripts/workday-o8-image-composition.mjs"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "O8" }
+      ],
+      "mustHaveInboxItem": [
+        { "tenant": "day14", "kind": "brand-hero-pick", "minCount": 1 },
+        { "tenant": "day14-realty", "kind": "brand-hero-pick", "minCount": 1 },
+        { "tenant": "alignmd", "kind": "brand-hero-pick", "minCount": 1 }
+      ]
+    },
+    "overnight-o9-roth-og-precommit": {
+      "mustExist": [
+        "~/Documents/studio/.git/hooks/pre-commit",
+        "~/Documents/studio/scripts/git-hooks/pre-commit",
+        "~/Documents/studio/public/og/life-loophole/ll-2026-05-28-003-roth-ira.png"
+      ],
+      "mustAppendTo": [
+        { "file": "~/Documents/studio/WORK-LOG.md", "sectionTitleSubstring": "O9" }
+      ],
+      "mustHaveInboxItem": []
+    },
+    "overnight-o10-eod-verifier": {
+      "mustExist": [
+        "~/Documents/EOD-2026-05-29-OVERNIGHT.md"
+      ],
+      "mustAppendTo": [],
+      "mustHaveInboxItem": []
     }
   }
 }

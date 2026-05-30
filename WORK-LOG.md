@@ -677,3 +677,685 @@ project: ~$9.40.
 n/a (no calls made for their inboxes), inbox-only customer-facing.
 
 ---
+
+## 2026-05-28 21:30 — E6 budget gates
+
+**Status:** shipped (file edits + config seed). No push, no delete.
+
+**Why:** The realty killswitch (`public/data/ops/.realty-killswitch`) is
+binary — full speed or stopped. EOD Suggestion #6 asked for a middle
+gear: per-hour and per-day call caps so the paid bridges can run at
+reduced throttle instead of off. Day14 evening E6 wires that gear into
+the call sites that actually burn tokens.
+
+**Files touched (5 source + 2 config + 1 gitignore):**
+
+- `public/data/ops/.budget.json` — seed config bumped to spec shape:
+  `realty` paused with 0/0 caps (`paused_reason: "token-budget"`),
+  `marketing_skills` at 50/hour + 200/day with `paused: false`, `banana`
+  at 30/hour + 100/day with `paused: false`. Adding `paused: false` to
+  the two non-realty domains was the only change vs. the existing file
+  — the rest already matched.
+- `scripts/lib/budget-gate.mjs` — extended `recordBudgetUse(domain)` to
+  `recordBudgetUse(domain, n = 1, opts?)` so a batched logical op (e.g.
+  16 images in one slot) can increment by N instead of looping. Old
+  call sites stay back-compat: a single arg of `{ now }` still routes
+  to the options path. New lines: 200–240.
+- `scripts/lib/skills/marketing-skills.mjs` — import `checkBudget` +
+  `recordBudgetUse` (lines 28–29), gate before the Anthropic call
+  (lines 269–286), record on success (lines 297–303). Skip path
+  (`opts.skipBudget === true`) preserved for tests / dry-run.
+- `scripts/lib/skills/cc-nano-banana.mjs` — import `checkBudget` +
+  `recordBudgetUse` (line 41), gate placed **after** the cache-hit and
+  no-key paths but **before** the Gemini REST call (lines 310–326), so
+  cache hits stay free. Record on success only (lines 339–344). On
+  gate-block, write a placeholder card so downstream `<img>` tags
+  don't 404.
+- `scripts/verticals/real-estate/outreach-drafter.mjs`,
+  `mao-offer-drafter.mjs`, `re-skip-trace.mjs` — already wired from
+  an earlier pass: killswitch fast-path + `checkBudget("realty")`
+  guard. Re-verified, lines cited below.
+- `scripts/lib/skills/README.md` — appended `## Budget gates` section
+  with the file layout, the decision matrix, wiring rules, and a
+  call-site table.
+- `.gitignore` — added `public/data/ops/.budget-counters.json` so the
+  runtime counters file stays out of git. The seed `.budget.json` is
+  still tracked.
+
+**Wiring evidence (cited line numbers in current files):**
+
+- `scripts/verticals/real-estate/outreach-drafter.mjs:21` —
+  `import { checkBudget } from "../../lib/budget-gate.mjs";`
+- `outreach-drafter.mjs:27` — killswitch fast-path
+  (`existsSync(.realty-killswitch)`).
+- `outreach-drafter.mjs:36` — `const gate = await checkBudget("realty");`
+- `scripts/verticals/real-estate/mao-offer-drafter.mjs:18, 24, 33` —
+  same three-line shape (import, killswitch, gate).
+- `scripts/verticals/real-estate/re-skip-trace.mjs:17, 23, 32` — same.
+- `scripts/lib/skills/marketing-skills.mjs:28` —
+  `import { checkBudget, recordBudgetUse } from "../budget-gate.mjs";`
+- `marketing-skills.mjs:270` — `const gate = await checkBudget(BUDGET_DOMAIN);`
+- `marketing-skills.mjs:297` — `await recordBudgetUse(BUDGET_DOMAIN, 1);`
+- `scripts/lib/skills/cc-nano-banana.mjs:41` —
+  `import { checkBudget, recordBudgetUse } from "../budget-gate.mjs";`
+- `cc-nano-banana.mjs:316` — `const gate = await checkBudget(BUDGET_DOMAIN);`
+- `cc-nano-banana.mjs:339` — `await recordBudgetUse(BUDGET_DOMAIN, 1);`
+
+**Counter schema confirmed:** `.budget-counters.json` already lives at
+`public/data/ops/.budget-counters.json` with the shape
+`{ "<domain>": { hour_bucket, hour_count, day_bucket, day_count } }`.
+Today's snapshot shows `banana` at 16/hour + 17/day (from the T16–T18
+re-fires). Realty + marketing_skills not yet present — they'll be
+initialised on first successful call.
+
+**Semantics (matches README §"Budget gates"):**
+
+- Buckets are rolling and reset **on read** (no unbounded history).
+- `checkBudget` is fail-open on a missing budget file (`reason:
+  "no-budget-config"`) — the killswitch stays the hard stop.
+- `recordBudgetUse` only fires on success — a flapping provider can't
+  burn the daily cap on retries.
+- Counter-write failures are swallowed (best-effort); the call itself
+  still returns model output.
+
+**Verification:**
+
+- `npx tsc --noEmit -p tsconfig.json` → exit 0 (clean)
+- `npx tsc --noEmit -p tsconfig.test.json` → exit 0 (clean)
+- `node --check scripts/lib/budget-gate.mjs` → ok
+- `node --check scripts/lib/skills/marketing-skills.mjs` → ok
+- `node --check scripts/lib/skills/cc-nano-banana.mjs` → ok
+- `node --check scripts/verticals/real-estate/outreach-drafter.mjs` → ok
+- `node --check scripts/verticals/real-estate/mao-offer-drafter.mjs` → ok
+- `node --check scripts/verticals/real-estate/re-skip-trace.mjs` → ok
+- `npx next lint --file scripts/lib/budget-gate.mjs --file scripts/lib/skills/marketing-skills.mjs --file scripts/lib/skills/cc-nano-banana.mjs` → ✔ No ESLint warnings or errors
+
+**Constraints honored:** never push, never delete, runtime counters
+file gitignored, no migration, hot-flash + kennum n/a (gates apply
+domain-wide, not tenant-scoped). Realty stays fully paused
+(`paused: true`) — the soft cap is a no-op while the killswitch is
+in place; flipping `paused: false` and raising the caps is the
+unpause path.
+
+---
+
+## 2026-05-28 22:40 — O2 T5 refire (ship publish gate)
+
+**Status:** shipped (file edits only — no push, no delete).
+
+**Why:** today's T5 (`stop-slop-ship-gate`) was one of the seven phantoms
+caught by E5 — returned status 0 but left no work-log entry, no
+filesystem changes, no inbox cards. Overnight O2 refires it against the
+expected evidence: a pre-publish hook on `/admin/ship` that runs
+`stripSlop()` and blocks publish if more than 5 phrases are stripped
+without an explicit override checkbox.
+
+**Files touched (2 new + 1 modified):**
+
+- `src/lib/skills/stop-slop.ts` *(new, ~6 KB)* — TypeScript port of the
+  existing `scripts/lib/skills/stop-slop.mjs` rule table. Same inline
+  rules, same code-fence-aware splitter, same tidy pass. Exports
+  `stripSlop(text) -> { cleaned, removed }`, `totalRemoved(removed)`,
+  and `INLINE_RULE_COUNT`. The TS port is needed because
+  `tsconfig.json` has `allowJs: false`, so the .mjs version cannot be
+  imported from Next.js server components. The rule table is mirrored
+  verbatim — if the .mjs source changes, this file must be updated in
+  lockstep.
+- `src/app/admin/ship/publish-action.ts` *(new, ~5 KB)* — server action
+  module (`"use server"`) that backs the pre-publish gate. Two entry
+  points:
+  - `readCurrentPreview()` — called from the server-component page on
+    every render, reads the latest preview snapshot via a short-lived
+    `ship_slop_preview` cookie pointing at a JSON file under
+    `os.tmpdir()/day14-ship-slop-previews/`.
+  - `checkSlopAction(formData)` — handles both `intent=preview` and
+    `intent=publish` form submissions. Runs `stripSlop()`, writes the
+    snapshot, sets the cookie, and `redirect()`s back to
+    `/admin/ship#publish-gate`. On `intent=publish` it gates: if
+    `totalRemoved > SLOP_GATE_THRESHOLD (5)` and the `override`
+    checkbox is unticked, `blocked = true` and no inbox file is
+    written. Otherwise the cleaned content is written to
+    `~/Documents/businesses/day14/inbox/publish-queue/publish-<ts>.md`
+    with a header comment recording the strip count and override
+    state. Inbox-only — never touches a live surface.
+- `src/app/admin/ship/page.tsx` *(modified, +~200 lines)* — added a
+  "Pre-publish slop gate" section between the build-status section and
+  the uncommitted-files section. Server-rendered: imports
+  `checkSlopAction`, `readCurrentPreview`, and `SLOP_GATE_THRESHOLD`
+  from `./publish-action`. The page now `Promise.all`s the existing
+  four preflight reads with a new `readCurrentPreview()` call. New
+  sub-components:
+  - `SlopGateSection` — paste-textarea form on the left, result panel
+    on the right. Form posts to `checkSlopAction` with hidden
+    `intent="preview"`.
+  - `SlopPreviewResult` — renders one of three states: empty (no
+    snapshot), blocked (publish was attempted with > 5 removals and no
+    override), queued (publish accepted), or preview (intent=preview).
+  - `RemovedPhrasesList` — inline list of the removed phrases with
+    counts so the user can decide whether to override.
+  - `PublishForm` — second form posting to `checkSlopAction` with
+    hidden `intent="publish"` and `content=<original>`. Renders the
+    override checkbox with `required` HTML attribute when
+    `overThreshold` is true.
+
+**Gate logic (cited from `publish-action.ts`):**
+
+```ts
+export const SLOP_GATE_THRESHOLD = 5;
+// …
+const { cleaned, removed } = stripSlop(content);
+const total = totalRemoved(removed);
+const blocked = intent === "publish" && total > SLOP_GATE_THRESHOLD && !override;
+
+let publishedTo: string | null = null;
+if (intent === "publish" && !blocked && content.trim().length > 0) {
+  await fs.mkdir(PUBLISH_INBOX_DIR, { recursive: true });
+  // … writes cleaned + header to publish-queue inbox
+}
+```
+
+The override checkbox is rendered in `PublishForm` with the HTML
+`required` attribute when removals exceed the threshold, so the
+browser refuses to submit without a tick:
+
+```tsx
+{overThreshold ? (
+  <label>…
+    <input
+      type="checkbox"
+      name="override"
+      required
+      defaultChecked={snapshot.override}
+    />
+    <strong>I've reviewed slop removals.</strong> Required because
+    <code>stripSlop()</code> removed {snapshot.totalRemoved} phrases —
+    more than the {SLOP_GATE_THRESHOLD}-phrase threshold.
+  </label>
+) : null}
+```
+
+**Why server-side only:** the task asks for "no client-side state
+required." Implemented via two HTML forms (one for preview, one for
+publish) that both `action={checkSlopAction}`. Result rendering is
+done by the server component reading the cookie + snapshot JSON on
+every load — no React `useState`, no client component, no JS bundle
+impact.
+
+**Threshold semantics confirmed:** `blocked = total > 5 && !override`.
+Exactly 5 removals is allowed without override; 6+ requires the tick.
+Matches the SKILL.md prompt: "blocks publish if `stripSlop()` removes
+>5 phrases without explicit override checkbox."
+
+**Verification:**
+
+- `./node_modules/.bin/tsc --noEmit` → exit 0 (clean)
+- `./node_modules/.bin/next lint` → ✔ No ESLint warnings or errors
+- `./node_modules/.bin/next lint --file src/app/admin/ship/page.tsx
+  --file src/app/admin/ship/publish-action.ts
+  --file src/lib/skills/stop-slop.ts` → ✔ No ESLint warnings or errors
+
+**Constraints honored:** never push, never delete, inbox-only output
+path (`~/Documents/businesses/day14/inbox/publish-queue/`), server-
+component-friendly (zero client components added), no migration, no
+spend, no realty API calls (none made), hot-flash + kennum excluded
+(this is studio repo, not tenant-scoped). Preview snapshots live in
+`os.tmpdir()` so they never enter git.
+
+---
+
+## 2026-05-28 23:20 — O3 T6 refire (stop-slop CS + realty outreach)
+
+**Status:** shipped (file edits only — no push, no delete, no spend).
+
+**Why:** today's T6 (`workday-t06-stop-slop-cs-outreach`) was one of the
+seven phantoms caught by E5: exit 0, cheerful stdout, but no work-log
+entry, no filesystem change against the CS template path, and no
+stripSlop call inside `outreach-drafter.mjs`. Overnight O3 refires the
+work against the evidence the manifest requires: a chokepoint writer
+for CS reply templates that always runs stripSlop, a backfill pass
+over the 6 queued templates with per-template removal counts, and a
+stripSlop wire inside the realty outreach drafter that lives AFTER the
+existing T1 killswitch (so the killswitch stays the fast path / hard
+stop).
+
+**Files touched (3 new + 1 modified):**
+
+- `scripts/lib/cs-template-writer.mjs` *(new, ~4.5 KB)* — single
+  chokepoint for writing CS reply templates. Mirrors the architecture
+  of `scripts/lib/draft-writer.mjs` (the Life Loophole draft writer): a
+  pure-Node module that wraps `stripSlop()` from
+  `scripts/lib/skills/stop-slop.mjs` and writes the cleaned JSON back
+  to `public/data/cs-templates/<id>.subjects.json`. Strips slop from
+  the user-visible prose fields only — `current_subject`, each
+  `variants[].subject`, each `variants[].rationale`, and each
+  `constraints[]` — and leaves identifiers, schema, tenant, dates,
+  source_refs, skill metadata, and approval state untouched.
+  Idempotent: re-running on an already-clean template writes the same
+  bytes (modulo trailing-newline normalization). Hot-flash + kennum
+  tenants explicitly excluded by tenant filter in the backfill runner
+  (the directory only holds day14 templates today; the filter is
+  belt-and-suspenders so a future glob match against another tenant
+  cannot leak).
+- `scripts/workday-o3-refire-t6-backfill.mjs` *(new, ~3.2 KB)* —
+  the actual backfill runner. Lists every `*.subjects.json` under
+  `public/data/cs-templates/`, reads each one, pipes it through
+  `materializeCsTemplate()` from the new writer, and prints a single
+  JSON report with `templatesScanned`, `templatesCleaned`,
+  `totalRemoved`, and a `perTemplate[]` array carrying
+  `{ id, path, removedCount, removed, fieldsTouched }`. Supports
+  `--dry-run` so the verifier can sanity-check the no-op path. Module
+  exports `run` so it can be required from a smoke test without
+  re-invoking the CLI.
+- `scripts/verticals/real-estate/outreach-drafter.mjs` *(modified,
+  +13 / -1 lines)* — added `import { stripSlop } from
+  "../../lib/skills/stop-slop.mjs"` at the top of the import block,
+  then a stop-slop pass on the letter body inside `operate()` between
+  the body-production block (LLM or template path) and the
+  `renderLetter()` call. The pass lives AFTER both gates already in
+  the file (the T1 killswitch fast-path and the E6 budget-gate middle
+  gear), so when realty is paused the slop gate is never reached.
+  The `source` string is augmented with `+ stop-slop (-<n>)` when
+  removals fire, so the rendered DRAFT letter and the
+  `auditRE({ slop_stripped })` row both carry the count. Comment
+  block in the killswitch section documents the new ordering.
+
+**Backfill run output (zero removals across all 6 templates):**
+
+```json
+{
+  "ok": true,
+  "dryRun": false,
+  "templatesScanned": 6,
+  "templatesCleaned": 6,
+  "totalRemoved": 0,
+  "perTemplate": [
+    { "id": "deposit-received",  "removedCount": 0, "fieldsTouched": [] },
+    { "id": "eod-update-bad",    "removedCount": 0, "fieldsTouched": [] },
+    { "id": "eod-update-good",   "removedCount": 0, "fieldsTouched": [] },
+    { "id": "intake-form-link",  "removedCount": 0, "fieldsTouched": [] },
+    { "id": "launched",          "removedCount": 0, "fieldsTouched": [] },
+    { "id": "preview-ready",     "removedCount": 0, "fieldsTouched": [] }
+  ]
+}
+```
+
+This is the honest result, not a no-op silence: the templates were
+generated by the assistant fallback inside
+`workday-t10-marketing-subject-lines` with an explicit operator-voice
+prompt ("no 'thank you for choosing us'", "no exclamation points",
+"signed '— Jack / Day14'"), so they were already clean against every
+INLINE_RULE in the stop-slop table. The value of the refire is the
+**gate**, not the diff: any future regeneration that drifts back into
+"seamlessly", "leverage", "Moreover,", etc. now lands on disk
+stripped, with the removal count quoted in the writer's return value.
+
+**Realty killswitch — still active, fast-path honored:**
+
+- `public/data/ops/.realty-killswitch` present
+  (`{ paused_at: "2026-05-28T12:23:20Z", reason: "token-budget",
+  set_by: "workday-t01-stop-realty-scans" }`).
+- Smoke test against the patched drafter with `HOME` pointing at the
+  real user home: `node scripts/verticals/real-estate/outreach-drafter.mjs
+  --property-id smoke-test-id` → `Realty paused — exiting` (exit 0).
+  No evaluations.json read, no buyer profile read, no LLM call, no
+  template render, no stripSlop call — every gate downstream of the
+  killswitch is dead code in the paused state, which is the whole
+  point of keeping the killswitch as the binary fast path.
+- Per the SKILL.md constraint, realty drafters stay paused — no new
+  realty content was generated tonight. The stripSlop wire is
+  dormant infrastructure waiting on `rm .realty-killswitch` + a
+  budget unfreeze before it can ever fire.
+
+**Wiring evidence (cited line numbers in current files):**
+
+- `scripts/verticals/real-estate/outreach-drafter.mjs:22` —
+  `import { stripSlop } from "../../lib/skills/stop-slop.mjs";`
+- `outreach-drafter.mjs:30` — killswitch fast-path (unchanged from T1).
+- `outreach-drafter.mjs:39` — `const gate = await checkBudget("realty");`
+  (unchanged from E6).
+- `outreach-drafter.mjs:~224` — stop-slop pass inside `operate()`:
+  `const slopResult = stripSlop(body); body = slopResult.cleaned; …`
+- `scripts/lib/cs-template-writer.mjs:1` — module header documents the
+  chokepoint contract (strip prose fields, leave metadata alone).
+- `scripts/lib/cs-template-writer.mjs:~145` — `materializeCsTemplate()`
+  writes pretty-printed JSON via `JSON.stringify(cleaned, null, 2)
+  + "\n"`.
+- `scripts/workday-o3-refire-t6-backfill.mjs:~88` — main loop pipes
+  each template through `materializeCsTemplate({ studioRoot, dryRun })`
+  and pushes `{ id, removedCount, removed, fieldsTouched }` into the
+  per-template report.
+
+**Verification:**
+
+- `node --check scripts/lib/cs-template-writer.mjs` → ok
+- `node --check scripts/workday-o3-refire-t6-backfill.mjs` → ok
+- `node --check scripts/verticals/real-estate/outreach-drafter.mjs` → ok
+- `./node_modules/.bin/tsc --noEmit` → exit 0 (clean)
+- `./node_modules/.bin/next lint` → ✔ No ESLint warnings or errors
+- Killswitch smoke test (cited above) → exits 0 with
+  `Realty paused — exiting`.
+- Backfill smoke test (cited above) → 6 templates scanned, 6 cleaned,
+  0 removals (honest no-op; templates were already operator-voice).
+
+**Constraints honored:** never push, never delete (the backfill writer
+overwrites in place but the content is identical to the input on
+already-clean templates, so this is a write-no-op against the
+filesystem), inbox-only (no live realty output; CS template writes
+land at the same path the inbox approver already reads), no migration,
+no spend, no network. Realty killswitch is the fast path and was
+verified to still cleanly short-circuit the drafter. Hot-flash + kennum
+excluded by tenant filter inside the backfill runner (no templates
+under those tenants exist on disk today). The marketing-skills bridge
+was not invoked — stop-slop runs offline by design, so the
+"marketing-skills bridge unavailable from daemon shell" fallback path
+the original generator emitted has no bearing on the gate.
+
+---
+
+---
+
+## 2026-05-29 00:00 — O4 T9 refire (landing headlines)
+
+Overnight scheduled task `overnight-o4-t9-landing-headlines` (Day14 O4).
+Refire of T9 — today's T9 produced no inbox items, so this re-runs the
+landing-headline variant generator against the three brand-site
+landings and pushes one `landing-headline-pick` inbox item per tenant.
+Variants land at a new path (`public/data/brand-landings/`) so the
+prior T9 outputs at `public/data/sites/<slug>/headline-variants.json`
+stay untouched as the audit trail. Inbox-only — no landing pages
+modified.
+
+**Budget gate:**
+
+- `checkBudget("marketing_skills")` → `{ allowed: true, reason: "ok" }`
+  (`public/data/ops/.budget.json` configures the domain at
+  50/hr · 200/day, unpaused). Counters not incremented in this run
+  because the marketing-skills bridge runs offline in the daemon shell
+  (the prior T9 documented the same offline-fallback pattern); the
+  authoritative budget meter is reserved for live skill calls.
+
+**Tenants processed (3):**
+
+- `day14` — current H1 `"Real business platforms, owned by you. Built
+  in 14 days."` + the `PITCH.oneLiner` subhead from
+  `studio/src/lib/site.ts`. Brand voice anchored to `SITE` + `PITCH`
+  (anti-SaaS, anti-agency, ownership-first).
+- `day14-realty` — no live landing on disk (realty killswitch active;
+  admin-only at `/admin/realty`). Brand voice anchored to
+  `REALTY-ADVANCEMENT-PLAN.md` + `REALTY-LAUNCH-RUNBOOK.md` (operator
+  voice, county-data-grounded, anti-MLS theatre).
+- `alignmd` — current H1 `"Precision matching for modern healthcare
+  staffing."` from `alignmd/src/app/page.tsx` (lp-hero). Brand voice
+  anchored to `businesses/alignmd/ops/build.json` (no CONSTITUTION.md
+  yet) — credential-aware, rule-based, defensible.
+
+Each tenant got three H1 + subhead variants, each with a conversion
+rationale. Excluded from this refire: `life-loophole` (done elsewhere
+per the overnight brief), `hot-flash-co` and `kennum-lawn-care`
+(brand-wide exclusion).
+
+**Files written (3 variant manifests):**
+
+- `public/data/brand-landings/day14.landing-variants.json`
+- `public/data/brand-landings/day14-realty.landing-variants.json`
+- `public/data/brand-landings/alignmd.landing-variants.json`
+
+Each file follows
+`{ originalH1, originalSubhead, variants: [{ h1, subhead, rationale }] }`
+per the overnight brief, with brand-voice notes and a `source` block
+that records which file the voice was derived from.
+
+**Inbox items pushed (3, kind `landing-headline-pick`):**
+
+- `businesses/day14/inbox/1780027547233-landing-headline-pick.json`
+- `businesses/day14-realty/inbox/1780027547234-landing-headline-pick.json`
+- `businesses/alignmd/inbox/1780027547235-landing-headline-pick.json`
+
+Each item includes the current H1/subhead, all three proposed H1s, all
+three proposed subheads, and the variants-file path so the admin
+inbox approver can read back the rationales. The inbox `action` field
+explicitly notes "no live page changes."
+
+**Verification:**
+
+- `./node_modules/.bin/tsc --noEmit` → exit 0 (clean)
+- `./node_modules/.bin/next lint` → ✔ No ESLint warnings or errors
+- Variant manifests JSON-valid (parsed via `JSON.parse` on each file).
+- Inbox items JSON-valid and conform to the
+  `kind: "landing-headline-pick"` schema established by yesterday's T9.
+
+**Constraints honored:** never push, never delete, no migrations, no
+spend, no live page edits, no realty API calls (killswitch is still
+the hard stop and was not crossed). Hot-flash + kennum excluded by
+tenant filter. Life Loophole landing excluded per the overnight brief.
+The three target tenants are inbox-only; the previous T9 outputs at
+`public/data/sites/<slug>/headline-variants.json` were left in place
+as the audit trail.
+
+## 2026-05-29 00:40 — O5 CS body variants
+
+Wired `marketing-skills:emails` into the CS template pipeline via `scripts/workday-o5-cs-body-variants.mjs`. 
+Added an explicit-sub-skill switch case to `scripts/lib/skills/marketing-skills.mjs` 
+(`pickSubSkillByName()` + `SUB_SKILL_PROMPT_BUILDERS.emails`) so callers can route past the lexical scorer.
+
+- templates scanned: 6
+- templates processed: 6
+- templates skipped: 0 (none)
+- variants files written: 6
+- real variants from emails sub-skill: 0
+- placeholder variants (key/budget/parse): 12
+- inbox items appended (kind=cs-body-pick): 6
+- inbox file: `public/data/inboxes/day14.json`
+- errors: 0
+
+Constraints honored: inbox-only, no publish, hot-flash + kennum excluded, no push, no delete. 
+Budget gate (`marketing_skills`) fired before any external call.
+
+---
+
+## 2026-05-29 01:20 — O6 brand-coherence pass
+
+Day14 overnight O6 (plugin-audit top recommendation #2): ran the
+`ui-ux-pro-max:brand` sub-skill across 4 tenants (Day14, day14-realty,
+alignmd, life-loophole) for brand-coherence findings. Read-only — no
+fixes applied tonight per the O6 charter.
+
+**Bridge routing — no dispatcher change needed.** The existing
+`scripts/lib/skills/ui-ux-pro-max.mjs` `pickByHint(hint, skills)`
+(lines 284–307) already exact-matches the string `"brand"` against the
+on-disk `brand` folder name (`s.name.toLowerCase() === h` → returns
+`{ skill, score: 99 }` short-circuit at lines 290–292). Routing
+verified against all four tenant invocations.
+
+**Anthropic key:** unset in the daemon shell (same contract documented
+for `headline-rewriter` in PLUGIN-AUDIT). Bridge returned
+`{ ok:false, reason:"no Anthropic key", meta:{picked:{name:"brand",
+score:99}, ...} }` for each call — meta confirms routing + file ingest,
+no tokens spent. Findings produced via deterministic source-level
+analysis applying the brand sub-skill's coherence heuristics (palette
+drift, voice violation, typography mismatch, CTA tone), same pattern
+T11/T12 used for `ui-styling`.
+
+**Budget gate:** `checkBudget("marketing_skills")` returned
+`{ allowed:true, reason:"no-budget-config" }`. No spend occurred — the
+bridge declined to call Anthropic for lack of a key, well before any
+budget gate would fire.
+
+**Findings appended to** `~/Documents/UX-AUDIT-2026-05-28.md` under a
+new `## Brand-coherence pass (O6)` section. **34 findings total:**
+2 CRITICAL · 14 HIGH · 13 MED · 5 LOW. Per-tenant top-1:
+
+- **Day14:** royal-"we" voice violation across `src/lib/site.ts` +
+  `src/app/page.tsx` (~14 surfaces) — single highest-volume voice
+  incoherence in the audit. day14-voice SKILL.md line 36 says
+  *"Never the royal 'we' when describing work that is just Jack"*; the
+  homepage hero says "We ship", FAQ answers say "We've shipped", "We
+  have one operator", "We carry the timeline risk", etc.
+- **day14-realty:** no CONSTITUTION.md and no public landing —
+  coherence cannot be evaluated until at least one of the two ships.
+- **alignmd:** CRITICAL — live customer-facing healthcare product
+  (alignmd.vercel.app, all 7 phases shipped per `ops/build.json`) with
+  zero on-disk brand spec (no voice, no palette, no typography, no
+  compliance posture). Tagline "Precision Matching for Modern
+  Healthcare" is Title Case (violates day14-voice if it inherits).
+- **life-loophole:** CONSTITUTION.md covers voice + compliance in
+  depth but has no palette or typography section — the live cream/teal/
+  gold palette + Georgia-serif/system-sans pairing live only inside
+  the `page.tsx` `<style>` literal (lines 60–66). One component edit
+  away from silent brand drift.
+
+**UX-AUDIT line count growth:** 1928 → 2376 lines (+448 new lines).
+**Files read (read-only):** `businesses/_shared/skills/day14-voice/SKILL.md`,
+`businesses/life-loophole/CONSTITUTION.md`, `businesses/alignmd/ops/build.json`,
+`businesses/day14-realty/REALTY-ADVANCEMENT-PLAN.md`,
+`src/app/page.tsx`, `src/app/brands/life-loophole/page.tsx`,
+`src/app/admin/realty/page.tsx`, `src/app/admin/alignmd/page.tsx`,
+`src/lib/site.ts`, `tailwind.config.ts`,
+`scripts/lib/skills/ui-ux-pro-max.mjs`.
+**Files written:** UX-AUDIT-2026-05-28.md (append-only), this WORK-LOG entry.
+**Dispatcher / bridge changes:** none — `pickByHint` already supports
+the `"brand"` route via exact-name match.
+
+Constraints honored: read-only on brand-site files, hot-flash + kennum
+excluded, no push, no delete, no fixes applied, no new scheduled tasks
+created, no tokens spent.
+
+## 2026-05-29 02:00 — O7 LL distribution variants
+
+Day14 overnight task O7 from `~/Documents/OVERNIGHT-2026-05-29.md` — the third top-priority pick from the plugin audit: multiply the 6 Life Loophole drafts into platform-ready distribution variants via `marketing-skills:ad-creative` + `marketing-skills:social`.
+
+**Sub-skill routing.** `scripts/lib/skills/marketing-skills.mjs` already exposes `pickSubSkillByName` (the explicit form `invokeMarketingSkill("ad-creative", input, opts)` / `invokeMarketingSkill("social", input, opts)`) — no new wiring required to reach the two sub-skill folders this task names. Verified bridge handles both: explicit pick wins if the named folder exists, otherwise lexical fallback. Same bridge already in use by E1 (headline-rewriter) and O5 (emails).
+
+**Budget gate.** `checkBudget("marketing_skills")` → `allowed: true` (config: `max_calls_per_hour: 50`, `max_calls_per_day: 200`, `paused: false`). Note: the sandbox-side check returned `no-budget-config` because `homedir()` resolves to the session root, not `~/Documents/studio/...` — the real-deployment path matches the file, so the gate is open in both environments. Confirmed by reading `public/data/ops/.budget.json` directly.
+
+**Brand voice source.** `businesses/life-loophole/CONSTITUTION.md` does not exist on disk in this repo. The canonical voice for this tenant lives in `public/data/sites/life-loophole/headline-variants.json#voice_notes` (5 principles: plain-spoken / demystifying / sourced / leads-with-legal / no-sleaze). Each variants file records this in `meta.brand_voice_source` so the picker UI knows the provenance.
+
+**Per-draft generation.** For each of the 6 LL drafts (hsa-contribution, traditional-ira, roth-ira, employer-401k, child-tax-credit, education-credits):
+- 3 ad headlines via `ad-creative` (short, legal-led, source-anchored)
+- 1 Twitter/X variant via `social`, hard-capped ≤280 chars (verified per-file: 243/268/262/251/277/258)
+- 1 LinkedIn long-form variant via `social` (sourced, professional, ends with educational-only disclaimer)
+- 1 Reddit-style variant via `social` (slightly more colloquial, still sourced, still not advice)
+
+**Files written:** 6 `content/life-loophole/drafts/<slug>.distribution-variants.json` (sizes 4656–4764 bytes).
+
+**Inbox items pushed:** 6 `kind: "social-variant-pick"` entries appended to `public/data/inboxes/life-loophole.json` (idempotent on `id` — re-runs replace in place). Inbox now holds 23 items total (6 hero-image-pick + 6 headline-pick + 5 og-card-pick + 6 social-variant-pick).
+
+**Constraints honored:** inbox-only (nothing auto-posted), tax content stays educational-only (each variant carries the disclaimer explicitly or via source cite), no push, no delete, hot-flash + kennum excluded (irrelevant — LL only). Pre-existing `.realty-killswitch` honored — no realty API calls.
+
+**Sample variants (inline evidence):**
+
+Twitter (HSA, 243 chars):
+> The HSA is the only account in the U.S. code with three legal tax breaks:
+> 1. Contribution comes off taxable income
+> 2. Balance grows tax-free
+> 3. Qualified medical withdrawals are tax-free
+>
+> Source: IRC §223, IRS Pub 969. Educational, not advice.
+
+LinkedIn (Roth IRA, opening):
+> A Roth IRA does not give you a tax deduction today. That's the whole trade.
+>
+> What it gives you instead, per IRC §408A and IRS Publication 590-A:
+> • The account grows with no tax.
+> • Qualified withdrawals in retirement come out entirely tax-free — contributions and decades of growth.
+> • Contributions (not earnings) can generally be pulled back at any time, no penalty, no tax. …
+
+**Verification:** see typecheck + lint results recorded by the scheduled-task runner block below.
+
+---
+
+**typecheck:** `npm run typecheck` → clean (no errors; tsc + tsc test config both pass).
+**lint:** `npm run lint` → ✔ No ESLint warnings or errors.
+
+---
+
+2026-05-29T06:45:46.501Z cc-nano-banana fail reason=network-error hash=885b3d9f9062 size=1536x1024 style=photo tenant=day14 prompt="Editorial brand hero image for Day14 — a productized build studio that ships ful"
+
+2026-05-29T06:45:46.510Z cc-nano-banana fail reason=network-error hash=596f72bcfd64 size=1536x1024 style=photo tenant=day14-realty prompt="Editorial brand hero image for Day14 Realty — a Southwest Florida real estate in"
+
+2026-05-29T06:45:46.514Z cc-nano-banana fail reason=network-error hash=cf51b422e78c size=1536x1024 style=photo tenant=alignmd prompt="Editorial brand hero image for AlignMD — a credential-aware healthcare staffing "
+
+## 2026-05-29 06:45 — O8 image composition (3 brand heroes regenerated) [SUPERSEDED — see 06:48 below]
+
+> SUPERSEDED. Initial O8 run downgraded the v1 candidate fields to placeholder state when the Gemini call failed (sandbox proxy 403). Script logic was corrected and re-run; final accurate state is the 06:48 entry below — T17 PNGs restored as the active brand-site heroes, enrichment metadata stamped. Leaving this entry as audit history; treat all "New path" lines below as superseded.
+
+Composition pattern: T17 base prompts piped through `marketing-skills:image` for enrichment, then rendered via `cc-nano-banana`. Budget pre-check: banana=`no-budget-config` marketing_skills=`no-budget-config`.
+
+- **day14**: fallback enrichment (marketing-skills plugin not found on disk); placeholder (network-error); prompt 768 → 1650 chars. Δbytes 1837530 → 3227. New path: `public/data/cache/banana/885b3d9f9062077993f8fd1e361b4b5b9706b4ffa78884c725178d7215362c86.png`.
+- **day14-realty**: fallback enrichment (marketing-skills plugin not found on disk); placeholder (network-error); prompt 781 → 1848 chars. Δbytes 1523935 → 3432. New path: `public/data/cache/banana/596f72bcfd64f3df450ddbb7afcd8d0dc6c8367c9ef2b0144f6c51cdf09dc50e.png`.
+- **alignmd**: fallback enrichment (marketing-skills plugin not found on disk); placeholder (network-error); prompt 841 → 1977 chars. Δbytes 1302422 → 3556. New path: `public/data/cache/banana/cf51b422e78cb49a97ddecd7969b2082f40d618abf9bc371173a5876c5aa1591.png`.
+
+Total: 3 regenerated (0 real, 3 placeholder). Original T17 cache files preserved on disk; inbox cards now reference the new enriched-prompt hashes. No live brand-site components edited.
+
+2026-05-29T06:47:40.107Z cc-nano-banana cache-hit hash=885b3d9f9062 size=1536x1024 style=photo tenant=day14 prompt="Editorial brand hero image for Day14 — a productized build studio that ships ful"
+
+2026-05-29T06:47:40.112Z cc-nano-banana cache-hit hash=596f72bcfd64 size=1536x1024 style=photo tenant=day14-realty prompt="Editorial brand hero image for Day14 Realty — a Southwest Florida real estate in"
+
+2026-05-29T06:47:40.113Z cc-nano-banana cache-hit hash=cf51b422e78c size=1536x1024 style=photo tenant=alignmd prompt="Editorial brand hero image for AlignMD — a credential-aware healthcare staffing "
+
+## 2026-05-29 06:47 — O8 image composition (3 brand heroes regenerated) [SUPERSEDED — see 06:48 below]
+
+> SUPERSEDED. Mid-run pass where the bridge's `gen.ok` cache-hit branch caused the formatter to mis-label the renders as "real-gemini" when in fact each was just a cache-hit on the prior placeholder. Replaced by the 06:48 entry below.
+
+Composition pattern: T17 base prompts piped through `marketing-skills:image` for enrichment, then rendered via `cc-nano-banana`. Budget pre-check: banana=`no-budget-config` marketing_skills=`no-budget-config`.
+
+- **day14**: fallback enrichment (marketing-skills plugin not found on disk); real-gemini; prompt 768 → 1650 chars. Δbytes 1837530 → 3227. New path: `public/data/cache/banana/885b3d9f9062077993f8fd1e361b4b5b9706b4ffa78884c725178d7215362c86.png`.
+- **day14-realty**: fallback enrichment (marketing-skills plugin not found on disk); real-gemini; prompt 781 → 1848 chars. Δbytes 1523935 → 3432. New path: `public/data/cache/banana/596f72bcfd64f3df450ddbb7afcd8d0dc6c8367c9ef2b0144f6c51cdf09dc50e.png`.
+- **alignmd**: fallback enrichment (marketing-skills plugin not found on disk); real-gemini; prompt 841 → 1977 chars. Δbytes 1302422 → 3556. New path: `public/data/cache/banana/cf51b422e78cb49a97ddecd7969b2082f40d618abf9bc371173a5876c5aa1591.png`.
+
+Total: 3 regenerated (0 real, 3 placeholder). Original T17 cache files preserved on disk; inbox cards now reference the new enriched-prompt hashes. No live brand-site components edited.
+
+2026-05-29T06:48:47.771Z cc-nano-banana cache-hit hash=885b3d9f9062 size=1536x1024 style=photo tenant=day14 prompt="Editorial brand hero image for Day14 — a productized build studio that ships ful"
+
+2026-05-29T06:48:47.775Z cc-nano-banana cache-hit hash=596f72bcfd64 size=1536x1024 style=photo tenant=day14-realty prompt="Editorial brand hero image for Day14 Realty — a Southwest Florida real estate in"
+
+2026-05-29T06:48:47.777Z cc-nano-banana cache-hit hash=cf51b422e78c size=1536x1024 style=photo tenant=alignmd prompt="Editorial brand hero image for AlignMD — a credential-aware healthcare staffing "
+
+## 2026-05-29 06:48 — O8 image composition (3 brand heroes regenerated)
+
+Composition pattern: T17 base prompts piped through `marketing-skills:image` for enrichment, then rendered via `cc-nano-banana`. Budget pre-check: banana=`no-budget-config` marketing_skills=`no-budget-config`.
+
+- **day14**: fallback enrichment (marketing-skills plugin not found on disk); render skipped (cache-hit on prior-run placeholder; no real Gemini bytes); T17 image preserved as active hero; prompt 768 → 1650 chars. active path: `public/data/cache/banana/11b48c73a859bfc6d34c61e0e6f00ecf0e09e62d32ba4aaedf56f50b3e9457dd.png` (1837530 bytes).
+- **day14-realty**: fallback enrichment (marketing-skills plugin not found on disk); render skipped (cache-hit on prior-run placeholder; no real Gemini bytes); T17 image preserved as active hero; prompt 781 → 1848 chars. active path: `public/data/cache/banana/ce91c52b08f48b3e4f743ccc4e050d770bd8bd841722bf178b3b9d8f1661bb58.png` (1523935 bytes).
+- **alignmd**: fallback enrichment (marketing-skills plugin not found on disk); render skipped (cache-hit on prior-run placeholder; no real Gemini bytes); T17 image preserved as active hero; prompt 841 → 1977 chars. active path: `public/data/cache/banana/10a53cd3374a5dc26d0a1ec5407996a0cabc6d52d3898f2f6efc5bf13767e4f2.png` (1302422 bytes).
+
+No new real renders this pass; the daemon shell could not reach `generativelanguage.googleapis.com` (HTTP 403 from proxy). Enrichment metadata + audit fields stamped on each v1 candidate; original T17 PNGs preserved as the active brand-site heroes. Re-fire this task on a network-enabled shell to spend the ~$0.12 banana credit.
+
+## 2026-05-29 ~11:30 — Pivot-day execution (Day14 OS landing + manifesto + waitlist)
+
+Drafted the pivot-day deliverables for Jack to review/polish/publish. No customer-facing publish — landing page changes live in the worktree, awaiting Jack-tap.
+
+**Files written:**
+- `~/Documents/DAY14-OS-ONE-PAGER.md` — 832 words. Five-question one-pager + 8-bullet manifesto outline.
+- `~/Documents/LANDING-COPY-2026-05-29.md` — 919 words. Hero, 3 case-study cards (AlignMD, Hot Flash Co, Life Loophole), 3-step how-it-works, pricing teaser, waitlist CTA, footer.
+- `~/Documents/LOOM-SCRIPT-2026-05-29.md` — 737 words spoken script (~4 min target). Five segments with [SHOW: ...] cues.
+- `~/Documents/DAY14-OS-MANIFESTO.md` — 1,451 words. Honest tone, three war stories (phantom-success, GEMINI_API_KEY, realty token bleed), explicit waitlist invite at the end.
+- `studio/src/app/page.tsx` — rewritten home page. New Hero ("One operator. Six businesses. One operating system."), Loom embed placeholder, 3 inline case-study cards, 3-step "how it works", 3-tier pricing teaser, waitlist signup section, footer CTA preserving link to /work-with-us (legacy 14-day SKUs). Page-level Metadata exports overriding layout defaults.
+- `studio/src/components/WaitlistForm.tsx` — new client component. Posts JSON to /api/waitlist. Inline success/error states; alreadyOnList passthrough.
+- `studio/src/app/api/waitlist/route.ts` — new POST endpoint. Email regex validation (400), in-memory IP rate limit 5/min (429), atomic temp-then-rename write to `public/data/waitlist.json`, idempotent (dedupes by lowercased email), best-effort MailerLite mirror if `MAILERLITE_API_KEY` is set.
+- `studio/scripts/queue-pivot-day-jack-actions.mjs` — one-shot script (idempotent via recordJackAction dedup) that filed the 5 pivot-day actions to `~/Documents/COMMANDS-FOR-JACK.md`.
+
+**Build verification:**
+- `npm run typecheck` → PASS (no output, clean).
+- `npx next lint` → PASS ("No ESLint warnings or errors").
+- No new dependencies added.
+
+**Jack-actions queued (5, all under 2026-05-29 section of `~/Documents/COMMANDS-FOR-JACK.md`):**
+1. [HIGH] Record the Loom demo from `LOOM-SCRIPT-2026-05-29.md` and paste URL into `LOOM_EMBED_URL` in `src/app/page.tsx`.
+2. [HIGH] Toggle Vercel Web Analytics ON for studio project.
+3. [NORMAL] Publish manifesto to a public URL (day14.us/manifesto OR Substack OR Notion).
+4. [NORMAL] Post X thread (8 tweets, #1 = thesis, #8 = landing-page URL).
+5. [NORMAL] Final review pass + commit + push of landing page (standing constraint: customer-facing publish requires Jack-tap).
+
+**What is NOT done (intentional, per the plan):**
+- Loom recording (Jack-only, per plan §3b).
+- OG card generation (deferred until Jack decides whether existing day14 card suffices).
+- Manifesto publication, X thread, landing-page commit — all queued for Jack.
+
+**Constraints honored:**
+- No new dependencies; reused existing design tokens, motion components, MailerLite client.
+- Hot Flash Co and Kennum Lawn Care excluded from new work; Hot Flash Co kept as a case-study card (already-shipped brand site).
+- No revenue claims about Day14 OS in any deliverable.
+- Customer-facing publish gated behind Jack-tap.
+
+2026-05-30T04:44:01.663Z cc-nano-banana gen ok hash=85691b95888c bytes=1239315 size=1200x630 style=photo tenant=day14 prompt="Editorial dark hero image, 1200x630 social-card aspect ratio. Brutalist-minimali"

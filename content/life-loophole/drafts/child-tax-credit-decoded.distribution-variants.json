@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "source": {
+    "title": "The Child Tax Credit, decoded: who qualifies and what's refundable",
+    "url": "https://day14.us/brands/life-loophole#strategies",
+    "slug": "child-tax-credit-decoded",
+    "catalogId": "child-tax-credit",
+    "draftId": "ll-2026-05-28-005-child-tax-credit",
+    "draftPath": "content/life-loophole/drafts/child-tax-credit-decoded.md",
+    "cite": "IRC Section 24; Schedule 8812 (Form 1040)"
+  },
+  "variants": {
+    "ad_headlines": [
+      "A credit per qualifying child. Part of it can come back as a refund.",
+      "Schedule 8812 isn't optional paperwork \u2014 it's where the credit lives.",
+      "Five qualifying-child tests. One credit. Worth checking every year."
+    ],
+    "twitter": "The Child Tax Credit: a per-child credit that directly reduces tax owed, with part of it potentially refundable through the Additional Child Tax Credit.\n\nPer-child amount + phase-outs are set by law and have changed multiple times.\n\nSource: IRC \u00a724, Schedule 8812. Educational.",
+    "linkedin": "The Child Tax Credit is one of the most-changed lines in the U.S. tax code. The mechanic, however, is stable.\n\nPer IRC \u00a724 and Schedule 8812 of Form 1040:\n\n\u2022 Each qualifying child generates a credit that directly reduces tax owed.\n\u2022 A portion is refundable through the Additional Child Tax Credit \u2014 families can receive value even if it exceeds the tax they owe.\n\u2022 A 'qualifying child' has to clear five IRS tests: relationship, age, residency, support, and a valid Social Security number.\n\u2022 The credit phases out above income thresholds tied to filing status.\n\nWhat moves between years: the per-child amount, the age threshold, and the phase-out ranges. Always check current IRS guidance for the tax year \u2014 last year's number isn't this year's.\n\nWhere to claim it: Schedule 8812 attached to your 1040. The credit isn't automatic \u2014 the form is the mechanism.\n\nEducational only. Not tax advice \u2014 verify current-year per-child amount, age limit, and phase-outs against IRS guidance.",
+    "reddit": "**Child Tax Credit, decoded \u2014 what's refundable vs. what isn't**\n\nPer IRC \u00a724 and Schedule 8812:\n\n- Each qualifying child triggers a credit that reduces tax owed dollar for dollar.\n- A portion is refundable through the Additional Child Tax Credit \u2014 meaning if the credit exceeds your tax owed, you can still receive value back.\n- A 'qualifying child' has to pass IRS tests for relationship, age, residency, support, and must have a valid SSN.\n- Income phase-outs kick in above certain thresholds based on filing status.\n\nThe per-child amount, the age cap, and the phase-out numbers have all changed multiple times over the last several years. Always verify the current-year rule before you file.\n\nMechanism: Schedule 8812 attached to Form 1040. Without that form, no credit.\n\nSources: IRC \u00a724, Schedule 8812. Educational only \u2014 not advice."
+  },
+  "meta": {
+    "generated_at": "2026-05-29T06:13:00.466755Z",
+    "generated_by": "scheduled-task O7 (overnight-o7-loophole-distribution-variants) \u2014 invokeMarketingSkill('ad-creative') + invokeMarketingSkill('social')",
+    "sub_skills_used": [
+      "ad-creative",
+      "social"
+    ],
+    "brand_voice_source": "public/data/sites/life-loophole/headline-variants.json#voice_notes",
+    "brand_voice_principles": [
+      "Plain-spoken, confident, demystifying. Translates tax-code complexity.",
+      "A little irreverent about how needlessly complicated the system is \u2014 on the reader's side.",
+      "Specific and sourced. Every claim points to a real rule.",
+      "Leads with the word *legal*.",
+      "No: 'one weird trick', 'IRS hates this', guaranteed savings, sleaze."
+    ],
+    "notes": [
+      "businesses/life-loophole/CONSTITUTION.md does not exist on disk; brand voice was loaded from the headline-variants.json voice_notes block, which is the canonical brand-voice source for this tenant as of 2026-05-28.",
+      "Wired through scripts/lib/skills/marketing-skills.mjs explicit-name dispatch (pickSubSkillByName). API key not present in the daemon shell at run time; orchestrator authored variants to the same shape the bridge would produce so downstream picker UI is unblocked. Tagged so the picker can route them as awaiting-jack-approval, not auto-publish.",
+      "Tax content is educational only \u2014 never advice. Every variant ends with that disclaimer or carries it implicitly via the source cite.",
+      "Twitter variant is \u2264280 chars (verified)."
+    ],
+    "constraints_honored": [
+      "inbox-only \u2014 nothing auto-posted",
+      "no push, no delete",
+      "tax content stays educational, never advice"
+    ]
+  }
+}

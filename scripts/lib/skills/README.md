@@ -656,3 +656,101 @@ for (const { name, kind, reason } of listSkills()) {
 
 `listSkills()` is also what powers `/admin/health` and the
 bridge self-test.
+
+---
+
+## Budget gates
+
+The realty killswitch
+(`public/data/ops/.realty-killswitch`) is binary: full speed or fully
+stopped. EOD Suggestion #6 surfaced the missing middle gear — per-hour
+and per-day call caps so the daemons can run at reduced throttle
+instead of off. E6 (Day14 evening, 2026-05-28) shipped that layer as
+[`../budget-gate.mjs`](../budget-gate.mjs), wired into the two paid-
+call bridges (`marketing-skills`, `cc-nano-banana`) and the three
+realty drafters (`outreach-drafter`, `mao-offer-drafter`,
+`re-skip-trace`).
+
+**Two files, both in `public/data/ops/`:**
+
+- `.budget.json` — committed config. Per-domain shape:
+
+  ```json
+  {
+    "realty":           { "max_calls_per_hour": 0,  "max_calls_per_day": 0,   "paused": true,  "paused_reason": "token-budget" },
+    "marketing_skills": { "max_calls_per_hour": 50, "max_calls_per_day": 200, "paused": false },
+    "banana":           { "max_calls_per_hour": 30, "max_calls_per_day": 100, "paused": false }
+  }
+  ```
+
+- `.budget-counters.json` — runtime state (gitignored). Rolling
+  per-hour + per-day bucket counters, keyed by domain:
+
+  ```json
+  {
+    "banana": {
+      "hour_bucket": "2026-05-28T21",
+      "hour_count":  16,
+      "day_bucket":  "2026-05-28",
+      "day_count":   17
+    }
+  }
+  ```
+
+  Buckets reset on read, not on a schedule — if the current hour key
+  doesn't match the stored one, the hour counter resets to 0. Same for
+  the day. No unbounded history.
+
+**Public surface (`scripts/lib/budget-gate.mjs`):**
+
+```js
+import { checkBudget, recordBudgetUse } from "../lib/budget-gate.mjs";
+
+const gate = await checkBudget("marketing_skills");
+if (!gate.allowed) {
+  console.log(`gate: ${gate.reason} — exiting`);
+  process.exit(0);
+}
+// …make the paid call…
+await recordBudgetUse("marketing_skills"); // or (domain, n) for batches
+```
+
+**Decision matrix.**
+
+| Domain config              | `checkBudget` returns                              |
+| -------------------------- | -------------------------------------------------- |
+| budget file missing        | `{ allowed: true,  reason: "no-budget-config" }`   |
+| domain not in budget       | `{ allowed: true,  reason: "domain-not-configured" }` |
+| `paused: true`             | `{ allowed: false, reason: "paused: <paused_reason>" }` |
+| hour count ≥ hour cap      | `{ allowed: false, reason: "hour-cap-reached (N/M)" }` |
+| day count ≥ day cap        | `{ allowed: false, reason: "day-cap-reached (N/M)" }` |
+| otherwise                  | `{ allowed: true,  reason: "ok" }`                 |
+
+**Wiring rules:**
+
+- The killswitch check stays as a **fast path** in every realty
+  drafter — `existsSync(.realty-killswitch) → process.exit(0)` runs
+  before the budget gate so a fully-paused state never touches the
+  JSON files.
+- `recordBudgetUse()` is called **only on success**. Failed model
+  calls don't consume budget — that keeps a flapping provider from
+  burning the daily cap on retries.
+- Counter writes are best-effort. A failed counter write logs and is
+  swallowed; the call itself returns the model output.
+- `checkBudget()` is fail-open on a missing budget file — the
+  killswitch remains the hard stop. If you need a hard stop, drop a
+  killswitch file, not a missing budget.
+
+**Call sites currently wired:**
+
+| Caller | Domain |
+| --- | --- |
+| `scripts/lib/skills/marketing-skills.mjs` → `invokeMarketingSkill()` | `marketing_skills` |
+| `scripts/lib/skills/cc-nano-banana.mjs` → `generateImage()` | `banana` |
+| `scripts/verticals/real-estate/outreach-drafter.mjs` | `realty` |
+| `scripts/verticals/real-estate/mao-offer-drafter.mjs` | `realty` |
+| `scripts/verticals/real-estate/re-skip-trace.mjs` | `realty` |
+
+Add a new domain by editing `.budget.json` — no code change needed
+unless you're wiring a new caller. Add a new caller by importing
+`checkBudget` + `recordBudgetUse` and following the pattern above.
