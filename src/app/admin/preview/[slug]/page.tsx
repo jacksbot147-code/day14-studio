@@ -6,7 +6,8 @@ import type { Metadata } from "next";
 import { loadBrandSites, type BrandSite } from "@/lib/admin-state";
 import { AdminNav, ADMIN_CSS, SITE_URL } from "../../layout-bits";
 
-export const metadata = { robots: { index: false, follow: false } };
+// Note: do NOT also export `metadata` here — `generateMetadata` below handles it.
+// Next.js rejects exporting both. (Caught by Vercel build, 2026-05-30.)
 export const dynamic = "force-dynamic";
 
 /**
