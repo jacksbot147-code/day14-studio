@@ -7,9 +7,11 @@ import { Card, EmptyState, Kpi, StatusBanner } from "@/components/ui";
 import {
   checkSlopAction,
   readCurrentPreview,
+} from "./publish-action";
+import {
   SLOP_GATE_THRESHOLD,
   type SlopPreviewSnapshot,
-} from "./publish-action";
+} from "./publish-action.shared";
 
 export const metadata = {
   title: "Ship — Day14 Admin",

@@ -28,9 +28,7 @@ import crypto from "node:crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { stripSlop, totalRemoved } from "@/lib/skills/stop-slop";
-
-/** Phrase-removal threshold above which we hard-gate the publish. */
-export const SLOP_GATE_THRESHOLD = 5;
+import { SLOP_GATE_THRESHOLD, type SlopPreviewSnapshot } from "./publish-action.shared";
 
 /** Cookie name pointing at the latest preview snapshot for this admin tab. */
 const PREVIEW_COOKIE = "ship_slop_preview";
@@ -44,32 +42,8 @@ const PUBLISH_INBOX_DIR = path.join(
   "Documents/businesses/day14/inbox/publish-queue",
 );
 
-export interface SlopPreviewSnapshot {
-  id: string;
-  ts: string;
-  intent: "preview" | "publish";
-  /** The original content the user pasted in. */
-  original: string;
-  /** The stripSlop-cleaned content. */
-  cleaned: string;
-  /** Per-phrase removal counts, sorted by count desc. */
-  removed: { phrase: string; count: number }[];
-  /** Total phrase-instances removed (sum of removed[].count). */
-  totalRemoved: number;
-  /** Whether the user ticked the "I've reviewed slop removals" override. */
-  override: boolean;
-  /**
-   * Whether the gate blocked the publish. True when intent="publish" AND
-   * totalRemoved > SLOP_GATE_THRESHOLD AND override is false.
-   */
-  blocked: boolean;
-  /**
-   * Absolute path of the queued publish card if the publish was accepted,
-   * null otherwise. (Path is server-internal — for the work-log evidence
-   * trail.)
-   */
-  publishedTo: string | null;
-}
+// SlopPreviewSnapshot + SLOP_GATE_THRESHOLD now live in publish-action.shared.ts
+// (Server Action files only allow async function exports.)
 
 function snapshotPath(id: string): string {
   // Defensive: only allow hex / dashes from crypto.randomUUID — never let a

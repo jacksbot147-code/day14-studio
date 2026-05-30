@@ -25,7 +25,9 @@ const DRAFTS = path.join(SEEDS, "_drafts");
 const META_DRAFTS = path.join(DRAFTS, "_meta");
 const ARCHIVED = path.join(SEEDS, "_archived");
 
-export interface ActionResult {
+// Local-only — must not be `export`ed from a "use server" file.
+// (Server Action files only allow async function exports.)
+interface ActionResult {
   ok: boolean;
   message: string;
   artifacts?: string[];
