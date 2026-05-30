@@ -377,6 +377,7 @@ export function AdminNav({
 }: NavProps) {
   const pages = [
     { id: "empire", href: "/admin", label: "Overview" },
+    { id: "crew", href: "/admin/mission-control", label: "Crew" },
     { id: "today", href: "/admin/today", label: "Today" },
     { id: "realty", href: "/admin/realty", label: "Realty" },
     { id: "preview", href: "/admin/preview", label: "Preview" },
