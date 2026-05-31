@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-31T02:42:19.688Z",
+  "generated_at": "2026-05-31T02:57:28.176Z",
   "tenants": [
     {
       "slug": "day14",
@@ -298,6 +298,53 @@
       "streak": 0,
       "recent_audit": [
         {
+          "ts": "2026-05-31T02:42:59.709Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "lawn-care-gm",
+          "action": "cluster_run",
+          "scaffolded": 0,
+          "season": "Rainy / peak growth (May–Oct)",
+          "pipeline_value": 0,
+          "at_risk": 0
+        },
+        {
+          "ts": "2026-05-31T02:42:59.708Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "portal-agent",
+          "action": "portal_feeds_built",
+          "portal_feeds": 0
+        },
+        {
+          "ts": "2026-05-31T02:42:59.707Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "crm-agent",
+          "action": "crm_scored",
+          "customers": 0,
+          "at_risk": 0,
+          "upsell_openings": 0
+        },
+        {
+          "ts": "2026-05-31T02:42:59.706Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "scheduling-agent",
+          "action": "routes_optimized",
+          "scheduled": 0,
+          "rolled_for_weather": 0,
+          "avg_density": 0
+        },
+        {
+          "ts": "2026-05-31T02:42:59.699Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "pipeline-agent",
+          "action": "pipeline_advanced",
+          "quoted": 0,
+          "opened": 0,
+          "invoiced": 0,
+          "open_leads": 0,
+          "pipeline_value": 0,
+          "outstanding_cents": 0
+        },
+        {
           "ts": "2026-05-31T02:12:59.540Z",
           "tenant": "kennum-lawn-care",
           "actor": "lawn-care-gm",
@@ -522,53 +569,6 @@
         },
         {
           "ts": "2026-05-30T09:29:52.284Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "pipeline-agent",
-          "action": "pipeline_advanced",
-          "quoted": 0,
-          "opened": 0,
-          "invoiced": 0,
-          "open_leads": 0,
-          "pipeline_value": 0,
-          "outstanding_cents": 0
-        },
-        {
-          "ts": "2026-05-30T08:07:55.627Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "lawn-care-gm",
-          "action": "cluster_run",
-          "scaffolded": 0,
-          "season": "Rainy / peak growth (May–Oct)",
-          "pipeline_value": 0,
-          "at_risk": 0
-        },
-        {
-          "ts": "2026-05-30T08:07:55.627Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "portal-agent",
-          "action": "portal_feeds_built",
-          "portal_feeds": 0
-        },
-        {
-          "ts": "2026-05-30T08:07:55.626Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "crm-agent",
-          "action": "crm_scored",
-          "customers": 0,
-          "at_risk": 0,
-          "upsell_openings": 0
-        },
-        {
-          "ts": "2026-05-30T08:07:55.626Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "scheduling-agent",
-          "action": "routes_optimized",
-          "scheduled": 0,
-          "rolled_for_weather": 0,
-          "avg_density": 0
-        },
-        {
-          "ts": "2026-05-30T08:07:55.617Z",
           "tenant": "kennum-lawn-care",
           "actor": "pipeline-agent",
           "action": "pipeline_advanced",
@@ -1062,7 +1062,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-31T02:41:59.842Z"
+      "lastBeat": "2026-05-31T02:56:59.820Z"
     },
     {
       "name": "auto-restart-watchdog-cycle",
@@ -1070,15 +1070,15 @@
       "status": "healthy",
       "ageMin": 5,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-31T02:37:40.608Z"
+      "lastBeat": "2026-05-31T02:52:40.591Z"
     },
     {
       "name": "customer-success",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-31T02:41:55.111Z"
+      "lastBeat": "2026-05-31T02:56:55.088Z"
     },
     {
       "name": "expansion-prompter",
@@ -1086,13 +1086,13 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-31T02:41:40.987Z"
+      "lastBeat": "2026-05-31T02:56:40.963Z"
     },
     {
       "name": "gmail-cs-triage",
       "kind": "daemon",
       "status": "error",
-      "ageMin": 858,
+      "ageMin": 873,
       "cadenceMin": 30,
       "lastBeat": "2026-05-30T12:24:39.000Z"
     },
@@ -1100,33 +1100,33 @@
       "name": "growth-narrator",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-31T02:41:55.018Z"
+      "lastBeat": "2026-05-31T02:56:54.995Z"
     },
     {
       "name": "growth-watcher",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-31T02:41:56.370Z"
+      "lastBeat": "2026-05-31T02:56:56.351Z"
     },
     {
       "name": "hot-flash-co-orders",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-31T02:41:55.093Z"
+      "lastBeat": "2026-05-31T02:56:55.071Z"
     },
     {
       "name": "lawn-care-gm-kennum-lawn-care",
       "kind": "oneshot",
       "status": "healthy",
-      "ageMin": 29,
+      "ageMin": 14,
       "cadenceMin": 30,
-      "lastBeat": "2026-05-31T02:12:59.540Z"
+      "lastBeat": "2026-05-31T02:42:59.709Z"
     },
     {
       "name": "opportunity-scanner",
@@ -1134,21 +1134,21 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-31T02:42:04.578Z"
+      "lastBeat": "2026-05-31T02:57:04.556Z"
     },
     {
       "name": "outbox-deadletter",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-31T02:41:55.916Z"
+      "lastBeat": "2026-05-31T02:56:55.899Z"
     },
     {
       "name": "outbox-deadletter-cycle",
       "kind": "daemon",
-      "status": "healthy",
-      "ageMin": 4,
+      "status": "stale",
+      "ageMin": 19,
       "cadenceMin": 1,
       "lastBeat": "2026-05-31T02:38:28.237Z"
     },
@@ -1158,13 +1158,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-31T02:41:58.641Z"
+      "lastBeat": "2026-05-31T02:56:58.619Z"
     },
     {
       "name": "realty-scout-day14-realty",
       "kind": "oneshot",
       "status": "healthy",
-      "ageMin": 38,
+      "ageMin": 53,
       "cadenceMin": 60,
       "lastBeat": "2026-05-31T02:04:28.371Z"
     },
@@ -1172,23 +1172,23 @@
       "name": "recursive-expansion",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-31T02:41:27.788Z"
+      "lastBeat": "2026-05-31T02:57:27.761Z"
     },
     {
       "name": "skill-multiplier",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-31T02:41:55.093Z"
+      "lastBeat": "2026-05-31T02:56:55.069Z"
     },
     {
       "name": "stripe-cs-loop",
       "kind": "daemon",
       "status": "error",
-      "ageMin": 1218,
+      "ageMin": 1233,
       "cadenceMin": 60,
       "lastBeat": "2026-05-30T06:24:26.000Z"
     },
@@ -1196,15 +1196,15 @@
       "name": "system-pulse",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-31T02:41:54.572Z"
+      "lastBeat": "2026-05-31T02:56:54.551Z"
     },
     {
       "name": "telegram-poller",
       "kind": "daemon",
       "status": "error",
-      "ageMin": 11352,
+      "ageMin": 11368,
       "cadenceMin": 1,
       "lastBeat": "2026-05-23T05:29:56.124Z"
     },
@@ -1212,7 +1212,7 @@
       "name": "vercel-deploy-monitor",
       "kind": "daemon",
       "status": "error",
-      "ageMin": 1237,
+      "ageMin": 1253,
       "cadenceMin": 5,
       "lastBeat": "2026-05-30T06:04:50.000Z"
     },
@@ -1220,9 +1220,9 @@
       "name": "video-pipeline",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-05-31T02:41:55.093Z"
+      "lastBeat": "2026-05-31T02:56:55.070Z"
     }
   ],
   "skill_counts": {
@@ -1594,6 +1594,15 @@
       "status": "open"
     },
     {
+      "id": "smb-wcag-2-2-accessibility",
+      "niche": "Simplified WCAG 2.2 Website Accessibility Compliance for Small E-commerce & Service Businesses",
+      "total_score": 79,
+      "suggested_archetype": "info-product",
+      "rationale": "The publication of WCAG 2.2 creates a new, specific compliance target for businesses. Small businesses are increasingly targets of ADA website lawsuits, often lacking the resources for expensive audits or effective remediation. An info-product can provide a clear, simplified path to understanding and implementing WCAG 2.2 guidelines, empowering small business owners to mitigate legal risk and impr",
+      "pitched": true,
+      "status": "open"
+    },
+    {
       "id": "aesthetic-adaptive-living",
       "niche": "Stylish adaptive products for young adults with mobility challenges",
       "total_score": 77.75,
@@ -1609,6 +1618,15 @@
       "suggested_archetype": "saas",
       "rationale": "The pain point of inconsistent AI outputs and the challenge of managing effective prompts are significant and widely acknowledged by AI users. While many enterprise-level prompt management tools exist, they are often overly complex, expensive, and not designed for the specific needs of small teams and solopreneurs. A simpler, affordable, dedicated solution (whether a lean SaaS product or a robust ",
       "pitched": false,
+      "status": "open"
+    },
+    {
+      "id": "cta-boi-reporting-micro-biz",
+      "niche": "Corporate Transparency Act (CTA) BOI Reporting for Solo Entrepreneurs & Micro-Businesses",
+      "total_score": 77,
+      "suggested_archetype": "info-product",
+      "rationale": "The initial rollout of the CTA created significant confusion and demand for compliance help among small businesses and solo founders, who often lack dedicated legal or compliance teams. While the recent exemption for U.S. entities changes the immediate landscape, the uncertainty and potential for future re-application or state-level analogues mean a need for simplified guidance persists. A well-st",
+      "pitched": true,
       "status": "open"
     },
     {
@@ -1639,6 +1657,15 @@
       "status": "open"
     },
     {
+      "id": "uk-online-safety-niche-platforms",
+      "niche": "UK Online Safety Act Compliance for Niche Online Communities & Platforms",
+      "total_score": 73,
+      "suggested_archetype": "info-product",
+      "rationale": "The Online Safety Act is complex and places significant obligations on a vast number of online services, including many small and niche platforms that lack in-house legal expertise. There's a clear demand for simplified, actionable guidance and templates to help these businesses understand their duties (e.g., risk assessments, content moderation policies, age assurance) and avoid hefty penalties. ",
+      "pitched": false,
+      "status": "open"
+    },
+    {
       "id": "retro-tech-lifestyle-gear",
       "niche": "Modern aesthetic merch and restoration tools for retro computing enthusiasts",
       "total_score": 72.5,
@@ -1646,9 +1673,65 @@
       "rationale": "This niche has a deeply passionate, active community willing to invest in their hobby. A pod-store can quickly launch branded merchandise with modern designs, appealing to the aesthetic preferences of this demographic. This can be expanded with info-products (e.g., detailed repair guides for specific machines) or curated physical products (e.g., specialized diagnostic tools or reproduction parts) ",
       "pitched": false,
       "status": "open"
+    },
+    {
+      "id": "smb-supply-chain-carbon-data",
+      "niche": "Simplified Scope 3 Carbon Emissions Data Gathering for Small Business Suppliers",
+      "total_score": 72,
+      "suggested_archetype": "info-product",
+      "rationale": "New climate disclosure regulations are forcing large companies to collect Scope 3 emissions data, which largely comes from their supply chains. This creates an urgent, growing demand for SMBs to track and report their own emissions, but they often lack the resources, expertise, or sophisticated software of larger entities. An info-product (templates, guides, simple tools) can provide a practical a",
+      "pitched": false,
+      "status": "open"
     }
   ],
   "empire_battle_log": [
+    {
+      "ts": "2026-05-31T02:42:59.709Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "lawn-care-gm",
+      "action": "cluster_run",
+      "scaffolded": 0,
+      "season": "Rainy / peak growth (May–Oct)",
+      "pipeline_value": 0,
+      "at_risk": 0
+    },
+    {
+      "ts": "2026-05-31T02:42:59.708Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "portal-agent",
+      "action": "portal_feeds_built",
+      "portal_feeds": 0
+    },
+    {
+      "ts": "2026-05-31T02:42:59.707Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "crm-agent",
+      "action": "crm_scored",
+      "customers": 0,
+      "at_risk": 0,
+      "upsell_openings": 0
+    },
+    {
+      "ts": "2026-05-31T02:42:59.706Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "scheduling-agent",
+      "action": "routes_optimized",
+      "scheduled": 0,
+      "rolled_for_weather": 0,
+      "avg_density": 0
+    },
+    {
+      "ts": "2026-05-31T02:42:59.699Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "pipeline-agent",
+      "action": "pipeline_advanced",
+      "quoted": 0,
+      "opened": 0,
+      "invoiced": 0,
+      "open_leads": 0,
+      "pipeline_value": 0,
+      "outstanding_cents": 0
+    },
     {
       "ts": "2026-05-31T02:12:59.540Z",
       "tenant": "kennum-lawn-care",
@@ -1843,53 +1926,6 @@
     },
     {
       "ts": "2026-05-31T01:42:56.661Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "pipeline-agent",
-      "action": "pipeline_advanced",
-      "quoted": 0,
-      "opened": 0,
-      "invoiced": 0,
-      "open_leads": 0,
-      "pipeline_value": 0,
-      "outstanding_cents": 0
-    },
-    {
-      "ts": "2026-05-31T01:12:56.660Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "lawn-care-gm",
-      "action": "cluster_run",
-      "scaffolded": 0,
-      "season": "Rainy / peak growth (May–Oct)",
-      "pipeline_value": 0,
-      "at_risk": 0
-    },
-    {
-      "ts": "2026-05-31T01:12:56.660Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "portal-agent",
-      "action": "portal_feeds_built",
-      "portal_feeds": 0
-    },
-    {
-      "ts": "2026-05-31T01:12:56.659Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "crm-agent",
-      "action": "crm_scored",
-      "customers": 0,
-      "at_risk": 0,
-      "upsell_openings": 0
-    },
-    {
-      "ts": "2026-05-31T01:12:56.658Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "scheduling-agent",
-      "action": "routes_optimized",
-      "scheduled": 0,
-      "rolled_for_weather": 0,
-      "avg_density": 0
-    },
-    {
-      "ts": "2026-05-31T01:12:56.650Z",
       "tenant": "kennum-lawn-care",
       "actor": "pipeline-agent",
       "action": "pipeline_advanced",
