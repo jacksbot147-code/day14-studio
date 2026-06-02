@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-02T07:43:23.225Z",
+  "generated_at": "2026-06-02T07:58:26.239Z",
   "tenants": [
     {
       "slug": "day14",
@@ -608,6 +608,16 @@
       "streak": 0,
       "recent_audit": [
         {
+          "ts": "2026-06-02T07:56:29.584Z",
+          "tenant": "day14-realty",
+          "actor": "re-market-expander",
+          "action": "market_expanded",
+          "watch_list": 12,
+          "added": 0,
+          "counties": [],
+          "reason": "at cap (12 counties)"
+        },
+        {
           "ts": "2026-06-02T06:56:27.984Z",
           "tenant": "day14-realty",
           "actor": "realty-scout",
@@ -883,16 +893,6 @@
           "scanned": 120423,
           "hot_leads": 22725,
           "top": "213 COLLIER BLVD (w3)"
-        },
-        {
-          "ts": "2026-06-02T04:29:50.905Z",
-          "tenant": "day14-realty",
-          "actor": "re-county-feed-agent",
-          "action": "county_feed_run",
-          "targets": 12,
-          "active": 8,
-          "needs_csv": 4,
-          "api_sourced": 0
         }
       ],
       "content_counts": {
@@ -1045,7 +1045,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T07:43:23.118Z"
+      "lastBeat": "2026-06-02T07:58:23.152Z"
     },
     {
       "name": "auto-restart-watchdog-cycle",
@@ -1053,7 +1053,7 @@
       "status": "healthy",
       "ageMin": 3,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T07:40:18.156Z"
+      "lastBeat": "2026-06-02T07:55:02.974Z"
     },
     {
       "name": "customer-success",
@@ -1061,7 +1061,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T07:43:02.702Z"
+      "lastBeat": "2026-06-02T07:58:02.732Z"
     },
     {
       "name": "expansion-prompter",
@@ -1069,13 +1069,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T07:43:03.387Z"
+      "lastBeat": "2026-06-02T07:58:03.419Z"
     },
     {
       "name": "gmail-cs-triage",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 4,
+      "ageMin": 19,
       "cadenceMin": 30,
       "lastBeat": "2026-06-02T07:39:18.000Z"
     },
@@ -1085,7 +1085,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T07:43:03.719Z"
+      "lastBeat": "2026-06-02T07:58:03.750Z"
     },
     {
       "name": "growth-watcher",
@@ -1093,7 +1093,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T07:43:03.716Z"
+      "lastBeat": "2026-06-02T07:58:03.744Z"
     },
     {
       "name": "hot-flash-co-orders",
@@ -1101,13 +1101,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T07:43:02.774Z"
+      "lastBeat": "2026-06-02T07:58:02.810Z"
     },
     {
       "name": "lawn-care-gm-kennum-lawn-care",
       "kind": "oneshot",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 16,
       "cadenceMin": 30,
       "lastBeat": "2026-06-02T07:41:58.285Z"
     },
@@ -1117,7 +1117,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T07:43:02.806Z"
+      "lastBeat": "2026-06-02T07:58:02.836Z"
     },
     {
       "name": "outbox-deadletter",
@@ -1125,15 +1125,15 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T07:43:02.817Z"
+      "lastBeat": "2026-06-02T07:58:02.847Z"
     },
     {
       "name": "outbox-deadletter-cycle",
       "kind": "daemon",
       "status": "stale",
-      "ageMin": 28,
+      "ageMin": 13,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T07:15:02.132Z"
+      "lastBeat": "2026-06-02T07:45:02.183Z"
     },
     {
       "name": "proactive-monitor",
@@ -1141,13 +1141,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T07:43:02.734Z"
+      "lastBeat": "2026-06-02T07:58:02.765Z"
     },
     {
       "name": "realty-scout-day14-realty",
       "kind": "oneshot",
       "status": "healthy",
-      "ageMin": 47,
+      "ageMin": 62,
       "cadenceMin": 60,
       "lastBeat": "2026-06-02T06:56:29.224Z"
     },
@@ -1155,9 +1155,9 @@
       "name": "recursive-expansion",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T07:42:24.485Z"
+      "lastBeat": "2026-06-02T07:58:24.521Z"
     },
     {
       "name": "skill-multiplier",
@@ -1165,13 +1165,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T07:43:02.804Z"
+      "lastBeat": "2026-06-02T07:58:02.833Z"
     },
     {
       "name": "stripe-cs-loop",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 19,
+      "ageMin": 34,
       "cadenceMin": 60,
       "lastBeat": "2026-06-02T07:24:31.000Z"
     },
@@ -1181,13 +1181,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T07:43:02.804Z"
+      "lastBeat": "2026-06-02T07:58:02.837Z"
     },
     {
       "name": "telegram-poller",
       "kind": "daemon",
       "status": "error",
-      "ageMin": 14533,
+      "ageMin": 14549,
       "cadenceMin": 1,
       "lastBeat": "2026-05-23T05:29:56.124Z"
     },
@@ -1195,7 +1195,7 @@
       "name": "vercel-deploy-monitor",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 39,
+      "ageMin": 54,
       "cadenceMin": 66,
       "lastBeat": "2026-06-02T07:04:46.000Z"
     },
@@ -1205,7 +1205,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T07:43:02.822Z"
+      "lastBeat": "2026-06-02T07:58:02.849Z"
     }
   ],
   "skill_counts": {
@@ -1723,6 +1723,16 @@
   ],
   "empire_battle_log": [
     {
+      "ts": "2026-06-02T07:56:29.584Z",
+      "tenant": "day14-realty",
+      "actor": "re-market-expander",
+      "action": "market_expanded",
+      "watch_list": 12,
+      "added": 0,
+      "counties": [],
+      "reason": "at cap (12 counties)"
+    },
+    {
       "ts": "2026-06-02T07:41:58.285Z",
       "tenant": "kennum-lawn-care",
       "actor": "lawn-care-gm",
@@ -1997,16 +2007,6 @@
       "action": "deals_alerted",
       "a_tier": 13049,
       "new_alerts": 4
-    },
-    {
-      "ts": "2026-06-02T05:46:27.527Z",
-      "tenant": "day14-realty",
-      "actor": "re-evaluation-agent",
-      "action": "deals_scored",
-      "evaluated": 120423,
-      "tier_a": 13049,
-      "tier_b": 14537,
-      "top_deal": "3030 39TH ST SW (96)"
     }
   ],
   "human_todos": [
