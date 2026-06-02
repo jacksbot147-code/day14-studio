@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.day14.morning-briefing</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>-lc</string>
+    <string>mkdir -p "$HOME/Documents/studio/logs" &amp;&amp; cd "$HOME/Documents/studio" &amp;&amp; /usr/local/bin/node scripts/morning-briefing.mjs &gt;&gt; "$HOME/Documents/studio/logs/morning-briefing.log" 2&gt;&amp;1</string>
+  </array>
+
+  <!-- Run once daily at 07:30 local (America/New_York). -->
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key>
+    <integer>7</integer>
+    <key>Minute</key>
+    <integer>30</integer>
+  </dict>
+
+  <!-- Do NOT fire at load — that would queue a Telegram ping at install time. -->
+  <key>RunAtLoad</key>
+  <false/>
+
+  <!-- Cap the process — briefing is read-heavy + a single stop-slop port call. -->
+  <key>ExitTimeOut</key>
+  <integer>600</integer>
+
+  <!-- Funnel stdout/stderr both into the log file (via shell redirect above) and
+       into LaunchAgent-managed files so launchctl surfaces failures even when
+       the script bombs before opening the log. -->
+  <key>StandardOutPath</key>
+  <string>/tmp/com.day14.morning-briefing.out</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/com.day14.morning-briefing.err</string>
+
+  <!-- Inherit a sane PATH for tools the script may shell out to (git, node). -->
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+</dict>
+</plist>

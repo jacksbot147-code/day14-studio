@@ -383,6 +383,7 @@ export function AdminNav({
     { id: "preview", href: "/admin/preview", label: "Preview" },
     { id: "alignmd", href: "/admin/alignmd", label: "AlignMD" },
     { id: "inbox", href: "/admin/inbox", label: "Inbox" },
+    { id: "bulk", href: "/admin/bulk-signoff", label: "Bulk" },
     { id: "opps", href: "/admin/opportunities", label: "Ideas" },
     { id: "finance", href: "/admin/finance", label: "Finance" },
     { id: "health", href: "/admin/health", label: "Health" },

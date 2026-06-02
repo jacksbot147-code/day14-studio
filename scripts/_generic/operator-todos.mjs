@@ -131,11 +131,25 @@ export async function completeTodo(ref) {
 
 const PRIORITY_RANK = { high: 0, medium: 1, low: 2 };
 
-/** All open items, highest priority first, then oldest first. */
-export async function listOpenTodos() {
+/**
+ * Tenants that should never appear in operator-facing todo views.
+ * Jack's standing rule. Hoisted here so every caller (sync-empire-state,
+ * morning-briefing, the admin todos panel, etc.) inherits the exclusion
+ * without each one needing to re-implement the filter. Previously this
+ * filter only lived in auto-todo-sync.mjs and sync-empire-state.mjs leaked
+ * the excluded tenants back through `listOpenTodos()` — caught 2026-06-02
+ * EOD verifier (SNAG #3).
+ */
+const DEFAULT_EXCLUDED_TENANTS = new Set(["hot-flash-co", "kennum-lawn-care"]);
+
+/** All open items, highest priority first, then oldest first.
+ *  Excludes hot-flash-co + kennum-lawn-care by default (Jack's standing rule).
+ *  Pass `{ includeAll: true }` to bypass the exclusion. */
+export async function listOpenTodos({ includeAll = false } = {}) {
   const data = await loadTodos();
   return data.todos
     .filter((t) => t.status === "open")
+    .filter((t) => includeAll || !DEFAULT_EXCLUDED_TENANTS.has(t.tenant))
     .sort(
       (a, b) =>
         (PRIORITY_RANK[a.priority] ?? 1) - (PRIORITY_RANK[b.priority] ?? 1) ||

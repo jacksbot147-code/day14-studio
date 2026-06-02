@@ -16,7 +16,7 @@ export function SiteHeader() {
         </Link>
 
         <nav className="hidden items-center gap-7 text-sm font-medium text-ink-500 lg:flex">
-          <a href="/#sku" className="transition-colors duration-150 hover:text-ink">Pricing</a>
+          <a href="/#pricing" className="transition-colors duration-150 hover:text-ink">Pricing</a>
           <Link href="/stack" className="transition-colors duration-150 hover:text-ink">Stack</Link>
           <Link href="/compare" className="transition-colors duration-150 hover:text-ink">Compare</Link>
           <Link href="/work-with-us" className="transition-colors duration-150 hover:text-ink">Hire us</Link>
@@ -26,7 +26,7 @@ export function SiteHeader() {
           <Link href="/about" className="transition-colors duration-150 hover:text-ink">About</Link>
         </nav>
         <nav className="hidden items-center gap-6 text-sm font-medium text-ink-500 sm:flex lg:hidden">
-          <a href="/#sku" className="transition-colors duration-150 hover:text-ink">Pricing</a>
+          <a href="/#pricing" className="transition-colors duration-150 hover:text-ink">Pricing</a>
           <Link href="/stack" className="transition-colors duration-150 hover:text-ink">Stack</Link>
           <Link href="/work-with-us" className="transition-colors duration-150 hover:text-ink">Hire us</Link>
           <Link href="/builds" className="transition-colors duration-150 hover:text-ink">Builds</Link>

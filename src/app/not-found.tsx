@@ -25,7 +25,7 @@ export default function NotFound() {
           { href: "/builds", label: "Active builds" },
           { href: "/case-studies/splash-jacks-pools", label: "Case study" },
           { href: "/newsletter", label: "Newsletter" },
-          { href: "/#sku", label: "Pricing" },
+          { href: "/#pricing", label: "Pricing" },
         ].map((l) => (
           <Link key={l.href} href={l.href} style={{ padding: "12px 16px", background: "white", border: "1px solid #E5DDD0", borderRadius: 8, color: "#2F2A33", textDecoration: "none", fontSize: 14 }}>
             {l.label} →

@@ -26,7 +26,7 @@ export function SiteFooter() {
           <div>
             <div className="eyebrow mb-3">Product</div>
             <ul className="space-y-2 text-sm text-ink-500">
-              <li><a href="/#sku" className="transition-colors duration-150 hover:text-ink">Pricing</a></li>
+              <li><a href="/#pricing" className="transition-colors duration-150 hover:text-ink">Pricing</a></li>
               <li><Link href="/stack" className="transition-colors duration-150 hover:text-ink">The stack</Link></li>
               <li><Link href="/compare" className="transition-colors duration-150 hover:text-ink">Compare</Link></li>
               <li><a href="/#how" className="transition-colors duration-150 hover:text-ink">How it works</a></li>

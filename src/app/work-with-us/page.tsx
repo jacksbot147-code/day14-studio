@@ -342,7 +342,7 @@ function PricingShape() {
               the full operator platform. Fixed price once the SKU is set.
               See the{" "}
               <a
-                href="/#sku"
+                href="/#pricing"
                 className="font-medium text-ink underline decoration-ember-300 underline-offset-4 transition-colors hover:decoration-ember-500"
               >
                 SKU board on the homepage

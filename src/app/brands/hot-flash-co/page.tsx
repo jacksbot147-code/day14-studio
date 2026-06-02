@@ -2,29 +2,6 @@ import { brandTheme as t } from "./theme";
 import Link from "next/link";
 import { fetchTenantProducts, fetchLatestBlogPosts } from "@/lib/brand-data";
 
-const HOME_TITLE = "Hot Flash Co — Real goods for the seasons no one warns you about.";
-const HOME_DESCRIPTION =
-  "Hot Flash Co — real goods for the seasons no one warns you about. Shop the latest and read the field notes.";
-
-export const metadata = {
-  title: { absolute: HOME_TITLE },
-  description: HOME_DESCRIPTION,
-  alternates: { canonical: "/brands/hot-flash-co" },
-  openGraph: {
-    title: HOME_TITLE,
-    description: HOME_DESCRIPTION,
-    type: "website",
-    url: "/brands/hot-flash-co",
-    siteName: "Hot Flash Co",
-    locale: "en_US",
-  },
-  twitter: {
-    card: "summary_large_image" as const,
-    title: HOME_TITLE,
-    description: HOME_DESCRIPTION,
-  },
-};
-
 export default async function Page() {
   const products = await fetchTenantProducts("hot-flash-co");
   const posts = await fetchLatestBlogPosts("hot-flash-co", 3);
@@ -34,7 +11,7 @@ export default async function Page() {
     <main>
       <section style={{ padding: "120px 32px 80px", textAlign: "center", maxWidth: 800, margin: "0 auto" }}>
         <h1 style={{ fontFamily: t.fonts.heading, fontSize: 56, letterSpacing: "-0.03em", lineHeight: 1.05, color: t.colors.primary }}>Hot Flash Co</h1>
-        <p style={{ fontSize: 18, color: t.colors.secondary, marginTop: 16, maxWidth: 600, marginInline: "auto" }}>Real goods for the seasons no one warns you about.</p>
+        <p style={{ fontSize: 18, color: t.colors.secondary, marginTop: 16, maxWidth: 600, marginInline: "auto" }}>Print-on-demand humor for perimenopause and menopause — the smartest funny aunt at the table, making women feel seen, not pitied.</p>
         <Link href={`/brands/hot-flash-co/products`} style={{ display: "inline-block", marginTop: 32, padding: "14px 28px", background: t.colors.primary, color: "white", borderRadius: 8, textDecoration: "none", fontSize: 15, fontWeight: 500 }}>Browse the shop →</Link>
       </section>
 

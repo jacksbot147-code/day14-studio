@@ -46,7 +46,7 @@ export default function VerticalPage({ params }: { params: Params }) {
         {/* Hero */}
         <section className="container-page pt-14 pb-12 sm:pt-20">
           <Link
-            href="/#verticals"
+            href="/"
             className="inline-flex items-center gap-1 font-mono text-xs uppercase tracking-widest text-ink-400 transition hover:text-ink"
           >
             ← All verticals

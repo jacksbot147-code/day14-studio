@@ -2,27 +2,7 @@ import { brandTheme as t } from "../theme";
 import Link from "next/link";
 import { fetchBlogPosts } from "@/lib/brand-data";
 
-const READING_DESCRIPTION =
-  "Reading from Hot Flash Co — field notes for the seasons no one warns you about.";
-
-export const metadata = {
-  title: "Reading",
-  description: READING_DESCRIPTION,
-  alternates: { canonical: "/brands/hot-flash-co/blog" },
-  openGraph: {
-    title: "Reading — Hot Flash Co",
-    description: READING_DESCRIPTION,
-    type: "website",
-    url: "/brands/hot-flash-co/blog",
-    siteName: "Hot Flash Co",
-    locale: "en_US",
-  },
-  twitter: {
-    card: "summary_large_image" as const,
-    title: "Reading — Hot Flash Co",
-    description: READING_DESCRIPTION,
-  },
-};
+export const metadata = { title: "Reading" };
 
 export default async function BlogPage() {
   const posts = await fetchBlogPosts("hot-flash-co");

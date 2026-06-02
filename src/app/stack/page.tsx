@@ -237,7 +237,7 @@ export default async function StackPage() {
               Tuned to your operations, deployed on your domain, owned by you.
             </p>
             <div className="mb-12 flex flex-wrap justify-center gap-3">
-              <Link href="/#sku" className="btn-primary">
+              <Link href="/#pricing" className="btn-primary">
                 See pricing
               </Link>
               <a href="https://cal.com/day14/intro" className="btn-ghost">

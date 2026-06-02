@@ -6,27 +6,13 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   const p = await fetchProduct("hot-flash-co", id);
   if (!p) return { title: "Not found" };
-  const description = (p.description || "").slice(0, 160);
-  const url = `/brands/hot-flash-co/products/${id}`;
-  const image = p.images?.[0]?.src;
   return {
     title: p.title,
-    description,
-    alternates: { canonical: url },
+    description: (p.description || "").slice(0, 160),
     openGraph: {
       title: p.title,
-      description,
-      type: "website",
-      url,
-      siteName: "Hot Flash Co",
-      locale: "en_US",
-      images: image ? [image] : [],
-    },
-    twitter: {
-      card: "summary_large_image" as const,
-      title: p.title,
-      description,
-      images: image ? [image] : [],
+      description: (p.description || "").slice(0, 160),
+      images: p.images?.[0]?.src ? [p.images[0].src] : [],
     },
   };
 }

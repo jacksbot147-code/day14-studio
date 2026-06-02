@@ -1359,3 +1359,259 @@ Drafted the pivot-day deliverables for Jack to review/polish/publish. No custome
 - Customer-facing publish gated behind Jack-tap.
 
 2026-05-30T04:44:01.663Z cc-nano-banana gen ok hash=85691b95888c bytes=1239315 size=1200x630 style=photo tenant=day14 prompt="Editorial dark hero image, 1200x630 social-card aspect ratio. Brutalist-minimali"
+
+---
+
+## 2026-06-01 23:00 — N3 T6 outreach drafter stripSlop wired
+
+**Status:** No-op verify. N2's `PHANTOM-AUDIT-2026-06-01.md` (22:30 EDT, same overnight) already
+verdicted T6 as **LANDED**. Per the N3 task spec ("if N2 says T6 already landed, skip the wire
+step and just verify"), I did not re-edit `outreach-drafter.mjs` — verifying the existing wire
+is intact and parses/lints/typechecks clean.
+
+**Evidence on disk (`scripts/verticals/real-estate/outreach-drafter.mjs`):**
+
+- Import line — **L22:** `import { stripSlop } from "../../lib/skills/stop-slop.mjs";`
+- Hook site (single, post-body-generation, pre-renderLetter) — **L232:** `const slopResult = stripSlop(body);`
+- Body replacement — **L233:** `body = slopResult.cleaned;`
+- Removal-count source-tag (the "log the removal count" requirement) — **L234–237:**
+  ```js
+  const slopRemovedCount = slopResult.removed.reduce((sum, r) => sum + r.count, 0);
+  if (slopRemovedCount > 0) {
+    source = `${source} + stop-slop (-${slopRemovedCount})`;
+  }
+  ```
+- Audit-log persistence of count — **L251:** `slop_stripped: slopRemovedCount` inside `auditRE(...)`.
+
+The killswitch fast-path at L32–35 and the budget gate at L40–46 both early-exit before the
+drafter body. As N2's audit notes, stripSlop is intentionally below both gates — wired now,
+runs when realty resumes.
+
+**grep evidence (task spec asked for `grep -c stripSlop ... ≥ 2`):**
+
+```
+$ grep -c stripSlop scripts/verticals/real-estate/outreach-drafter.mjs
+3
+```
+
+`stripSlop` appears on L22 (import), L232 (call), and L28 (comment) — count = 3 ≥ 2 ✓.
+
+**Build verification:**
+
+- `node --check scripts/verticals/real-estate/outreach-drafter.mjs` → `PARSE_OK`.
+- `npm run typecheck` → PASS (`tsc --noEmit` + test config, no errors).
+- `npm run lint` → PASS ("No ESLint warnings or errors").
+
+**Files touched in this task slot:** none (verify-only; this WORK-LOG entry is the only write).
+
+**Phantom status after N3:** T4 ✅ landed (prior session), T5 ✅ landed (prior session),
+T6 ✅ **wired & verified** (this slot), T9 ❌ still open — N4 (23:30 EDT) is the slot
+that pushes `landing-headline-pick` items into the three canonical inboxes.
+
+---
+
+## 2026-06-02 02:20 — N9 bulk-signoff actions wired
+
+**Scope:** Wire Approve / Skip server actions for `/admin/bulk-signoff` + extend the
+page to render CS template items alongside Loophole drafts.
+
+**Pre-condition note:** N8's `src/app/admin/bulk-signoff/page.tsx` was not present on
+disk at task-start (N8 may not have completed). To keep the wiring grounded in real
+code rather than a stub, this slot **created the page minimally** in the N8 spirit
+(server-rendered, reads inbox JSONs across `TENANTS`, groups by kind, reuses
+`ADMIN_CSS` + `Card`/`Button`/`EmptyState` from `@/components/ui`, zero new deps) and
+then wired N9's actions into it. Flagged here so EOD verifier (N15) can mark N8 as
+"landed-in-N9" rather than re-running it.
+
+**Files created:**
+
+- `src/app/admin/bulk-signoff/types.ts` — shared types + constants. `TENANTS`,
+  `SIGNOFF_KINDS`, `InboxItem`, `InboxFile`, `inboxPath()`. **No `"use server"`** —
+  exists specifically because Server Action files can only export async functions
+  (the May 30 deploy-chain lesson).
+- `src/app/admin/bulk-signoff/actions.ts` — `"use server"`; **two async exports only**:
+  - `approveItem(tenant, itemId): Promise<void>` → sets `status: "approved"`
+  - `skipItem(tenant, itemId): Promise<void>` → sets `status: "dismissed"`
+  Both: atomic temp-then-rename write (uuid-suffixed `.tmp` in same dir), append
+  audit line to `~/Documents/studio/WORK-LOG.md`, `revalidatePath("/admin/bulk-signoff")`.
+  Tenant slug validated against `TENANTS` whitelist (excludes hot-flash + kennum).
+- `src/app/admin/bulk-signoff/page.tsx` — server-rendered. Reads every tenant inbox,
+  filters to `SIGNOFF_KINDS`, drops already-resolved items, groups by kind, renders
+  each as a `Card` with Approve/Skip buttons wired via the `<form action={fn.bind(...)}>`
+  pattern (no client JS). `cs-body-pick` and `subject-line-pick` items render in their
+  own groups alongside `headline-pick`/`hero-image-pick`/`social-variant-pick`
+  (Loophole) — same card component for all.
+
+**Server-action wiring evidence (`page.tsx` lines 102–115, button block):**
+
+```tsx
+<div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+  <form action={approveItem.bind(null, item.tenantSlug, item.id)}>
+    <Button type="submit" variant="primary" size="sm">
+      Approve
+    </Button>
+  </form>
+  <form action={skipItem.bind(null, item.tenantSlug, item.id)}>
+    <Button type="submit" variant="secondary" size="sm">
+      Skip
+    </Button>
+  </form>
+</div>
+```
+
+**Actions surface (`actions.ts`):**
+
+- L1: `"use server";`
+- L119: `export async function approveItem(tenant: string, itemId: string): Promise<void>`
+- L133: `export async function skipItem(tenant: string, itemId: string): Promise<void>`
+- No non-async exports in the file (verified via `grep -n 'export' actions.ts`
+  returning only the two `export async function` lines).
+
+**Constraint honoring:**
+
+- Inbox-only — even approved items still wait for Jack's per-kind publish tap
+  (standing constraint §Bulk-signoff).
+- Reversible — `/admin/inbox` can flip status back to `awaiting-jack`.
+- hot-flash + kennum excluded via `TENANTS` whitelist; calls with those slugs throw
+  before any disk touch.
+- Atomic writes prevent torn-read for concurrent readers (same-dir rename = single
+  inode op).
+
+**CS items rendering — count check across inbox JSONs:**
+
+- `day14.json` → 6 × `cs-body-pick` + 5 × `subject-line-pick` with
+  `subject_kind: "cs-reply-template"` (all surfaced).
+- `life-loophole.json` → 6 × `headline-pick` + 6 × `hero-image-pick` +
+  5 × `og-card-pick` + 6 × `social-variant-pick` (all surfaced).
+- `alignmd.json` + `day14-realty.json` → 1 × `brand-hero-pick` each (surfaced).
+- Total queue at task end: ~36 items, all rendered through the same `ItemCard`.
+
+**Build verification:**
+
+- `npm run typecheck` → PASS (`tsc --noEmit && tsc -p tsconfig.test.json --noEmit`,
+  no errors). One iteration needed: `noUncheckedIndexedAccess` flagged the
+  `data.items[idx]` accesses in `setItemStatus()`; fixed by capturing the element
+  in a guarded local (`existing`) before spreading.
+- `npx next lint` → PASS ("No ESLint warnings or errors").
+
+**Files touched:** 3 created (types.ts, actions.ts, page.tsx); 1 appended (this
+WORK-LOG entry). No deletions, no git push, no dependency changes.
+
+**Remaining for N10 (02:50 slot):** add `{ id: "bulk", href: "/admin/bulk-signoff",
+label: "Bulk" }` to `AdminNav` in `layout-bits.tsx`, plus the ≥5-item callout banner
+on `/admin/inbox`. Page already renders `<AdminNav active="bulk" />` so it'll
+highlight correctly the moment the nav entry lands.
+
+## 2026-06-02 02:50 — N10 bulk-signoff discovery
+
+Wired the `/admin/bulk-signoff` page (landed in N8/N9) into the two surfaces
+Jack will actually reach for. The page already existed and already rendered
+`<AdminNav active="bulk" />`; this task only had to make it discoverable.
+
+**Nav entry (`src/app/admin/layout-bits.tsx`, in `AdminNav` `pages` array,
+between `inbox` and `opps`):**
+
+```tsx
+{ id: "bulk", href: "/admin/bulk-signoff", label: "Bulk" },
+```
+
+The `active="bulk"` highlight already wired up correctly on the bulk page
+the moment the entry landed — no further wiring needed in the page itself.
+
+**Inbox banner (`src/app/admin/inbox/page.tsx`):** added a `SIGN_OFF_KINDS`
+set covering the five picker kinds the bulk surface chews through —
+`headline-pick`, `subject-line-pick`, `cs-body-pick`, `landing-headline-pick`,
+`decision-pick` — and a `BULK_SIGNOFF_THRESHOLD = 5`. The count is computed
+against the **unfiltered** `allItems` so the banner stays honest even when
+the user has a kind chip selected (same pattern the chip counts already use).
+Banner renders only when `signOffCount >= 5`. JSX, sitting between the kind
+chip nav and the `<ApprovalsQueue>` block:
+
+```tsx
+{showBulkBanner ? (
+  <div style={{ marginTop: 20 }}>
+    <StatusBanner
+      tone="warn"
+      headline={
+        <a
+          href="/admin/bulk-signoff"
+          style={{ color: "inherit", textDecoration: "none" }}
+        >
+          {signOffCount} items waiting — bulk review →
+        </a>
+      }
+      detail="Headline, subject-line, CS body, landing-headline, and decision picks clear faster from one surface."
+    />
+  </div>
+) : null}
+```
+
+Reuses the existing `StatusBanner` primitive from `@/components/ui` so the
+visual language matches the mission-control banner everywhere else in the
+admin shell — a hairline-ruled card with a coloured left-rule + dot. No
+client JS, plain `<a>` link as required, design tokens only.
+
+**Build verification:**
+
+- `npm run typecheck` → PASS (`tsc --noEmit && tsc -p tsconfig.test.json
+  --noEmit`, no errors). The `i.kind as string` cast was already the established
+  pattern in this file for the picker kinds that live outside the narrower
+  `ApprovalKind` union.
+- `npm run lint` → PASS ("No ESLint warnings or errors").
+
+**Files touched:** 2 edited (`src/app/admin/layout-bits.tsx`,
+`src/app/admin/inbox/page.tsx`); 1 appended (this WORK-LOG entry). No new
+files, no deletions, no dependency changes, no git push.
+
+
+---
+
+## 2026-06-02T09:27:30.847Z — auto-todo-sync
+
+- before: 50 open todos
+- added: 41
+  - #53 [alignmd] Pick a hero image — AlignMD landing
+  - #54 [day14-realty] Pick a hero image — Day14 Realty landing
+  - #55 [day14] Pick a subject line — Newsletter Issue #1 (Shipping vs scoping)
+  - #56 [day14] Pick a subject line — Newsletter Issue #2 (Build-log live)
+  - #57 [day14] Pick a subject line — CS template: deposit-received
+  - #58 [day14] Pick a subject line — CS template: intake-form-link
+  - #59 [day14] Pick a subject line — CS template: preview-ready
+  - #60 [day14] Pick a subject line — CS template: eod-update (good day)
+  - #61 [day14] Pick a subject line — CS template: eod-update (bad day)
+  - #62 [day14] Pick a subject line — CS template: launched
+  - #63 [day14] Pick a hero image — Day14 core landing
+  - #64 [day14] Review OG card — work-with-us
+  - #65 [day14] Pick a body variant — CS template: deposit-received
+  - #66 [day14] Pick a body variant — CS template: eod-update-bad
+  - #67 [day14] Pick a body variant — CS template: eod-update-good
+  - #68 [day14] Pick a body variant — CS template: intake-form-link
+  - #69 [day14] Pick a body variant — CS template: launched
+  - #70 [day14] Pick a body variant — CS template: preview-ready
+  - #71 [life-loophole] Pick a hero image — The HSA is the only triple-tax-advantaged account in the code
+  - #72 [life-loophole] Pick a hero image — The Traditional IRA deduction: a quiet line on Schedule 1 that pays for itself
+  - #73 [life-loophole] Pick a hero image — The Roth IRA trade: no break today, every break later
+  - #74 [life-loophole] Pick a hero image — Workplace 401(k): the only loophole your employer pays you to use
+  - #75 [life-loophole] Pick a hero image — The Child Tax Credit, decoded: who qualifies and what's refundable
+  - #76 [life-loophole] Pick a hero image — Two education credits, one tuition bill: how to pick AOTC vs Lifetime Learning
+  - #77 [life-loophole] Pick a headline — The HSA is the only triple-tax-advantaged account in the code
+  - #78 [life-loophole] Pick a headline — The Traditional IRA deduction: a quiet line on Schedule 1 that pays for itself
+  - #79 [life-loophole] Pick a headline — The Roth IRA trade: no break today, every break later
+  - #80 [life-loophole] Pick a headline — Workplace 401(k): the only loophole your employer pays you to use
+  - #81 [life-loophole] Pick a headline — The Child Tax Credit, decoded: who qualifies and what's refundable
+  - #82 [life-loophole] Pick a headline — Two education credits, one tuition bill: how to pick AOTC vs Lifetime Learning
+  - #83 [life-loophole] Review OG card — The HSA is the only triple-tax-advantaged account in the code
+  - #84 [life-loophole] Review OG card — The Traditional IRA deduction: a quiet line on Schedule 1 that pays for itself
+  - #85 [life-loophole] Review OG card — Workplace 401(k): the only loophole your employer pays you to use
+  - #86 [life-loophole] Review OG card — The Child Tax Credit, decoded: who qualifies and what's refundable
+  - #87 [life-loophole] Review OG card — Two education credits, one tuition bill: how to pick AOTC vs Lifetime Learning
+  - #88 [life-loophole] Pick distribution variants — The HSA is the only triple-tax-advantaged account in the code
+  - #89 [life-loophole] Pick distribution variants — The Traditional IRA deduction: a quiet line on Schedule 1 that pays for itself
+  - #90 [life-loophole] Pick distribution variants — The Roth IRA trade: no break today, every break later
+  - #91 [life-loophole] Pick distribution variants — Workplace 401(k): the only loophole your employer pays you to use
+  - #92 [life-loophole] Pick distribution variants — The Child Tax Credit, decoded: who qualifies and what's refundable
+  - #93 [life-loophole] Pick distribution variants — Two education credits, one tuition bill: how to pick AOTC vs Lifetime Learning
+- resolved: 0
+- pruned (≥30d done): 0
+- dropped by exclusion (tenant filter): 6 — hot-flash-co:6
+- empire-state.json#human_todos length: 88

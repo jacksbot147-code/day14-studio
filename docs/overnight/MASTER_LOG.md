@@ -35,3 +35,9 @@
 [2026-05-29 09:00 ET] daily-kickoff COMPLETE → kickoff-2026-05-29.md, confidence: 0.85
 [2026-05-30 23:00 ET] nightly-polish COMPLETE → polish-2026-05-30.md, confidence: 0.9
 [2026-05-29 17:00 ET] daily-eod COMPLETE → eod-2026-05-29.md, confidence: 0.25 (ran late — fired overnight into May 30)
+[2026-06-01 09:00 ET] daily-kickoff COMPLETE → kickoff-2026-06-01.md, confidence: 0.7
+[2026-06-01 17:00 ET] daily-eod COMPLETE → eod-2026-06-01.md, confidence: 0.2 (ran late — fired ~21:30 ET)
+[2026-06-01 23:00 ET] nightly-polish COMPLETE → polish-2026-06-01.md, confidence: 0.9
+[2026-06-01 22:00 ET] weekly-skill-harvest COMPLETE → skill-harvest-findings-2026-06-01.md, confidence: 0.85
+[2026-06-01 20:00 ET] weekly-council-review COMPLETE → council-review-2026-06-01.md, confidence: 0.9 (make-good for missed Sunday 05-31 slot)
+[2026-06-02 09:00 ET] daily-kickoff COMPLETE → kickoff-2026-06-02.md, confidence: 0.7

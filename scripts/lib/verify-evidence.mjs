@@ -144,11 +144,39 @@ function countItemsByKind(inbox, kind) {
  * checks to run; an empty expectation returns `{ ok: true, missing: [] }`
  * (i.e. "no expectations declared, nothing to disprove").
  */
+/**
+ * Walk a dot-path through a JSON value. Supports plain keys and numeric
+ * indices (e.g. "items.0.kind"). Returns `undefined` when any segment
+ * resolves to null/undefined or a non-existent key/index. Defensive — never
+ * throws.
+ */
+function getJsonPath(obj, dotPath) {
+  if (obj == null || !dotPath) return undefined;
+  const parts = String(dotPath).split(".");
+  let cur = obj;
+  for (const p of parts) {
+    if (cur == null) return undefined;
+    if (Array.isArray(cur)) {
+      const idx = Number(p);
+      if (!Number.isInteger(idx)) return undefined;
+      cur = cur[idx];
+    } else if (typeof cur === "object") {
+      cur = cur[p];
+    } else {
+      return undefined;
+    }
+  }
+  return cur;
+}
+
 export async function verifyTaskCompletion({
   taskId,
   mustExist = [],
   mustAppendTo = [],
   mustHaveInboxItem = [],
+  mustContainText = [],
+  mustHaveMtimeAfter = [],
+  mustHaveJsonField = [],
 } = {}) {
   const missing = [];
 
@@ -210,6 +238,94 @@ export async function verifyTaskCompletion({
       missing.push(
         `inbox ${entry.tenant} has ${n} items of kind="${entry.kind}", expected ≥ ${minCount}`
       );
+    }
+  }
+
+  // 4. Files that must contain one or more substrings.
+  //    Catches the text-content-phantom class — e.g. "brand-site-builder.mjs
+  //    must contain `stripSlop`" would have caught T4's three-pass phantom on
+  //    pass #1. (Added by N6, 2026-06-02.)
+  for (const entry of mustContainText) {
+    if (!entry || !entry.file || !entry.substring) {
+      missing.push(`mustContainText entry malformed`);
+      continue;
+    }
+    const file = entry.file.startsWith("~/")
+      ? path.join(HOME, entry.file.slice(2))
+      : entry.file;
+    const text = await readTextOrNull(file);
+    if (text === null) {
+      missing.push(`missing file for mustContainText: ${entry.file}`);
+      continue;
+    }
+    const haystack = entry.caseInsensitive ? text.toLowerCase() : text;
+    const needle = entry.caseInsensitive
+      ? String(entry.substring).toLowerCase()
+      : String(entry.substring);
+    if (!haystack.includes(needle)) {
+      missing.push(
+        `${entry.file} does not contain substring "${entry.substring}"`
+      );
+    }
+  }
+
+  // 5. Files whose mtime must be newer than a given ISO timestamp.
+  //    Catches the stale-cache soft-phantom class — e.g. O8's brand-hero
+  //    PNGs existed but were from a prior run. (Added by N6, 2026-06-02.)
+  for (const entry of mustHaveMtimeAfter) {
+    if (!entry || !entry.file || !entry.isoTimestamp) {
+      missing.push(`mustHaveMtimeAfter entry malformed`);
+      continue;
+    }
+    const file = entry.file.startsWith("~/")
+      ? path.join(HOME, entry.file.slice(2))
+      : entry.file;
+    try {
+      const stat = await fs.stat(file);
+      const threshold = new Date(entry.isoTimestamp).getTime();
+      if (!Number.isFinite(threshold)) {
+        missing.push(
+          `mustHaveMtimeAfter isoTimestamp unparseable: ${entry.isoTimestamp}`
+        );
+        continue;
+      }
+      if (stat.mtimeMs <= threshold) {
+        missing.push(
+          `${entry.file} mtime (${new Date(stat.mtimeMs).toISOString()}) not after ${entry.isoTimestamp}`
+        );
+      }
+    } catch {
+      missing.push(`mustHaveMtimeAfter — file not found: ${entry.file}`);
+    }
+  }
+
+  // 6. JSON file fields that must equal a given value.
+  //    Catches the JSON-sentinel phantom class — e.g. inbox items with
+  //    `real_image: null` instead of `true` after a banana re-fire claim.
+  //    Supports dot-path navigation (e.g. "items.0.kind"). (Added by N6,
+  //    2026-06-02.)
+  for (const entry of mustHaveJsonField) {
+    if (!entry || !entry.file || !entry.jsonPath) {
+      missing.push(`mustHaveJsonField entry malformed`);
+      continue;
+    }
+    const file = entry.file.startsWith("~/")
+      ? path.join(HOME, entry.file.slice(2))
+      : entry.file;
+    const json = await readJsonOrNull(file);
+    if (json === null) {
+      missing.push(`missing JSON for mustHaveJsonField: ${entry.file}`);
+      continue;
+    }
+    const value = getJsonPath(json, entry.jsonPath);
+    if (entry.equals !== undefined) {
+      if (value !== entry.equals) {
+        missing.push(
+          `${entry.file}#${entry.jsonPath} = ${JSON.stringify(value)}, expected ${JSON.stringify(entry.equals)}`
+        );
+      }
+    } else if (value === undefined) {
+      missing.push(`${entry.file}#${entry.jsonPath} resolved to undefined`);
     }
   }
 
