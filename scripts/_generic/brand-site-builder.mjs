@@ -29,6 +29,7 @@ import { existsSync } from "node:fs";
 import {
   tenantSlug, loadEnv, loadTenant, audit, queueTelegram, BIZ,
 } from "./_lib.mjs";
+import { stripSlop } from "../lib/skills/stop-slop.mjs";
 
 const STUDIO_SRC = path.join(process.env.HOME, "Documents/studio/src");
 const BRAND_MANIFEST = path.join(process.env.HOME, "Documents/studio/public/data/brand-sites.json");
@@ -79,7 +80,17 @@ async function gen(slug, ctx) {
   const identity = ctx.identity;
   const display = ctx.display_name;
   const niche = ctx.niche;
-  const tagline = identity?.positioning_statement || niche;
+  // stripSlop pass on the only free-text field that ends up in user-facing
+  // copy across every generated brand-site page (hero, OG, meta description).
+  // display + niche are typically proper-noun-ish and left as-is.
+  // Recorded for the audit log so a tenant can see what was scrubbed.
+  const rawTagline = identity?.positioning_statement || niche;
+  const slopResult = stripSlop(rawTagline);
+  const tagline = slopResult.cleaned;
+  const slopRemovedCount = slopResult.removed.reduce((n, r) => n + r.count, 0);
+  if (slopRemovedCount > 0) {
+    console.log(`[brand-site-builder] ${slug}: stripSlop removed ${slopRemovedCount} phrases from tagline (${slopResult.removed.map((r) => r.phrase).join(", ")})`);
+  }
   const colors = colorVars(identity);
   const fonts = fontVars(identity);
   const root = path.join(STUDIO_SRC, "app/brands", slug);
@@ -574,7 +585,9 @@ async function main() {
   const written = await gen(slug, ctx);
   console.log(`  ✓ ${written.length} site files written`);
 
-  await updateBrandManifest(slug, ctx.display_name, ctx.identity?.positioning_statement || ctx.niche || "");
+  // stripSlop the manifest tagline too, so /brands index also shows clean copy.
+  const manifestTagline = stripSlop(ctx.identity?.positioning_statement || ctx.niche || "").cleaned;
+  await updateBrandManifest(slug, ctx.display_name, manifestTagline);
   console.log(`  ✓ registered in the /brands directory`);
 
   await queueTelegram(env, slug,
