@@ -16,6 +16,9 @@ import { ScrambleNumber } from "@/components/landing/scramble-number";
 import { SectionNumeral } from "@/components/landing/section-numeral";
 import { SectionDivider } from "@/components/landing/section-divider";
 import { TintedCaseCard } from "@/components/landing/tinted-case-card";
+import { MeshGradient } from "@/components/landing/mesh-gradient";
+import { OrbitDiagram } from "@/components/landing/orbit-diagram";
+import { TerminalSnippet } from "@/components/landing/terminal-snippet";
 import { DeployStrip } from "@/components/deploy-strip";
 import { WaitlistForm } from "@/components/WaitlistForm";
 
@@ -212,6 +215,7 @@ function SectionHead({
 function Hero() {
   return (
     <section className="grain relative isolate overflow-hidden border-b border-ink-100">
+      <MeshGradient opacity={0.32} blur={90} />
       <HeroAurora />
       <CursorSpotlight />
 
@@ -407,7 +411,12 @@ function CaseStudies() {
           }
         />
 
-        <div className="mt-12 grid gap-5 md:grid-cols-3">
+        {/* OS-at-center visual centerpiece — six tenants orbiting Day14. */}
+        <div className="mt-14 mb-6 flex justify-center">
+          <OrbitDiagram />
+        </div>
+
+        <div className="mt-8 grid gap-5 md:grid-cols-3">
           {OS_CASE_STUDIES.map((cs) => (
             <TintedCaseCard
               key={cs.slug}
@@ -484,23 +493,44 @@ function HowItWorks() {
           title="Three primitives. Everything else is a consequence."
         />
 
-        <ol className="mt-12 grid border-l border-t border-ink-100 md:grid-cols-3">
-          {OS_STEPS.map((s) => (
-            <li
-              key={s.n}
-              className="relative flex flex-col border-b border-r border-ink-100 bg-paper p-7"
-            >
-              <span className="absolute inset-x-0 top-0 h-0.5 w-12 bg-ember-500" />
-              <div className="font-mono text-xs font-bold uppercase tracking-[0.18em] text-ember-600 tnum">
-                {s.n}
+        {/* Each step pairs the narrative card with a live-typing terminal so
+            "how it works" feels like product, not marketing copy. */}
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
+          {OS_STEPS.map((s, i) => {
+            const terminalLines = [
+              [
+                { text: "day14 new-tenant my-brand" },
+                { text: "day14 deploy my-brand", output: "✓ deployed to my-brand.day14.us" },
+              ],
+              [
+                { text: "day14 schedule daily-briefing 07:30" },
+                { text: "day14 schedule end-of-day 16:00", output: "✓ 2 agents scheduled" },
+              ],
+              [
+                { text: "open day14.us/admin/inbox" },
+                { text: "# approve / skip — one screen", output: "12 items waiting → 0" },
+              ],
+            ][i] ?? [];
+            return (
+              <div key={s.n} className="flex flex-col gap-4">
+                <div className="relative flex flex-col rounded-xl border border-ink-100 bg-paper p-7 shadow-[0_2px_8px_-2px_rgba(15,23,42,0.04)]">
+                  <span className="absolute inset-x-0 top-0 h-0.5 w-12 bg-ember-500" />
+                  <div className="font-mono text-xs font-bold uppercase tracking-[0.18em] text-ember-600 tnum">
+                    {s.n}
+                  </div>
+                  <h3 className="mt-3 text-2xl font-extrabold tracking-tightest text-ink">
+                    {s.title}
+                  </h3>
+                  <p className="mt-4 text-sm text-ink-500">{s.body}</p>
+                </div>
+                <TerminalSnippet
+                  title={`step ${s.n}`}
+                  lines={terminalLines}
+                />
               </div>
-              <h3 className="mt-3 text-2xl font-extrabold tracking-tightest text-ink">
-                {s.title}
-              </h3>
-              <p className="mt-4 text-sm text-ink-500">{s.body}</p>
-            </li>
-          ))}
-        </ol>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
