@@ -13,6 +13,9 @@ import { HeroParallaxWrap } from "@/components/landing/hero-parallax-wrap";
 import { HeroMissionClock } from "@/components/landing/hero-mission-clock";
 import { CursorSpotlight } from "@/components/landing/cursor-spotlight";
 import { ScrambleNumber } from "@/components/landing/scramble-number";
+import { SectionNumeral } from "@/components/landing/section-numeral";
+import { SectionDivider } from "@/components/landing/section-divider";
+import { TintedCaseCard } from "@/components/landing/tinted-case-card";
 import { DeployStrip } from "@/components/deploy-strip";
 import { WaitlistForm } from "@/components/WaitlistForm";
 
@@ -314,6 +317,10 @@ function Stat({ label, value }: { label: string; value: ReactNode }) {
 function LoomDemo() {
   return (
     <section id="loom" className="container-page py-20 sm:py-24">
+      <SectionDivider />
+      <div className="mt-12 flex items-start justify-between gap-8">
+        <SectionNumeral n={1} />
+      </div>
       <div className="grid gap-10 md:grid-cols-[1fr_1.4fr] md:gap-12">
         <div>
           <div className="eyebrow eyebrow-rule mb-5">Watch the system run · 4 min</div>
@@ -386,6 +393,10 @@ function CaseStudies() {
   return (
     <section id="case-studies" className="border-t border-ink-100 py-20 sm:py-24">
       <div className="container-page">
+        <SectionDivider />
+        <div className="mt-12">
+          <SectionNumeral n={2} />
+        </div>
         <SectionHead
           eyebrow="Three tenants, three businesses, one OS"
           title="Live, running, taking real money."
@@ -396,39 +407,41 @@ function CaseStudies() {
           }
         />
 
-        <div className="mt-12 grid border-l border-t border-ink-100 md:grid-cols-3">
+        <div className="mt-12 grid gap-5 md:grid-cols-3">
           {OS_CASE_STUDIES.map((cs) => (
-            <article
+            <TintedCaseCard
               key={cs.slug}
-              className="relative flex flex-col overflow-hidden border-b border-r border-ink-100 bg-paper-50"
+              tint={cs.slug as "alignmd" | "hot-flash-co" | "life-loophole"}
             >
-              <span className="absolute inset-x-0 top-0 z-10 h-0.5 w-full bg-ember-500/30" />
-              <div className="flex flex-1 flex-col p-7">
-                <div className="flex items-center justify-between">
-                  <div className="font-mono text-xs font-bold uppercase tracking-widest text-ember-600">
-                    {cs.name}
+              <article className="relative flex flex-col overflow-hidden rounded-[10px]">
+                <span className="absolute inset-x-0 top-0 z-10 h-0.5 w-full bg-ember-500/30" />
+                <div className="flex flex-1 flex-col p-7">
+                  <div className="flex items-center justify-between">
+                    <div className="font-mono text-xs font-bold uppercase tracking-widest text-ember-600">
+                      {cs.name}
+                    </div>
+                    <StatePill state={cs.state} />
                   </div>
-                  <StatePill state={cs.state} />
+                  <h3 className="mt-3 text-2xl font-extrabold tracking-tightest text-ink">
+                    {cs.vertical}
+                  </h3>
+                  <p className="mt-4 text-sm text-ink-500">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-400">
+                      Screenshot
+                    </span>
+                    <br />
+                    {cs.screenshot}
+                  </p>
+                  <p className="mt-5 text-sm font-semibold text-ink">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ember-600">
+                      Result
+                    </span>
+                    <br />
+                    {cs.result}
+                  </p>
                 </div>
-                <h3 className="mt-3 text-2xl font-extrabold tracking-tightest text-ink">
-                  {cs.vertical}
-                </h3>
-                <p className="mt-4 text-sm text-ink-500">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-400">
-                    Screenshot
-                  </span>
-                  <br />
-                  {cs.screenshot}
-                </p>
-                <p className="mt-5 text-sm font-semibold text-ink">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ember-600">
-                    Result
-                  </span>
-                  <br />
-                  {cs.result}
-                </p>
-              </div>
-            </article>
+              </article>
+            </TintedCaseCard>
           ))}
         </div>
 
@@ -462,6 +475,10 @@ function HowItWorks() {
   return (
     <section id="how" className="border-t border-ink-100 bg-paper-50 py-20 sm:py-24">
       <div className="container-page">
+        <SectionDivider />
+        <div className="mt-12">
+          <SectionNumeral n={3} />
+        </div>
         <SectionHead
           eyebrow="How the OS actually works"
           title="Three primitives. Everything else is a consequence."
@@ -497,6 +514,10 @@ function Pricing() {
   return (
     <section id="pricing" className="border-t border-ink-100 py-20 sm:py-24">
       <div className="container-page">
+        <SectionDivider />
+        <div className="mt-12">
+          <SectionNumeral n={4} />
+        </div>
         <SectionHead
           eyebrow="Founder pricing — open until 100 signups"
           title="Three tiers. Pick one."
@@ -617,6 +638,10 @@ function Waitlist() {
       className="border-t border-ink-100 bg-paper-50 py-20 sm:py-24"
     >
       <div className="container-page">
+        <SectionDivider />
+        <div className="mt-12 mb-6">
+          <SectionNumeral n={5} />
+        </div>
         <div className="grid items-start gap-10 md:grid-cols-[1fr_1fr] md:gap-16">
           <div>
             <div className="eyebrow eyebrow-rule mb-5">The 24-hour signal</div>
