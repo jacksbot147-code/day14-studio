@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "tenant": "day14",
-  "generated_at": "2026-05-29T06:48:47.768Z",
-  "generated_by": "scheduled-task workday-t10-marketing-subject-lines",
+  "generated_at": "2026-06-02T08:52:02.818Z",
+  "generated_by": "scheduled-task overnight-n14-claude-mem-decisions",
   "items": [
     {
       "id": "inbox-day14-2026-05-28-subject-newsletter-issue-1",
@@ -372,6 +372,60 @@
       "status": "awaiting-jack",
       "priority": "medium",
       "auto_replace_in_source": false
+    },
+    {
+      "id": "claude-mem-decision-1",
+      "kind": "decision-pick",
+      "tenant": "day14",
+      "created_at": "2026-06-02T08:52:02.818Z",
+      "status": "open",
+      "summary": "Should the claude-mem bridge be allowed to write observations from Day14 daemons, or stay read-only?",
+      "payload": {
+        "question": "Should the claude-mem bridge be allowed to write? Default in the stub is read-only (CLAUDE_MEM_BRIDGE_WRITES unset → remember() returns {ok:false, reason:'writes-disabled'}). If writes are enabled, Day14 daemons can seed observations the autonomous pipeline already knows about (e.g. 'stop-slop ran on drafts/foo.mdx and removed 7 phrases'), making integration points (b) skill-history queries and (c) /admin agent continuity first-class — but daemon-written observations will be schema-drifted from the SDK-extracted ones, and there is no upstream-blessed label to mark them as non-Claude-Code.",
+        "options": [
+          "Stay read-only — bridge never writes; recall() only. Safest, no schema drift.",
+          "Allow writes behind env flag CLAUDE_MEM_BRIDGE_WRITES=1 — opt-in per-daemon, off by default.",
+          "Allow writes unconditionally — daemons can seed observations freely; accept schema drift."
+        ],
+        "context": "Bridge stub at scripts/lib/skills/claude-mem.mjs currently returns {ok:false, reason:'not-wired'} for remember(). Upstream POST /api/sessions/observations accepts a synthesized claudeSessionId like 'day14-daemon-<uuid>'. Affects whether integration points (b) and (c) from §3 can be wired without manual mirroring.",
+        "reference": "PLAN-CLAUDE-MEM.md §7 (question 1)"
+      }
+    },
+    {
+      "id": "claude-mem-decision-2",
+      "kind": "decision-pick",
+      "tenant": "day14",
+      "created_at": "2026-06-02T08:52:02.818Z",
+      "status": "open",
+      "summary": "Should the bridge enforce a canonical project name per caller, or let claude-mem keep deriving project from cwd?",
+      "payload": {
+        "question": "Whose memory is this? The worker is single-user / single-database; the only tenant-scoping knob is the `project` field, which is cwd-derived. Are we OK letting `project` continue to be derived from working directory, or do we want the bridge to enforce a canonical project name per caller (e.g. 'studio', 'alignmd', 'life-loophole')? Enforcing it means tenant logic lives in the bridge, which Jack has historically pushed back on.",
+        "options": [
+          "Keep cwd-derived project — no bridge-side tenant logic; trust each daemon's cwd.",
+          "Enforce canonical project per caller — bridge requires opts.project on every recall/remember call.",
+          "Hybrid — default to cwd, but allow opts.project override; warn (not error) on missing project."
+        ],
+        "context": "Cross-project searches (default scope) will surface observations from hot-flash-co/ and kennum-lawn-care/, both on the standing exclusion list. Privacy §5(iii) flagged this. Any bridge query should pass project:'studio' explicitly, but enforcement is the open question.",
+        "reference": "PLAN-CLAUDE-MEM.md §7 (question 2)"
+      }
+    },
+    {
+      "id": "claude-mem-decision-3",
+      "kind": "decision-pick",
+      "tenant": "day14",
+      "created_at": "2026-06-02T08:52:02.818Z",
+      "status": "open",
+      "summary": "When claude-mem isn't installed or the worker is down, should recall() hard-degrade ({ok:false}) or soft-degrade ({ok:true, items:[]})?",
+      "payload": {
+        "question": "What's the failure mode when claude-mem isn't installed? The bridge stub returns {ok:false, reason:'not-wired'} for everything today. When we wire it, two reasonable options: (i) hard-degrade — every recall() returns {ok:false} and callers must fall back to grep/WORK-LOG; (ii) soft-degrade — recall() returns an empty items:[] with ok:true and a source:'empty' marker, so callers don't have to branch on ok. Option (i) is more honest; option (ii) gets the integration adopted faster.",
+        "options": [
+          "Hard-degrade — {ok:false, reason:'worker-unreachable'}; callers must branch and fall back to grep/WORK-LOG.",
+          "Soft-degrade — {ok:true, items:[], source:'empty'}; callers union the empty result without branching.",
+          "Hard-degrade for writes, soft-degrade for reads — remember() returns {ok:false}, recall() returns empty."
+        ],
+        "context": "Affects every caller's branch-handling. Hard-degrade keeps the contract honest but forces every call site to handle {ok:false}. Soft-degrade lets callers union claude-mem hits with existing grep results without conditionals, which matches the §3(a) 'complement, not replace' design.",
+        "reference": "PLAN-CLAUDE-MEM.md §7 (question 3)"
+      }
     }
   ]
 }
