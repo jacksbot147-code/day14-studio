@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-02T09:13:41.002Z",
+  "generated_at": "2026-06-02T09:28:44.154Z",
   "tenants": [
     {
       "slug": "day14",
@@ -608,6 +608,58 @@
       "streak": 0,
       "recent_audit": [
         {
+          "ts": "2026-06-02T09:18:17.018Z",
+          "tenant": "day14-realty",
+          "actor": "realty-scout",
+          "action": "scout_run",
+          "scaffolded": 0,
+          "properties": 121378,
+          "a_tier": 13183
+        },
+        {
+          "ts": "2026-06-02T09:18:16.756Z",
+          "tenant": "day14-realty",
+          "actor": "re-freshness-monitor",
+          "action": "freshness_tracked",
+          "total_properties": 121378,
+          "added_last_run": 0,
+          "added_7d": 0,
+          "enriched_pct": 0
+        },
+        {
+          "ts": "2026-06-02T09:18:16.242Z",
+          "tenant": "day14-realty",
+          "actor": "re-deal-alerter",
+          "action": "deals_alerted",
+          "a_tier": 13183,
+          "new_alerts": 1
+        },
+        {
+          "ts": "2026-06-02T09:18:15.959Z",
+          "tenant": "day14-realty",
+          "actor": "re-evaluation-agent",
+          "action": "deals_scored",
+          "evaluated": 121378,
+          "tier_a": 13183,
+          "tier_b": 14717,
+          "top_deal": "3030 39TH ST SW (96)"
+        },
+        {
+          "ts": "2026-06-02T09:18:15.363Z",
+          "tenant": "day14-realty",
+          "actor": "re-enrichment-agent",
+          "action": "enrichment_skipped_no_key",
+          "pending": 119030
+        },
+        {
+          "ts": "2026-06-02T09:18:15.202Z",
+          "tenant": "day14-realty",
+          "actor": "re-comp-analyst",
+          "action": "comps_computed",
+          "properties": 121378,
+          "comp_arvs": 68788
+        },
+        {
           "ts": "2026-06-02T09:11:13.894Z",
           "tenant": "day14-realty",
           "actor": "re-distress-monitor",
@@ -841,70 +893,6 @@
           "active": 8,
           "needs_csv": 4,
           "api_sourced": 0
-        },
-        {
-          "ts": "2026-06-02T06:49:36.316Z",
-          "tenant": "day14-realty",
-          "actor": "re-intake-agent",
-          "action": "county_records_ingested",
-          "ingested": 0,
-          "skipped": 0,
-          "files": 0,
-          "total_properties": 120423
-        },
-        {
-          "ts": "2026-06-02T06:49:36.021Z",
-          "tenant": "day14-realty",
-          "actor": "re-county-data-fetcher",
-          "action": "county_data_fetched",
-          "fl_counties": 12,
-          "fetched": 0,
-          "properties": 0,
-          "skipped_non_fl": 0,
-          "circuit_tripped": true,
-          "errors": [
-            "Hendry: timed out (30s) (offset 6000)",
-            "Glades: timed out (30s) (offset 1000)",
-            "DeSoto: timed out (30s) (offset 1000)",
-            "circuit-breaker: 3 counties failed in a row — FDOR service likely down, aborting run"
-          ]
-        },
-        {
-          "ts": "2026-06-02T06:46:29.968Z",
-          "tenant": "day14-realty",
-          "actor": "re-market-expander",
-          "action": "market_expanded",
-          "watch_list": 12,
-          "added": 0,
-          "counties": [],
-          "reason": "at cap (12 counties)"
-        },
-        {
-          "ts": "2026-06-02T05:46:28.499Z",
-          "tenant": "day14-realty",
-          "actor": "realty-scout",
-          "action": "scout_run",
-          "scaffolded": 0,
-          "properties": 120423,
-          "a_tier": 13049
-        },
-        {
-          "ts": "2026-06-02T05:46:28.241Z",
-          "tenant": "day14-realty",
-          "actor": "re-freshness-monitor",
-          "action": "freshness_tracked",
-          "total_properties": 120423,
-          "added_last_run": 0,
-          "added_7d": 0,
-          "enriched_pct": 0
-        },
-        {
-          "ts": "2026-06-02T05:46:27.797Z",
-          "tenant": "day14-realty",
-          "actor": "re-deal-alerter",
-          "action": "deals_alerted",
-          "a_tier": 13049,
-          "new_alerts": 4
         }
       ],
       "content_counts": {
@@ -1057,15 +1045,15 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T09:13:23.335Z"
+      "lastBeat": "2026-06-02T09:28:23.299Z"
     },
     {
       "name": "auto-restart-watchdog-cycle",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 3,
+      "ageMin": 4,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T09:10:20.755Z"
+      "lastBeat": "2026-06-02T09:25:03.038Z"
     },
     {
       "name": "customer-success",
@@ -1073,7 +1061,7 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T09:13:02.902Z"
+      "lastBeat": "2026-06-02T09:28:02.863Z"
     },
     {
       "name": "expansion-prompter",
@@ -1081,13 +1069,13 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T09:13:03.608Z"
+      "lastBeat": "2026-06-02T09:28:03.571Z"
     },
     {
       "name": "gmail-cs-triage",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 4,
+      "ageMin": 19,
       "cadenceMin": 30,
       "lastBeat": "2026-06-02T09:09:15.000Z"
     },
@@ -1097,7 +1085,7 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T09:13:03.931Z"
+      "lastBeat": "2026-06-02T09:28:03.891Z"
     },
     {
       "name": "growth-watcher",
@@ -1105,7 +1093,7 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T09:13:03.925Z"
+      "lastBeat": "2026-06-02T09:28:03.883Z"
     },
     {
       "name": "hot-flash-co-orders",
@@ -1113,13 +1101,13 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T09:13:02.993Z"
+      "lastBeat": "2026-06-02T09:28:02.953Z"
     },
     {
       "name": "lawn-care-gm-kennum-lawn-care",
       "kind": "oneshot",
       "status": "healthy",
-      "ageMin": 2,
+      "ageMin": 17,
       "cadenceMin": 30,
       "lastBeat": "2026-06-02T09:11:58.687Z"
     },
@@ -1129,7 +1117,7 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T09:13:03.016Z"
+      "lastBeat": "2026-06-02T09:28:02.973Z"
     },
     {
       "name": "outbox-deadletter",
@@ -1137,15 +1125,15 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T09:13:03.027Z"
+      "lastBeat": "2026-06-02T09:28:02.983Z"
     },
     {
       "name": "outbox-deadletter-cycle",
       "kind": "daemon",
       "status": "stale",
-      "ageMin": 29,
+      "ageMin": 14,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T08:45:02.216Z"
+      "lastBeat": "2026-06-02T09:15:02.236Z"
     },
     {
       "name": "proactive-monitor",
@@ -1153,15 +1141,15 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T09:13:02.949Z"
+      "lastBeat": "2026-06-02T09:28:02.907Z"
     },
     {
       "name": "realty-scout-day14-realty",
       "kind": "oneshot",
       "status": "healthy",
-      "ageMin": 66,
+      "ageMin": 10,
       "cadenceMin": 60,
-      "lastBeat": "2026-06-02T08:08:06.419Z"
+      "lastBeat": "2026-06-02T09:18:18.291Z"
     },
     {
       "name": "recursive-expansion",
@@ -1169,7 +1157,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T09:13:24.709Z"
+      "lastBeat": "2026-06-02T09:28:24.664Z"
     },
     {
       "name": "skill-multiplier",
@@ -1177,15 +1165,15 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T09:13:03.016Z"
+      "lastBeat": "2026-06-02T09:28:02.974Z"
     },
     {
       "name": "stripe-cs-loop",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 49,
+      "ageMin": 4,
       "cadenceMin": 60,
-      "lastBeat": "2026-06-02T08:24:20.000Z"
+      "lastBeat": "2026-06-02T09:24:21.000Z"
     },
     {
       "name": "system-pulse",
@@ -1193,13 +1181,13 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T09:13:03.016Z"
+      "lastBeat": "2026-06-02T09:28:02.979Z"
     },
     {
       "name": "telegram-poller",
       "kind": "daemon",
       "status": "error",
-      "ageMin": 14624,
+      "ageMin": 14639,
       "cadenceMin": 1,
       "lastBeat": "2026-05-23T05:29:56.124Z"
     },
@@ -1207,7 +1195,7 @@
       "name": "vercel-deploy-monitor",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 7,
+      "ageMin": 22,
       "cadenceMin": 62,
       "lastBeat": "2026-06-02T09:06:17.000Z"
     },
@@ -1217,7 +1205,7 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-02T09:13:03.019Z"
+      "lastBeat": "2026-06-02T09:28:02.979Z"
     }
   ],
   "skill_counts": {
@@ -1735,6 +1723,58 @@
   ],
   "empire_battle_log": [
     {
+      "ts": "2026-06-02T09:18:17.018Z",
+      "tenant": "day14-realty",
+      "actor": "realty-scout",
+      "action": "scout_run",
+      "scaffolded": 0,
+      "properties": 121378,
+      "a_tier": 13183
+    },
+    {
+      "ts": "2026-06-02T09:18:16.756Z",
+      "tenant": "day14-realty",
+      "actor": "re-freshness-monitor",
+      "action": "freshness_tracked",
+      "total_properties": 121378,
+      "added_last_run": 0,
+      "added_7d": 0,
+      "enriched_pct": 0
+    },
+    {
+      "ts": "2026-06-02T09:18:16.242Z",
+      "tenant": "day14-realty",
+      "actor": "re-deal-alerter",
+      "action": "deals_alerted",
+      "a_tier": 13183,
+      "new_alerts": 1
+    },
+    {
+      "ts": "2026-06-02T09:18:15.959Z",
+      "tenant": "day14-realty",
+      "actor": "re-evaluation-agent",
+      "action": "deals_scored",
+      "evaluated": 121378,
+      "tier_a": 13183,
+      "tier_b": 14717,
+      "top_deal": "3030 39TH ST SW (96)"
+    },
+    {
+      "ts": "2026-06-02T09:18:15.363Z",
+      "tenant": "day14-realty",
+      "actor": "re-enrichment-agent",
+      "action": "enrichment_skipped_no_key",
+      "pending": 119030
+    },
+    {
+      "ts": "2026-06-02T09:18:15.202Z",
+      "tenant": "day14-realty",
+      "actor": "re-comp-analyst",
+      "action": "comps_computed",
+      "properties": 121378,
+      "comp_arvs": 68788
+    },
+    {
       "ts": "2026-06-02T09:11:58.687Z",
       "tenant": "kennum-lawn-care",
       "actor": "lawn-care-gm",
@@ -1967,67 +2007,6 @@
       "tier_a": 13182,
       "tier_b": 14716,
       "top_deal": "3030 39TH ST SW (96)"
-    },
-    {
-      "ts": "2026-06-02T08:08:03.624Z",
-      "tenant": "day14-realty",
-      "actor": "re-enrichment-agent",
-      "action": "enrichment_skipped_no_key",
-      "pending": 119030
-    },
-    {
-      "ts": "2026-06-02T08:08:03.455Z",
-      "tenant": "day14-realty",
-      "actor": "re-comp-analyst",
-      "action": "comps_computed",
-      "properties": 121378,
-      "comp_arvs": 68788
-    },
-    {
-      "ts": "2026-06-02T08:01:06.737Z",
-      "tenant": "day14-realty",
-      "actor": "re-distress-monitor",
-      "action": "distress_scanned",
-      "scanned": 121378,
-      "hot_leads": 23027,
-      "top": "213 COLLIER BLVD (w3)"
-    },
-    {
-      "ts": "2026-06-02T08:01:06.595Z",
-      "tenant": "day14-realty",
-      "actor": "re-county-feed-agent",
-      "action": "county_feed_run",
-      "targets": 12,
-      "active": 8,
-      "needs_csv": 4,
-      "api_sourced": 0
-    },
-    {
-      "ts": "2026-06-02T08:01:05.911Z",
-      "tenant": "day14-realty",
-      "actor": "re-intake-agent",
-      "action": "county_records_ingested",
-      "ingested": 955,
-      "skipped": 45,
-      "files": 1,
-      "total_properties": 121378
-    },
-    {
-      "ts": "2026-06-02T08:01:05.593Z",
-      "tenant": "day14-realty",
-      "actor": "re-county-data-fetcher",
-      "action": "county_data_fetched",
-      "fl_counties": 12,
-      "fetched": 1,
-      "properties": 1000,
-      "skipped_non_fl": 0,
-      "circuit_tripped": false,
-      "errors": [
-        "Hendry: timed out (30s) (offset 6000)",
-        "Glades: timed out (30s) (offset 1000)",
-        "DeSoto: timed out (30s) — kept 1000, resumes at offset 2000",
-        "Highlands: timed out (30s) (offset 0)"
-      ]
     }
   ],
   "human_todos": [
@@ -2890,6 +2869,539 @@
       "created_at": "2026-05-31T01:55:17.612Z",
       "completed_at": null,
       "source": "county-feed-agent"
+    },
+    {
+      "id": "todo-53",
+      "seq": 53,
+      "tenant": "alignmd",
+      "title": "Pick a hero image — AlignMD landing",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.771Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-54",
+      "seq": 54,
+      "tenant": "day14-realty",
+      "title": "Pick a hero image — Day14 Realty landing",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.774Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-55",
+      "seq": 55,
+      "tenant": "day14",
+      "title": "Pick a subject line — Newsletter Issue #1 (Shipping vs scoping)",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.775Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-56",
+      "seq": 56,
+      "tenant": "day14",
+      "title": "Pick a subject line — Newsletter Issue #2 (Build-log live)",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.777Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-57",
+      "seq": 57,
+      "tenant": "day14",
+      "title": "Pick a subject line — CS template: deposit-received",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.779Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-58",
+      "seq": 58,
+      "tenant": "day14",
+      "title": "Pick a subject line — CS template: intake-form-link",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.781Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-59",
+      "seq": 59,
+      "tenant": "day14",
+      "title": "Pick a subject line — CS template: preview-ready",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.782Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-60",
+      "seq": 60,
+      "tenant": "day14",
+      "title": "Pick a subject line — CS template: eod-update (good day)",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.784Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-61",
+      "seq": 61,
+      "tenant": "day14",
+      "title": "Pick a subject line — CS template: eod-update (bad day)",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.786Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-62",
+      "seq": 62,
+      "tenant": "day14",
+      "title": "Pick a subject line — CS template: launched",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.787Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-63",
+      "seq": 63,
+      "tenant": "day14",
+      "title": "Pick a hero image — Day14 core landing",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.789Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-64",
+      "seq": 64,
+      "tenant": "day14",
+      "title": "Review OG card — work-with-us",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.790Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-65",
+      "seq": 65,
+      "tenant": "day14",
+      "title": "Pick a body variant — CS template: deposit-received",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.792Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-66",
+      "seq": 66,
+      "tenant": "day14",
+      "title": "Pick a body variant — CS template: eod-update-bad",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.794Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-67",
+      "seq": 67,
+      "tenant": "day14",
+      "title": "Pick a body variant — CS template: eod-update-good",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.795Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-68",
+      "seq": 68,
+      "tenant": "day14",
+      "title": "Pick a body variant — CS template: intake-form-link",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.797Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-69",
+      "seq": 69,
+      "tenant": "day14",
+      "title": "Pick a body variant — CS template: launched",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.799Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-70",
+      "seq": 70,
+      "tenant": "day14",
+      "title": "Pick a body variant — CS template: preview-ready",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.800Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-71",
+      "seq": 71,
+      "tenant": "life-loophole",
+      "title": "Pick a hero image — The HSA is the only triple-tax-advantaged account in the code",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.802Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-72",
+      "seq": 72,
+      "tenant": "life-loophole",
+      "title": "Pick a hero image — The Traditional IRA deduction: a quiet line on Schedule 1 that pays for itself",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.804Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-73",
+      "seq": 73,
+      "tenant": "life-loophole",
+      "title": "Pick a hero image — The Roth IRA trade: no break today, every break later",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.805Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-74",
+      "seq": 74,
+      "tenant": "life-loophole",
+      "title": "Pick a hero image — Workplace 401(k): the only loophole your employer pays you to use",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.807Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-75",
+      "seq": 75,
+      "tenant": "life-loophole",
+      "title": "Pick a hero image — The Child Tax Credit, decoded: who qualifies and what's refundable",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.809Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-76",
+      "seq": 76,
+      "tenant": "life-loophole",
+      "title": "Pick a hero image — Two education credits, one tuition bill: how to pick AOTC vs Lifetime Learning",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.811Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-77",
+      "seq": 77,
+      "tenant": "life-loophole",
+      "title": "Pick a headline — The HSA is the only triple-tax-advantaged account in the code",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.812Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-78",
+      "seq": 78,
+      "tenant": "life-loophole",
+      "title": "Pick a headline — The Traditional IRA deduction: a quiet line on Schedule 1 that pays for itself",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.814Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-79",
+      "seq": 79,
+      "tenant": "life-loophole",
+      "title": "Pick a headline — The Roth IRA trade: no break today, every break later",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.816Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-80",
+      "seq": 80,
+      "tenant": "life-loophole",
+      "title": "Pick a headline — Workplace 401(k): the only loophole your employer pays you to use",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.817Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-81",
+      "seq": 81,
+      "tenant": "life-loophole",
+      "title": "Pick a headline — The Child Tax Credit, decoded: who qualifies and what's refundable",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.819Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-82",
+      "seq": 82,
+      "tenant": "life-loophole",
+      "title": "Pick a headline — Two education credits, one tuition bill: how to pick AOTC vs Lifetime Learning",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.821Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-83",
+      "seq": 83,
+      "tenant": "life-loophole",
+      "title": "Review OG card — The HSA is the only triple-tax-advantaged account in the code",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.823Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-84",
+      "seq": 84,
+      "tenant": "life-loophole",
+      "title": "Review OG card — The Traditional IRA deduction: a quiet line on Schedule 1 that pays for itself",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.825Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-85",
+      "seq": 85,
+      "tenant": "life-loophole",
+      "title": "Review OG card — Workplace 401(k): the only loophole your employer pays you to use",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.826Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-86",
+      "seq": 86,
+      "tenant": "life-loophole",
+      "title": "Review OG card — The Child Tax Credit, decoded: who qualifies and what's refundable",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.828Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-87",
+      "seq": 87,
+      "tenant": "life-loophole",
+      "title": "Review OG card — Two education credits, one tuition bill: how to pick AOTC vs Lifetime Learning",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.830Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-88",
+      "seq": 88,
+      "tenant": "life-loophole",
+      "title": "Pick distribution variants — The HSA is the only triple-tax-advantaged account in the code",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.832Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-89",
+      "seq": 89,
+      "tenant": "life-loophole",
+      "title": "Pick distribution variants — The Traditional IRA deduction: a quiet line on Schedule 1 that pays for itself",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.834Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-90",
+      "seq": 90,
+      "tenant": "life-loophole",
+      "title": "Pick distribution variants — The Roth IRA trade: no break today, every break later",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.835Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-91",
+      "seq": 91,
+      "tenant": "life-loophole",
+      "title": "Pick distribution variants — Workplace 401(k): the only loophole your employer pays you to use",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.837Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-92",
+      "seq": 92,
+      "tenant": "life-loophole",
+      "title": "Pick distribution variants — The Child Tax Credit, decoded: who qualifies and what's refundable",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.839Z",
+      "completed_at": null,
+      "source": "inbox"
+    },
+    {
+      "id": "todo-93",
+      "seq": 93,
+      "tenant": "life-loophole",
+      "title": "Pick distribution variants — Two education credits, one tuition bill: how to pick AOTC vs Lifetime Learning",
+      "detail": "",
+      "category": "review",
+      "priority": "medium",
+      "status": "open",
+      "created_at": "2026-06-02T09:27:30.841Z",
+      "completed_at": null,
+      "source": "inbox"
     },
     {
       "id": "todo-14",
