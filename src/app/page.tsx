@@ -11,6 +11,8 @@ import { HeroAurora } from "@/components/motion/hero-aurora";
 import { StaggerCtas } from "@/components/motion/stagger-ctas";
 import { HeroParallaxWrap } from "@/components/landing/hero-parallax-wrap";
 import { HeroMissionClock } from "@/components/landing/hero-mission-clock";
+import { CursorSpotlight } from "@/components/landing/cursor-spotlight";
+import { ScrambleNumber } from "@/components/landing/scramble-number";
 import { DeployStrip } from "@/components/deploy-strip";
 import { WaitlistForm } from "@/components/WaitlistForm";
 
@@ -208,6 +210,7 @@ function Hero() {
   return (
     <section className="grain relative isolate overflow-hidden border-b border-ink-100">
       <HeroAurora />
+      <CursorSpotlight />
 
       {/* Mission-clock corner detail — continuity signal with /admin/mission-control. */}
       <div className="container-page pointer-events-none absolute inset-x-0 top-6 z-10 flex justify-end sm:top-8">
@@ -216,20 +219,18 @@ function Hero() {
         </div>
       </div>
 
-      <div className="container-page pt-20 pb-24 sm:pt-32 sm:pb-32 lg:pt-40 lg:pb-40">
+      <div className="container-page relative z-10 pt-24 pb-24 sm:pt-36 sm:pb-32 lg:pt-44 lg:pb-44">
         <HeroParallaxWrap>
-          <div className="eyebrow mb-7">
-            <span className="relative inline-block h-1.5 w-1.5">
-              <span className="absolute inset-0 rounded-full bg-ember-500" />
-              <span className="absolute -inset-1 animate-ping rounded-full bg-ember-500/40" />
-            </span>
-            A pivot announcement · {SITE.location}
+          {/* Simplified eyebrow — no animated ping, just the dot. Magic is
+              restraint, not ornament. */}
+          <div className="eyebrow mb-8 inline-flex items-center gap-2.5">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-ember-500" />
+            <span>A pivot announcement</span>
           </div>
 
-          {/* Apple-grade type scale — full display weight on desktop, tighter
-              tracking, longer reveal. Existing per-line stagger animation
-              preserved via .hero-phrase. */}
-          <h1 className="max-w-5xl text-[2.875rem] font-extrabold leading-[0.98] tracking-tightest text-ink sm:text-[72px] lg:text-[96px] xl:text-[108px]">
+          {/* Hero headline carries the whole fold. Display weight, tightest
+              tracking, line stagger via existing .hero-phrase animation. */}
+          <h1 className="max-w-5xl text-[2.875rem] font-extrabold leading-[0.95] tracking-tightest text-ink sm:text-[72px] lg:text-[104px] xl:text-[120px]">
             <span className="hero-phrase" style={{ animationDelay: "0ms" }}>
               One operator.
             </span>{" "}
@@ -242,41 +243,40 @@ function Hero() {
             </span>
           </h1>
 
-          <p className="mt-8 max-w-2xl text-lg text-ink-500 sm:mt-10 sm:text-xl lg:text-2xl">
-            Day14 OS is the multi-tenant studio I built to run every business I own from a single worktree. Marketing sites, customer portals, billing, admin app, scheduled agents, an inbox that only surfaces things a human has to decide.
+          {/* Single sub-hero paragraph. The "today I'm opening the waitlist"
+              line moves to the waitlist section below where it belongs. */}
+          <p className="mt-10 max-w-2xl text-lg text-ink-500 sm:mt-12 sm:text-xl lg:text-2xl lg:leading-[1.4]">
+            The multi-tenant studio I built to run every business I own from a single worktree. Marketing sites, portals, billing, scheduled agents, an inbox that only surfaces what a human has to decide.
           </p>
 
-          <p className="mt-3 max-w-2xl text-base text-ink-400 sm:text-lg">
-            Today I&rsquo;m opening the waitlist. The signal closes Sunday at 14:00 EDT.
-          </p>
-
-          <StaggerCtas className="mt-9 flex flex-wrap items-center gap-3 sm:mt-12">
+          {/* One CTA. The Loom embed sits below the fold and announces itself
+              in its own section — no need for a secondary "watch demo" button
+              competing here. */}
+          <StaggerCtas className="mt-10 flex flex-wrap items-center gap-3 sm:mt-14">
             <a href="#waitlist" className="btn-ember">
               Join the waitlist
-            </a>
-            <a href="#loom" className="btn-ghost">
-              Watch the 4-minute demo ↓
             </a>
           </StaggerCtas>
         </HeroParallaxWrap>
 
-        {/* Proof strip — same bordered grid pattern as before. Lives OUTSIDE
-            the parallax wrap so it stays anchored to the section while the
-            hero text floats up on scroll. */}
-        <div className="mt-16 grid max-w-3xl grid-cols-2 border-l border-t border-ink-100 sm:mt-20 sm:grid-cols-4">
+        {/* Proof strip — same bordered grid pattern. ScrambleNumber gives it
+            a terminal-decrypting feel that matches the brutalist /admin
+            mission-control vibe. Lives outside the parallax wrap so it stays
+            anchored while the hero text floats. */}
+        <div className="mt-20 grid max-w-3xl grid-cols-2 border-l border-t border-ink-100 sm:mt-24 sm:grid-cols-4">
           <Stat
             label="Tenants on the OS"
-            value={<CountUp to={OS_STATS.tenants} />}
+            value={<ScrambleNumber to={OS_STATS.tenants} />}
           />
           <Stat
             label="Agents per day"
-            value={<CountUp to={OS_STATS.agentsPerDay} />}
+            value={<ScrambleNumber to={OS_STATS.agentsPerDay} />}
           />
           <Stat
             label="Verified shipped"
             value={
               <>
-                <CountUp to={OS_STATS.shippedChanges} />+
+                <ScrambleNumber to={OS_STATS.shippedChanges} />+
               </>
             }
           />
@@ -284,7 +284,7 @@ function Hero() {
             label="Operator hrs / day"
             value={
               <>
-                &le; <CountUp to={OS_STATS.attentionHoursPerDay} />
+                &le; <ScrambleNumber to={OS_STATS.attentionHoursPerDay} />
               </>
             }
           />
