@@ -3,6 +3,7 @@ import { AdminNav, ADMIN_CSS, PageHint } from "../layout-bits";
 import { ApprovalsQueue, type TenantOption } from "./approvals-queue";
 import { collectAllApprovals, type ApprovalItem } from "@/lib/admin-approvals";
 import { StatusBanner } from "@/components/ui";
+import { SlideInBanner } from "@/components/motion/slide-in-banner";
 
 /**
  * Sign-off-style kinds — the picker cards the bulk-signoff surface chews
@@ -234,20 +235,22 @@ export default async function InboxPage({ searchParams }: PageProps) {
       </nav>
 
       {showBulkBanner ? (
-        <div style={{ marginTop: 20 }}>
-          <StatusBanner
-            tone="warn"
-            headline={
-              <a
-                href="/admin/bulk-signoff"
-                style={{ color: "inherit", textDecoration: "none" }}
-              >
-                {signOffCount} items waiting — bulk review →
-              </a>
-            }
-            detail="Headline, subject-line, CS body, landing-headline, and decision picks clear faster from one surface."
-          />
-        </div>
+        <SlideInBanner>
+          <div style={{ marginTop: 20 }}>
+            <StatusBanner
+              tone="warn"
+              headline={
+                <a
+                  href="/admin/bulk-signoff"
+                  style={{ color: "inherit", textDecoration: "none" }}
+                >
+                  {signOffCount} items waiting — bulk review →
+                </a>
+              }
+              detail="Headline, subject-line, CS body, landing-headline, and decision picks clear faster from one surface."
+            />
+          </div>
+        </SlideInBanner>
       ) : null}
 
       <div style={{ marginTop: 24 }}>

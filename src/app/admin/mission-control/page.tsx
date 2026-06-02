@@ -8,6 +8,12 @@ import {
   stateLabel,
   type CrewUnit,
 } from "@/lib/crew";
+import { CrewStatsStrip } from "@/components/motion/crew-stats-strip";
+import { CrewFleetSection } from "@/components/motion/crew-fleet-section";
+import { CrewCardLive } from "@/components/motion/crew-card-live";
+import { ActiveStateDot } from "@/components/motion/active-state-dot";
+import { ScannerSweep } from "@/components/motion/scanner-sweep";
+import { LiveClock } from "@/components/motion/live-clock";
 
 export const metadata = {
   title: "Day14 — Mission Control v2 · Robot Cosmodrome",
@@ -95,7 +101,10 @@ function CrewCard({ unit }: { unit: CrewUnit }) {
           <div className="desig">{unit.designation}</div>
           <div className="role">{unit.role}</div>
         </div>
-        <span className={`state-chip ${stateCls}`}>{stateLabel(unit.state)}</span>
+        <span className={`state-chip ${stateCls}`} style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+          <ActiveStateDot status={unit.state} />
+          {stateLabel(unit.state)}
+        </span>
       </div>
       <div className="meta">{unit.rootMeaning} · {unit.signature}</div>
       {unit.pluginAssignments && unit.pluginAssignments.length > 0 ? (
@@ -126,39 +135,27 @@ export default function MissionControlV2() {
       <style dangerouslySetInnerHTML={{ __html: ADMIN_CSS + PAGE_CSS }} />
       <main className="admin-shell">
         <AdminNav active="crew" />
-        <h1>Mission Control v2 — Robot Cosmodrome</h1>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 16, flexWrap: "wrap" }}>
+          <h1 style={{ margin: 0 }}>Mission Control v2 — Robot Cosmodrome</h1>
+          <LiveClock />
+        </div>
+        <ScannerSweep />
         <PageHint>
           24 Russian-cosmonaut-designated robot operators across 6 fleets. Every unit wraps
           real running agents in the empire. Brutalist mechanical naming, deliberately not
           anthropomorphized. Source of truth: <code>src/lib/crew.ts</code>.
         </PageHint>
 
-        <div className="roster-meta">
-          <div className="stat">
-            <span className="n">{CREW_ROSTER.length}</span>
-            <span className="l">Total units</span>
-          </div>
-          <div className="stat">
-            <span className="n">{fleets.length}</span>
-            <span className="l">Fleets</span>
-          </div>
-          <div className="stat">
-            <span className="n">{stateCounts.active ?? 0}</span>
-            <span className="l">Active</span>
-          </div>
-          <div className="stat">
-            <span className="n">{stateCounts.parked ?? 0}</span>
-            <span className="l">Parked</span>
-          </div>
-          <div className="stat">
-            <span className="n">{stateCounts.planned ?? 0}</span>
-            <span className="l">Planned</span>
-          </div>
-          <div className="stat">
-            <span className="n">{stateCounts.offline ?? 0}</span>
-            <span className="l">Offline</span>
-          </div>
-        </div>
+        <CrewStatsStrip
+          stats={[
+            { value: CREW_ROSTER.length, label: "Total units" },
+            { value: fleets.length, label: "Fleets" },
+            { value: stateCounts.active ?? 0, label: "Active" },
+            { value: stateCounts.parked ?? 0, label: "Parked" },
+            { value: stateCounts.planned ?? 0, label: "Planned" },
+            { value: stateCounts.offline ?? 0, label: "Offline" },
+          ]}
+        />
 
         <div className="legend">
           <div className="item"><span className="dot" style={{ background: "#16a34a" }} /> Active</div>
@@ -171,17 +168,13 @@ export default function MissionControlV2() {
         {fleets.map(({ fleet, units }) => {
           const meta = FLEET_META[fleet];
           return (
-            <section key={fleet}>
-              <div className="fleet-header">
-                <h2>{meta.label}</h2>
-                <p>{meta.subtitle}</p>
-              </div>
-              <div className="crew-grid">
-                {units.map((u) => (
-                  <CrewCard key={u.designation} unit={u} />
-                ))}
-              </div>
-            </section>
+            <CrewFleetSection key={fleet} title={meta.label} subtitle={meta.subtitle}>
+              {units.map((u) => (
+                <CrewCardLive key={u.designation} isActive={u.state === "active"}>
+                  <CrewCard unit={u} />
+                </CrewCardLive>
+              ))}
+            </CrewFleetSection>
           );
         })}
 

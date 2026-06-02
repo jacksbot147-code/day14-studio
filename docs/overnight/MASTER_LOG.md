@@ -41,3 +41,4 @@
 [2026-06-01 22:00 ET] weekly-skill-harvest COMPLETE → skill-harvest-findings-2026-06-01.md, confidence: 0.85
 [2026-06-01 20:00 ET] weekly-council-review COMPLETE → council-review-2026-06-01.md, confidence: 0.9 (make-good for missed Sunday 05-31 slot)
 [2026-06-02 09:00 ET] daily-kickoff COMPLETE → kickoff-2026-06-02.md, confidence: 0.7
+[2026-06-02 17:00 ET] daily-eod COMPLETE → eod-2026-06-02.md, confidence: 0.35

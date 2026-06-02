@@ -496,7 +496,10 @@ function Pricing() {
               key={tier.name}
               className={cn(
                 "relative flex flex-col border-b border-r border-ink-200 p-7",
-                tier.popular ? "bg-ink text-paper" : "bg-paper",
+                // Soft hover lift + shadow — keeps the brutalist border but adds an
+                // affordance that this is a choice point, not a static spec sheet.
+                "transition-all duration-200 ease-out motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-xl",
+                tier.popular ? "bg-ink text-paper motion-safe:hover:shadow-ember-300/30" : "bg-paper",
               )}
             >
               {tier.popular ? (
