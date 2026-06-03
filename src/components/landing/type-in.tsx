@@ -26,7 +26,7 @@
  */
 
 import { useReducedMotion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 
 const GLITCH_GLYPHS = "▮█▓░▒▌▐■◊◈◇⌬⎔▪◆◉⊡⌖";
@@ -36,12 +36,17 @@ interface TypeInProps {
   text: string;
   /** Characters per second. Default 80 (~12.5ms/char). */
   cps?: number;
-  /** Delay in ms after mount before typing begins. Default 0. */
+  /** Delay in ms after the trigger before typing begins. Default 0. */
   startAt?: number;
   /** Show a blinking ember cursor at the end of the typed text while typing. */
   cursor?: boolean;
   /** After completion, occasionally flash a random char as a glitch glyph. */
   glitch?: boolean;
+  /**
+   * When true, wait to start typing until this element scrolls into view.
+   * Default false (starts at mount + startAt).
+   */
+  triggerOnView?: boolean;
   /** Optional callback when typing completes. */
   onComplete?: () => void;
   /** Optional className for the wrapping span. */
@@ -61,6 +66,7 @@ export function TypeIn({
   startAt = 0,
   cursor = false,
   glitch = false,
+  triggerOnView = false,
   onComplete,
   className,
   style,
@@ -72,11 +78,39 @@ export function TypeIn({
   const [mounted, setMounted] = useState(false);
   const [charIdx, setCharIdx] = useState(0);
   const [done, setDone] = useState(false);
+  const [armed, setArmed] = useState(!triggerOnView); // immediately armed unless triggerOnView
   const [glitchAt, setGlitchAt] = useState<{ idx: number; glyph: string } | null>(null);
+  const wrapperRef = useRef<HTMLSpanElement | null>(null);
 
-  // Typing animation
+  // Mark mounted on client (for SSR opacity-0 handoff)
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  // Viewport-trigger arming — only when triggerOnView is true
+  useEffect(() => {
+    if (!triggerOnView || armed) return;
+    const el = wrapperRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            setArmed(true);
+            obs.disconnect();
+            break;
+          }
+        }
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -10% 0px" },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [triggerOnView, armed]);
+
+  // Typing animation (only fires once armed)
+  useEffect(() => {
+    if (!armed) return;
 
     if (reduce) {
       setCharIdx(text.length);
@@ -109,7 +143,7 @@ export function TypeIn({
       window.clearTimeout(startTimer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [text, cps, startAt, reduce]);
+  }, [text, cps, startAt, reduce, armed]);
 
   // Glitch loop — only fires after typing completes
   useEffect(() => {
@@ -147,6 +181,7 @@ export function TypeIn({
   if (!mounted) {
     return (
       <span
+        ref={wrapperRef}
         className={className}
         style={{ ...style, opacity: 0 }}
         aria-label={text}
@@ -173,6 +208,7 @@ export function TypeIn({
 
   return (
     <span
+      ref={wrapperRef}
       className={className}
       style={{ ...style, opacity: 1 }}
       aria-label={text}

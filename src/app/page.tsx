@@ -7,6 +7,10 @@ import { SiteFooter } from "@/components/site-footer";
 import { cn } from "@/lib/cn";
 import { BuildReveal } from "@/components/landing/build-reveal";
 import { CmdKPalette } from "@/components/landing/cmd-k-palette";
+import { StatusLine } from "@/components/landing/status-line";
+import { PathCrumb } from "@/components/landing/path-crumb";
+import { TypeIn } from "@/components/landing/type-in";
+import { ScramblePrice } from "@/components/landing/scramble-price";
 import { CountUp } from "@/components/motion/count-up";
 import { HeroAurora } from "@/components/motion/hero-aurora";
 import { StaggerCtas } from "@/components/motion/stagger-ctas";
@@ -262,9 +266,11 @@ export default function HomePage() {
       <SiteFooter />
       {/* Phase C — interactive Cmd+K palette. Floating "Ask anything" pill
           bottom-right; press ⌘K (or Ctrl+K) anywhere to open. 14 real-feeling
-          Day14 OS commands, live fuzzy filter, faked "execute" with toast.
-          The marketing page's first interactive product moment. */}
+          Day14 OS commands, live fuzzy filter, faked "execute" with toast. */}
       <CmdKPalette />
+      {/* Vim-style status line fixed at the bottom of every viewport.
+          Live scroll-position percent + current section + ⌘K hint. */}
+      <StatusLine />
     </>
   );
 }
@@ -464,14 +470,22 @@ function CaseStudies() {
     >
       <div className="container-page">
         <div className="mx-auto max-w-3xl text-center">
+          <div className="flex justify-center">
+            <PathCrumb path="case-studies" />
+          </div>
           <div className="eyebrow mb-6 justify-center text-ember-600">
-            Built and operated on Day14 OS
+            <TypeIn text="Built and operated on Day14 OS" cps={100} startAt={400} triggerOnView />
           </div>
           <h2 className="text-[56px] font-extrabold leading-[0.98] tracking-[-0.04em] text-ink sm:text-[72px] lg:text-[80px]">
-            We use it on six of our own.
+            <TypeIn text="We use it on six of our own." cps={80} startAt={900} cursor triggerOnView />
           </h2>
           <p className="mx-auto mt-8 max-w-2xl text-[17px] leading-[1.6] text-warm-gray-500 sm:text-[18px]">
-            Every tile below is a real product running on Day14 OS &mdash; ours. Same admin, same agents, same evidence verifier. Different brand, different vertical, same 14-day cadence.
+            <TypeIn
+              text="Every tile below is a real product running on Day14 OS — ours. Same admin, same agents, same evidence verifier. Different brand, different vertical, same 14-day cadence."
+              cps={320}
+              startAt={1500}
+              triggerOnView
+            />
           </p>
         </div>
 
@@ -562,11 +576,20 @@ function HowItWorks() {
     <section id="how" className="bg-paper-cream py-32 sm:py-40">
       <div className="container-page">
         <div className="mx-auto max-w-3xl text-center">
+          <div className="flex justify-center">
+            <PathCrumb path="how-it-works" />
+          </div>
           <div className="eyebrow mb-6 justify-center text-ember-600">
-            How it works
+            <TypeIn text="How it works" cps={100} startAt={400} triggerOnView />
           </div>
           <h2 className="text-[56px] font-extrabold leading-[0.98] tracking-[-0.04em] text-ink sm:text-[72px] lg:text-[80px]">
-            Three primitives. Everything else is a consequence.
+            <TypeIn
+              text="Three primitives. Everything else is a consequence."
+              cps={80}
+              startAt={700}
+              cursor
+              triggerOnView
+            />
           </h2>
         </div>
 
@@ -642,14 +665,22 @@ function Pricing() {
     <section id="pricing" className="bg-paper-cream py-32 sm:py-40">
       <div className="container-page">
         <div className="mx-auto max-w-3xl text-center">
+          <div className="flex justify-center">
+            <PathCrumb path="pricing" />
+          </div>
           <div className="eyebrow mb-6 justify-center text-ember-600">
-            Pricing · build studio
+            <TypeIn text="Pricing · build studio" cps={100} startAt={400} triggerOnView />
           </div>
           <h2 className="text-[56px] font-extrabold leading-[0.98] tracking-[-0.04em] text-ink sm:text-[72px] lg:text-[80px]">
-            $1,500 to scoped.
+            <TypeIn text="$1,500 to scoped." cps={80} startAt={750} cursor triggerOnView />
           </h2>
           <p className="mx-auto mt-8 max-w-2xl text-[17px] leading-[1.6] text-warm-gray-500 sm:text-[18px]">
-            Fixed price, fixed timeline, no SOWs. Pick the size that fits the job &mdash; your build lives on Day14 OS, the same stack that runs all six of our own businesses.
+            <TypeIn
+              text="Fixed price, fixed timeline, no SOWs. Pick the size that fits the job — your build lives on Day14 OS, the same stack that runs all six of our own businesses."
+              cps={320}
+              startAt={1200}
+              triggerOnView
+            />
           </p>
         </div>
 
@@ -681,9 +712,10 @@ function Pricing() {
               </p>
 
               <div className="mt-7 flex items-baseline gap-2 tnum">
-                <span className="text-[48px] font-extrabold leading-none tracking-[-0.035em] text-ink">
-                  {tier.price}
-                </span>
+                <ScramblePrice
+                  price={tier.price}
+                  className="text-[48px] font-extrabold leading-none tracking-[-0.035em] text-ink"
+                />
                 <span className="text-sm font-medium text-warm-gray-400">
                   {tier.cadence}
                 </span>
@@ -743,15 +775,23 @@ function Waitlist() {
     >
       <div className="container-page">
         <div className="mx-auto max-w-2xl text-center">
+          <div className="flex justify-center">
+            <PathCrumb path="book" />
+          </div>
           <div className="eyebrow mb-6 justify-center text-ember-600">
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-ember-500 mr-2 align-middle" />
-            Now booking · July
+            <TypeIn text="Now booking · July" cps={100} startAt={400} triggerOnView />
           </div>
           <h2 className="text-[40px] font-extrabold leading-[1.02] tracking-[-0.035em] text-ink sm:text-[56px] lg:text-[64px]">
-            Tell us what you want built.
+            <TypeIn text="Tell us what you want built." cps={80} startAt={700} cursor triggerOnView />
           </h2>
           <p className="mt-7 text-[17px] leading-[1.6] text-warm-gray-500 sm:text-[18px]">
-            20-minute scope call. We come back with a fixed quote in 48 hours and a shipped build in 14 days. Three slots open for July.
+            <TypeIn
+              text="20-minute scope call. We come back with a fixed quote in 48 hours and a shipped build in 14 days. Three slots open for July."
+              cps={320}
+              startAt={1100}
+              triggerOnView
+            />
           </p>
         </div>
 
@@ -805,14 +845,28 @@ function FooterCta() {
     <section id="waitlist" className="bg-paper-cream py-24 sm:py-32 border-t border-warm-gray-100">
       <div className="container-page">
         <div className="mx-auto max-w-2xl text-center">
+          <div className="flex justify-center">
+            <PathCrumb path="os-tenant" />
+          </div>
           <div className="eyebrow mb-5 justify-center text-warm-gray-400">
-            Or: run on Day14 OS yourself
+            <TypeIn text="Or: run on Day14 OS yourself" cps={100} startAt={400} triggerOnView />
           </div>
           <h2 className="text-[32px] font-extrabold leading-[1.05] tracking-[-0.035em] text-ink sm:text-[40px] lg:text-[44px]">
-            Don&rsquo;t need us to build it? Host on the OS for $299/mo.
+            <TypeIn
+              text="Don't need us to build it? Host on the OS for $299/mo."
+              cps={80}
+              startAt={700}
+              cursor
+              triggerOnView
+            />
           </h2>
           <p className="mx-auto mt-6 max-w-xl text-[16px] leading-[1.6] text-warm-gray-500">
-            If you&rsquo;ve already got the site and just want what makes Day14 fast &mdash; multi-tenant admin, scheduled agents, evidence-verified work-log, the inbox &mdash; the OS-only tenant tier opens later this summer. Joining the waitlist locks founder pricing.
+            <TypeIn
+              text="If you've already got the site and just want what makes Day14 fast — multi-tenant admin, scheduled agents, evidence-verified work-log, the inbox — the OS-only tenant tier opens later this summer. Joining the waitlist locks founder pricing."
+              cps={320}
+              startAt={1300}
+              triggerOnView
+            />
           </p>
 
           <div className="mt-8 flex flex-col items-center justify-center gap-4">
