@@ -36,6 +36,17 @@
     --space-block: 2.5rem; /* 40px — gap within a section */
   }
 
+  /* Drag-select highlight in ember — brand owns the selection moment
+     instead of the OS default blue. Premium-site signature. */
+  ::selection {
+    background: rgba(239, 108, 51, 0.25);
+    color: #0a0a0a;
+  }
+  ::-moz-selection {
+    background: rgba(239, 108, 51, 0.25);
+    color: #0a0a0a;
+  }
+
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
