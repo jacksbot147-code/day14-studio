@@ -36,13 +36,48 @@ interface TerminalSnippetProps {
   lines: TerminalLine[];
   /** Characters per second. Default 33 (~30ms/char). */
   cps?: number;
+  /**
+   * Visual variant.
+   *   - "dark"  (default): near-black surface, slate type, ember accents.
+   *   - "light": cream surface, ink type, ember accents — sits cleanly on
+   *     paper-cream sections (e.g. the Apple-style How-it-works staircase).
+   */
+  variant?: "dark" | "light";
 }
 
 export function TerminalSnippet({
   title,
   lines,
   cps = 33,
+  variant = "dark",
 }: TerminalSnippetProps) {
+  // Variant-scoped palette. The dark variant matches the original brutalist
+  // terminal; the light variant blends with paper-cream sections and uses
+  // ink for command text + a softer warm-gray for output/chrome.
+  const palette =
+    variant === "light"
+      ? {
+          surface: "#fafaf7", // paper-cream
+          chromeBg: "rgba(15,23,42,0.04)",
+          chromeBorder: "1px solid rgba(15,23,42,0.08)",
+          chromeLabel: "#8a8579", // warm-gray-400
+          text: "#0a0a0a", // ink
+          output: "#8a8579", // warm-gray-400
+          accent: "#ef6c33", // ember
+          boxShadow:
+            "0 24px 60px -20px rgba(239,108,51,0.10), 0 8px 24px -8px rgba(15,23,42,0.06), inset 0 0 0 1px rgba(15,23,42,0.06)",
+        }
+      : {
+          surface: "#0a0e14",
+          chromeBg: "rgba(255,255,255,0.03)",
+          chromeBorder: "1px solid rgba(255,255,255,0.06)",
+          chromeLabel: "#64748b",
+          text: "#e2e8f0",
+          output: "#64748b",
+          accent: "#ef6c33",
+          boxShadow:
+            "0 24px 60px -20px rgba(15,23,42,0.35), inset 0 0 0 1px rgba(255,255,255,0.06)",
+        };
   const ref = useRef<HTMLDivElement | null>(null);
   // `step` tracks how many full lines have rendered + how many chars of the
   // current line have typed. Server + JS-disabled show all lines complete.
@@ -111,12 +146,12 @@ export function TerminalSnippet({
       ref={ref}
       style={{
         borderRadius: 12,
-        background: "#0a0e14",
-        boxShadow: "0 24px 60px -20px rgba(15,23,42,0.35), inset 0 0 0 1px rgba(255,255,255,0.06)",
+        background: palette.surface,
+        boxShadow: palette.boxShadow,
         overflow: "hidden",
         fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
         fontSize: 13,
-        color: "#e2e8f0",
+        color: palette.text,
       }}
     >
       <div
@@ -125,15 +160,15 @@ export function TerminalSnippet({
           alignItems: "center",
           gap: 8,
           padding: "10px 14px",
-          background: "rgba(255,255,255,0.03)",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          background: palette.chromeBg,
+          borderBottom: palette.chromeBorder,
         }}
       >
         <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#ff5f57" }} />
         <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#febc2e" }} />
         <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#28c840" }} />
         {title && (
-          <span style={{ marginLeft: 10, fontSize: 11, color: "#64748b", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 600 }}>
+          <span style={{ marginLeft: 10, fontSize: 11, color: palette.chromeLabel, letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 600 }}>
             {title}
           </span>
         )}
@@ -149,15 +184,15 @@ export function TerminalSnippet({
           return (
             <div key={i} style={{ marginBottom: 6 }}>
               <div>
-                <span style={{ color: "#ef6c33", marginRight: 8 }}>{line.prompt ?? "$"}</span>
-                <span style={{ color: "#e2e8f0" }}>{visibleText}</span>
+                <span style={{ color: palette.accent, marginRight: 8 }}>{line.prompt ?? "$"}</span>
+                <span style={{ color: palette.text }}>{visibleText}</span>
                 {isCurrent && (
                   <span
                     style={{
                       display: "inline-block",
                       width: 8,
                       height: 14,
-                      background: "#ef6c33",
+                      background: palette.accent,
                       marginLeft: 2,
                       verticalAlign: "text-bottom",
                       animation: "term-blink 1s steps(2) infinite",
@@ -166,20 +201,20 @@ export function TerminalSnippet({
                 )}
               </div>
               {line.output && isPast && (
-                <div style={{ color: "#64748b", paddingLeft: 18 }}>{line.output}</div>
+                <div style={{ color: palette.output, paddingLeft: 18 }}>{line.output}</div>
               )}
             </div>
           );
         })}
         {progress.lineIdx >= lines.length && (
           <div>
-            <span style={{ color: "#ef6c33", marginRight: 8 }}>$</span>
+            <span style={{ color: palette.accent, marginRight: 8 }}>$</span>
             <span
               style={{
                 display: "inline-block",
                 width: 8,
                 height: 14,
-                background: "#ef6c33",
+                background: palette.accent,
                 verticalAlign: "text-bottom",
                 animation: "term-blink 1s steps(2) infinite",
               }}

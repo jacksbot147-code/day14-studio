@@ -514,57 +514,85 @@ function StatePill({ state }: { state: "live" | "paused" | "parked" }) {
 /* -------------------------------------------------------------------------- */
 
 function HowItWorks() {
-  return (
-    <section id="how" className="border-t border-ink-100 bg-paper-50 py-20 sm:py-24">
-      <div className="container-page">
-        <SectionDivider />
-        <div className="mt-12">
-          <SectionNumeral n={3} />
-        </div>
-        <SectionHead
-          eyebrow="How the OS actually works"
-          title="Three primitives. Everything else is a consequence."
-        />
+  // Apple-style staircase: each step takes a full row, image (terminal)
+  // and copy alternate sides. A massive ghost numeral sits behind the row
+  // as background art, in warm-gray-100 — present but not loud. The cream
+  // surface lets the light TerminalSnippet variant carry the product-feel
+  // without flipping the section into a dark slab.
+  const terminalsByStep: Array<Array<{ text: string; output?: string }>> = [
+    [
+      { text: "day14 new-tenant my-brand" },
+      { text: "day14 deploy my-brand", output: "✓ deployed to my-brand.day14.us" },
+    ],
+    [
+      { text: "day14 schedule daily-briefing 07:30" },
+      { text: "day14 schedule end-of-day 16:00", output: "✓ 2 agents scheduled" },
+    ],
+    [
+      { text: "open day14.us/admin/inbox" },
+      { text: "# approve / skip — one screen", output: "12 items waiting → 0" },
+    ],
+  ];
 
-        {/* Each step pairs the narrative card with a live-typing terminal so
-            "how it works" feels like product, not marketing copy. */}
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
+  return (
+    <section id="how" className="bg-paper-cream py-32 sm:py-40">
+      <div className="container-page">
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="eyebrow mb-6 justify-center text-ember-600">
+            How it works
+          </div>
+          <h2 className="text-[56px] font-extrabold leading-[0.98] tracking-[-0.04em] text-ink sm:text-[72px] lg:text-[80px]">
+            Three primitives. Everything else is a consequence.
+          </h2>
+        </div>
+
+        <div className="mt-24 flex flex-col gap-24 sm:gap-32">
           {OS_STEPS.map((s, i) => {
-            const terminalLines = [
-              [
-                { text: "day14 new-tenant my-brand" },
-                { text: "day14 deploy my-brand", output: "✓ deployed to my-brand.day14.us" },
-              ],
-              [
-                { text: "day14 schedule daily-briefing 07:30" },
-                { text: "day14 schedule end-of-day 16:00", output: "✓ 2 agents scheduled" },
-              ],
-              [
-                { text: "open day14.us/admin/inbox" },
-                { text: "# approve / skip — one screen", output: "12 items waiting → 0" },
-              ],
-            ][i] ?? [];
+            // Alternate which side the copy sits on. Step 1 + 3: copy left,
+            // terminal right. Step 2: terminal left, copy right.
+            const reverse = i % 2 === 1;
+            const terminalLines = terminalsByStep[i] ?? [];
             return (
-              <div key={s.n} className="flex flex-col gap-4">
-                {/* No image in this section — the narrative card + the
-                    animated terminal IS the visual. The terminal carries
-                    enough atmosphere on its own (typing cursor, macOS
-                    chrome, ember accent) that an illustration above it
-                    just competed for attention. */}
-                <div className="relative flex flex-col rounded-xl border border-ink-100 bg-paper p-7 shadow-[0_2px_8px_-2px_rgba(15,23,42,0.04)]">
-                  <span className="absolute inset-x-0 top-0 h-0.5 w-12 bg-ember-500" />
-                  <div className="font-mono text-xs font-bold uppercase tracking-[0.18em] text-ember-600 tnum">
-                    {s.n}
-                  </div>
-                  <h3 className="mt-3 text-2xl font-extrabold tracking-tightest text-ink">
-                    {s.title}
-                  </h3>
-                  <p className="mt-4 text-sm text-ink-500">{s.body}</p>
+              <div key={s.n} className="relative">
+                {/* Ghost numeral — 200-280px warm-gray-100, sits behind the
+                    step content as scroll-cinema background art. Positioned
+                    on the same side as the copy column for visual rhyme. */}
+                <div
+                  aria-hidden="true"
+                  className={cn(
+                    "pointer-events-none absolute -top-12 select-none font-extrabold leading-none tracking-[-0.06em] text-warm-gray-100",
+                    "text-[200px] sm:text-[240px] lg:text-[280px]",
+                    reverse ? "right-0 sm:-right-6" : "left-0 sm:-left-6",
+                  )}
+                >
+                  {s.n}
                 </div>
-                <TerminalSnippet
-                  title={`step ${s.n}`}
-                  lines={terminalLines}
-                />
+
+                <div
+                  className={cn(
+                    "relative z-10 grid items-center gap-10 lg:grid-cols-2 lg:gap-16",
+                    reverse && "lg:[&>*:first-child]:order-2",
+                  )}
+                >
+                  <div>
+                    <div className="font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-ember-600 tnum">
+                      Step {s.n}
+                    </div>
+                    <h3 className="mt-5 text-[48px] font-extrabold leading-[0.98] tracking-[-0.035em] text-ink sm:text-[56px] lg:text-[64px]">
+                      {s.title}
+                    </h3>
+                    <p className="mt-6 max-w-xl text-[18px] leading-[1.6] text-warm-gray-500">
+                      {s.body}
+                    </p>
+                  </div>
+                  <div>
+                    <TerminalSnippet
+                      title={`step ${s.n}`}
+                      lines={terminalLines}
+                      variant="light"
+                    />
+                  </div>
+                </div>
               </div>
             );
           })}
@@ -579,115 +607,81 @@ function HowItWorks() {
 /* -------------------------------------------------------------------------- */
 
 function Pricing() {
-  return (
-    <section id="pricing" className="border-t border-ink-100 py-20 sm:py-24">
-      <div className="container-page">
-        <SectionDivider />
-        <div className="mt-12">
-          <SectionNumeral n={4} />
-        </div>
-        <SectionHead
-          eyebrow="Founder pricing — open until 100 signups"
-          title="Three tiers. Pick one."
-          lead={
-            <>
-              Founder pricing locks for the first 100 signups. After that the Founder tier closes; Portfolio becomes the top public tier.
-            </>
-          }
-        />
+  // Apple-style soft cards on cream. All three tiers live on the same
+  // paper-cream surface (no dark-inverted Portfolio) so the row reads as
+  // one harmonious shelf. Portfolio gets an ember 2px border + a
+  // "Recommended" pill in the top-right; the other two stay quiet.
+  const cardShadow =
+    "0 24px 60px -20px rgba(239, 108, 51, 0.10), 0 8px 24px -8px rgba(15, 23, 42, 0.06)";
 
-        <div className="mt-12 grid border-l border-t border-ink-200 md:grid-cols-3">
+  return (
+    <section id="pricing" className="bg-paper-cream py-32 sm:py-40">
+      <div className="container-page">
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="eyebrow mb-6 justify-center text-ember-600">
+            Founder pricing — open until 100 signups
+          </div>
+          <h2 className="text-[56px] font-extrabold leading-[0.98] tracking-[-0.04em] text-ink sm:text-[72px] lg:text-[80px]">
+            Three tiers. Pick one.
+          </h2>
+          <p className="mx-auto mt-8 max-w-2xl text-[17px] leading-[1.6] text-warm-gray-500 sm:text-[18px]">
+            Founder pricing locks for the first 100 signups. After that the Founder tier closes; Portfolio becomes the top public tier.
+          </p>
+        </div>
+
+        <div className="mt-20 grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-5">
           {OS_TIERS.map((tier) => (
             <article
               key={tier.name}
               className={cn(
-                "relative flex flex-col border-b border-r border-ink-200 p-7",
-                // Soft hover lift + shadow — keeps the brutalist border but adds an
-                // affordance that this is a choice point, not a static spec sheet.
-                "transition-all duration-200 ease-out motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-xl",
-                tier.popular ? "bg-ink text-paper motion-safe:hover:shadow-ember-300/30" : "bg-paper",
+                "relative flex flex-col bg-paper-cream p-8",
+                "rounded-[24px]",
+                "transition-transform duration-200 ease-out motion-safe:hover:-translate-y-0.5",
+                tier.popular
+                  ? "border-2 border-ember-500"
+                  : "border border-warm-gray-100",
               )}
+              style={{ boxShadow: cardShadow }}
             >
               {tier.popular ? (
-                <div className="absolute right-0 top-0 bg-ember-500 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-white">
-                  Built for this shape
-                </div>
+                <span className="absolute -top-3 right-6 inline-flex items-center rounded-full bg-ember-500 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-white shadow-[0_4px_12px_-2px_rgba(239,108,51,0.4)]">
+                  Recommended
+                </span>
               ) : null}
 
-              <h3
-                className={cn(
-                  "text-2xl font-extrabold tracking-tightest",
-                  tier.popular ? "text-paper" : "text-ink",
-                )}
-              >
+              <h3 className="text-[28px] font-extrabold leading-[1.05] tracking-[-0.025em] text-ink">
                 {tier.name}
               </h3>
-              <p
-                className={cn(
-                  "mt-1 font-mono text-xs uppercase tracking-widest",
-                  tier.popular ? "text-paper-300" : "text-ink-400",
-                )}
-              >
+              <p className="mt-2 font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-warm-gray-400">
                 {tier.tenants}
               </p>
 
-              <div className="mt-6 flex items-baseline gap-1 tnum">
-                <span
-                  className={cn(
-                    "text-4xl font-extrabold tracking-tightest",
-                    tier.popular ? "text-paper" : "text-ink",
-                  )}
-                >
+              <div className="mt-7 flex items-baseline gap-1 tnum">
+                <span className="text-[56px] font-extrabold leading-none tracking-[-0.035em] text-ink">
                   {tier.price}
                 </span>
-                <span
-                  className={cn(
-                    "text-sm font-medium",
-                    tier.popular ? "text-paper-300" : "text-ink-400",
-                  )}
-                >
+                <span className="text-base font-medium text-warm-gray-400">
                   {tier.cadence}
                 </span>
               </div>
 
-              <a
-                href="#waitlist"
-                className={cn(
-                  "mt-6 w-full",
-                  tier.popular ? "btn-ember" : "btn-primary",
-                )}
-              >
-                Join the waitlist
-              </a>
+              <div className="my-7 h-px w-full bg-warm-gray-100" />
 
-              <div
-                className={cn(
-                  "my-7 h-px w-full",
-                  tier.popular ? "bg-paper-200/20" : "bg-ink-100",
-                )}
-              />
-
-              <div
-                className={cn(
-                  "mb-3 font-mono text-[11px] font-bold uppercase tracking-[0.22em]",
-                  tier.popular ? "text-ember-300" : "text-ember-600",
-                )}
-              >
-                Best for
-              </div>
-              <p
-                className={cn(
-                  "text-sm",
-                  tier.popular ? "text-paper-200" : "text-ink-500",
-                )}
-              >
+              <p className="text-[15px] leading-[1.6] text-warm-gray-500">
                 {tier.bestFor}
               </p>
+
+              <a
+                href="#waitlist"
+                className="mt-8 inline-flex items-center justify-center self-start rounded-full bg-ember-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors duration-150 hover:bg-ember-600"
+              >
+                Join the waitlist →
+              </a>
             </article>
           ))}
         </div>
 
-        <p className="mt-10 font-mono text-xs uppercase tracking-widest text-ink-400">
+        <p className="mt-12 text-center font-mono text-[11px] uppercase tracking-[0.22em] text-warm-gray-400">
           No drip campaign · No upsell · Founder tier closes at 100 signups
         </p>
       </div>
@@ -700,44 +694,52 @@ function Pricing() {
 /* -------------------------------------------------------------------------- */
 
 function Waitlist() {
+  // Base44-style center-stack. The dual-column layout is gone; the headline,
+  // the lead, and the form sit on a single vertical axis with breathing
+  // room. The form itself lives inside a soft-shadowed cream card so it
+  // reads as the deliberate point of action on the page.
+  const cardShadow =
+    "0 24px 60px -20px rgba(239, 108, 51, 0.10), 0 8px 24px -8px rgba(15, 23, 42, 0.06)";
+
   return (
     <section
       id="waitlist"
-      className="border-t border-ink-100 bg-paper-50 py-20 sm:py-24"
+      className="bg-paper-cream py-32 sm:py-40"
     >
       <div className="container-page">
-        <SectionDivider />
-        <div className="mt-12 mb-6">
-          <SectionNumeral n={5} />
-        </div>
-        <div className="grid items-start gap-10 md:grid-cols-[1fr_1fr] md:gap-16">
-          <div>
-            <div className="eyebrow eyebrow-rule mb-5">The 24-hour signal</div>
-            <h2 className="text-3xl font-extrabold tracking-tightest text-ink sm:text-[2.5rem] sm:leading-[1.05]">
-              I&rsquo;m opening the waitlist today. The signal closes Sunday.
-            </h2>
-            <p className="mt-5 text-ink-500">
-              If 50+ operators want this by Sunday at 14:00 EDT, I start onboarding next week. If fewer, I refocus on the strongest tenant and the OS stays private tooling. Either answer is useful. The point of the waitlist is to find out.
-            </p>
+        <div className="mx-auto max-w-md text-center">
+          <div className="eyebrow mb-6 justify-center text-ember-600">
+            The 24-hour signal
           </div>
+          <h2 className="text-[40px] font-extrabold leading-[1.02] tracking-[-0.035em] text-ink sm:text-[48px] lg:text-[56px]">
+            Opening the waitlist today. Closes Sunday.
+          </h2>
+          <p className="mt-7 text-[17px] leading-[1.6] text-warm-gray-500">
+            If 50+ operators want this by Sunday at 14:00 EDT, I start onboarding next week. If fewer, I refocus on the strongest tenant and the OS stays private tooling. Either answer is useful — the point of the waitlist is to find out.
+          </p>
+        </div>
 
-          <div className="rounded-lg border border-ink-200 bg-paper p-7">
-            <div className="font-mono text-xs font-bold uppercase tracking-[0.22em] text-ember-600">
+        <div
+          className="mx-auto mt-12 max-w-md rounded-[24px] bg-paper-cream p-8"
+          style={{ boxShadow: cardShadow }}
+        >
+          <div className="text-center">
+            <div className="font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-ember-600">
               Day14 OS · waitlist
             </div>
-            <h3 className="mt-2 text-xl font-extrabold tracking-tightest text-ink">
+            <h3 className="mt-2 text-[22px] font-extrabold tracking-[-0.025em] text-ink">
               One email, Sunday.
             </h3>
-            <p className="mt-2 text-sm text-ink-500">
-              I&rsquo;ll send one email Sunday with where the signal landed, and maybe one more on launch day. That&rsquo;s the whole sequence.
-            </p>
-            <div className="mt-5">
-              <WaitlistForm />
-            </div>
-            <p className="mt-3 font-mono text-[11px] text-ink-400">
-              No drip campaign. No upsell. Unsubscribe is a one-click reply.
+            <p className="mt-2 text-[15px] leading-[1.55] text-warm-gray-500">
+              One email Sunday with where the signal landed, and maybe one more on launch day. That&rsquo;s the whole sequence.
             </p>
           </div>
+          <div className="mt-6">
+            <WaitlistForm />
+          </div>
+          <p className="mt-4 text-center font-mono text-[11px] tracking-[0.04em] text-warm-gray-400">
+            No drip campaign. No upsell. Unsubscribe is a one-click reply.
+          </p>
         </div>
       </div>
     </section>
@@ -749,46 +751,40 @@ function Waitlist() {
 /* -------------------------------------------------------------------------- */
 
 function FooterCta() {
+  // Cream finale. The dark slab is gone — the page resolves on the same
+  // paper-cream surface it lived in, with a single ember pill CTA carrying
+  // the action. Email lives below as a quiet ghost link.
   return (
-    <section className="border-t border-ink-100 py-20 sm:py-24">
+    <section className="bg-paper-cream py-32 sm:py-40">
       <div className="container-page">
-        <div className="relative overflow-hidden rounded-lg border border-ink-700 bg-ink p-10 text-paper sm:p-14">
-          {/* Cinematic ember-filament macro backdrop — Gemini-rendered
-              circuit-board-vein-of-fire image. Scrim treatment vignettes the
-              edges so the dark slab and headline still dominate. */}
-          <CinematicImage
-            src="/images/landing/footer-circuit.png"
-            alt=""
-            treatment="scrim"
-            position="center"
-          />
-          <div className="grid-lines-dark absolute inset-0 [mask-image:radial-gradient(600px_360px_at_15%_0%,#000,transparent_75%)]" />
-          <div className="relative z-10 grid items-center gap-10 md:grid-cols-[1.4fr_1fr]">
-            <div>
-              <div className="eyebrow eyebrow-rule mb-5 text-ember-300">
-                The day-job, still on offer
-              </div>
-              <h2 className="text-3xl font-extrabold tracking-tightest text-paper sm:text-[2.5rem] sm:leading-[1.05]">
-                Want a single 14-day build instead? That offer still stands.
-              </h2>
-              <p className="mt-5 max-w-xl text-paper-200">
-                The build studio that funded Day14 OS is still taking three customers a month. Fixed-price 14-day platforms — site, portal, admin app, billing. Same operator, same agents, different deliverable.
-              </p>
-            </div>
-            <div className="flex flex-col gap-3">
-              <Link href="/work-with-us" className="btn-ember w-full justify-center text-base">
-                See the 14-day SKUs →
-              </Link>
-              <a
-                href={`mailto:${SITE.email}`}
-                className="inline-flex w-full items-center justify-center rounded-sm border border-paper-200/30 px-5 py-3 text-sm font-semibold text-paper transition-colors hover:border-paper-200/60 hover:bg-paper/5"
-              >
-                Or email {SITE.email}
-              </a>
-              <div className="mt-2 text-center font-mono text-xs uppercase tracking-widest text-paper-300/70">
-                Three slots open this month
-              </div>
-            </div>
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="eyebrow mb-6 justify-center text-ember-600">
+            The day-job, still on offer
+          </div>
+          <h2 className="text-[48px] font-extrabold leading-[1] tracking-[-0.04em] text-ink sm:text-[56px] lg:text-[64px]">
+            Want a single 14-day build instead? That offer still stands.
+          </h2>
+          <p className="mx-auto mt-8 max-w-2xl text-[17px] leading-[1.6] text-warm-gray-500 sm:text-[18px]">
+            The build studio that funded Day14 OS is still taking three customers a month. Fixed-price 14-day platforms — site, portal, admin app, billing. Same operator, same agents, different deliverable.
+          </p>
+
+          <div className="mt-10 flex flex-col items-center justify-center gap-5">
+            <Link
+              href="/work-with-us"
+              className="inline-flex items-center justify-center rounded-full bg-ember-500 px-6 py-3 text-base font-semibold text-white transition-colors duration-150 hover:bg-ember-600"
+            >
+              See the 14-day SKUs →
+            </Link>
+            <a
+              href={`mailto:${SITE.email}`}
+              className="text-sm font-semibold text-warm-gray-500 underline decoration-warm-gray-200 underline-offset-4 transition-colors duration-150 hover:text-ink hover:decoration-ember-500"
+            >
+              Or email {SITE.email}
+            </a>
+          </div>
+
+          <div className="mt-8 font-mono text-[11px] uppercase tracking-[0.22em] text-warm-gray-400">
+            Three slots open this month
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-03T07:29:40.618Z",
+  "generated_at": "2026-06-03T08:30:51.106Z",
   "tenants": [
     {
       "slug": "day14",
@@ -299,6 +299,53 @@
       "streak": 0,
       "recent_audit": [
         {
+          "ts": "2026-06-03T08:15:00.819Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "lawn-care-gm",
+          "action": "cluster_run",
+          "scaffolded": 0,
+          "season": "Rainy / peak growth (May–Oct)",
+          "pipeline_value": 0,
+          "at_risk": 0
+        },
+        {
+          "ts": "2026-06-03T08:15:00.818Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "portal-agent",
+          "action": "portal_feeds_built",
+          "portal_feeds": 0
+        },
+        {
+          "ts": "2026-06-03T08:15:00.817Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "crm-agent",
+          "action": "crm_scored",
+          "customers": 0,
+          "at_risk": 0,
+          "upsell_openings": 0
+        },
+        {
+          "ts": "2026-06-03T08:15:00.815Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "scheduling-agent",
+          "action": "routes_optimized",
+          "scheduled": 0,
+          "rolled_for_weather": 0,
+          "avg_density": 0
+        },
+        {
+          "ts": "2026-06-03T08:15:00.803Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "pipeline-agent",
+          "action": "pipeline_advanced",
+          "quoted": 0,
+          "opened": 0,
+          "invoiced": 0,
+          "open_leads": 0,
+          "pipeline_value": 0,
+          "outstanding_cents": 0
+        },
+        {
           "ts": "2026-06-03T07:13:54.747Z",
           "tenant": "kennum-lawn-care",
           "actor": "lawn-care-gm",
@@ -523,53 +570,6 @@
         },
         {
           "ts": "2026-06-03T04:06:55.507Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "pipeline-agent",
-          "action": "pipeline_advanced",
-          "quoted": 0,
-          "opened": 0,
-          "invoiced": 0,
-          "open_leads": 0,
-          "pipeline_value": 0,
-          "outstanding_cents": 0
-        },
-        {
-          "ts": "2026-06-03T03:36:55.263Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "lawn-care-gm",
-          "action": "cluster_run",
-          "scaffolded": 0,
-          "season": "Rainy / peak growth (May–Oct)",
-          "pipeline_value": 0,
-          "at_risk": 0
-        },
-        {
-          "ts": "2026-06-03T03:36:55.262Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "portal-agent",
-          "action": "portal_feeds_built",
-          "portal_feeds": 0
-        },
-        {
-          "ts": "2026-06-03T03:36:55.261Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "crm-agent",
-          "action": "crm_scored",
-          "customers": 0,
-          "at_risk": 0,
-          "upsell_openings": 0
-        },
-        {
-          "ts": "2026-06-03T03:36:55.260Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "scheduling-agent",
-          "action": "routes_optimized",
-          "scheduled": 0,
-          "rolled_for_weather": 0,
-          "avg_density": 0
-        },
-        {
-          "ts": "2026-06-03T03:36:55.246Z",
           "tenant": "kennum-lawn-care",
           "actor": "pipeline-agent",
           "action": "pipeline_advanced",
@@ -1045,17 +1045,17 @@
       "name": "auto-restart-watchdog",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T07:29:35.942Z"
+      "lastBeat": "2026-06-03T08:30:00.499Z"
     },
     {
       "name": "auto-restart-watchdog-cycle",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 3,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T07:29:25.506Z"
+      "lastBeat": "2026-06-03T08:27:45.915Z"
     },
     {
       "name": "customer-success",
@@ -1063,7 +1063,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T07:29:30.738Z"
+      "lastBeat": "2026-06-03T08:30:25.314Z"
     },
     {
       "name": "expansion-prompter",
@@ -1071,15 +1071,15 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T07:29:25.681Z"
+      "lastBeat": "2026-06-03T08:30:46.999Z"
     },
     {
       "name": "gmail-cs-triage",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 21,
+      "ageMin": 23,
       "cadenceMin": 30,
-      "lastBeat": "2026-06-03T07:08:47.000Z"
+      "lastBeat": "2026-06-03T08:07:41.000Z"
     },
     {
       "name": "growth-narrator",
@@ -1087,7 +1087,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T07:29:25.681Z"
+      "lastBeat": "2026-06-03T08:30:28.904Z"
     },
     {
       "name": "growth-watcher",
@@ -1095,7 +1095,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T07:29:25.709Z"
+      "lastBeat": "2026-06-03T08:30:21.931Z"
     },
     {
       "name": "hot-flash-co-orders",
@@ -1103,7 +1103,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T07:29:27.722Z"
+      "lastBeat": "2026-06-03T08:30:24.217Z"
     },
     {
       "name": "lawn-care-gm-kennum-lawn-care",
@@ -1111,7 +1111,7 @@
       "status": "healthy",
       "ageMin": 16,
       "cadenceMin": 30,
-      "lastBeat": "2026-06-03T07:13:54.747Z"
+      "lastBeat": "2026-06-03T08:15:00.819Z"
     },
     {
       "name": "opportunity-scanner",
@@ -1119,7 +1119,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T07:29:25.740Z"
+      "lastBeat": "2026-06-03T08:30:22.078Z"
     },
     {
       "name": "outbox-deadletter",
@@ -1127,15 +1127,15 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T07:29:25.844Z"
+      "lastBeat": "2026-06-03T08:30:22.289Z"
     },
     {
       "name": "outbox-deadletter-cycle",
       "kind": "daemon",
       "status": "stale",
-      "ageMin": 25,
+      "ageMin": 23,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T07:04:25.819Z"
+      "lastBeat": "2026-06-03T08:07:22.363Z"
     },
     {
       "name": "proactive-monitor",
@@ -1143,13 +1143,13 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T07:28:53.909Z"
+      "lastBeat": "2026-06-03T08:29:59.870Z"
     },
     {
       "name": "realty-scout-day14-realty",
       "kind": "oneshot",
       "status": "healthy",
-      "ageMin": 3,
+      "ageMin": 64,
       "cadenceMin": 60,
       "lastBeat": "2026-06-03T07:26:57.606Z"
     },
@@ -1157,9 +1157,9 @@
       "name": "recursive-expansion",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T07:28:53.945Z"
+      "lastBeat": "2026-06-03T08:30:23.829Z"
     },
     {
       "name": "skill-multiplier",
@@ -1167,15 +1167,15 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T07:29:25.475Z"
+      "lastBeat": "2026-06-03T08:30:21.956Z"
     },
     {
       "name": "stripe-cs-loop",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 6,
+      "ageMin": 7,
       "cadenceMin": 60,
-      "lastBeat": "2026-06-03T07:23:51.000Z"
+      "lastBeat": "2026-06-03T08:24:16.000Z"
     },
     {
       "name": "system-pulse",
@@ -1183,13 +1183,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T07:29:25.849Z"
+      "lastBeat": "2026-06-03T08:30:46.058Z"
     },
     {
       "name": "telegram-poller",
       "kind": "daemon",
       "status": "error",
-      "ageMin": 15960,
+      "ageMin": 16021,
       "cadenceMin": 1,
       "lastBeat": "2026-05-23T05:29:56.124Z"
     },
@@ -1197,9 +1197,9 @@
       "name": "vercel-deploy-monitor",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 26,
+      "ageMin": 23,
       "cadenceMin": 60,
-      "lastBeat": "2026-06-03T07:03:57.000Z"
+      "lastBeat": "2026-06-03T08:08:03.000Z"
     },
     {
       "name": "video-pipeline",
@@ -1207,7 +1207,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T07:29:28.073Z"
+      "lastBeat": "2026-06-03T08:30:22.657Z"
     }
   ],
   "skill_counts": {
@@ -1588,6 +1588,15 @@
       "status": "open"
     },
     {
+      "id": "genz-firstgen-finlit",
+      "niche": "Practical financial literacy & aid navigation for Gen Z / first-generation college students",
+      "total_score": 83.25,
+      "suggested_archetype": "info-product",
+      "rationale": "This demographic is actively searching for financial guidance online but needs reliable, jargon-free, and practical tools. Info-products (e.g., ebooks, templates, micro-courses) can be rapidly created and distributed, directly addressing specific pain points like FAFSA completion, budgeting for student life, or understanding loan terms. The 'first-generation' angle provides a strong, underserved n",
+      "pitched": false,
+      "status": "open"
+    },
+    {
       "id": "curated-deep-experience-kits",
       "niche": "Curated 'Deep Experience' kits & guides for niche hobbies/travel",
       "total_score": 83,
@@ -1675,6 +1684,15 @@
       "suggested_archetype": "physical-product",
       "rationale": "While 'meal plans, recipes, and curated grocery lists for chronic g' addresses gut health, many other chronic illnesses require specific self-care and symptom management tools. The current market often provides clinical, uninspiring products. There's an opportunity to create a brand that offers a curated selection of design-led, holistic, and comforting products, along with supportive information,",
       "pitched": true,
+      "status": "open"
+    },
+    {
+      "id": "neuro-adult-aesthetics",
+      "niche": "Aesthetic & functional sensory/productivity aids for neurodivergent adults",
+      "total_score": 82.5,
+      "suggested_archetype": "physical-product",
+      "rationale": "There's a clear gap for a brand that curates or designs sensory and productivity products specifically for neurodivergent adults, focusing on aesthetics and functionality that fit into an adult lifestyle. This demographic is actively online and underserved by generic, often childish, offerings. A physical product approach allows for tangible solutions that directly address their needs.",
+      "pitched": false,
       "status": "open"
     },
     {
@@ -1975,6 +1993,15 @@
       "status": "open"
     },
     {
+      "id": "rural-senior-essentials",
+      "niche": "Simplified, trustworthy e-commerce for essential goods for rural older adults",
+      "total_score": 77.5,
+      "suggested_archetype": "physical-product",
+      "rationale": "This demographic is underserved by mainstream e-commerce due to accessibility barriers and trust issues, especially in rural areas where local options are scarce. A curated physical product offering focuses on essential goods with a simplified, trust-centric online experience (or even a phone/mail-order option for initial onboarding) can gain traction. Emphasizing clear visuals, large text, and gu",
+      "pitched": false,
+      "status": "open"
+    },
+    {
       "id": "ai-prompt-management-teams",
       "niche": "AI prompt management & optimization for small teams and solopreneurs",
       "total_score": 77,
@@ -2093,6 +2120,53 @@
     }
   ],
   "empire_battle_log": [
+    {
+      "ts": "2026-06-03T08:15:00.819Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "lawn-care-gm",
+      "action": "cluster_run",
+      "scaffolded": 0,
+      "season": "Rainy / peak growth (May–Oct)",
+      "pipeline_value": 0,
+      "at_risk": 0
+    },
+    {
+      "ts": "2026-06-03T08:15:00.818Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "portal-agent",
+      "action": "portal_feeds_built",
+      "portal_feeds": 0
+    },
+    {
+      "ts": "2026-06-03T08:15:00.817Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "crm-agent",
+      "action": "crm_scored",
+      "customers": 0,
+      "at_risk": 0,
+      "upsell_openings": 0
+    },
+    {
+      "ts": "2026-06-03T08:15:00.815Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "scheduling-agent",
+      "action": "routes_optimized",
+      "scheduled": 0,
+      "rolled_for_weather": 0,
+      "avg_density": 0
+    },
+    {
+      "ts": "2026-06-03T08:15:00.803Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "pipeline-agent",
+      "action": "pipeline_advanced",
+      "quoted": 0,
+      "opened": 0,
+      "invoiced": 0,
+      "open_leads": 0,
+      "pipeline_value": 0,
+      "outstanding_cents": 0
+    },
     {
       "ts": "2026-06-03T07:26:56.281Z",
       "tenant": "day14-realty",
@@ -2331,53 +2405,6 @@
       "tier_a": 13937,
       "tier_b": 15298,
       "top_deal": "3030 39TH ST SW (96)"
-    },
-    {
-      "ts": "2026-06-03T05:21:54.674Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "lawn-care-gm",
-      "action": "cluster_run",
-      "scaffolded": 0,
-      "season": "Rainy / peak growth (May–Oct)",
-      "pipeline_value": 0,
-      "at_risk": 0
-    },
-    {
-      "ts": "2026-06-03T05:21:54.674Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "portal-agent",
-      "action": "portal_feeds_built",
-      "portal_feeds": 0
-    },
-    {
-      "ts": "2026-06-03T05:21:54.673Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "crm-agent",
-      "action": "crm_scored",
-      "customers": 0,
-      "at_risk": 0,
-      "upsell_openings": 0
-    },
-    {
-      "ts": "2026-06-03T05:21:54.672Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "scheduling-agent",
-      "action": "routes_optimized",
-      "scheduled": 0,
-      "rolled_for_weather": 0,
-      "avg_density": 0
-    },
-    {
-      "ts": "2026-06-03T05:21:54.661Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "pipeline-agent",
-      "action": "pipeline_advanced",
-      "quoted": 0,
-      "opened": 0,
-      "invoiced": 0,
-      "open_leads": 0,
-      "pipeline_value": 0,
-      "outstanding_cents": 0
     }
   ],
   "human_todos": [
