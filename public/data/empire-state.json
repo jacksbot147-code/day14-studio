@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-03T04:07:15.998Z",
+  "generated_at": "2026-06-03T05:07:22.020Z",
   "tenants": [
     {
       "slug": "day14",
@@ -299,6 +299,53 @@
       "streak": 0,
       "recent_audit": [
         {
+          "ts": "2026-06-03T04:51:54.537Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "lawn-care-gm",
+          "action": "cluster_run",
+          "scaffolded": 0,
+          "season": "Rainy / peak growth (May–Oct)",
+          "pipeline_value": 0,
+          "at_risk": 0
+        },
+        {
+          "ts": "2026-06-03T04:51:54.536Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "portal-agent",
+          "action": "portal_feeds_built",
+          "portal_feeds": 0
+        },
+        {
+          "ts": "2026-06-03T04:51:54.536Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "crm-agent",
+          "action": "crm_scored",
+          "customers": 0,
+          "at_risk": 0,
+          "upsell_openings": 0
+        },
+        {
+          "ts": "2026-06-03T04:51:54.535Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "scheduling-agent",
+          "action": "routes_optimized",
+          "scheduled": 0,
+          "rolled_for_weather": 0,
+          "avg_density": 0
+        },
+        {
+          "ts": "2026-06-03T04:51:54.520Z",
+          "tenant": "kennum-lawn-care",
+          "actor": "pipeline-agent",
+          "action": "pipeline_advanced",
+          "quoted": 0,
+          "opened": 0,
+          "invoiced": 0,
+          "open_leads": 0,
+          "pipeline_value": 0,
+          "outstanding_cents": 0
+        },
+        {
           "ts": "2026-06-03T04:06:55.524Z",
           "tenant": "kennum-lawn-care",
           "actor": "lawn-care-gm",
@@ -523,53 +570,6 @@
         },
         {
           "ts": "2026-06-03T02:15:14.605Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "pipeline-agent",
-          "action": "pipeline_advanced",
-          "quoted": 0,
-          "opened": 0,
-          "invoiced": 0,
-          "open_leads": 0,
-          "pipeline_value": 0,
-          "outstanding_cents": 0
-        },
-        {
-          "ts": "2026-06-03T01:42:03.301Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "lawn-care-gm",
-          "action": "cluster_run",
-          "scaffolded": 0,
-          "season": "Rainy / peak growth (May–Oct)",
-          "pipeline_value": 0,
-          "at_risk": 0
-        },
-        {
-          "ts": "2026-06-03T01:42:03.300Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "portal-agent",
-          "action": "portal_feeds_built",
-          "portal_feeds": 0
-        },
-        {
-          "ts": "2026-06-03T01:42:03.299Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "crm-agent",
-          "action": "crm_scored",
-          "customers": 0,
-          "at_risk": 0,
-          "upsell_openings": 0
-        },
-        {
-          "ts": "2026-06-03T01:42:03.298Z",
-          "tenant": "kennum-lawn-care",
-          "actor": "scheduling-agent",
-          "action": "routes_optimized",
-          "scheduled": 0,
-          "rolled_for_weather": 0,
-          "avg_density": 0
-        },
-        {
-          "ts": "2026-06-03T01:42:03.288Z",
           "tenant": "kennum-lawn-care",
           "actor": "pipeline-agent",
           "action": "pipeline_advanced",
@@ -1047,7 +1047,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T04:07:12.280Z"
+      "lastBeat": "2026-06-03T05:06:53.848Z"
     },
     {
       "name": "auto-restart-watchdog-cycle",
@@ -1055,7 +1055,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T04:07:12.166Z"
+      "lastBeat": "2026-06-03T05:06:53.867Z"
     },
     {
       "name": "customer-success",
@@ -1063,55 +1063,55 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T04:06:55.006Z"
+      "lastBeat": "2026-06-03T05:07:20.967Z"
     },
     {
       "name": "expansion-prompter",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T04:06:55.011Z"
+      "lastBeat": "2026-06-03T05:06:27.535Z"
     },
     {
       "name": "gmail-cs-triage",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 29,
+      "ageMin": 30,
       "cadenceMin": 30,
-      "lastBeat": "2026-06-03T03:38:45.000Z"
+      "lastBeat": "2026-06-03T04:37:13.000Z"
     },
     {
       "name": "growth-narrator",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T04:06:55.034Z"
+      "lastBeat": "2026-06-03T05:06:27.869Z"
     },
     {
       "name": "growth-watcher",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T04:06:54.999Z"
+      "lastBeat": "2026-06-03T05:06:24.044Z"
     },
     {
       "name": "hot-flash-co-orders",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T04:06:55.026Z"
+      "lastBeat": "2026-06-03T05:06:26.061Z"
     },
     {
       "name": "lawn-care-gm-kennum-lawn-care",
       "kind": "oneshot",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 15,
       "cadenceMin": 30,
-      "lastBeat": "2026-06-03T04:06:55.525Z"
+      "lastBeat": "2026-06-03T04:51:54.537Z"
     },
     {
       "name": "opportunity-scanner",
@@ -1119,15 +1119,15 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T04:06:54.999Z"
+      "lastBeat": "2026-06-03T05:06:54.004Z"
     },
     {
       "name": "outbox-deadletter",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T04:06:55.029Z"
+      "lastBeat": "2026-06-03T05:06:24.305Z"
     },
     {
       "name": "outbox-deadletter-cycle",
@@ -1135,7 +1135,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T04:06:54.914Z"
+      "lastBeat": "2026-06-03T05:06:54.883Z"
     },
     {
       "name": "proactive-monitor",
@@ -1143,13 +1143,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T04:06:55.020Z"
+      "lastBeat": "2026-06-03T05:06:53.962Z"
     },
     {
       "name": "realty-scout-day14-realty",
       "kind": "oneshot",
       "status": "healthy",
-      "ageMin": 9,
+      "ageMin": 69,
       "cadenceMin": 60,
       "lastBeat": "2026-06-03T03:58:45.141Z"
     },
@@ -1159,21 +1159,21 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T04:06:55.037Z"
+      "lastBeat": "2026-06-03T05:06:53.991Z"
     },
     {
       "name": "skill-multiplier",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T04:06:55.003Z"
+      "lastBeat": "2026-06-03T05:06:23.795Z"
     },
     {
       "name": "stripe-cs-loop",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 42,
+      "ageMin": 103,
       "cadenceMin": 60,
       "lastBeat": "2026-06-03T03:24:50.000Z"
     },
@@ -1181,15 +1181,15 @@
       "name": "system-pulse",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T04:06:55.023Z"
+      "lastBeat": "2026-06-03T05:06:27.543Z"
     },
     {
       "name": "telegram-poller",
       "kind": "daemon",
       "status": "error",
-      "ageMin": 15757,
+      "ageMin": 15817,
       "cadenceMin": 1,
       "lastBeat": "2026-05-23T05:29:56.124Z"
     },
@@ -1197,17 +1197,17 @@
       "name": "vercel-deploy-monitor",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 2,
+      "ageMin": 3,
       "cadenceMin": 60,
-      "lastBeat": "2026-06-03T04:05:19.000Z"
+      "lastBeat": "2026-06-03T05:04:14.000Z"
     },
     {
       "name": "video-pipeline",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-03T04:06:55.006Z"
+      "lastBeat": "2026-06-03T05:06:26.423Z"
     }
   ],
   "skill_counts": {
@@ -1287,6 +1287,15 @@
       "total_score": 87.5,
       "suggested_archetype": "info-product",
       "rationale": "The rapid emergence of state-level data privacy laws creates a complex and costly compliance burden for SMBs. These businesses often lack the resources for dedicated legal counsel but face significant penalties for non-compliance. A solo founder can provide affordable, actionable, state-specific compliance kits (templates, guides) to meet this immediate and ongoing demand, leveraging automation fo",
+      "pitched": true,
+      "status": "open"
+    },
+    {
+      "id": "digital-declutter-legacy-aging-families",
+      "niche": "Guided digital decluttering & legacy curation for aging families",
+      "total_score": 87.25,
+      "suggested_archetype": "course",
+      "rationale": "The confluence of digital proliferation and an aging population creates a critical need for empathetic and practical digital organization solutions. Existing tools focus on legal aspects or offer piecemeal solutions. A guided course or membership, emphasizing empathy and a structured process, can empower families to tackle overwhelming digital clutter, preserve memories, and prepare for digital le",
       "pitched": true,
       "status": "open"
     },
@@ -1377,6 +1386,15 @@
       "total_score": 86.25,
       "suggested_archetype": "info-product",
       "rationale": "AI is a dominant trend, but many tools are either too complex or too generic for solo founders. By offering curated, AI-augmented design templates and content frameworks specifically for solopreneurs, we can provide significant time-saving and quality-boosting solutions. This leverages Day14's automation stack for design generation and caters to the demand for digital products and personalized sol",
+      "pitched": true,
+      "status": "open"
+    },
+    {
+      "id": "ai-hyperlocal-content-playbook",
+      "niche": "AI-powered hyper-local content & SEO playbook for service pros",
+      "total_score": 86,
+      "suggested_archetype": "info-product",
+      "rationale": "Local service businesses represent a large market with a persistent, well-defined pain point in generating effective local content and managing SEO. An AI-powered, subscription-based playbook that provides hyper-local, industry-specific, and fill-in-the-blank content templates simplifies a complex task, enabling solo operators to compete effectively online without hiring expensive agencies or beco",
       "pitched": true,
       "status": "open"
     },
@@ -1633,6 +1651,15 @@
       "status": "open"
     },
     {
+      "id": "vetted-eco-sourcing-toolkit",
+      "niche": "Vetted ethical & sustainable sourcing for micro-brands",
+      "total_score": 83,
+      "suggested_archetype": "info-product",
+      "rationale": "The demand for ethical and sustainable products is robust and growing, yet small creators face significant hurdles in implementing these practices transparently and efficiently. This opportunity addresses a critical pain point by providing a simplified, actionable toolkit that builds trust and saves time, enabling solo founders to confidently integrate sustainability into their brand without becom",
+      "pitched": true,
+      "status": "open"
+    },
+    {
       "id": "tiny-living-aesthetics-function",
       "niche": "Aesthetic & highly functional space-saving solutions for tiny living",
       "total_score": 82.75,
@@ -1647,6 +1674,15 @@
       "total_score": 82.5,
       "suggested_archetype": "physical-product",
       "rationale": "While 'meal plans, recipes, and curated grocery lists for chronic g' addresses gut health, many other chronic illnesses require specific self-care and symptom management tools. The current market often provides clinical, uninspiring products. There's an opportunity to create a brand that offers a curated selection of design-led, holistic, and comforting products, along with supportive information,",
+      "pitched": true,
+      "status": "open"
+    },
+    {
+      "id": "niche-digital-product-community-toolkit",
+      "niche": "Niche-specific digital product creator community & toolkit for business growth",
+      "total_score": 82.5,
+      "suggested_archetype": "community",
+      "rationale": "Generic advice and broad creator communities often fail to address the granular business challenges faced by creators in highly specific digital product niches. A dedicated, niche-specific community combined with actionable toolkits provides targeted strategies for marketing, pricing, and scaling, fostering deeper engagement and better commercial outcomes for these specialized creators.",
       "pitched": true,
       "status": "open"
     },
@@ -2058,6 +2094,53 @@
   ],
   "empire_battle_log": [
     {
+      "ts": "2026-06-03T04:51:54.537Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "lawn-care-gm",
+      "action": "cluster_run",
+      "scaffolded": 0,
+      "season": "Rainy / peak growth (May–Oct)",
+      "pipeline_value": 0,
+      "at_risk": 0
+    },
+    {
+      "ts": "2026-06-03T04:51:54.536Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "portal-agent",
+      "action": "portal_feeds_built",
+      "portal_feeds": 0
+    },
+    {
+      "ts": "2026-06-03T04:51:54.536Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "crm-agent",
+      "action": "crm_scored",
+      "customers": 0,
+      "at_risk": 0,
+      "upsell_openings": 0
+    },
+    {
+      "ts": "2026-06-03T04:51:54.535Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "scheduling-agent",
+      "action": "routes_optimized",
+      "scheduled": 0,
+      "rolled_for_weather": 0,
+      "avg_density": 0
+    },
+    {
+      "ts": "2026-06-03T04:51:54.520Z",
+      "tenant": "kennum-lawn-care",
+      "actor": "pipeline-agent",
+      "action": "pipeline_advanced",
+      "quoted": 0,
+      "opened": 0,
+      "invoiced": 0,
+      "open_leads": 0,
+      "pipeline_value": 0,
+      "outstanding_cents": 0
+    },
+    {
       "ts": "2026-06-03T04:06:55.524Z",
       "tenant": "kennum-lawn-care",
       "actor": "lawn-care-gm",
@@ -2249,53 +2332,6 @@
     },
     {
       "ts": "2026-06-03T03:36:55.246Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "pipeline-agent",
-      "action": "pipeline_advanced",
-      "quoted": 0,
-      "opened": 0,
-      "invoiced": 0,
-      "open_leads": 0,
-      "pipeline_value": 0,
-      "outstanding_cents": 0
-    },
-    {
-      "ts": "2026-06-03T03:06:55.083Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "lawn-care-gm",
-      "action": "cluster_run",
-      "scaffolded": 0,
-      "season": "Rainy / peak growth (May–Oct)",
-      "pipeline_value": 0,
-      "at_risk": 0
-    },
-    {
-      "ts": "2026-06-03T03:06:55.082Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "portal-agent",
-      "action": "portal_feeds_built",
-      "portal_feeds": 0
-    },
-    {
-      "ts": "2026-06-03T03:06:55.081Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "crm-agent",
-      "action": "crm_scored",
-      "customers": 0,
-      "at_risk": 0,
-      "upsell_openings": 0
-    },
-    {
-      "ts": "2026-06-03T03:06:55.079Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "scheduling-agent",
-      "action": "routes_optimized",
-      "scheduled": 0,
-      "rolled_for_weather": 0,
-      "avg_density": 0
-    },
-    {
-      "ts": "2026-06-03T03:06:55.065Z",
       "tenant": "kennum-lawn-care",
       "actor": "pipeline-agent",
       "action": "pipeline_advanced",
