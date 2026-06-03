@@ -209,19 +209,24 @@ export function VideoHero({ cta }: { cta?: ReactNode }) {
             </svg>
           </motion.div>
 
-          {/* Headline — build studio positioning. Three short escalating
-              phrases. The closing "our OS" gets the breathing ember gradient
-              treatment so the differentiator is the loudest pixel on screen. */}
+          {/* Headline — build studio positioning that spans the full price
+              range (from $1.5k local sites to $24k+ platforms). The closing
+              "our OS" gets the breathing ember gradient so the differentiator
+              is the loudest pixel on screen. */}
           <h1
             className="relative max-w-2xl text-[2.875rem] font-extrabold leading-[0.95] tracking-tightest text-ink sm:text-[64px] lg:text-[84px] xl:text-[96px]"
             style={{ position: "relative", zIndex: 1 }}
           >
             <span className="hero-phrase" style={{ animationDelay: "0ms" }}>
-              Build it in 14 days.
+              From a local site
             </span>
             <br />{" "}
             <span className="hero-phrase" style={{ animationDelay: "140ms" }}>
-              Run it on{" "}
+              to a full platform.
+            </span>
+            <br />{" "}
+            <span className="hero-phrase" style={{ animationDelay: "280ms" }}>
+              Built on{" "}
               <span
                 style={{
                   background:
@@ -240,17 +245,13 @@ export function VideoHero({ cta }: { cta?: ReactNode }) {
               </span>
               .
             </span>
-            <br />{" "}
-            <span className="hero-phrase" style={{ animationDelay: "280ms" }}>
-              Stop hiring agencies.
-            </span>
           </h1>
 
           <p
             className="relative mt-10 max-w-xl text-lg text-ink-500 sm:mt-12 sm:text-xl lg:leading-[1.4]"
             style={{ position: "relative", zIndex: 1 }}
           >
-            Day14 is a build studio with its own operating system &mdash; Day14 OS &mdash; already running six of our own businesses. We build your site or platform in 14 days, then $299/mo keeps it shipping forever. <span className="font-semibold text-ink">Now booking 3 builds for July.</span>
+            Whether you need a single page for a local business or a multi-tenant platform, we ship it in days &mdash; from <span className="font-semibold text-ink">$1,500</span> &mdash; and host it on Day14 OS, the operating system that runs our own six businesses. Fast to ship, cheap to run, designed to outlive your team. <span className="font-semibold text-ink">Now booking July.</span>
           </p>
 
           {cta && (

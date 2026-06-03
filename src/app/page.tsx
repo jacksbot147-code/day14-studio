@@ -175,36 +175,51 @@ type OsTier = {
   popular?: boolean;
 };
 
-// Productized build-studio pricing. One-time build fee + 12-month ops on
-// Day14 OS bundled. After the included window, hosting + ongoing ops is
-// $299/mo flat. Custom tier is talk-to-us — quote in 48 hours.
+// Productized build-studio pricing — 4 tiers spanning $1.5k (single-page
+// local site) to custom enterprise platforms. Every tier comes with a
+// bundled ops window on Day14 OS; the monthly ops fee after the bundle
+// scales with build complexity ($49 / $149 / $299 / scoped).
 const OS_TIERS: OsTier[] = [
   {
-    name: "Starter",
-    price: "$9,000",
+    name: "Spark",
+    price: "$1,500",
     cadence: "one-time",
-    timeline: "Shipped in 14 days",
+    timeline: "Shipped in 5 days",
     bestFor:
-      "Founders who need a real marketing site that loads fast, ranks, and doesn't look like every other startup.",
+      "Local businesses, solo professionals, side projects — anyone who needs a single beautiful page with lead capture, not a 10-page agency build.",
     includes: [
-      "Custom-designed marketing site (up to 6 pages)",
-      "Hosted on Day14 OS — Vercel-grade speed, our admin",
-      "6 months of OS ops bundled ($299/mo after)",
-      "One revision cycle, then shipped",
+      "Single-page custom site (services, about, contact)",
+      "Lead-capture form wired to your email",
+      "Hosted on Day14 OS — fast, cheap, never goes down",
+      "3 months of ops bundled ($49/mo after)",
     ],
   },
   {
     name: "Studio",
+    price: "$9,000",
+    cadence: "one-time",
+    timeline: "Shipped in 14 days",
+    bestFor:
+      "Founders who need a real multi-page marketing site that loads fast, ranks, and doesn't look like every other Webflow template.",
+    includes: [
+      "Multi-page marketing site (up to 6 pages + blog)",
+      "Custom design, lead capture, content scheduling",
+      "Hosted on Day14 OS with 6 scheduled-agent slots",
+      "6 months of ops bundled ($149/mo after)",
+    ],
+  },
+  {
+    name: "Platform",
     price: "$24,000",
     cadence: "one-time",
     timeline: "Shipped in 4 weeks",
     bestFor:
-      "Operators launching a real business — site, customer portal, admin app, billing, the works. Same stack we run our six on.",
+      "Operators launching a real software business — site, customer portal, admin app, billing, the works. Same stack we run our six on.",
     includes: [
       "Marketing site + customer portal + admin app",
       "Billing + onboarding flows wired live",
       "Hosted on Day14 OS with 24 scheduled-agent slots",
-      "12 months of OS ops bundled ($299/mo after)",
+      "12 months of ops bundled ($299/mo after)",
     ],
     popular: true,
   },
@@ -214,12 +229,12 @@ const OS_TIERS: OsTier[] = [
     cadence: "scope call",
     timeline: "6-12 weeks",
     bestFor:
-      "Multi-tenant platforms, marketplaces, or anything bespoke. Full Day14 OS — agents, evidence verifier, work-log, the lot.",
+      "Multi-tenant platforms, marketplaces, anything bespoke. Full Day14 OS — agents, evidence verifier, work-log, the lot.",
     includes: [
       "Multi-tenant, marketplace, or custom architecture",
       "Full Day14 OS access — agents, verifier, work-log",
       "Scoped to your business — quote in 48 hours",
-      "12 months of OS ops + dedicated channel",
+      "12 months of ops + dedicated channel",
     ],
   },
 ];
@@ -628,14 +643,14 @@ function Pricing() {
             Pricing · build studio
           </div>
           <h2 className="text-[56px] font-extrabold leading-[0.98] tracking-[-0.04em] text-ink sm:text-[72px] lg:text-[80px]">
-            One-time build. Then $299/mo.
+            $1,500 to scoped.
           </h2>
           <p className="mx-auto mt-8 max-w-2xl text-[17px] leading-[1.6] text-warm-gray-500 sm:text-[18px]">
-            Fixed price, fixed timeline, no SOWs. Your build lives on Day14 OS forever &mdash; the same stack that runs all six of our businesses.
+            Fixed price, fixed timeline, no SOWs. Pick the size that fits the job &mdash; your build lives on Day14 OS, the same stack that runs all six of our own businesses.
           </p>
         </div>
 
-        <div className="mt-20 grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-5">
+        <div className="mt-20 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {OS_TIERS.map((tier) => (
             <article
               key={tier.name}
