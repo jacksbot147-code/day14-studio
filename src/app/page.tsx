@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { cn } from "@/lib/cn";
 import { BuildReveal } from "@/components/landing/build-reveal";
 import { CmdKPalette } from "@/components/landing/cmd-k-palette";
+import { PageLoadCurtain } from "@/components/landing/page-load-curtain";
 import { CountUp } from "@/components/motion/count-up";
 import { HeroAurora } from "@/components/motion/hero-aurora";
 import { StaggerCtas } from "@/components/motion/stagger-ctas";
@@ -242,6 +243,11 @@ const OS_TIERS: OsTier[] = [
 export default function HomePage() {
   return (
     <>
+      {/* PageLoadCurtain — the spawn-in moment. Fixed-position cream
+          curtain with a terminal boot sequence that types itself out,
+          then wipes upward to reveal the page. ~1.5s first paint, then
+          skipped for ~60s on session refresh. */}
+      <PageLoadCurtain />
       <SiteHeader />
       <main>
         <Hero />
