@@ -21,7 +21,7 @@ import { SectionDivider } from "@/components/landing/section-divider";
 import { MeshGradient } from "@/components/landing/mesh-gradient";
 import { TerminalSnippet } from "@/components/landing/terminal-snippet";
 import { CinematicImage } from "@/components/landing/cinematic-image";
-import { VideoHero } from "@/components/landing/video-hero";
+import { FullTerminalHero } from "@/components/landing/full-terminal-hero";
 import { DeployStrip } from "@/components/deploy-strip";
 import { WaitlistForm } from "@/components/WaitlistForm";
 
@@ -304,67 +304,12 @@ function SectionHead({
 /* -------------------------------------------------------------------------- */
 
 function Hero() {
-  return (
-    <section className="grain relative isolate overflow-hidden border-b border-ink-100">
-      {/* Ambient backdrop — mesh + aurora + cursor spotlight live behind
-          the LivingOsHero chrome. They tint the paper around the chrome
-          without competing with it. (The Gemini hero-ambient image was
-          dropped — the OS window carries the fold on its own.) */}
-      <MeshGradient opacity={0.32} blur={90} />
-      <HeroAurora />
-      <CursorSpotlight />
-
-      <div className="container-page relative z-10 pt-24 pb-24 sm:pt-32 sm:pb-32 lg:pt-36 lg:pb-40">
-        {/* VideoHero — Package A wow stack: 4-vignette loop, ember particles
-            orbiting the headline reacting to mouse, breathing gradient on the
-            "operating system" text. The right column feels like a looping
-            product demo reel, not a static screenshot. */}
-        <VideoHero
-          cta={
-            <StaggerCtas className="flex flex-wrap items-center gap-3">
-              <a href="#book" className="btn-ember">
-                Book a 20-min scope call
-              </a>
-              <a href="#case-studies" className="btn-ghost">
-                See what we've built
-              </a>
-            </StaggerCtas>
-          }
-        />
-
-        {/* Proof strip — same bordered grid pattern. ScrambleNumber gives it
-            a terminal-decrypting feel that matches the brutalist /admin
-            mission-control vibe. Lives outside the parallax wrap so it stays
-            anchored while the hero text floats. */}
-        <div className="mt-20 grid max-w-3xl grid-cols-2 border-l border-t border-ink-100 sm:mt-24 sm:grid-cols-4">
-          <Stat
-            label="Tenants on the OS"
-            value={<ScrambleNumber to={OS_STATS.tenants} />}
-          />
-          <Stat
-            label="Agents per day"
-            value={<ScrambleNumber to={OS_STATS.agentsPerDay} />}
-          />
-          <Stat
-            label="Verified shipped"
-            value={
-              <>
-                <ScrambleNumber to={OS_STATS.shippedChanges} />+
-              </>
-            }
-          />
-          <Stat
-            label="Operator hrs / day"
-            value={
-              <>
-                &le; <ScrambleNumber to={OS_STATS.attentionHoursPerDay} />
-              </>
-            }
-          />
-        </div>
-      </div>
-    </section>
-  );
+  // FullTerminalHero — total rebuild. Full-viewport black terminal with a
+  // typed-out shell session that delivers the entire pitch (who we are,
+  // the pricing ladder, the tenant proof, the CTA) above the fold. No
+  // split layout, no particles, no constellation, no decorations. The
+  // marketing IS the literal product surface. See full-terminal-hero.tsx.
+  return <FullTerminalHero />;
 }
 
 function Stat({ label, value }: { label: string; value: ReactNode }) {
