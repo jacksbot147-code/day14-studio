@@ -1,68 +1,78 @@
-# X Thread — Day14 OS Pivot Announcement
-# 2026-06-03
-
-Eight tweets. Each ≤280 chars, character count after each. Jack's voice — direct, anti-SaaS, builder-confident. No emojis, no thread numbering decoration. Post in order.
-
----
-
-I spent six months building one piece of software so I could stop logging into twelve.
-
-Today it goes public.
-
-*(109 chars)*
+# X-thread — Day14 build-studio launch
+# 8 tweets · ≤280 chars each · Jack's voice · no emoji, no thread-number decorations
+# Updated 2026-06-03 evening to match new build-studio positioning
+# Send: Wed evening (8-10pm ET) or Thu morning (9-10am ET)
 
 ---
 
-Day14 OS is the operating system for solo operators who want to ship like a 20-person team.
+## Tweet 1 (the hook)
 
-Multi-tenant from the metal up. Inbox-first. Agent-orchestrated. The work is the receipts.
+Most agencies bill you $40k for a marketing site and take 8 weeks. I built my own operating system. Now I can ship the same thing in 14 days for $9k — because the hard part is already done.
 
-*(183 chars)*
-
----
-
-Most SaaS sells you a tool. You stack twelve of them and become the integration layer of your own company. A team of twenty hides the seams behind division of labor. A team of one can't. So the seams have to go.
-
-*(211 chars)*
+[205 chars]
 
 ---
 
-Every business I run is a tenant in one stack. One Next.js app. One Postgres. One Stripe. One admin. One inbox that only pings me when a human has to decide. Scheduled agents do the typing. I do the deciding.
+## Tweet 2 (what Day14 actually is)
 
-*(208 chars)*
+Day14 is a build studio. We build sites and apps for founders, local businesses, and operators who don't want to pay agency markups. From $1,500 single-page sites to $24k+ multi-tenant platforms.
 
----
-
-Why now: I shipped 14 client builds, 6 portfolio businesses, and a working multi-tenant substrate on top. The OS earned its keep before I ever called it a product. I'm not selling vapor. I'm selling the thing I'm using right now.
-
-*(229 chars)*
+[195 chars]
 
 ---
 
-What's actually built: marketing sites, customer portals, billing, an admin app, scheduled agents, an evidence-verifying work-log, a deploy strip, an inbox. Real surface area. Real revenue routing through it. Not a roadmap.
+## Tweet 3 (the cheat code)
 
-*(223 chars)*
+The cheat code is Day14 OS — the multi-tenant operating system I built to run my own six businesses. Every client build runs on it from day one. The infrastructure is solved before we start a project.
 
----
-
-Watch the demo — 4 minutes. Open the admin, approve three items, fire a deploy, scroll the work-log. The screen shows you what the substrate actually does, not what it promises.
-
-*(177 chars)*
+[207 chars]
 
 ---
 
-Waitlist: day14.us
+## Tweet 4 (the timelines)
 
-50 operators by Sunday at 14:00 EDT and I start onboarding next week. Fewer and the OS stays private tooling. Either way it keeps running.
+Marketing site? 5–14 days. Customer portal + admin + billing? 4 weeks. Multi-tenant platform? Quote back in 48 hours. Fixed price, fixed timeline, no SOWs. No "let's scope a discovery phase."
 
-One person. Twenty-person output.
-
-*(193 chars)*
+[195 chars]
 
 ---
 
-## Posting notes
+## Tweet 5 (after-launch)
 
-- Quote-tweet the landing-page screenshot under Tweet 7 instead of pasting the Loom URL inline — keeps the thread native and surfaces the demo as a visual moment.
-- Tweet 8 is the only one with the link. Don't dilute it.
-- If Tweet 1 underperforms in the first hour, swap to: "I'm one person. I run six businesses. Today I'm releasing the system that lets me do that." (138 chars)
+After launch, $49–$299/mo keeps your build operated by the same scheduled-agent system that runs our briefings, content drafts, deploys, and evidence verification. No retainer, no surprise invoices.
+
+[202 chars]
+
+---
+
+## Tweet 6 (the receipts)
+
+Six of our own brands run on Day14 OS today: AlignMD (clinical SaaS), Life Loophole (editorial finance), Day14 Realty, Hot Flash Co, Kennum, and Day14 itself. Same admin app for all of them.
+
+[193 chars]
+
+---
+
+## Tweet 7 (why this matters)
+
+We use the OS every day. So when you hire us, you don't get a Webflow template with a markup. You get the same stack we trust with our own revenue. Same admin we open every morning.
+
+[183 chars]
+
+---
+
+## Tweet 8 (the CTA)
+
+Now booking 3 builds for July. Founder, local biz, operator — 20-minute scope call, fixed quote in 48 hours, shipped in days. → day14.us
+
+[136 chars]
+
+---
+
+## Send notes for Jack
+
+- Tweet 1 is the only one that needs to stop the scroll. If a hook tweet doesn't get 200+ impressions in the first hour, the rest is wasted. Variants if you want to A/B:
+  - "I built my own OS so I could fire the agency that wanted $40k for a marketing site."
+  - "Most build agencies charge $40k for an 8-week site. We ship the same site in 14 days for $9k. Here's why."
+- After sending, reply to Tweet 8 with a Loom thumbnail/link once the demo is recorded — compounds engagement on the same thread.
+- Don't pin the thread until Sunday — let it ride on the home timeline first, pin only if it gains traction.

@@ -1624,3 +1624,42 @@ files, no deletions, no dependency changes, no git push.
 - Total bytes written: 9506723
 - Failures: 0
 - Output dir: public/images/landing/
+
+
+## 2026-06-03 evening — Day14 pivot: build studio with own OS
+
+Major strategic pivot of day14.us landing positioning. From: SaaS subscription product ("OS for solopreneurs running multiple businesses"). To: productized build studio that ships sites/apps on Day14 OS.
+
+Live-site changes (on branch `redesign/apple-base44-2026-06-03`):
+- Headline: "From a local site / to a full platform. / Built on our OS." (3-line stagger, ember breathing gradient on "our OS")
+- Sub: positions the $1,500 floor + names OS as the differentiator + "Now booking July" urgency
+- Eyebrow: "Build studio · running on Day14 OS"
+- Primary CTA: "Book a 20-min scope call" (#book anchor + cal.com header)
+- Secondary CTA: "See what we've built"
+- Pricing — 4 tiers (was 3 SaaS tiers):
+  - Spark $1,500 · 5 days · ops $49/mo after 3 months bundled
+  - Studio $9,000 · 14 days · ops $149/mo after 6 months bundled
+  - Platform $24,000 · 4 weeks · ops $299/mo after 12 months bundled (popular)
+  - Custom · scope call · 6-12 weeks · scoped
+- Pricing grid: 4-col on lg, 2-col on md, 1-col mobile
+- Case studies eyebrow + headline: "Built and operated on Day14 OS / We use it on six of our own."
+- FooterCta: flipped — old "want a 14-day build" pitch moved up to be the page's primary CTA; the OS-tenant subscription is now the demoted footer secondary ("Don't need us to build it? Host on the OS for $299/mo.")
+- SiteHeader CTA: "Book intro call" → "Book scope call"
+
+Updated drafts (overwrote stale SaaS-positioned versions):
+- drafts/X-THREAD-PIVOT-2026-06-03.md — 8 tweets, build-studio framing
+- drafts/LOOM-SCRIPT-2026-06-03.md — 4-min demo script with build-studio cold open
+- drafts/MANIFESTO-POLISH-2026-06-03.md — "The build studio that runs on its own OS"
+- drafts/AUDIENCE-REFRAME-COPY-2026-06-03.md — full strategic shift documentation + headline candidates
+
+Commits on the branch this session:
+- 24d24fe phase-A: VideoHero (4-vignette loop + particles + breathing gradient)
+- 27556b2 phase-BC: BuildReveal + ember-comet dividers + CmdKPalette
+- 521806f pivot: Day14 = build studio running on Day14 OS
+- 5d162c0 pricing: Spark tier + 4-tier grid + headline span
+
+Next:
+- Jack pushes the branch one more time (drafts commit pending)
+- Jack reviews preview, merges to main when satisfied
+- Jack sends X-thread, records Loom, publishes manifesto — all drafts updated for build-studio positioning
+- Sunday signal metric: 3-5 real scope-call requests (revised from 50+ waitlist signups)
