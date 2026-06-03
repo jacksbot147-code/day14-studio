@@ -163,14 +163,15 @@ export function VideoHero({ cta }: { cta?: ReactNode }) {
       >
         {/* ------- LEFT: headline + particles ------- */}
         <div style={{ position: "relative" }}>
-          {/* Eyebrow */}
+          {/* Eyebrow — urgency anchor. The pulsing ember dot sells "now booking"
+              as a live capacity signal, not a static label. */}
           <div className="eyebrow mb-8 inline-flex items-center gap-2.5">
             <motion.span
               className="inline-block h-1.5 w-1.5 rounded-full bg-ember-500"
               animate={reduce ? undefined : { scale: [1, 1.5, 1], opacity: [1, 0.5, 1] }}
               transition={reduce ? undefined : { duration: 2, repeat: Infinity, ease: "easeInOut" }}
             />
-            <span>A pivot announcement</span>
+            <span>Build studio · running on Day14 OS</span>
           </div>
 
           {/* Particles — absolutely positioned behind the headline */}
@@ -208,20 +209,19 @@ export function VideoHero({ cta }: { cta?: ReactNode }) {
             </svg>
           </motion.div>
 
-          {/* Headline */}
+          {/* Headline — build studio positioning. Three short escalating
+              phrases. The closing "our OS" gets the breathing ember gradient
+              treatment so the differentiator is the loudest pixel on screen. */}
           <h1
             className="relative max-w-2xl text-[2.875rem] font-extrabold leading-[0.95] tracking-tightest text-ink sm:text-[64px] lg:text-[84px] xl:text-[96px]"
             style={{ position: "relative", zIndex: 1 }}
           >
             <span className="hero-phrase" style={{ animationDelay: "0ms" }}>
-              One operator.
-            </span>{" "}
-            <span className="hero-phrase" style={{ animationDelay: "140ms" }}>
-              Six businesses.
+              Build it in 14 days.
             </span>
             <br />{" "}
-            <span className="hero-phrase" style={{ animationDelay: "280ms" }}>
-              One{" "}
+            <span className="hero-phrase" style={{ animationDelay: "140ms" }}>
+              Run it on{" "}
               <span
                 style={{
                   background:
@@ -236,9 +236,13 @@ export function VideoHero({ cta }: { cta?: ReactNode }) {
                   display: "inline-block",
                 }}
               >
-                operating system
+                our OS
               </span>
               .
+            </span>
+            <br />{" "}
+            <span className="hero-phrase" style={{ animationDelay: "280ms" }}>
+              Stop hiring agencies.
             </span>
           </h1>
 
@@ -246,7 +250,7 @@ export function VideoHero({ cta }: { cta?: ReactNode }) {
             className="relative mt-10 max-w-xl text-lg text-ink-500 sm:mt-12 sm:text-xl lg:leading-[1.4]"
             style={{ position: "relative", zIndex: 1 }}
           >
-            The multi-tenant studio I built to run every business I own from a single worktree. Marketing sites, portals, billing, scheduled agents, an inbox that only surfaces what a human has to decide.
+            Day14 is a build studio with its own operating system &mdash; Day14 OS &mdash; already running six of our own businesses. We build your site or platform in 14 days, then $299/mo keeps it shipping forever. <span className="font-semibold text-ink">Now booking 3 builds for July.</span>
           </p>
 
           {cta && (

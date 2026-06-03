@@ -39,9 +39,9 @@ const LOOM_EMBED_URL = "";
 
 // Page-level metadata overrides the layout defaults for the home route.
 // Other routes (case studies, about, etc.) keep the layout defaults.
-const TITLE = "Day14 OS — The operating system for solopreneurs running multiple businesses";
+const TITLE = "Day14 — Build studio running on its own OS. Sites and apps shipped in 14 days.";
 const DESCRIPTION =
-  "One operator. Six businesses. One operating system. Multi-tenant studio with marketing sites, portals, billing, admin app, scheduled agents, and an evidence-verified work-log. Waitlist open until Sunday.";
+  "Day14 is a build studio with its own operating system. We ship sites and apps in 14 days, then $299/mo keeps them running on Day14 OS — the same stack we use for six of our own businesses. Now booking 3 builds for July.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -169,33 +169,58 @@ type OsTier = {
   name: string;
   price: string;
   cadence: string;
-  tenants: string;
+  timeline: string;
   bestFor: string;
+  includes: string[];
   popular?: boolean;
 };
 
+// Productized build-studio pricing. One-time build fee + 12-month ops on
+// Day14 OS bundled. After the included window, hosting + ongoing ops is
+// $299/mo flat. Custom tier is talk-to-us — quote in 48 hours.
 const OS_TIERS: OsTier[] = [
   {
-    name: "Solo",
-    price: "$79",
-    cadence: "/mo",
-    tenants: "1 tenant",
-    bestFor: "One operator, one business, wants the OS but only needs one slot.",
+    name: "Starter",
+    price: "$9,000",
+    cadence: "one-time",
+    timeline: "Shipped in 14 days",
+    bestFor:
+      "Founders who need a real marketing site that loads fast, ranks, and doesn't look like every other startup.",
+    includes: [
+      "Custom-designed marketing site (up to 6 pages)",
+      "Hosted on Day14 OS — Vercel-grade speed, our admin",
+      "6 months of OS ops bundled ($299/mo after)",
+      "One revision cycle, then shipped",
+    ],
   },
   {
-    name: "Portfolio",
-    price: "$299",
-    cadence: "/mo",
-    tenants: "Up to 5 tenants",
-    bestFor: "One operator, two to five businesses. The shape this OS was built for.",
+    name: "Studio",
+    price: "$24,000",
+    cadence: "one-time",
+    timeline: "Shipped in 4 weeks",
+    bestFor:
+      "Operators launching a real business — site, customer portal, admin app, billing, the works. Same stack we run our six on.",
+    includes: [
+      "Marketing site + customer portal + admin app",
+      "Billing + onboarding flows wired live",
+      "Hosted on Day14 OS with 24 scheduled-agent slots",
+      "12 months of OS ops bundled ($299/mo after)",
+    ],
     popular: true,
   },
   {
-    name: "Founder",
-    price: "$999",
-    cadence: "/mo",
-    tenants: "Unlimited tenants",
-    bestFor: "Heavy users. Onboarding session, direct line, closes at 100 signups.",
+    name: "Custom",
+    price: "Talk to us",
+    cadence: "scope call",
+    timeline: "6-12 weeks",
+    bestFor:
+      "Multi-tenant platforms, marketplaces, or anything bespoke. Full Day14 OS — agents, evidence verifier, work-log, the lot.",
+    includes: [
+      "Multi-tenant, marketplace, or custom architecture",
+      "Full Day14 OS access — agents, verifier, work-log",
+      "Scoped to your business — quote in 48 hours",
+      "12 months of OS ops + dedicated channel",
+    ],
   },
 ];
 
@@ -273,11 +298,11 @@ function Hero() {
         <VideoHero
           cta={
             <StaggerCtas className="flex flex-wrap items-center gap-3">
-              <a href="#waitlist" className="btn-ember">
-                Join the waitlist
+              <a href="#book" className="btn-ember">
+                Book a 20-min scope call
               </a>
-              <a href="#how" className="btn-ghost">
-                See how it works
+              <a href="#case-studies" className="btn-ghost">
+                See what we've built
               </a>
             </StaggerCtas>
           }
@@ -422,11 +447,14 @@ function CaseStudies() {
       <div className="container-page">
         <div className="mx-auto max-w-3xl text-center">
           <div className="eyebrow mb-6 justify-center text-ember-600">
-            Six businesses, one OS
+            Built and operated on Day14 OS
           </div>
           <h2 className="text-[56px] font-extrabold leading-[0.98] tracking-[-0.04em] text-ink sm:text-[72px] lg:text-[80px]">
-            The empire, live.
+            We use it on six of our own.
           </h2>
+          <p className="mx-auto mt-8 max-w-2xl text-[17px] leading-[1.6] text-warm-gray-500 sm:text-[18px]">
+            Every tile below is a real product running on Day14 OS &mdash; ours. Same admin, same agents, same evidence verifier. Different brand, different vertical, same 14-day cadence.
+          </p>
         </div>
 
         <div className="mt-20 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -597,13 +625,13 @@ function Pricing() {
       <div className="container-page">
         <div className="mx-auto max-w-3xl text-center">
           <div className="eyebrow mb-6 justify-center text-ember-600">
-            Founder pricing — open until 100 signups
+            Pricing · build studio
           </div>
           <h2 className="text-[56px] font-extrabold leading-[0.98] tracking-[-0.04em] text-ink sm:text-[72px] lg:text-[80px]">
-            Three tiers. Pick one.
+            One-time build. Then $299/mo.
           </h2>
           <p className="mx-auto mt-8 max-w-2xl text-[17px] leading-[1.6] text-warm-gray-500 sm:text-[18px]">
-            Founder pricing locks for the first 100 signups. After that the Founder tier closes; Portfolio becomes the top public tier.
+            Fixed price, fixed timeline, no SOWs. Your build lives on Day14 OS forever &mdash; the same stack that runs all six of our businesses.
           </p>
         </div>
 
@@ -623,7 +651,7 @@ function Pricing() {
             >
               {tier.popular ? (
                 <span className="absolute -top-3 right-6 inline-flex items-center rounded-full bg-ember-500 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-white shadow-[0_4px_12px_-2px_rgba(239,108,51,0.4)]">
-                  Recommended
+                  Most operators pick this
                 </span>
               ) : null}
 
@@ -631,36 +659,47 @@ function Pricing() {
                 {tier.name}
               </h3>
               <p className="mt-2 font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-warm-gray-400">
-                {tier.tenants}
+                {tier.timeline}
               </p>
 
-              <div className="mt-7 flex items-baseline gap-1 tnum">
-                <span className="text-[56px] font-extrabold leading-none tracking-[-0.035em] text-ink">
+              <div className="mt-7 flex items-baseline gap-2 tnum">
+                <span className="text-[48px] font-extrabold leading-none tracking-[-0.035em] text-ink">
                   {tier.price}
                 </span>
-                <span className="text-base font-medium text-warm-gray-400">
+                <span className="text-sm font-medium text-warm-gray-400">
                   {tier.cadence}
                 </span>
               </div>
 
               <div className="my-7 h-px w-full bg-warm-gray-100" />
 
-              <p className="text-[15px] leading-[1.6] text-warm-gray-500">
+              <p className="text-[14px] leading-[1.55] text-warm-gray-500">
                 {tier.bestFor}
               </p>
 
+              <ul className="mt-6 flex flex-col gap-2.5">
+                {tier.includes.map((line) => (
+                  <li key={line} className="flex items-start gap-2.5 text-[13.5px] leading-[1.45] text-ink">
+                    <svg viewBox="0 0 16 16" className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-ember-500" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="3 8 6.5 12 13 4" />
+                    </svg>
+                    <span>{line}</span>
+                  </li>
+                ))}
+              </ul>
+
               <a
-                href="#waitlist"
+                href="#book"
                 className="mt-8 inline-flex items-center justify-center self-start rounded-full bg-ember-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors duration-150 hover:bg-ember-600"
               >
-                Join the waitlist →
+                Book a scope call →
               </a>
             </article>
           ))}
         </div>
 
         <p className="mt-12 text-center font-mono text-[11px] uppercase tracking-[0.22em] text-warm-gray-400">
-          No drip campaign · No upsell · Founder tier closes at 100 signups
+          Fixed price · No SOWs · Now booking 3 builds for July
         </p>
       </div>
     </section>
@@ -672,28 +711,29 @@ function Pricing() {
 /* -------------------------------------------------------------------------- */
 
 function Waitlist() {
-  // Base44-style center-stack. The dual-column layout is gone; the headline,
-  // the lead, and the form sit on a single vertical axis with breathing
-  // room. The form itself lives inside a soft-shadowed cream card so it
-  // reads as the deliberate point of action on the page.
+  // PRIMARY CONVERSION — Book a scope call. The build-studio pitch closes
+  // here. WaitlistForm component is kept (it's a working email-capture
+  // endpoint) but reframed: drop your email + a one-line "what you want
+  // built" and we come back with a 20-min scope call slot.
   const cardShadow =
     "0 24px 60px -20px rgba(239, 108, 51, 0.10), 0 8px 24px -8px rgba(15, 23, 42, 0.06)";
 
   return (
     <section
-      id="waitlist"
+      id="book"
       className="bg-paper-cream py-32 sm:py-40"
     >
       <div className="container-page">
-        <div className="mx-auto max-w-md text-center">
+        <div className="mx-auto max-w-2xl text-center">
           <div className="eyebrow mb-6 justify-center text-ember-600">
-            The 24-hour signal
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-ember-500 mr-2 align-middle" />
+            Now booking · July
           </div>
-          <h2 className="text-[40px] font-extrabold leading-[1.02] tracking-[-0.035em] text-ink sm:text-[48px] lg:text-[56px]">
-            Opening the waitlist today. Closes Sunday.
+          <h2 className="text-[40px] font-extrabold leading-[1.02] tracking-[-0.035em] text-ink sm:text-[56px] lg:text-[64px]">
+            Tell us what you want built.
           </h2>
-          <p className="mt-7 text-[17px] leading-[1.6] text-warm-gray-500">
-            If 50+ operators want this by Sunday at 14:00 EDT, I start onboarding next week. If fewer, I refocus on the strongest tenant and the OS stays private tooling. Either answer is useful — the point of the waitlist is to find out.
+          <p className="mt-7 text-[17px] leading-[1.6] text-warm-gray-500 sm:text-[18px]">
+            20-minute scope call. We come back with a fixed quote in 48 hours and a shipped build in 14 days. Three slots open for July.
           </p>
         </div>
 
@@ -703,22 +743,32 @@ function Waitlist() {
         >
           <div className="text-center">
             <div className="font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-ember-600">
-              Day14 OS · waitlist
+              Day14 · scope call request
             </div>
             <h3 className="mt-2 text-[22px] font-extrabold tracking-[-0.025em] text-ink">
-              One email, Sunday.
+              Drop your email below.
             </h3>
             <p className="mt-2 text-[15px] leading-[1.55] text-warm-gray-500">
-              One email Sunday with where the signal landed, and maybe one more on launch day. That&rsquo;s the whole sequence.
+              We&rsquo;ll reply within 24 hours with a Cal link to book a 20-min scope call.
             </p>
           </div>
           <div className="mt-6">
             <WaitlistForm />
           </div>
           <p className="mt-4 text-center font-mono text-[11px] tracking-[0.04em] text-warm-gray-400">
-            No drip campaign. No upsell. Unsubscribe is a one-click reply.
+            No drip. No upsell. Just one operator picking up the phone.
           </p>
         </div>
+
+        <p className="mx-auto mt-10 max-w-md text-center text-[13px] text-warm-gray-400">
+          Or email{" "}
+          <a
+            href={`mailto:${SITE.email}?subject=Day14%20scope%20call`}
+            className="font-semibold text-warm-gray-500 underline decoration-warm-gray-200 underline-offset-4 transition-colors duration-150 hover:text-ink hover:decoration-ember-500"
+          >
+            {SITE.email}
+          </a>
+        </p>
       </div>
     </section>
   );
@@ -729,40 +779,37 @@ function Waitlist() {
 /* -------------------------------------------------------------------------- */
 
 function FooterCta() {
-  // Cream finale. The dark slab is gone — the page resolves on the same
-  // paper-cream surface it lived in, with a single ember pill CTA carrying
-  // the action. Email lives below as a quiet ghost link.
+  // SECONDARY OFFER — demoted. The build studio is the primary product on
+  // this page; the OS-tenant-subscription play (former SaaS pitch) lives
+  // here as a smaller "or, the other thing" option. Same cream surface so
+  // it feels like a continuation, not a separate sales pitch.
   return (
-    <section className="bg-paper-cream py-32 sm:py-40">
+    <section id="waitlist" className="bg-paper-cream py-24 sm:py-32 border-t border-warm-gray-100">
       <div className="container-page">
-        <div className="mx-auto max-w-3xl text-center">
-          <div className="eyebrow mb-6 justify-center text-ember-600">
-            The day-job, still on offer
+        <div className="mx-auto max-w-2xl text-center">
+          <div className="eyebrow mb-5 justify-center text-warm-gray-400">
+            Or: run on Day14 OS yourself
           </div>
-          <h2 className="text-[48px] font-extrabold leading-[1] tracking-[-0.04em] text-ink sm:text-[56px] lg:text-[64px]">
-            Want a single 14-day build instead? That offer still stands.
+          <h2 className="text-[32px] font-extrabold leading-[1.05] tracking-[-0.035em] text-ink sm:text-[40px] lg:text-[44px]">
+            Don&rsquo;t need us to build it? Host on the OS for $299/mo.
           </h2>
-          <p className="mx-auto mt-8 max-w-2xl text-[17px] leading-[1.6] text-warm-gray-500 sm:text-[18px]">
-            The build studio that funded Day14 OS is still taking three customers a month. Fixed-price 14-day platforms — site, portal, admin app, billing. Same operator, same agents, different deliverable.
+          <p className="mx-auto mt-6 max-w-xl text-[16px] leading-[1.6] text-warm-gray-500">
+            If you&rsquo;ve already got the site and just want what makes Day14 fast &mdash; multi-tenant admin, scheduled agents, evidence-verified work-log, the inbox &mdash; the OS-only tenant tier opens later this summer. Joining the waitlist locks founder pricing.
           </p>
 
-          <div className="mt-10 flex flex-col items-center justify-center gap-5">
+          <div className="mt-8 flex flex-col items-center justify-center gap-4">
+            <a
+              href={`mailto:${SITE.email}?subject=Day14%20OS%20tenant%20waitlist`}
+              className="inline-flex items-center justify-center rounded-full border border-ink/15 bg-paper-cream px-5 py-2.5 text-sm font-semibold text-ink transition-colors duration-150 hover:border-ember-500 hover:text-ember-600"
+            >
+              Join the OS tenant waitlist →
+            </a>
             <Link
               href="/work-with-us"
-              className="inline-flex items-center justify-center rounded-full bg-ember-500 px-6 py-3 text-base font-semibold text-white transition-colors duration-150 hover:bg-ember-600"
+              className="text-[13px] font-semibold text-warm-gray-400 underline decoration-warm-gray-200 underline-offset-4 transition-colors duration-150 hover:text-ink hover:decoration-ember-500"
             >
-              See the 14-day SKUs →
+              See the full pricing breakdown
             </Link>
-            <a
-              href={`mailto:${SITE.email}`}
-              className="text-sm font-semibold text-warm-gray-500 underline decoration-warm-gray-200 underline-offset-4 transition-colors duration-150 hover:text-ink hover:decoration-ember-500"
-            >
-              Or email {SITE.email}
-            </a>
-          </div>
-
-          <div className="mt-8 font-mono text-[11px] uppercase tracking-[0.22em] text-warm-gray-400">
-            Three slots open this month
           </div>
         </div>
       </div>
