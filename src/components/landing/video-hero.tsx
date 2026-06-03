@@ -42,6 +42,7 @@ import {
 } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
+import { TypeIn, TypeInKeyframes } from "./type-in";
 
 // ---------- vignettes (each = one frame of the looping "demo reel") ----
 
@@ -163,15 +164,22 @@ export function VideoHero({ cta }: { cta?: ReactNode }) {
       >
         {/* ------- LEFT: headline + particles ------- */}
         <div style={{ position: "relative" }}>
-          {/* Eyebrow — urgency anchor. The pulsing ember dot sells "now booking"
-              as a live capacity signal, not a static label. */}
+          {/* Eyebrow — types in on mount as the first line of the spawn
+              sequence. Glitch enabled so a random char occasionally flickers
+              into a terminal glyph after the typing settles. */}
           <div className="eyebrow mb-8 inline-flex items-center gap-2.5">
             <motion.span
               className="inline-block h-1.5 w-1.5 rounded-full bg-ember-500"
               animate={reduce ? undefined : { scale: [1, 1.5, 1], opacity: [1, 0.5, 1] }}
               transition={reduce ? undefined : { duration: 2, repeat: Infinity, ease: "easeInOut" }}
             />
-            <span>Build studio · running on Day14 OS</span>
+            <TypeIn
+              text="Build studio · running on Day14 OS"
+              startAt={120}
+              cps={80}
+              cursor
+              glitch
+            />
           </div>
 
           {/* Particles — absolutely positioned behind the headline */}
@@ -209,55 +217,72 @@ export function VideoHero({ cta }: { cta?: ReactNode }) {
             </svg>
           </motion.div>
 
-          {/* Headline — build studio positioning that spans the full price
-              range (from $1.5k local sites to $24k+ platforms). The closing
-              "our OS" gets the breathing ember gradient so the differentiator
-              is the loudest pixel on screen. */}
+          {/* Headline — types in line-by-line with a single cursor walking
+              down the lines. Sequence math:
+                eyebrow: 35 chars × 12.5ms = 437ms (starts 120ms)
+                line 1 starts at 700ms (eyebrow done + 150ms gap)
+                  17 chars × 12.5ms = 213ms → ends 913ms
+                line 2 starts at 1063ms (line1 done + 150ms gap)
+                  19 chars × 12.5ms = 238ms → ends 1301ms
+                line 3a "Built on " starts at 1451ms (150ms gap)
+                  9 chars × 12.5ms = 113ms → ends 1564ms
+                line 3b "our OS" (gradient, no gap) starts at 1564ms
+                  6 chars × 12.5ms = 75ms → ends 1639ms
+                line 3c "." starts at 1639ms
+                  cursor + glitch on the period
+                sub-paragraph starts at 1850ms (fast typing — 320cps)
+              CTAs fade in at 2000ms, in parallel with the sub-paragraph. */}
           <h1
             className="relative max-w-2xl text-[2.875rem] font-extrabold leading-[0.95] tracking-tightest text-ink sm:text-[64px] lg:text-[84px] xl:text-[96px]"
             style={{ position: "relative", zIndex: 1 }}
           >
-            <span className="hero-phrase" style={{ animationDelay: "0ms" }}>
-              From a local site
-            </span>
+            <TypeIn text="From a local site" startAt={700} cps={80} cursor />
             <br />{" "}
-            <span className="hero-phrase" style={{ animationDelay: "140ms" }}>
-              to a full platform.
-            </span>
+            <TypeIn text="to a full platform." startAt={1063} cps={80} cursor />
             <br />{" "}
-            <span className="hero-phrase" style={{ animationDelay: "280ms" }}>
-              Built on{" "}
-              <span
-                style={{
-                  background:
-                    "linear-gradient(90deg, #ef6c33 0%, #ff8a4c 25%, #ff5c28 50%, #ff8a4c 75%, #ef6c33 100%)",
-                  backgroundSize: "200% 100%",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                  animation: reduce
-                    ? undefined
-                    : "vh-breathe 6s ease-in-out infinite",
-                  display: "inline-block",
-                }}
-              >
-                our OS
-              </span>
-              .
-            </span>
+            <TypeIn text="Built on " startAt={1451} cps={80} />
+            <TypeIn
+              text="our OS"
+              startAt={1564}
+              cps={80}
+              glitch
+              style={{
+                background:
+                  "linear-gradient(90deg, #ef6c33 0%, #ff8a4c 25%, #ff5c28 50%, #ff8a4c 75%, #ef6c33 100%)",
+                backgroundSize: "200% 100%",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                animation: reduce ? undefined : "vh-breathe 6s ease-in-out infinite",
+                display: "inline-block",
+              }}
+            />
+            <TypeIn text="." startAt={1639} cps={80} cursor />
           </h1>
 
           <p
             className="relative mt-10 max-w-xl text-lg text-ink-500 sm:mt-12 sm:text-xl lg:leading-[1.4]"
             style={{ position: "relative", zIndex: 1 }}
           >
-            Whether you need a single page for a local business or a multi-tenant platform, we ship it in days &mdash; from <span className="font-semibold text-ink">$1,500</span> &mdash; and host it on Day14 OS, the operating system that runs our own six businesses. Fast to ship, cheap to run, designed to outlive your team. <span className="font-semibold text-ink">Now booking July.</span>
+            <TypeIn
+              text="Whether you need a single page for a local business or a multi-tenant platform, we ship it in days — from $1,500 — and host it on Day14 OS, the operating system that runs our own six businesses. Fast to ship, cheap to run, designed to outlive your team. Now booking July."
+              startAt={1850}
+              cps={320}
+            />
           </p>
 
+          <TypeInKeyframes />
+
           {cta && (
-            <div className="relative mt-10 sm:mt-12" style={{ position: "relative", zIndex: 1 }}>
+            <motion.div
+              className="relative mt-10 sm:mt-12"
+              style={{ position: "relative", zIndex: 1 }}
+              initial={reduce ? false : { opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 2.0, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            >
               {cta}
-            </div>
+            </motion.div>
           )}
         </div>
 
