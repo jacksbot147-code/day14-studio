@@ -9,7 +9,6 @@ import { ScrollFade } from "@/components/motion/scroll-fade";
 import { CountUp } from "@/components/motion/count-up";
 import { HeroAurora } from "@/components/motion/hero-aurora";
 import { StaggerCtas } from "@/components/motion/stagger-ctas";
-import { HeroParallaxWrap } from "@/components/landing/hero-parallax-wrap";
 import { CursorSpotlight } from "@/components/landing/cursor-spotlight";
 import { ScrambleNumber } from "@/components/landing/scramble-number";
 import { SectionNumeral } from "@/components/landing/section-numeral";
@@ -17,7 +16,7 @@ import { SectionDivider } from "@/components/landing/section-divider";
 import { MeshGradient } from "@/components/landing/mesh-gradient";
 import { TerminalSnippet } from "@/components/landing/terminal-snippet";
 import { CinematicImage } from "@/components/landing/cinematic-image";
-import { EmpireConstellation } from "@/components/landing/empire-constellation";
+import { VideoHero } from "@/components/landing/video-hero";
 import { DeployStrip } from "@/components/deploy-strip";
 import { WaitlistForm } from "@/components/WaitlistForm";
 
@@ -258,36 +257,13 @@ function Hero() {
       <CursorSpotlight />
 
       <div className="container-page relative z-10 pt-24 pb-24 sm:pt-32 sm:pb-32 lg:pt-36 lg:pb-40">
-        {/* Two-column hero: massive headline + CTA on the left (warm paper),
-            cinematic dark constellation window on the right. The contrast
-            between the two surfaces is the wow. The constellation shows
-            visitors what they're being invited into without ever showing
-            them the operator's admin. */}
-        <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-16 xl:gap-20">
-          <HeroParallaxWrap>
-            <div className="eyebrow mb-8 inline-flex items-center gap-2.5">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-ember-500" />
-              <span>A pivot announcement</span>
-            </div>
-
-            <h1 className="max-w-2xl text-[2.875rem] font-extrabold leading-[0.95] tracking-tightest text-ink sm:text-[64px] lg:text-[84px] xl:text-[96px]">
-              <span className="hero-phrase" style={{ animationDelay: "0ms" }}>
-                One operator.
-              </span>{" "}
-              <span className="hero-phrase" style={{ animationDelay: "140ms" }}>
-                Six businesses.
-              </span>
-              <br />{" "}
-              <span className="hero-phrase" style={{ animationDelay: "280ms" }}>
-                One <span className="marker text-ink">operating system</span>.
-              </span>
-            </h1>
-
-            <p className="mt-10 max-w-xl text-lg text-ink-500 sm:mt-12 sm:text-xl lg:leading-[1.4]">
-              The multi-tenant studio I built to run every business I own from a single worktree. Marketing sites, portals, billing, scheduled agents, an inbox that only surfaces what a human has to decide.
-            </p>
-
-            <StaggerCtas className="mt-10 flex flex-wrap items-center gap-3 sm:mt-12">
+        {/* VideoHero — Package A wow stack: 4-vignette loop, ember particles
+            orbiting the headline reacting to mouse, breathing gradient on the
+            "operating system" text. The right column feels like a looping
+            product demo reel, not a static screenshot. */}
+        <VideoHero
+          cta={
+            <StaggerCtas className="flex flex-wrap items-center gap-3">
               <a href="#waitlist" className="btn-ember">
                 Join the waitlist
               </a>
@@ -295,15 +271,8 @@ function Hero() {
                 See how it works
               </a>
             </StaggerCtas>
-          </HeroParallaxWrap>
-
-          {/* The empire — interactive constellation. Renders independent of
-              the parallax wrap so its internal mouse-tilt + orbital motion
-              isn't double-transformed. */}
-          <div className="relative">
-            <EmpireConstellation />
-          </div>
-        </div>
+          }
+        />
 
         {/* Proof strip — same bordered grid pattern. ScrambleNumber gives it
             a terminal-decrypting feel that matches the brutalist /admin
