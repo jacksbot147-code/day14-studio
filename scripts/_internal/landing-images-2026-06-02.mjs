@@ -188,31 +188,11 @@ const PLANS = [
       "Editorial financial-publication cover image, 4:3 landscape, cinematic gravitas. A still-life on aged ivory paper — overlapping translucent layers of vellum and parchment, each carrying faint architectural-blueprint hairline geometries (not legible as text, purely abstract linework). Single shaft of warm afternoon light cutting across the upper-right, catching the edges of the layers and casting long honey-gold shadows. A single antique brass paperweight or geometric metal object anchors the composition in the lower-left, with a quiet ember-gold (#ca8a04) glint. Recalls the cover of a Lapham's Quarterly issue on money, or a Wallpaper magazine spread on archival design. NO text, NO numbers, NO logos, NO charts.",
   },
 
-  // 5) STEP 01 — ADD A TENANT. A glowing orb spawning from a central node.
-  {
-    slug: "step-01-tenant",
-    style: "abstract",
-    prompt:
-      "Abstract editorial illustration, 4:3 landscape, conceptual diagram aesthetic. A deep midnight-indigo (#0f172a) background. In the center, a single bright ember-orange (#ef6c33) glowing sphere connected by a luminous hairline orange filament to a smaller secondary sphere being born off to the upper-right — clearly 'spawning'. Around them, three faint ghost-rings suggest more spheres to come. Soft volumetric glow around each sphere, lens-flare halos. The composition reads instantly as 'add a new node to a network'. Premium futurist editorial, like a diagram in a Nature paper but rendered with cinematic light. NO text, NO labels, NO UI.",
-  },
+  // (Step illustrations 5/6/7 were dropped — Jack felt the typing terminals
+  // already carried the How-it-works section visually and an image above
+  // each one competed for attention rather than reinforcing the content.)
 
-  // 6) STEP 02 — SCHEDULE THE AGENTS. Orbital clockwork rendering.
-  {
-    slug: "step-02-schedule",
-    style: "abstract",
-    prompt:
-      "Abstract editorial illustration, 4:3 landscape, conceptual mechanical diagram. A deep midnight-indigo (#0f172a) background. Three concentric translucent orbital rings rendered as thin glowing hairlines in warm ember-orange (#ef6c33), each ring at a different tilt. On each ring, a single luminous tick-mark or small node, positioned at different angular positions like the hands of an orrery. Faint motion-trail arcs suggest the rings are slowly rotating. In the dead center, a single tiny incandescent ember-white point of light. The image reads as 'time, orbits, scheduled events'. Looks like a still from a futuristic Hayao-Miyazaki-meets-Kubrick astronomy sequence. NO text, NO clock face, NO numbers, NO UI.",
-  },
-
-  // 7) STEP 03 — LIVE IN THE INBOX. One luminous card centered in void.
-  {
-    slug: "step-03-inbox",
-    style: "abstract",
-    prompt:
-      "Abstract editorial illustration, 4:3 landscape, conceptual minimalist composition. A deep midnight-indigo (#0f172a) background falling away into perfect black at the edges. Centered in the frame, a single luminous floating rectangle — proportions like an index card — rendered in warm cream (#f8f6f1) with a soft outer glow. The card has no contents, no text, just pristine paper-white with the faintest ember-orange (#ef6c33) shadow along its lower edge. Behind the card, the suggestion of dozens more ghost-cards receding into the deep background, blurred and dimmed almost out of existence. The composition feels meditative — 'the inbox is empty because everything else was handled'. Reads like a Wim Wenders frame: quiet, sacred, almost reverent. NO text, NO UI, NO icons.",
-  },
-
-  // 8) FOOTER CIRCUIT — dark cinematic backdrop for the legacy-SKU CTA.
+  // 5) FOOTER CIRCUIT — dark cinematic backdrop for the legacy-SKU CTA.
   {
     slug: "footer-circuit",
     style: "cinematic",

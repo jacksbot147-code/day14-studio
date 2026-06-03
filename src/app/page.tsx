@@ -119,36 +119,24 @@ const OS_CASE_STUDIES: Array<{
   },
 ];
 
-const OS_STEPS: Array<{
-  n: string;
-  title: string;
-  body: string;
-  image: string;
-  imageAlt: string;
-}> = [
+const OS_STEPS = [
   {
     n: "01",
     title: "Add a tenant",
     body:
       "One config entry. The OS picks up the tenant everywhere — admin dashboard, inbox routing, deploy strip, scheduled tasks, work-log.",
-    image: "/images/landing/step-01-tenant.png",
-    imageAlt: "A glowing ember sphere spawning a smaller secondary sphere — a new node joining the network",
   },
   {
     n: "02",
     title: "Schedule the agents",
     body:
       "Daily briefing, content drafts, image generation, deploy commit, EOD evidence check. Each agent writes to the work-log when it ships, surfaces to the inbox when it can't.",
-    image: "/images/landing/step-02-schedule.png",
-    imageAlt: "Three glowing concentric orbital rings around a central incandescent point — an orrery of scheduled time",
   },
   {
     n: "03",
     title: "Live in the inbox",
     body:
       "The operator's job is one screen: /admin/inbox. Everything else is either automated or evidence-verified. If it's not in the inbox, it doesn't need you.",
-    image: "/images/landing/step-03-inbox.png",
-    imageAlt: "A single luminous card floating in deep indigo void — the inbox at rest",
   },
 ];
 
@@ -556,18 +544,11 @@ function HowItWorks() {
             ][i] ?? [];
             return (
               <div key={s.n} className="flex flex-col gap-4">
-                {/* Cinematic step illustration — Gemini-rendered conceptual
-                    diagram (spawning sphere / orbital rings / floating card).
-                    Tile treatment gives it a dark inset frame so the warm
-                    paper card below feels lifted in contrast. */}
-                <div className="relative w-full" style={{ aspectRatio: "4 / 3" }}>
-                  <CinematicImage
-                    src={s.image}
-                    alt={s.imageAlt}
-                    treatment="tile"
-                    position="center"
-                  />
-                </div>
+                {/* No image in this section — the narrative card + the
+                    animated terminal IS the visual. The terminal carries
+                    enough atmosphere on its own (typing cursor, macOS
+                    chrome, ember accent) that an illustration above it
+                    just competed for attention. */}
                 <div className="relative flex flex-col rounded-xl border border-ink-100 bg-paper p-7 shadow-[0_2px_8px_-2px_rgba(15,23,42,0.04)]">
                   <span className="absolute inset-x-0 top-0 h-0.5 w-12 bg-ember-500" />
                   <div className="font-mono text-xs font-bold uppercase tracking-[0.18em] text-ember-600 tnum">
