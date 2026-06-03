@@ -14,7 +14,6 @@ import { CursorSpotlight } from "@/components/landing/cursor-spotlight";
 import { ScrambleNumber } from "@/components/landing/scramble-number";
 import { SectionNumeral } from "@/components/landing/section-numeral";
 import { SectionDivider } from "@/components/landing/section-divider";
-import { TintedCaseCard } from "@/components/landing/tinted-case-card";
 import { MeshGradient } from "@/components/landing/mesh-gradient";
 import { TerminalSnippet } from "@/components/landing/terminal-snippet";
 import { CinematicImage } from "@/components/landing/cinematic-image";
@@ -68,53 +67,80 @@ const OS_STATS = {
   attentionHoursPerDay: 4,
 };
 
-// Three case studies for the OS pitch. Inline so we don't disturb the
-// legacy CASE_STUDIES used by the /case-studies pages.
+// Six tenants on the OS — the empire, live. Bento order:
+//   Row 1 (tall): alignmd, life-loophole, day14
+//   Row 2 (short): day14-realty, hot-flash-co, kennum-lawn-care
+// hot-flash-co + kennum-lawn-care render as PARKED tiles per the operator
+// brief — excluded from new product work but kept visible in the grid.
+type TenantState = "live" | "paused" | "parked";
 const OS_CASE_STUDIES: Array<{
   slug: string;
   name: string;
-  vertical: string;
-  state: "Live" | "Preview" | "Internal";
-  screenshot: string;
-  result: string;
-  image: string;
-  imageAlt: string;
+  title: string;
+  story: string;
+  state: TenantState;
+  brandColor: string;
+  size: "tall" | "short";
 }> = [
   {
     slug: "alignmd",
     name: "AlignMD",
-    vertical: "B2B SaaS · Healthcare staffing",
-    state: "Live",
-    screenshot:
-      "Clinician portal — credential checklist + intake parser running over a candidate resume, dossier auto-generating into the right panel.",
-    result:
-      "Credential-aware intake that used to take 40 minutes per clinician now takes 4. Same admin app the operator uses for the other five businesses.",
-    image: "/images/landing/case-alignmd.png",
-    imageAlt: "AlignMD — cool clinical morning light, abstract dashboards floating mid-air",
-  },
-  {
-    slug: "hot-flash-co",
-    name: "Hot Flash Co",
-    vertical: "D2C brand · Wellness, peri/menopause",
-    state: "Live",
-    screenshot:
-      "Brand site hero with menopause-positive editorial photography, product grid, MailerLite-wired waitlist, AI chatbot answering symptom questions.",
-    result:
-      "Brand-led D2C site built to look like it came from a 20-person team. Lives in the same OS as the SaaS tenant — different brand, same admin.",
-    image: "/images/landing/case-hot-flash-co.png",
-    imageAlt: "Hot Flash Co — warm golden-hour wellness still-life on linen",
+    title: "Credential-aware staffing, end to end.",
+    story:
+      "Clinician intake that used to take 40 minutes now takes 4. Same admin app the operator runs every other tenant from.",
+    state: "live",
+    brandColor: "#3B82F6",
+    size: "tall",
   },
   {
     slug: "life-loophole",
     name: "Life Loophole",
-    vertical: "Content business · Personal-finance education",
-    state: "Live",
-    screenshot:
-      "Article archive of 30+ drafts on an editorial template, with the scheduled-task panel showing the daily content agent's last run.",
-    result:
-      "A scheduled agent drafts essays nightly to the brand voice. Operator reviews and ships from the inbox. One content business running on autopilot.",
-    image: "/images/landing/case-life-loophole.png",
-    imageAlt: "Life Loophole — layered ivory vellum with warm honey-gold afternoon light",
+    title: "Editorial finance, drafted by an agent nightly.",
+    story:
+      "A scheduled agent ships essays in brand voice each night. Operator reviews and publishes from the inbox.",
+    state: "live",
+    brandColor: "#CA8A04",
+    size: "tall",
+  },
+  {
+    slug: "day14",
+    name: "Day14 OS",
+    title: "The operating system running this page.",
+    story:
+      "Multi-tenant studio, scheduled agents, evidence-verified work-log. The same code stack runs all six brands.",
+    state: "live",
+    brandColor: "#EF6C33",
+    size: "tall",
+  },
+  {
+    slug: "day14-realty",
+    name: "Day14 Realty",
+    title: "Coastal listings, paused for licensing.",
+    story:
+      "Brand and admin wired into the OS. On hold until broker-of-record paperwork clears.",
+    state: "paused",
+    brandColor: "#14805A",
+    size: "short",
+  },
+  {
+    slug: "hot-flash-co",
+    name: "Hot Flash Co",
+    title: "Menopause-positive D2C, parked.",
+    story:
+      "Site, copy, and product grid live in the OS. Held until capital lines up for the first inventory run.",
+    state: "parked",
+    brandColor: "#F472B6",
+    size: "short",
+  },
+  {
+    slug: "kennum-lawn-care",
+    name: "Kennum Lawn Care",
+    title: "Local landscape services, parked.",
+    story:
+      "Booking + dispatch wired against the same admin. Reactivates when route density returns to profitable.",
+    state: "parked",
+    brandColor: "#65A30D",
+    size: "short",
   },
 ];
 
@@ -332,23 +358,30 @@ function Stat({ label, value }: { label: string; value: ReactNode }) {
 /* -------------------------------------------------------------------------- */
 
 function LoomDemo() {
+  // Apple-product-page moment: centered editorial column over the video
+  // card. The card itself IS the frame — no browser chrome, no dotted
+  // mockup. Long warm peach-tinted shadow, soft cream surface, big radius.
+  const cardShadow =
+    "0 24px 60px -20px rgba(239, 108, 51, 0.10), 0 8px 24px -8px rgba(15, 23, 42, 0.06)";
+
   return (
-    <section id="loom" className="container-page py-20 sm:py-24">
-      <SectionDivider />
-      <div className="mt-12 flex items-start justify-between gap-8">
-        <SectionNumeral n={1} />
-      </div>
-      <div className="grid gap-10 md:grid-cols-[1fr_1.4fr] md:gap-12">
-        <div>
-          <div className="eyebrow eyebrow-rule mb-5">Watch the system run · 4 min</div>
-          <h2 className="text-3xl font-extrabold tracking-tightest text-ink sm:text-4xl">
-            A real Monday morning. Six businesses. No standups.
+    <section
+      id="loom"
+      className="bg-paper-cream py-32 sm:py-40"
+    >
+      <div className="container-page">
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="eyebrow mb-6 justify-center text-ember-600">
+            Watch the system run · 4 min
+          </div>
+          <h2 className="text-[64px] font-extrabold leading-[0.95] tracking-[-0.04em] text-ink sm:text-[80px] lg:text-[96px]">
+            A Monday morning. Six businesses. No standups.
           </h2>
-          <p className="mt-5 text-ink-500">
+          <p className="mx-auto mt-8 max-w-2xl text-lg leading-[1.55] text-warm-gray-500 sm:text-xl">
             I open the admin dashboard, the inbox shows me three things to approve, I approve them, the scheduled tasks fire, and by noon every business has shipped something. No team, no project manager, no Notion archaeology. The OS is the manager.
           </p>
-          <div className="mt-7 flex flex-wrap gap-3">
-            <a href="#waitlist" className="btn-primary">
+          <div className="mt-10 flex flex-wrap justify-center gap-3">
+            <a href="#waitlist" className="btn-ember">
               Join the waitlist →
             </a>
             <a href="#case-studies" className="btn-ghost">
@@ -357,45 +390,34 @@ function LoomDemo() {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-lg border border-ink-200 bg-paper-50">
-          <div className="flex items-center justify-between border-b border-ink-100 bg-paper-100 px-4 py-2.5">
-            <div className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-sm bg-ink-200" />
-              <span className="h-2 w-2 rounded-sm bg-ink-200" />
-              <span className="h-2 w-2 rounded-sm bg-ink-200" />
-            </div>
-            <div className="font-mono text-xs text-ink-400">loom · day14-os demo</div>
-            <div className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-ember-600">
-              <span className="h-1.5 w-1.5 rounded-full bg-ember-500" />
-              4 min
-            </div>
-          </div>
-          <div className="relative aspect-[16/9] w-full">
-            {LOOM_EMBED_URL ? (
-              <iframe
-                src={LOOM_EMBED_URL}
-                title="Day14 OS — 4-minute demo"
-                loading="lazy"
-                allow="fullscreen"
-                className="absolute inset-0 h-full w-full"
-              />
-            ) : (
-              <div className="absolute inset-0 grid place-items-center p-6 text-center">
-                <div>
-                  <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink-400">
-                    Loom · ready to embed
-                  </div>
-                  <p className="mt-3 max-w-sm text-sm text-ink-500">
-                    Demo recording in progress. Paste the Loom share URL into{" "}
-                    <code className="rounded bg-paper-100 px-1.5 py-0.5 font-mono text-xs text-ink">
-                      LOOM_EMBED_URL
-                    </code>{" "}
-                    in <code className="font-mono text-xs">page.tsx</code>.
-                  </p>
+        <div
+          className="relative mx-auto mt-20 aspect-video w-full max-w-5xl overflow-hidden rounded-3xl bg-warm-gray-50"
+          style={{ boxShadow: cardShadow }}
+        >
+          {LOOM_EMBED_URL ? (
+            <iframe
+              src={LOOM_EMBED_URL}
+              title="Day14 OS — 4-minute demo"
+              loading="lazy"
+              allow="fullscreen"
+              className="absolute inset-0 h-full w-full"
+            />
+          ) : (
+            <div className="absolute inset-0 grid place-items-center p-8 text-center">
+              <div>
+                <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-warm-gray-400">
+                  Loom · ready to embed
                 </div>
+                <p className="mx-auto mt-4 max-w-md text-sm text-warm-gray-500">
+                  Demo recording in progress. Paste the Loom share URL into{" "}
+                  <code className="rounded bg-warm-gray-100 px-1.5 py-0.5 font-mono text-xs text-ink">
+                    LOOM_EMBED_URL
+                  </code>{" "}
+                  in <code className="font-mono text-xs">page.tsx</code>.
+                </p>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </section>
@@ -407,93 +429,81 @@ function LoomDemo() {
 /* -------------------------------------------------------------------------- */
 
 function CaseStudies() {
+  // Apple-style bento. 3 cols on lg, 2 on md, 1 on mobile.
+  // Row 1: alignmd, life-loophole, day14 (tall — 360px).
+  // Row 2: day14-realty, hot-flash-co, kennum-lawn-care (short — 240px).
+  // Tiles render with brand-color top border + warm peach long shadow.
+  const tileShadow =
+    "0 24px 60px -20px rgba(239, 108, 51, 0.10), 0 8px 24px -8px rgba(15, 23, 42, 0.06)";
+
   return (
-    <section id="case-studies" className="border-t border-ink-100 py-20 sm:py-24">
+    <section
+      id="case-studies"
+      className="bg-paper-cream py-32 sm:py-40"
+    >
       <div className="container-page">
-        <SectionDivider />
-        <div className="mt-12">
-          <SectionNumeral n={2} />
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="eyebrow mb-6 justify-center text-ember-600">
+            Six businesses, one OS
+          </div>
+          <h2 className="text-[56px] font-extrabold leading-[0.98] tracking-[-0.04em] text-ink sm:text-[72px] lg:text-[80px]">
+            The empire, live.
+          </h2>
         </div>
-        <SectionHead
-          eyebrow="Three tenants, three businesses, one OS"
-          title="Live, running, taking real money."
-          lead={
-            <>
-              The OS is multi-tenant from the metal up. These three businesses share the same admin app, the same inbox, and the same evidence verifier. They look like three companies because they are.
-            </>
-          }
-        />
 
-        {/* (Orbit diagram moved to the hero as EmpireConstellation — owns
-            the visual centerpiece slot. Case-study cards stand on their own.) */}
-
-        <div className="mt-12 grid gap-5 md:grid-cols-3">
+        <div className="mt-20 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
           {OS_CASE_STUDIES.map((cs) => (
-            <TintedCaseCard
+            <article
               key={cs.slug}
-              tint={cs.slug as "alignmd" | "hot-flash-co" | "life-loophole"}
+              className={cn(
+                "relative flex flex-col overflow-hidden rounded-3xl bg-paper-cream p-7 sm:p-8",
+                cs.size === "tall" ? "min-h-[360px]" : "min-h-[240px]",
+              )}
+              style={{ boxShadow: tileShadow }}
             >
-              <article className="relative flex flex-col overflow-hidden rounded-[10px]">
-                <span className="absolute inset-x-0 top-0 z-10 h-0.5 w-full bg-ember-500/30" />
-                {/* Cinematic per-tenant image header — Gemini-rendered
-                    editorial atmosphere keyed to each brand. Top of card,
-                    16:10 banner. Subtle dark-bottom scrim lets the card
-                    body's text breathe against the image edge. */}
-                <div className="relative w-full" style={{ aspectRatio: "16 / 10" }}>
-                  <CinematicImage
-                    src={cs.image}
-                    alt={cs.imageAlt}
-                    treatment="card"
-                    position="center"
-                  />
-                </div>
-                <div className="flex flex-1 flex-col p-7">
-                  <div className="flex items-center justify-between">
-                    <div className="font-mono text-xs font-bold uppercase tracking-widest text-ember-600">
-                      {cs.name}
-                    </div>
-                    <StatePill state={cs.state} />
-                  </div>
-                  <h3 className="mt-3 text-2xl font-extrabold tracking-tightest text-ink">
-                    {cs.vertical}
-                  </h3>
-                  <p className="mt-4 text-sm text-ink-500">
-                    <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-400">
-                      Screenshot
-                    </span>
-                    <br />
-                    {cs.screenshot}
-                  </p>
-                  <p className="mt-5 text-sm font-semibold text-ink">
-                    <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ember-600">
-                      Result
-                    </span>
-                    <br />
-                    {cs.result}
-                  </p>
-                </div>
-              </article>
-            </TintedCaseCard>
+              <span
+                aria-hidden
+                className="absolute inset-x-0 top-0 h-1"
+                style={{ backgroundColor: cs.brandColor }}
+              />
+              <div className="font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-warm-gray-500">
+                {cs.name}
+              </div>
+              <h3 className="mt-4 text-2xl font-bold leading-[1.15] tracking-[-0.02em] text-ink sm:text-[26px]">
+                {cs.title}
+              </h3>
+              <p className="mt-3 text-[15px] leading-[1.55] text-warm-gray-500">
+                {cs.story}
+              </p>
+              <div className="mt-auto flex justify-end pt-6">
+                <StatePill state={cs.state} />
+              </div>
+            </article>
           ))}
         </div>
 
-        <p className="mt-10 font-mono text-xs uppercase tracking-widest text-ink-400">
-          Same OS. Same inbox. Same evidence verifier. Three completely different businesses.
+        <p className="mx-auto mt-16 max-w-2xl text-center font-mono text-xs uppercase tracking-[0.22em] text-warm-gray-400">
+          Same OS · Same inbox · Same evidence verifier
         </p>
       </div>
     </section>
   );
 }
 
-function StatePill({ state }: { state: "Live" | "Preview" | "Internal" }) {
+function StatePill({ state }: { state: "live" | "paused" | "parked" }) {
   const config = {
-    Live: { dot: "bg-shipped-500", label: "Live" },
-    Preview: { dot: "bg-ember-500", label: "Preview" },
-    Internal: { dot: "bg-ink-300", label: "Internal" },
+    live: { dot: "bg-shipped-500", label: "Live", text: "text-shipped-600" },
+    paused: { dot: "bg-amber-500", label: "Paused", text: "text-amber-600" },
+    parked: { dot: "bg-warm-gray-400", label: "Parked", text: "text-warm-gray-500" },
   }[state];
   return (
-    <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-ink-500">
-      <span className={`h-1.5 w-1.5 rounded-full ${config.dot}`} />
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full bg-warm-gray-50 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.18em]",
+        config.text,
+      )}
+    >
+      <span className={cn("h-1.5 w-1.5 rounded-full", config.dot)} />
       {config.label}
     </span>
   );
