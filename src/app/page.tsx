@@ -10,7 +10,6 @@ import { CountUp } from "@/components/motion/count-up";
 import { HeroAurora } from "@/components/motion/hero-aurora";
 import { StaggerCtas } from "@/components/motion/stagger-ctas";
 import { HeroParallaxWrap } from "@/components/landing/hero-parallax-wrap";
-import { HeroMissionClock } from "@/components/landing/hero-mission-clock";
 import { CursorSpotlight } from "@/components/landing/cursor-spotlight";
 import { ScrambleNumber } from "@/components/landing/scramble-number";
 import { SectionNumeral } from "@/components/landing/section-numeral";
@@ -20,6 +19,7 @@ import { MeshGradient } from "@/components/landing/mesh-gradient";
 import { OrbitDiagram } from "@/components/landing/orbit-diagram";
 import { TerminalSnippet } from "@/components/landing/terminal-snippet";
 import { CinematicImage } from "@/components/landing/cinematic-image";
+import { LivingOsHero } from "@/components/landing/living-os-hero";
 import { DeployStrip } from "@/components/deploy-strip";
 import { WaitlistForm } from "@/components/WaitlistForm";
 
@@ -224,65 +224,52 @@ function SectionHead({
 function Hero() {
   return (
     <section className="grain relative isolate overflow-hidden border-b border-ink-100">
-      {/* Cinematic ambient layer — Gemini-rendered cosmic ember filament,
-          mix-blend-screen onto the paper background so it bonds with the
-          mesh underneath instead of feeling pasted on. Falls back to a
-          transparent gap if the file isn't generated yet. */}
-      <CinematicImage
-        src="/images/landing/hero-ambient.png"
-        alt=""
-        treatment="ambient"
-        position="center 30%"
-      />
+      {/* Ambient backdrop — mesh + aurora + cursor spotlight live behind
+          the LivingOsHero chrome. They tint the paper around the chrome
+          without competing with it. (The Gemini hero-ambient image was
+          dropped — the OS window carries the fold on its own.) */}
       <MeshGradient opacity={0.32} blur={90} />
       <HeroAurora />
       <CursorSpotlight />
 
-      {/* Mission-clock corner detail — continuity signal with /admin/mission-control. */}
-      <div className="container-page pointer-events-none absolute inset-x-0 top-6 z-10 flex justify-end sm:top-8">
-        <div className="pointer-events-auto">
-          <HeroMissionClock />
-        </div>
-      </div>
-
-      <div className="container-page relative z-10 pt-24 pb-24 sm:pt-36 sm:pb-32 lg:pt-44 lg:pb-44">
+      <div className="container-page relative z-10 pt-20 pb-24 sm:pt-28 sm:pb-32 lg:pt-32 lg:pb-40">
+        {/* The hero IS the product. LivingOsHero is a faked-live Day14 admin
+            window with a tenant rail, streaming activity log, ticking inbox
+            counter, pulsing deploy bar, and the marketing headline rendered
+            INSIDE the admin chrome as the main content panel. v0.dev /
+            Linear / Resend pattern: marketing is product. */}
         <HeroParallaxWrap>
-          {/* Simplified eyebrow — no animated ping, just the dot. Magic is
-              restraint, not ornament. */}
-          <div className="eyebrow mb-8 inline-flex items-center gap-2.5">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-ember-500" />
-            <span>A pivot announcement</span>
-          </div>
-
-          {/* Hero headline carries the whole fold. Display weight, tightest
-              tracking, line stagger via existing .hero-phrase animation. */}
-          <h1 className="max-w-5xl text-[2.875rem] font-extrabold leading-[0.95] tracking-tightest text-ink sm:text-[72px] lg:text-[104px] xl:text-[120px]">
-            <span className="hero-phrase" style={{ animationDelay: "0ms" }}>
-              One operator.
-            </span>{" "}
-            <span className="hero-phrase" style={{ animationDelay: "140ms" }}>
-              Six businesses.
-            </span>
-            <br className="hidden sm:block" />{" "}
-            <span className="hero-phrase" style={{ animationDelay: "280ms" }}>
-              One <span className="marker text-ink">operating system</span>.
-            </span>
-          </h1>
-
-          {/* Single sub-hero paragraph. The "today I'm opening the waitlist"
-              line moves to the waitlist section below where it belongs. */}
-          <p className="mt-10 max-w-2xl text-lg text-ink-500 sm:mt-12 sm:text-xl lg:text-2xl lg:leading-[1.4]">
-            The multi-tenant studio I built to run every business I own from a single worktree. Marketing sites, portals, billing, scheduled agents, an inbox that only surfaces what a human has to decide.
-          </p>
-
-          {/* One CTA. The Loom embed sits below the fold and announces itself
-              in its own section — no need for a secondary "watch demo" button
-              competing here. */}
-          <StaggerCtas className="mt-10 flex flex-wrap items-center gap-3 sm:mt-14">
-            <a href="#waitlist" className="btn-ember">
-              Join the waitlist
-            </a>
-          </StaggerCtas>
+          <LivingOsHero
+            cta={
+              <StaggerCtas className="flex flex-wrap items-center gap-3">
+                <a
+                  href="#waitlist"
+                  className="inline-flex items-center gap-2 rounded-md px-5 py-3 text-sm font-semibold transition-all duration-150 ease-out"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, #ff8a4c 0%, #ef6c33 100%)",
+                    color: "#ffffff",
+                    boxShadow:
+                      "0 8px 24px -8px rgba(239,108,51,0.55), inset 0 1px 0 rgba(255,255,255,0.25)",
+                  }}
+                >
+                  Join the waitlist
+                  <span aria-hidden style={{ marginLeft: 2 }}>→</span>
+                </a>
+                <a
+                  href="#how"
+                  className="inline-flex items-center gap-2 rounded-md border px-5 py-3 text-sm font-semibold transition-colors"
+                  style={{
+                    borderColor: "rgba(255,255,255,0.12)",
+                    color: "#e2e8f0",
+                    background: "rgba(255,255,255,0.02)",
+                  }}
+                >
+                  See how it works
+                </a>
+              </StaggerCtas>
+            }
+          />
         </HeroParallaxWrap>
 
         {/* Proof strip — same bordered grid pattern. ScrambleNumber gives it
