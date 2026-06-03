@@ -13,8 +13,23 @@
 
 @layer base {
   :root {
-    --bg: 248 246 241; /* paper */
+    --bg: 248 246 241; /* paper — legacy, kept for backward compat */
     --ink: 11 11 10;
+
+    /* Night-02 palette — Apple × Base44 hybrid tokens.
+     * paper-cream is the new dominant surface; ember is the single accent.
+     * warm-gray is a tuned neutral scale for hairlines, type, and chrome.
+     * Existing --bg / --ink RGB triplets above stay for backward compat. */
+    --paper-cream: #fafaf7;
+    --ink-hex: #0a0a0a;
+    --ember: #ef6c33;
+    --warm-gray-50: #f5f4f0;
+    --warm-gray-100: #e8e6e0;
+    --warm-gray-200: #d1cec5;
+    --warm-gray-400: #8a8579;
+    --warm-gray-500: #5c5850;
+    --warm-gray-700: #2e2c27;
+    --dark-cream-bg: #1a1715;
 
     /* Spacing rhythm — an 8px-based scale used across sections + components. */
     --space-section: 7rem; /* 112px — vertical gap between page sections */
@@ -34,6 +49,7 @@
 
   body {
     @apply bg-paper text-ink font-sans antialiased;
+    background-color: var(--paper-cream);
   }
 
   ::selection {

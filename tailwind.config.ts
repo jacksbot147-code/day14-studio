@@ -50,6 +50,18 @@ const config: Config = {
           500: "#10B981",
           600: "#059669",
         },
+        // Night-02 — Apple × Base44 hybrid tokens. Coexists with legacy
+        // paper/ink/ember above; downstream components opt into these.
+        "paper-cream": "#fafaf7",
+        "warm-gray": {
+          50: "#f5f4f0",
+          100: "#e8e6e0",
+          200: "#d1cec5",
+          400: "#8a8579",
+          500: "#5c5850",
+          700: "#2e2c27",
+        },
+        "dark-cream-bg": "#1a1715",
       },
       fontFamily: {
         // Body — system-clean sans, big legibility floor
