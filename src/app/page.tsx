@@ -5,7 +5,8 @@ import { SITE } from "@/lib/site";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { cn } from "@/lib/cn";
-import { ScrollFade } from "@/components/motion/scroll-fade";
+import { BuildReveal } from "@/components/landing/build-reveal";
+import { CmdKPalette } from "@/components/landing/cmd-k-palette";
 import { CountUp } from "@/components/motion/count-up";
 import { HeroAurora } from "@/components/motion/hero-aurora";
 import { StaggerCtas } from "@/components/motion/stagger-ctas";
@@ -205,14 +206,22 @@ export default function HomePage() {
       <main>
         <Hero />
         <DeployStrip />
-        <ScrollFade><LoomDemo /></ScrollFade>
-        <ScrollFade><CaseStudies /></ScrollFade>
-        <ScrollFade><HowItWorks /></ScrollFade>
-        <ScrollFade><Pricing /></ScrollFade>
-        <ScrollFade><Waitlist /></ScrollFade>
-        <ScrollFade><FooterCta /></ScrollFade>
+        {/* BuildReveal wraps each section so its content "builds itself"
+            on viewport entry — opacity-0 + scale-0.96 + blur-8px resolving
+            to crisp focus over 700ms. Phase B move 1. */}
+        <BuildReveal><LoomDemo /></BuildReveal>
+        <BuildReveal><CaseStudies /></BuildReveal>
+        <BuildReveal><HowItWorks /></BuildReveal>
+        <BuildReveal><Pricing /></BuildReveal>
+        <BuildReveal><Waitlist /></BuildReveal>
+        <BuildReveal><FooterCta /></BuildReveal>
       </main>
       <SiteFooter />
+      {/* Phase C — interactive Cmd+K palette. Floating "Ask anything" pill
+          bottom-right; press ⌘K (or Ctrl+K) anywhere to open. 14 real-feeling
+          Day14 OS commands, live fuzzy filter, faked "execute" with toast.
+          The marketing page's first interactive product moment. */}
+      <CmdKPalette />
     </>
   );
 }
