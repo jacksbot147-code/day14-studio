@@ -1615,3 +1615,12 @@ files, no deletions, no dependency changes, no git push.
 - pruned (≥30d done): 0
 - dropped by exclusion (tenant filter): 6 — hot-flash-co:6
 - empire-state.json#human_todos length: 88
+
+## 2026-06-02 — Landing-page cinematic images (Gemini)
+
+- Smoke test: OK (1600918 bytes)
+- Generated: 8/8
+- Skipped (already on disk): 0
+- Total bytes written: 9506723
+- Failures: 0
+- Output dir: public/images/landing/

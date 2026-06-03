@@ -19,6 +19,7 @@ import { TintedCaseCard } from "@/components/landing/tinted-case-card";
 import { MeshGradient } from "@/components/landing/mesh-gradient";
 import { OrbitDiagram } from "@/components/landing/orbit-diagram";
 import { TerminalSnippet } from "@/components/landing/terminal-snippet";
+import { CinematicImage } from "@/components/landing/cinematic-image";
 import { DeployStrip } from "@/components/deploy-strip";
 import { WaitlistForm } from "@/components/WaitlistForm";
 
@@ -77,6 +78,8 @@ const OS_CASE_STUDIES: Array<{
   state: "Live" | "Preview" | "Internal";
   screenshot: string;
   result: string;
+  image: string;
+  imageAlt: string;
 }> = [
   {
     slug: "alignmd",
@@ -87,6 +90,8 @@ const OS_CASE_STUDIES: Array<{
       "Clinician portal — credential checklist + intake parser running over a candidate resume, dossier auto-generating into the right panel.",
     result:
       "Credential-aware intake that used to take 40 minutes per clinician now takes 4. Same admin app the operator uses for the other five businesses.",
+    image: "/images/landing/case-alignmd.png",
+    imageAlt: "AlignMD — cool clinical morning light, abstract dashboards floating mid-air",
   },
   {
     slug: "hot-flash-co",
@@ -97,6 +102,8 @@ const OS_CASE_STUDIES: Array<{
       "Brand site hero with menopause-positive editorial photography, product grid, MailerLite-wired waitlist, AI chatbot answering symptom questions.",
     result:
       "Brand-led D2C site built to look like it came from a 20-person team. Lives in the same OS as the SaaS tenant — different brand, same admin.",
+    image: "/images/landing/case-hot-flash-co.png",
+    imageAlt: "Hot Flash Co — warm golden-hour wellness still-life on linen",
   },
   {
     slug: "life-loophole",
@@ -107,27 +114,41 @@ const OS_CASE_STUDIES: Array<{
       "Article archive of 30+ drafts on an editorial template, with the scheduled-task panel showing the daily content agent's last run.",
     result:
       "A scheduled agent drafts essays nightly to the brand voice. Operator reviews and ships from the inbox. One content business running on autopilot.",
+    image: "/images/landing/case-life-loophole.png",
+    imageAlt: "Life Loophole — layered ivory vellum with warm honey-gold afternoon light",
   },
 ];
 
-const OS_STEPS = [
+const OS_STEPS: Array<{
+  n: string;
+  title: string;
+  body: string;
+  image: string;
+  imageAlt: string;
+}> = [
   {
     n: "01",
     title: "Add a tenant",
     body:
       "One config entry. The OS picks up the tenant everywhere — admin dashboard, inbox routing, deploy strip, scheduled tasks, work-log.",
+    image: "/images/landing/step-01-tenant.png",
+    imageAlt: "A glowing ember sphere spawning a smaller secondary sphere — a new node joining the network",
   },
   {
     n: "02",
     title: "Schedule the agents",
     body:
       "Daily briefing, content drafts, image generation, deploy commit, EOD evidence check. Each agent writes to the work-log when it ships, surfaces to the inbox when it can't.",
+    image: "/images/landing/step-02-schedule.png",
+    imageAlt: "Three glowing concentric orbital rings around a central incandescent point — an orrery of scheduled time",
   },
   {
     n: "03",
     title: "Live in the inbox",
     body:
       "The operator's job is one screen: /admin/inbox. Everything else is either automated or evidence-verified. If it's not in the inbox, it doesn't need you.",
+    image: "/images/landing/step-03-inbox.png",
+    imageAlt: "A single luminous card floating in deep indigo void — the inbox at rest",
   },
 ];
 
@@ -215,6 +236,16 @@ function SectionHead({
 function Hero() {
   return (
     <section className="grain relative isolate overflow-hidden border-b border-ink-100">
+      {/* Cinematic ambient layer — Gemini-rendered cosmic ember filament,
+          mix-blend-screen onto the paper background so it bonds with the
+          mesh underneath instead of feeling pasted on. Falls back to a
+          transparent gap if the file isn't generated yet. */}
+      <CinematicImage
+        src="/images/landing/hero-ambient.png"
+        alt=""
+        treatment="ambient"
+        position="center 30%"
+      />
       <MeshGradient opacity={0.32} blur={90} />
       <HeroAurora />
       <CursorSpotlight />
@@ -424,6 +455,18 @@ function CaseStudies() {
             >
               <article className="relative flex flex-col overflow-hidden rounded-[10px]">
                 <span className="absolute inset-x-0 top-0 z-10 h-0.5 w-full bg-ember-500/30" />
+                {/* Cinematic per-tenant image header — Gemini-rendered
+                    editorial atmosphere keyed to each brand. Top of card,
+                    16:10 banner. Subtle dark-bottom scrim lets the card
+                    body's text breathe against the image edge. */}
+                <div className="relative w-full" style={{ aspectRatio: "16 / 10" }}>
+                  <CinematicImage
+                    src={cs.image}
+                    alt={cs.imageAlt}
+                    treatment="card"
+                    position="center"
+                  />
+                </div>
                 <div className="flex flex-1 flex-col p-7">
                   <div className="flex items-center justify-between">
                     <div className="font-mono text-xs font-bold uppercase tracking-widest text-ember-600">
@@ -513,6 +556,18 @@ function HowItWorks() {
             ][i] ?? [];
             return (
               <div key={s.n} className="flex flex-col gap-4">
+                {/* Cinematic step illustration — Gemini-rendered conceptual
+                    diagram (spawning sphere / orbital rings / floating card).
+                    Tile treatment gives it a dark inset frame so the warm
+                    paper card below feels lifted in contrast. */}
+                <div className="relative w-full" style={{ aspectRatio: "4 / 3" }}>
+                  <CinematicImage
+                    src={s.image}
+                    alt={s.imageAlt}
+                    treatment="tile"
+                    position="center"
+                  />
+                </div>
                 <div className="relative flex flex-col rounded-xl border border-ink-100 bg-paper p-7 shadow-[0_2px_8px_-2px_rgba(15,23,42,0.04)]">
                   <span className="absolute inset-x-0 top-0 h-0.5 w-12 bg-ember-500" />
                   <div className="font-mono text-xs font-bold uppercase tracking-[0.18em] text-ember-600 tnum">
@@ -715,8 +770,17 @@ function FooterCta() {
     <section className="border-t border-ink-100 py-20 sm:py-24">
       <div className="container-page">
         <div className="relative overflow-hidden rounded-lg border border-ink-700 bg-ink p-10 text-paper sm:p-14">
+          {/* Cinematic ember-filament macro backdrop — Gemini-rendered
+              circuit-board-vein-of-fire image. Scrim treatment vignettes the
+              edges so the dark slab and headline still dominate. */}
+          <CinematicImage
+            src="/images/landing/footer-circuit.png"
+            alt=""
+            treatment="scrim"
+            position="center"
+          />
           <div className="grid-lines-dark absolute inset-0 [mask-image:radial-gradient(600px_360px_at_15%_0%,#000,transparent_75%)]" />
-          <div className="relative grid items-center gap-10 md:grid-cols-[1.4fr_1fr]">
+          <div className="relative z-10 grid items-center gap-10 md:grid-cols-[1.4fr_1fr]">
             <div>
               <div className="eyebrow eyebrow-rule mb-5 text-ember-300">
                 The day-job, still on offer
