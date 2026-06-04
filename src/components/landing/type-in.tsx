@@ -176,8 +176,9 @@ export function TypeIn({
     };
   }, [glitch, done, reduce, text]);
 
-  // SSR / pre-mount: full text rendered at opacity 0 (preserves layout +
-  // screen-reader access, no flash before animation starts).
+  // SSR / pre-mount: full text rendered at opacity 0. Same layout footprint
+  // as the post-mount render (both occupy the full text's width/height) so
+  // there's no shift on hydration.
   if (!mounted) {
     return (
       <span
@@ -192,20 +193,12 @@ export function TypeIn({
     );
   }
 
-  // Compose visible text — apply glitch swap inline if active
-  let visibleText: ReactNode;
-  if (glitchAt && glitchAt.idx < charIdx) {
-    visibleText = (
-      <>
-        {text.slice(0, glitchAt.idx)}
-        <span style={{ color: "#ef6c33" }}>{glitchAt.glyph}</span>
-        {text.slice(glitchAt.idx + 1, charIdx)}
-      </>
-    );
-  } else {
-    visibleText = text.slice(0, charIdx);
-  }
-
+  // Render every character of the text as its own inline span so the line's
+  // full final width is reserved from frame 1. Untyped chars use
+  // `visibility: hidden` — they take layout space but render invisibly.
+  // The cursor is inserted at the typed-frontier position via a Fragment so
+  // it visually sits at the right edge of the typed chars, not at the end
+  // of the (hidden) full text.
   return (
     <span
       ref={wrapperRef}
@@ -214,8 +207,26 @@ export function TypeIn({
       aria-label={text}
       suppressHydrationWarning
     >
-      {visibleText}
-      {cursor && !done && <TypeCursor />}
+      {text.split("").map((char, i) => {
+        const typed = i < charIdx;
+        const isFrontier = cursor && !done && i === charIdx;
+        const isGlitched = glitchAt && glitchAt.idx === i && typed;
+        return (
+          <span key={i} style={{ whiteSpace: "pre" }}>
+            {isFrontier && <TypeCursor />}
+            <span
+              style={{
+                visibility: typed ? "visible" : "hidden",
+                color: isGlitched ? "#ef6c33" : undefined,
+              }}
+            >
+              {isGlitched ? glitchAt!.glyph : char}
+            </span>
+          </span>
+        );
+      })}
+      {/* Cursor at the very end when typing is complete and cursor is requested */}
+      {cursor && !done && charIdx >= text.length && <TypeCursor />}
       {children}
     </span>
   );
