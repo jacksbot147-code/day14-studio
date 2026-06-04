@@ -210,7 +210,7 @@ export function CmdKPalette() {
             display: "inline-block",
           }}
         />
-        Ask anything
+        Quick actions
         <span
           style={{
             marginLeft: 4,

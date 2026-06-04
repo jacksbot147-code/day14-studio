@@ -1,21 +1,18 @@
 "use client";
 
 /**
- * BuildReveal — Phase B move 1: the section builds itself as you arrive.
+ * BuildReveal — clean fade-up reveal on viewport entry.
  *
  * Wraps a section's children and animates them on first viewport entry:
- *   - Starts: opacity 0, scale 0.96, blur 8px (looks like a wireframe — the
- *     content is "under construction")
- *   - Resolves: opacity 1, scale 1, blur 0 — content snaps into focus
+ *   - Starts: opacity 0, translated 12px down
+ *   - Resolves: opacity 1, y 0
  *
- * Combined with a stagger across direct children (40ms each), the whole
- * section "builds itself" in a satisfying ~700ms sequence as you scroll
- * into it. The signature Apple-product-page reveal pattern.
+ * Blur and scale were intentionally removed — they made the page feel hazy.
  *
- * SSR-safe: server renders the resolved state (no blur, no scale) so the
- * page is readable without JS. Client takes over on mount.
+ * SSR-safe: server renders the resolved state so the page is readable
+ * without JS. Client takes over on mount.
  *
- * Reduced motion: instant fade-in only, no blur or scale.
+ * Reduced motion: instant fade-in only, no translate.
  */
 
 import { motion, useReducedMotion } from "framer-motion";
@@ -59,15 +56,15 @@ export function BuildReveal({
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, scale: 0.96, filter: "blur(8px)" }}
-      whileInView={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount }}
       transition={{
         duration,
         ease: [0.22, 1, 0.36, 1],
         staggerChildren: stagger,
       }}
-      style={{ willChange: "transform, filter, opacity" }}
+      style={{ willChange: "transform, opacity" }}
     >
       {children}
     </motion.div>

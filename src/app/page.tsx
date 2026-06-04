@@ -252,10 +252,12 @@ export default function HomePage() {
       <SiteHeader />
       <main>
         <Hero />
-        <DeployStrip />
-        {/* BuildReveal wraps each section so its content "builds itself"
-            on viewport entry — opacity-0 + scale-0.96 + blur-8px resolving
-            to crisp focus over 700ms. Phase B move 1. */}
+        {/* DeployStrip hidden — internal-ops messages confused non-tech
+            buyers. Keep the import so the component file stays referenced. */}
+        {/* <DeployStrip /> */}
+        {/* BuildReveal wraps each section so its content fades up cleanly
+            on viewport entry (opacity 0 → 1 + 12px translate). Blur and
+            scale were removed for clarity. */}
         <BuildReveal><LoomDemo /></BuildReveal>
         <BuildReveal><CaseStudies /></BuildReveal>
         <BuildReveal><HowItWorks /></BuildReveal>
@@ -608,7 +610,7 @@ function Pricing() {
             Pricing · build studio
           </div>
           <h2 className="text-[56px] font-extrabold leading-[0.98] tracking-[-0.04em] text-ink sm:text-[72px] lg:text-[80px]">
-            $1,500 to scoped.
+            $1,500 to custom.
           </h2>
           <p className="mx-auto mt-8 max-w-2xl text-[17px] leading-[1.6] text-warm-gray-500 sm:text-[18px]">
             Fixed price, fixed timeline, no SOWs. Pick the size that fits the job &mdash; your build lives on Day14 OS, the same stack that runs all six of our own businesses.
@@ -643,10 +645,9 @@ function Pricing() {
               </p>
 
               <div className="mt-7 flex items-baseline gap-2 tnum">
-                <ScramblePrice
-                  price={tier.price}
-                  className="text-[48px] font-extrabold leading-none tracking-[-0.035em] text-ink"
-                />
+                <span className="text-[48px] font-extrabold leading-none tracking-[-0.035em] text-ink">
+                  {tier.price}
+                </span>
                 <span className="text-sm font-medium text-warm-gray-400">
                   {tier.cadence}
                 </span>
