@@ -52,7 +52,7 @@ function Hero() {
 
       <div className="mt-9 flex flex-wrap gap-3">
         <a href={SITE.bookingUrl} className="btn-ember">
-          Book a 30-min intro call
+          Book a 20-min scope call
         </a>
         <Link href="/about" className="btn-ghost">
           How Day14 works →
@@ -561,7 +561,7 @@ function FaqSubset() {
       <div className="mx-auto max-w-2xl text-center">
         <div className="eyebrow mb-4 justify-center">Three honest questions</div>
         <h2 className="text-3xl font-extrabold tracking-tightest text-ink sm:text-4xl">
-          The objections we hear every intro call.
+          The objections we hear every scope call.
         </h2>
       </div>
 
@@ -613,7 +613,7 @@ function FinalCta() {
             </h2>
             <p className="mt-5 max-w-xl text-paper-200">
               Or you could spend the same fortnight signing up for another
-              SaaS that rents you a generic backend forever. Book a 30-minute
+              SaaS that rents you a generic backend forever. Book a 20-minute
               call. We&rsquo;ll pull up a live customer build, you tell us
               your business, and we&rsquo;ll quote you on the call.
             </p>
@@ -623,7 +623,7 @@ function FinalCta() {
               href={SITE.bookingUrl}
               className="btn-ember w-full justify-center text-base"
             >
-              Book a 30-min intro call
+              Book a 20-min scope call
             </a>
             <Link
               href="/about"

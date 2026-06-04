@@ -76,7 +76,7 @@ export default function FAQPage() {
               href="https://cal.com/day14/intro"
               className="underline decoration-ember-300 underline-offset-4 transition-colors hover:decoration-ember-500"
             >
-              the intro call
+              the scope call
             </a>{" "}
             or email{" "}
             <a
@@ -118,13 +118,13 @@ export default function FAQPage() {
         <section className="mt-20 border border-ink-100 bg-paper-50 p-8 sm:p-12">
           <div className="mx-auto max-w-2xl text-center">
             <span className="eyebrow mb-3">Still have questions?</span>
-            <h2 className="mb-3">30 minutes, no deck, live demo.</h2>
+            <h2 className="mb-3">20 minutes, no deck, fixed quote in 48 hours.</h2>
             <p className="mb-8 text-base leading-relaxed text-ink-500">
               We tell you on the call if it is a fit.
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <a href="https://cal.com/day14/intro" className="btn-primary">
-                Book intro call
+                Book scope call
               </a>
               <Link href="/stack" className="btn-ghost">
                 See the stack

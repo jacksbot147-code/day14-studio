@@ -42,7 +42,7 @@ function Hero() {
 
       <div className="mt-9 flex flex-wrap gap-3">
         <a href={SITE.bookingUrl} className="btn-ember">
-          Book a 30-min intro call
+          Book a 20-min scope call
         </a>
         <Link href="/#case-studies" className="btn-ghost">
           See the work
@@ -196,7 +196,7 @@ function FinalCta() {
               href={SITE.bookingUrl}
               className="btn-ember w-full justify-center text-base"
             >
-              Book a 30-min intro call
+              Book a 20-min scope call
             </a>
             <a
               href={`mailto:${SITE.email}`}
