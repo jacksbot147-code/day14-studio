@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-04T19:43:47.617Z",
+  "generated_at": "2026-06-04T19:58:52.747Z",
   "tenants": [
     {
       "slug": "day14",
@@ -611,6 +611,57 @@
       "streak": 0,
       "recent_audit": [
         {
+          "ts": "2026-06-04T19:50:52.222Z",
+          "tenant": "day14-realty",
+          "actor": "re-distress-monitor",
+          "action": "distress_scanned",
+          "scanned": 226292,
+          "hot_leads": 45303,
+          "top": "213 COLLIER BLVD (w3)"
+        },
+        {
+          "ts": "2026-06-04T19:50:51.882Z",
+          "tenant": "day14-realty",
+          "actor": "re-county-feed-agent",
+          "action": "county_feed_run",
+          "targets": 12,
+          "active": 12,
+          "needs_csv": 0,
+          "api_sourced": 0
+        },
+        {
+          "ts": "2026-06-04T19:50:50.462Z",
+          "tenant": "day14-realty",
+          "actor": "re-intake-agent",
+          "action": "county_records_ingested",
+          "ingested": 22312,
+          "skipped": 39,
+          "files": 4,
+          "total_properties": 226292
+        },
+        {
+          "ts": "2026-06-04T19:50:49.828Z",
+          "tenant": "day14-realty",
+          "actor": "re-county-data-fetcher",
+          "action": "county_data_fetched",
+          "fl_counties": 12,
+          "fetched": 4,
+          "properties": 22351,
+          "skipped_non_fl": 0,
+          "circuit_tripped": false,
+          "errors": []
+        },
+        {
+          "ts": "2026-06-04T19:49:54.622Z",
+          "tenant": "day14-realty",
+          "actor": "re-market-expander",
+          "action": "market_expanded",
+          "watch_list": 12,
+          "added": 0,
+          "counties": [],
+          "reason": "at cap (12 counties)"
+        },
+        {
           "ts": "2026-06-04T18:49:51.978Z",
           "tenant": "day14-realty",
           "actor": "realty-scout",
@@ -848,50 +899,6 @@
           "action": "deals_alerted",
           "a_tier": 19892,
           "new_alerts": 3362
-        },
-        {
-          "ts": "2026-06-04T15:55:18.122Z",
-          "tenant": "day14-realty",
-          "actor": "re-evaluation-agent",
-          "action": "deals_scored",
-          "evaluated": 170137,
-          "tier_a": 19892,
-          "tier_b": 20346,
-          "top_deal": "3030 39TH ST SW (96)"
-        },
-        {
-          "ts": "2026-06-04T15:55:16.730Z",
-          "tenant": "day14-realty",
-          "actor": "re-enrichment-agent",
-          "action": "enrichment_skipped_no_key",
-          "pending": 167077
-        },
-        {
-          "ts": "2026-06-04T15:55:16.462Z",
-          "tenant": "day14-realty",
-          "actor": "re-comp-analyst",
-          "action": "comps_computed",
-          "properties": 170137,
-          "comp_arvs": 98424
-        },
-        {
-          "ts": "2026-06-04T15:40:54.188Z",
-          "tenant": "day14-realty",
-          "actor": "re-distress-monitor",
-          "action": "distress_scanned",
-          "scanned": 170137,
-          "hot_leads": 33056,
-          "top": "213 COLLIER BLVD (w3)"
-        },
-        {
-          "ts": "2026-06-04T15:40:53.961Z",
-          "tenant": "day14-realty",
-          "actor": "re-county-feed-agent",
-          "action": "county_feed_run",
-          "targets": 12,
-          "active": 11,
-          "needs_csv": 1,
-          "api_sourced": 0
         }
       ],
       "content_counts": {
@@ -1042,9 +1049,9 @@
       "name": "auto-restart-watchdog",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T19:43:20.628Z"
+      "lastBeat": "2026-06-04T19:58:20.646Z"
     },
     {
       "name": "auto-restart-watchdog-cycle",
@@ -1052,7 +1059,7 @@
       "status": "healthy",
       "ageMin": 3,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T19:40:58.482Z"
+      "lastBeat": "2026-06-04T19:56:08.659Z"
     },
     {
       "name": "customer-success",
@@ -1060,7 +1067,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T19:43:34.266Z"
+      "lastBeat": "2026-06-04T19:58:34.279Z"
     },
     {
       "name": "expansion-prompter",
@@ -1068,13 +1075,13 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T19:43:02.003Z"
+      "lastBeat": "2026-06-04T19:58:02.010Z"
     },
     {
       "name": "gmail-cs-triage",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 5,
+      "ageMin": 20,
       "cadenceMin": 30,
       "lastBeat": "2026-06-04T19:39:00.000Z"
     },
@@ -1084,7 +1091,7 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T19:43:01.080Z"
+      "lastBeat": "2026-06-04T19:58:01.099Z"
     },
     {
       "name": "growth-watcher",
@@ -1092,7 +1099,7 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T19:43:00.956Z"
+      "lastBeat": "2026-06-04T19:58:00.971Z"
     },
     {
       "name": "hot-flash-co-orders",
@@ -1100,13 +1107,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T19:43:41.155Z"
+      "lastBeat": "2026-06-04T19:58:41.168Z"
     },
     {
       "name": "lawn-care-gm-kennum-lawn-care",
       "kind": "oneshot",
       "status": "healthy",
-      "ageMin": 7,
+      "ageMin": 22,
       "cadenceMin": 30,
       "lastBeat": "2026-06-04T19:36:31.350Z"
     },
@@ -1116,7 +1123,7 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T19:43:01.132Z"
+      "lastBeat": "2026-06-04T19:58:01.145Z"
     },
     {
       "name": "outbox-deadletter",
@@ -1124,15 +1131,15 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T19:43:38.275Z"
+      "lastBeat": "2026-06-04T19:58:38.287Z"
     },
     {
       "name": "outbox-deadletter-cycle",
       "kind": "daemon",
       "status": "stale",
-      "ageMin": 29,
+      "ageMin": 14,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T19:14:56.167Z"
+      "lastBeat": "2026-06-04T19:44:56.204Z"
     },
     {
       "name": "proactive-monitor",
@@ -1140,13 +1147,13 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T19:43:16.602Z"
+      "lastBeat": "2026-06-04T19:58:16.617Z"
     },
     {
       "name": "realty-scout-day14-realty",
       "kind": "oneshot",
       "status": "healthy",
-      "ageMin": 54,
+      "ageMin": 69,
       "cadenceMin": 60,
       "lastBeat": "2026-06-04T18:49:54.384Z"
     },
@@ -1156,7 +1163,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T19:43:47.235Z"
+      "lastBeat": "2026-06-04T19:58:47.258Z"
     },
     {
       "name": "skill-multiplier",
@@ -1164,13 +1171,13 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T19:43:01.147Z"
+      "lastBeat": "2026-06-04T19:58:01.160Z"
     },
     {
       "name": "stripe-cs-loop",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 19,
+      "ageMin": 34,
       "cadenceMin": 60,
       "lastBeat": "2026-06-04T19:24:32.000Z"
     },
@@ -1180,13 +1187,13 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T19:43:01.183Z"
+      "lastBeat": "2026-06-04T19:58:01.193Z"
     },
     {
       "name": "telegram-poller",
       "kind": "daemon",
       "status": "error",
-      "ageMin": 18134,
+      "ageMin": 18149,
       "cadenceMin": 1,
       "lastBeat": "2026-05-23T05:29:56.124Z"
     },
@@ -1194,7 +1201,7 @@
       "name": "vercel-deploy-monitor",
       "kind": "daemon",
       "status": "stale",
-      "ageMin": 40,
+      "ageMin": 55,
       "cadenceMin": 5,
       "lastBeat": "2026-06-04T19:04:10.000Z"
     },
@@ -1204,7 +1211,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T19:43:39.703Z"
+      "lastBeat": "2026-06-04T19:58:39.722Z"
     }
   ],
   "skill_counts": {
@@ -1666,6 +1673,15 @@
       "status": "open"
     },
     {
+      "id": "hyperlocal-urban-foraging-guides",
+      "niche": "Curated hyperlocal urban foraging guides & aesthetic field tools",
+      "total_score": 84,
+      "suggested_archetype": "info-product",
+      "rationale": "The rising interest in urban foraging, coupled with the inherent dangers of misidentification, creates a strong demand for reliable, accessible, and localized information. An info-product (digital guide) allows for rapid creation and distribution, with potential for expansion into complementary physical tools. The 'hyperlocal' aspect provides a strong competitive advantage over generic guides.",
+      "pitched": true,
+      "status": "open"
+    },
+    {
       "id": "niche-community-ai-moderation",
       "niche": "AI-driven, customizable content moderation for niche online communities and forums",
       "total_score": 84,
@@ -1824,6 +1840,15 @@
       "total_score": 83,
       "suggested_archetype": "info-product",
       "rationale": "This niche addresses a significant emotional pain point often overlooked by traditional retirement planning. A solo founder can leverage an info-product (e.g., an ebook or template pack) to provide structured guidance, exercises, and resources for identity redefinition, social engagement, and purpose-finding. The content can be easily automated and distributed, offering high margins and rapid depl",
+      "pitched": true,
+      "status": "open"
+    },
+    {
+      "id": "retro-computing-aesthetic-merch",
+      "niche": "High-aesthetic merch for niche retro computing communities",
+      "total_score": 83,
+      "suggested_archetype": "pod-store",
+      "rationale": "This niche has a deeply passionate, often nostalgic, community with a clear appetite for expressing their identity. While some merch exists, there's a significant gap for high-quality, aesthetically refined, and 'insider' designs that resonate beyond basic branding. A POD model allows for rapid iteration and testing of niche designs without inventory risk.",
       "pitched": true,
       "status": "open"
     },
@@ -2512,6 +2537,15 @@
       "status": "open"
     },
     {
+      "id": "sota-ham-radio-lifestyle-gear",
+      "niche": "Aesthetic & functional lifestyle gear for modern ham radio operators, especially SOTA/POTA",
+      "total_score": 77,
+      "suggested_archetype": "physical-product",
+      "rationale": "The ham radio community, especially the SOTA/POTA segment, is very active and values functional, durable gear. There's a clear gap for products that combine this functionality with a modern, appealing aesthetic. A physical product approach allows for higher price points and stronger brand building around quality and design, which is underserved by existing, often utilitarian, options.",
+      "pitched": true,
+      "status": "open"
+    },
+    {
       "id": "tallow-hair-ancestral-beauty",
       "niche": "Ethically sourced, ready-to-use tallow-based hair care products and DIY ancestral beauty guides.",
       "total_score": 77,
@@ -2657,6 +2691,57 @@
     }
   ],
   "empire_battle_log": [
+    {
+      "ts": "2026-06-04T19:50:52.222Z",
+      "tenant": "day14-realty",
+      "actor": "re-distress-monitor",
+      "action": "distress_scanned",
+      "scanned": 226292,
+      "hot_leads": 45303,
+      "top": "213 COLLIER BLVD (w3)"
+    },
+    {
+      "ts": "2026-06-04T19:50:51.882Z",
+      "tenant": "day14-realty",
+      "actor": "re-county-feed-agent",
+      "action": "county_feed_run",
+      "targets": 12,
+      "active": 12,
+      "needs_csv": 0,
+      "api_sourced": 0
+    },
+    {
+      "ts": "2026-06-04T19:50:50.462Z",
+      "tenant": "day14-realty",
+      "actor": "re-intake-agent",
+      "action": "county_records_ingested",
+      "ingested": 22312,
+      "skipped": 39,
+      "files": 4,
+      "total_properties": 226292
+    },
+    {
+      "ts": "2026-06-04T19:50:49.828Z",
+      "tenant": "day14-realty",
+      "actor": "re-county-data-fetcher",
+      "action": "county_data_fetched",
+      "fl_counties": 12,
+      "fetched": 4,
+      "properties": 22351,
+      "skipped_non_fl": 0,
+      "circuit_tripped": false,
+      "errors": []
+    },
+    {
+      "ts": "2026-06-04T19:49:54.622Z",
+      "tenant": "day14-realty",
+      "actor": "re-market-expander",
+      "action": "market_expanded",
+      "watch_list": 12,
+      "added": 0,
+      "counties": [],
+      "reason": "at cap (12 counties)"
+    },
     {
       "ts": "2026-06-04T19:36:31.349Z",
       "tenant": "kennum-lawn-care",
@@ -2894,51 +2979,6 @@
         "Charlotte: timed out (30s) — kept 1000, resumes at offset 109000",
         "Manatee: timed out (30s) — kept 5000, resumes at offset 12000"
       ]
-    },
-    {
-      "ts": "2026-06-04T18:22:05.772Z",
-      "tenant": "day14-realty",
-      "actor": "re-market-expander",
-      "action": "market_expanded",
-      "watch_list": 12,
-      "added": 0,
-      "counties": [],
-      "reason": "at cap (12 counties)"
-    },
-    {
-      "ts": "2026-06-04T18:00:37.324Z",
-      "tenant": "hot-flash-co",
-      "actor": "cross-poster",
-      "action": "variants_generated",
-      "source": "/Users/jcboppington/Documents/businesses/hot-flash-co/tiktok-scripts/2026-05-29/_index.json",
-      "platforms": 9
-    },
-    {
-      "ts": "2026-06-04T17:22:03.016Z",
-      "tenant": "day14-realty",
-      "actor": "realty-scout",
-      "action": "scout_run",
-      "scaffolded": 0,
-      "properties": 191984,
-      "a_tier": 23366
-    },
-    {
-      "ts": "2026-06-04T17:22:02.431Z",
-      "tenant": "day14-realty",
-      "actor": "re-freshness-monitor",
-      "action": "freshness_tracked",
-      "total_properties": 191984,
-      "added_last_run": 21847,
-      "added_7d": 21847,
-      "enriched_pct": 0
-    },
-    {
-      "ts": "2026-06-04T17:22:01.742Z",
-      "tenant": "day14-realty",
-      "actor": "re-deal-alerter",
-      "action": "deals_alerted",
-      "a_tier": 23366,
-      "new_alerts": 3889
     }
   ],
   "human_todos": [
