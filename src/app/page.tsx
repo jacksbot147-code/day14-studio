@@ -469,7 +469,17 @@ function CaseStudies() {
               <p className="mt-3 text-[15px] leading-[1.55] text-warm-gray-500">
                 {cs.story}
               </p>
-              <div className="mt-auto flex justify-end pt-6">
+              <div className="mt-auto flex items-center justify-between gap-3 pt-6">
+                {cs.slug === "alignmd" ? (
+                  <Link
+                    href="/case-studies/alignmd"
+                    className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-ember-600 transition-colors hover:text-ember-500"
+                  >
+                    Read the case study →
+                  </Link>
+                ) : (
+                  <span />
+                )}
                 <StatePill state={cs.state} />
               </div>
             </article>

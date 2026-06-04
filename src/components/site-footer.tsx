@@ -40,6 +40,7 @@ export function SiteFooter() {
             <ul className="space-y-2 text-sm text-ink-500">
               <li><Link href="/brands" className="transition-colors duration-150 hover:text-ink">Brands</Link></li>
               <li><Link href="/builds" className="transition-colors duration-150 hover:text-ink">Active builds</Link></li>
+              <li><Link href="/case-studies/alignmd" className="transition-colors duration-150 hover:text-ink">AlignMD</Link></li>
               <li><Link href="/case-studies/splash-jacks-pools" className="transition-colors duration-150 hover:text-ink">Splash Jacks</Link></li>
               <li><Link href="/case-studies/casamore" className="transition-colors duration-150 hover:text-ink">Casamoré</Link></li>
               <li><Link href="/case-studies/buildbridge" className="transition-colors duration-150 hover:text-ink">Buildbridge</Link></li>
