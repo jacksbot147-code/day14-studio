@@ -28,6 +28,7 @@
  */
 
 import { motion, useReducedMotion } from "framer-motion";
+import { DecryptText } from "./decrypt-text";
 
 export function ProfessionalHero() {
   const reduce = useReducedMotion();
@@ -64,7 +65,7 @@ export function ProfessionalHero() {
               }}
             />
             <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-warm-gray-500">
-              Day14 · now booking July
+              <DecryptText text="Day14 · now booking July" durationMs={500} startAt={120} />
             </span>
           </motion.div>
 
@@ -76,9 +77,13 @@ export function ProfessionalHero() {
             transition={{ duration: 0.7, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
             className="text-[2.875rem] font-extrabold leading-[0.98] tracking-[-0.035em] text-ink sm:text-[64px] lg:text-[88px] xl:text-[104px]"
           >
-            We build websites and apps
+            <DecryptText
+              text="We build websites and apps"
+              durationMs={900}
+              startAt={300}
+            />
             <br />
-            in{" "}
+            <DecryptText text="in " durationMs={300} startAt={1100} />
             <span
               style={{
                 background:
@@ -88,9 +93,14 @@ export function ProfessionalHero() {
                 backgroundClip: "text",
               }}
             >
-              days
+              <DecryptText
+                text="days"
+                durationMs={400}
+                startAt={1250}
+                glyphColor="#ef6c33"
+              />
             </span>
-            , not months.
+            <DecryptText text=", not months." durationMs={500} startAt={1450} />
           </motion.h1>
 
           {/* Sub-paragraph — one sentence, names the buyers + price floor */}
@@ -152,7 +162,11 @@ export function ProfessionalHero() {
             transition={{ duration: 0.5, delay: 0.42 }}
             className="mt-7 font-mono text-[11px] uppercase tracking-[0.18em] text-warm-gray-400"
           >
-            Fixed price · No SOWs · Six brands of ours run on it
+            <DecryptText
+              text="Fixed price · No SOWs · Six brands of ours run on it"
+              durationMs={650}
+              startAt={2200}
+            />
           </motion.div>
         </div>
       </div>

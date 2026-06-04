@@ -10,6 +10,7 @@ import { CmdKPalette } from "@/components/landing/cmd-k-palette";
 import { StatusLine } from "@/components/landing/status-line";
 import { PathCrumb } from "@/components/landing/path-crumb";
 import { TypeIn } from "@/components/landing/type-in";
+import { DecryptText } from "@/components/landing/decrypt-text";
 import { ScramblePrice } from "@/components/landing/scramble-price";
 import { CountUp } from "@/components/motion/count-up";
 import { HeroAurora } from "@/components/motion/hero-aurora";
@@ -352,10 +353,10 @@ function LoomDemo() {
       <div className="container-page">
         <div className="mx-auto max-w-3xl text-center">
           <div className="eyebrow mb-6 justify-center text-ember-600">
-            See it run · 4-min demo
+            <DecryptText text="See it run · 4-min demo" durationMs={550} triggerOnView />
           </div>
           <h2 className="text-[56px] font-extrabold leading-[0.98] tracking-[-0.04em] text-ink sm:text-[72px] lg:text-[80px]">
-            Day14 in motion.
+            <DecryptText text="Day14 in motion." durationMs={700} startAt={250} triggerOnView />
           </h2>
           <p className="mx-auto mt-8 max-w-2xl text-lg leading-[1.55] text-warm-gray-500 sm:text-xl">
             A four-minute walkthrough of the admin app, the scheduled agents, and how a typical build ships and runs on Day14 OS. The shortest path to understanding what you&rsquo;d be hiring.
@@ -429,10 +430,10 @@ function CaseStudies() {
             <PathCrumb path="case-studies" />
           </div>
           <div className="eyebrow mb-6 justify-center text-ember-600">
-            Built and operated on Day14 OS
+            <DecryptText text="Built and operated on Day14 OS" durationMs={600} triggerOnView />
           </div>
           <h2 className="text-[56px] font-extrabold leading-[0.98] tracking-[-0.04em] text-ink sm:text-[72px] lg:text-[80px]">
-            We use it on six of our own.
+            <DecryptText text="We use it on six of our own." durationMs={800} startAt={250} triggerOnView />
           </h2>
           <p className="mx-auto mt-8 max-w-2xl text-[17px] leading-[1.6] text-warm-gray-500 sm:text-[18px]">
             Every tile below is a real product running on Day14 OS &mdash; ours. Same admin, same agents, same evidence verifier. Different brand, different vertical, same 14-day cadence.
@@ -540,10 +541,15 @@ function HowItWorks() {
             <PathCrumb path="how-it-works" />
           </div>
           <div className="eyebrow mb-6 justify-center text-ember-600">
-            How it works
+            <DecryptText text="How it works" durationMs={500} triggerOnView />
           </div>
           <h2 className="text-[56px] font-extrabold leading-[0.98] tracking-[-0.04em] text-ink sm:text-[72px] lg:text-[80px]">
-            Three primitives. Everything else is a consequence.
+            <DecryptText
+              text="Three primitives. Everything else is a consequence."
+              durationMs={950}
+              startAt={250}
+              triggerOnView
+            />
           </h2>
         </div>
 
@@ -620,10 +626,10 @@ function Pricing() {
             <PathCrumb path="pricing" />
           </div>
           <div className="eyebrow mb-6 justify-center text-ember-600">
-            Pricing · build studio
+            <DecryptText text="Pricing · build studio" durationMs={550} triggerOnView />
           </div>
           <h2 className="text-[56px] font-extrabold leading-[0.98] tracking-[-0.04em] text-ink sm:text-[72px] lg:text-[80px]">
-            $1,500 to custom.
+            <DecryptText text="$1,500 to custom." durationMs={700} startAt={250} triggerOnView />
           </h2>
           <p className="mx-auto mt-8 max-w-2xl text-[17px] leading-[1.6] text-warm-gray-500 sm:text-[18px]">
             Fixed price, fixed timeline, no SOWs. Pick the size that fits the job &mdash; your build lives on Day14 OS, the same stack that runs all six of our own businesses.
@@ -725,10 +731,10 @@ function Waitlist() {
           </div>
           <div className="eyebrow mb-6 justify-center text-ember-600">
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-ember-500 mr-2 align-middle" />
-            Now booking · July
+            <DecryptText text="Now booking · July" durationMs={500} triggerOnView />
           </div>
           <h2 className="text-[40px] font-extrabold leading-[1.02] tracking-[-0.035em] text-ink sm:text-[56px] lg:text-[64px]">
-            Tell us what you want built.
+            <DecryptText text="Tell us what you want built." durationMs={750} startAt={250} triggerOnView />
           </h2>
           <p className="mt-7 text-[17px] leading-[1.6] text-warm-gray-500 sm:text-[18px]">
             20-minute scope call. We come back with a fixed quote in 48 hours and a shipped build in 14 days. Three slots open for July.
@@ -789,10 +795,15 @@ function FooterCta() {
             <PathCrumb path="os-tenant" />
           </div>
           <div className="eyebrow mb-5 justify-center text-warm-gray-400">
-            Or: run on Day14 OS yourself
+            <DecryptText text="Or: run on Day14 OS yourself" durationMs={550} triggerOnView />
           </div>
           <h2 className="text-[32px] font-extrabold leading-[1.05] tracking-[-0.035em] text-ink sm:text-[40px] lg:text-[44px]">
-            Don&rsquo;t need us to build it? Host on the OS for $299/mo.
+            <DecryptText
+              text="Don't need us to build it? Host on the OS for $299/mo."
+              durationMs={900}
+              startAt={250}
+              triggerOnView
+            />
           </h2>
           <p className="mx-auto mt-6 max-w-xl text-[16px] leading-[1.6] text-warm-gray-500">
             If you&rsquo;ve already got the site and just want what makes Day14 fast &mdash; multi-tenant admin, scheduled agents, evidence-verified work-log, the inbox &mdash; the OS-only tenant tier opens later this summer. Joining the waitlist locks founder pricing.
