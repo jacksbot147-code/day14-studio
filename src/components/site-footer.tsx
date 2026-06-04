@@ -15,7 +15,7 @@ export function SiteFooter() {
               <span>{SITE.brand}</span>
             </Link>
             <p className="max-w-xs text-sm text-ink-500">
-              Real platforms, productized. Built by a one-operator studio in {SITE.location}.
+              The build studio that runs on its own OS. Custom sites and apps from {SITE.location}, shipped in days &mdash; from $1,500.
             </p>
             <div className="pt-2 max-w-xs">
               <div className="eyebrow mb-2">One email a week</div>
@@ -50,7 +50,7 @@ export function SiteFooter() {
           <div>
             <div className="eyebrow mb-3">Talk</div>
             <ul className="space-y-2 text-sm text-ink-500">
-              <li><a href={SITE.bookingUrl} className="transition-colors duration-150 hover:text-ink">Book intro call</a></li>
+              <li><a href={SITE.bookingUrl} className="transition-colors duration-150 hover:text-ink">Book scope call</a></li>
               <li><a href={`mailto:${SITE.email}`} className="transition-colors duration-150 hover:text-ink">{SITE.email}</a></li>
               <li><Link href="/newsletter" className="transition-colors duration-150 hover:text-ink">Newsletter</Link></li>
               <li><Link href="/press" className="transition-colors duration-150 hover:text-ink">Press kit</Link></li>
@@ -73,7 +73,7 @@ export function SiteFooter() {
 
         <div className="mt-6 flex flex-col items-start justify-between gap-3 text-xs font-mono text-ink-400 md:flex-row md:items-center">
           <div>© {new Date().getFullYear()} {SITE.brand} · {SITE.domain}</div>
-          <div>Real platforms. Two weeks. Done.</div>
+          <div>Built in days. Operated forever. From $1,500.</div>
         </div>
       </div>
     </footer>

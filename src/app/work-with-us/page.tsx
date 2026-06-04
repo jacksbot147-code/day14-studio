@@ -73,7 +73,7 @@ function Hero() {
           Get a build estimate
         </Link>
         <a href={SITE.bookingUrl} className="btn-ghost">
-          Or book a 30-min intro call
+          Or book a 20-min scope call
         </a>
       </div>
     </section>

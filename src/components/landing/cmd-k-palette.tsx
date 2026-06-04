@@ -43,25 +43,24 @@ interface Command {
   tenantColor?: string;
 }
 
+// Buyer-oriented commands first (so a non-technical visitor who opens the
+// palette sees useful actions, not internal-ops jargon). The "Behind the
+// scenes" group keeps the OS-personality without confusing prospects.
 const COMMANDS: Command[] = [
-  { id: "approve-all",      label: "Approve all pending inbox items",                  group: "Inbox",     hint: "⌘⏎ to execute" },
-  { id: "open-inbox",       label: "Open /admin/inbox",                                group: "Inbox" },
-  { id: "skip-low",         label: "Skip all low-priority items",                      group: "Inbox" },
+  { id: "book-call",        label: "Book a 20-min scope call",                         group: "Talk to us",      hint: "↵ to open" },
+  { id: "see-pricing",      label: "See pricing — Spark / Studio / Platform / Custom", group: "Talk to us" },
+  { id: "email-jack",       label: "Email Jack directly",                              group: "Talk to us" },
 
-  { id: "schedule-brief",   label: "Schedule a new daily briefing",                    group: "Agents" },
-  { id: "schedule-content", label: "Schedule a content-draft agent",                   group: "Agents" },
-  { id: "agent-stop",       label: "Stop a running agent",                             group: "Agents" },
+  { id: "see-work",         label: "See what we've built",                             group: "Our work" },
+  { id: "see-how",          label: "See how it works",                                 group: "Our work" },
+  { id: "hire-us",          label: "Read the full hire-us page",                       group: "Our work" },
 
-  { id: "deploy-day14",     label: "Deploy day14 to production",                       group: "Deploys",   tenantColor: "#ef6c33" },
-  { id: "deploy-alignmd",   label: "Deploy alignmd to production",                     group: "Deploys",   tenantColor: "#3b82f6" },
-  { id: "deploy-loophole",  label: "Deploy life-loophole to production",               group: "Deploys",   tenantColor: "#ca8a04" },
-  { id: "deploy-realty",    label: "Deploy day14-realty to production",                group: "Deploys",   tenantColor: "#14805a" },
-
-  { id: "new-tenant",       label: "Spin up a new tenant",                             group: "Tenants" },
-  { id: "tenant-status",    label: "Show all tenant statuses",                         group: "Tenants" },
-
-  { id: "show-signups",     label: "Show this week's waitlist signups",                group: "Signals" },
-  { id: "show-worklog",     label: "Show today's work-log entries",                    group: "Signals" },
+  { id: "deploy-day14",     label: "Deploy day14 to production",                       group: "Behind the scenes",   tenantColor: "#ef6c33" },
+  { id: "deploy-alignmd",   label: "Deploy alignmd to production",                     group: "Behind the scenes",   tenantColor: "#3b82f6" },
+  { id: "deploy-loophole",  label: "Deploy life-loophole to production",               group: "Behind the scenes",   tenantColor: "#ca8a04" },
+  { id: "approve-all",      label: "Approve all pending inbox items",                  group: "Behind the scenes" },
+  { id: "schedule-brief",   label: "Schedule a new daily briefing",                    group: "Behind the scenes" },
+  { id: "show-worklog",     label: "Show today's work-log entries",                    group: "Behind the scenes" },
 ];
 
 function fuzzyMatch(q: string, label: string): boolean {
@@ -126,6 +125,27 @@ export function CmdKPalette() {
 
   const execute = useCallback(
     (cmd: Command) => {
+      // Buyer-oriented commands route to real destinations. The "Behind the
+      // scenes" Day14 OS commands stay as faked-execute toasts for personality.
+      const routes: Record<string, () => void> = {
+        "book-call": () => document.getElementById("book")?.scrollIntoView({ behavior: "smooth" }),
+        "see-pricing": () => document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" }),
+        "email-jack": () => {
+          window.location.href = "mailto:jack@day14.us?subject=Day14%20scope%20call";
+        },
+        "see-work": () => document.getElementById("case-studies")?.scrollIntoView({ behavior: "smooth" }),
+        "see-how": () => document.getElementById("how")?.scrollIntoView({ behavior: "smooth" }),
+        "hire-us": () => {
+          window.location.href = "/work-with-us";
+        },
+      };
+      const action = routes[cmd.id];
+      if (action) {
+        action();
+        setOpen(false);
+        return;
+      }
+      // Personality OS-commands — fake-execute with toast
       setToast(`Would have run: ${cmd.label}`);
       setOpen(false);
     },
