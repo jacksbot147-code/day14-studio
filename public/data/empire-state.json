@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-04T15:42:25.025Z",
+  "generated_at": "2026-06-04T15:57:29.452Z",
   "tenants": [
     {
       "slug": "day14",
@@ -610,6 +610,58 @@
       "streak": 0,
       "recent_audit": [
         {
+          "ts": "2026-06-04T15:55:19.762Z",
+          "tenant": "day14-realty",
+          "actor": "realty-scout",
+          "action": "scout_run",
+          "scaffolded": 0,
+          "properties": 170137,
+          "a_tier": 19892
+        },
+        {
+          "ts": "2026-06-04T15:55:19.202Z",
+          "tenant": "day14-realty",
+          "actor": "re-freshness-monitor",
+          "action": "freshness_tracked",
+          "total_properties": 170137,
+          "added_last_run": 23981,
+          "added_7d": 23981,
+          "enriched_pct": 0
+        },
+        {
+          "ts": "2026-06-04T15:55:18.602Z",
+          "tenant": "day14-realty",
+          "actor": "re-deal-alerter",
+          "action": "deals_alerted",
+          "a_tier": 19892,
+          "new_alerts": 3362
+        },
+        {
+          "ts": "2026-06-04T15:55:18.122Z",
+          "tenant": "day14-realty",
+          "actor": "re-evaluation-agent",
+          "action": "deals_scored",
+          "evaluated": 170137,
+          "tier_a": 19892,
+          "tier_b": 20346,
+          "top_deal": "3030 39TH ST SW (96)"
+        },
+        {
+          "ts": "2026-06-04T15:55:16.730Z",
+          "tenant": "day14-realty",
+          "actor": "re-enrichment-agent",
+          "action": "enrichment_skipped_no_key",
+          "pending": 167077
+        },
+        {
+          "ts": "2026-06-04T15:55:16.462Z",
+          "tenant": "day14-realty",
+          "actor": "re-comp-analyst",
+          "action": "comps_computed",
+          "properties": 170137,
+          "comp_arvs": 98424
+        },
+        {
           "ts": "2026-06-04T15:40:54.188Z",
           "tenant": "day14-realty",
           "actor": "re-distress-monitor",
@@ -835,70 +887,6 @@
           "active": 9,
           "needs_csv": 3,
           "api_sourced": 0
-        },
-        {
-          "ts": "2026-06-04T13:17:39.863Z",
-          "tenant": "day14-realty",
-          "actor": "re-intake-agent",
-          "action": "county_records_ingested",
-          "ingested": 0,
-          "skipped": 0,
-          "files": 0,
-          "total_properties": 128172
-        },
-        {
-          "ts": "2026-06-04T13:17:39.515Z",
-          "tenant": "day14-realty",
-          "actor": "re-county-data-fetcher",
-          "action": "county_data_fetched",
-          "fl_counties": 12,
-          "fetched": 0,
-          "properties": 0,
-          "skipped_non_fl": 0,
-          "circuit_tripped": true,
-          "errors": [
-            "Lee: timed out (30s) (offset 1000)",
-            "Charlotte: timed out (30s) (offset 102000)",
-            "Sarasota: timed out (30s) (offset 0)",
-            "circuit-breaker: 3 counties failed in a row — FDOR service likely down, aborting run"
-          ]
-        },
-        {
-          "ts": "2026-06-04T13:14:33.450Z",
-          "tenant": "day14-realty",
-          "actor": "re-market-expander",
-          "action": "market_expanded",
-          "watch_list": 12,
-          "added": 0,
-          "counties": [],
-          "reason": "at cap (12 counties)"
-        },
-        {
-          "ts": "2026-06-04T12:14:31.773Z",
-          "tenant": "day14-realty",
-          "actor": "realty-scout",
-          "action": "scout_run",
-          "scaffolded": 0,
-          "properties": 128172,
-          "a_tier": 14326
-        },
-        {
-          "ts": "2026-06-04T12:14:31.495Z",
-          "tenant": "day14-realty",
-          "actor": "re-freshness-monitor",
-          "action": "freshness_tracked",
-          "total_properties": 128172,
-          "added_last_run": 0,
-          "added_7d": 0,
-          "enriched_pct": 0
-        },
-        {
-          "ts": "2026-06-04T12:14:30.900Z",
-          "tenant": "day14-realty",
-          "actor": "re-deal-alerter",
-          "action": "deals_alerted",
-          "a_tier": 14326,
-          "new_alerts": 3
         }
       ],
       "content_counts": {
@@ -1051,15 +1039,15 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T15:42:20.185Z"
+      "lastBeat": "2026-06-04T15:57:20.203Z"
     },
     {
       "name": "auto-restart-watchdog-cycle",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 2,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T15:41:15.207Z"
+      "lastBeat": "2026-06-04T15:55:58.385Z"
     },
     {
       "name": "customer-success",
@@ -1067,7 +1055,7 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T15:41:33.865Z"
+      "lastBeat": "2026-06-04T15:56:33.889Z"
     },
     {
       "name": "expansion-prompter",
@@ -1075,13 +1063,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T15:42:01.588Z"
+      "lastBeat": "2026-06-04T15:57:01.616Z"
     },
     {
       "name": "gmail-cs-triage",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 3,
+      "ageMin": 19,
       "cadenceMin": 30,
       "lastBeat": "2026-06-04T15:38:59.000Z"
     },
@@ -1091,7 +1079,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T15:42:00.681Z"
+      "lastBeat": "2026-06-04T15:57:00.698Z"
     },
     {
       "name": "growth-watcher",
@@ -1099,7 +1087,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T15:42:00.539Z"
+      "lastBeat": "2026-06-04T15:57:00.560Z"
     },
     {
       "name": "hot-flash-co-orders",
@@ -1107,13 +1095,13 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T15:41:40.772Z"
+      "lastBeat": "2026-06-04T15:56:40.801Z"
     },
     {
       "name": "lawn-care-gm-kennum-lawn-care",
       "kind": "oneshot",
       "status": "healthy",
-      "ageMin": 6,
+      "ageMin": 21,
       "cadenceMin": 30,
       "lastBeat": "2026-06-04T15:36:30.163Z"
     },
@@ -1123,7 +1111,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T15:42:00.724Z"
+      "lastBeat": "2026-06-04T15:57:00.746Z"
     },
     {
       "name": "outbox-deadletter",
@@ -1131,15 +1119,15 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T15:41:37.879Z"
+      "lastBeat": "2026-06-04T15:56:37.898Z"
     },
     {
       "name": "outbox-deadletter-cycle",
       "kind": "daemon",
       "status": "stale",
-      "ageMin": 27,
+      "ageMin": 13,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T15:14:56.188Z"
+      "lastBeat": "2026-06-04T15:44:56.143Z"
     },
     {
       "name": "proactive-monitor",
@@ -1147,15 +1135,15 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T15:42:16.149Z"
+      "lastBeat": "2026-06-04T15:57:16.168Z"
     },
     {
       "name": "realty-scout-day14-realty",
       "kind": "oneshot",
       "status": "healthy",
-      "ageMin": 62,
+      "ageMin": 2,
       "cadenceMin": 60,
-      "lastBeat": "2026-06-04T14:40:33.806Z"
+      "lastBeat": "2026-06-04T15:55:22.323Z"
     },
     {
       "name": "recursive-expansion",
@@ -1163,7 +1151,7 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T15:41:46.812Z"
+      "lastBeat": "2026-06-04T15:56:46.837Z"
     },
     {
       "name": "skill-multiplier",
@@ -1171,13 +1159,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T15:42:00.718Z"
+      "lastBeat": "2026-06-04T15:57:00.742Z"
     },
     {
       "name": "stripe-cs-loop",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 18,
+      "ageMin": 33,
       "cadenceMin": 60,
       "lastBeat": "2026-06-04T15:24:11.000Z"
     },
@@ -1187,13 +1175,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T15:42:00.737Z"
+      "lastBeat": "2026-06-04T15:57:00.762Z"
     },
     {
       "name": "telegram-poller",
       "kind": "daemon",
       "status": "error",
-      "ageMin": 17892,
+      "ageMin": 17908,
       "cadenceMin": 1,
       "lastBeat": "2026-05-23T05:29:56.124Z"
     },
@@ -1201,7 +1189,7 @@
       "name": "vercel-deploy-monitor",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 39,
+      "ageMin": 54,
       "cadenceMin": 60,
       "lastBeat": "2026-06-04T15:03:55.000Z"
     },
@@ -1211,7 +1199,7 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T15:41:39.297Z"
+      "lastBeat": "2026-06-04T15:56:39.321Z"
     }
   ],
   "skill_counts": {
@@ -2132,6 +2120,15 @@
       "status": "open"
     },
     {
+      "id": "friction-maxxing-home-guides",
+      "niche": "Digital guides, curated product lists, and community for intentionally de-optimizing home spaces for analog living and deeper presence.",
+      "total_score": 80,
+      "suggested_archetype": "info-product",
+      "rationale": "This trend offers a unique angle to address digital overwhelm and the desire for more meaningful living. A solo founder can create high-value digital guides and curated lists, then build a community around this philosophy. The info-product model has low overhead and can be scaled, with potential to expand into affiliate sales for recommended analog products. The concept itself is still emerging, o",
+      "pitched": true,
+      "status": "open"
+    },
+    {
       "id": "mindful-daily-joys-journal",
       "niche": "Digital aesthetic journals and guides for celebrating small daily joys and self-awareness.",
       "total_score": 80,
@@ -2164,6 +2161,15 @@
       "total_score": 80,
       "suggested_archetype": "newsletter",
       "rationale": "This trend directly addresses a desire for more meaning and less materialism, which is highly resonant. A curated newsletter can offer actionable prompts, resources, and a sense of shared experience. The low barrier to entry for content creation and distribution makes it ideal for a solo founder to achieve rapid revenue.",
+      "pitched": true,
+      "status": "open"
+    },
+    {
+      "id": "rich-in-life-routines",
+      "niche": "Curated digital & physical tools for cultivating a non-monetary 'rich in life' lifestyle.",
+      "total_score": 80,
+      "suggested_archetype": "info-product",
+      "rationale": "This trend taps into a deep desire for authenticity and internal well-being, moving beyond superficial 'aesthetic' trends. A solo founder can leverage automation to create and distribute digital guides, templates, and even a curated newsletter. The 'info-product' archetype allows for high-margin, scalable offerings without physical inventory initially. As the community grows, it could expand into ",
       "pitched": true,
       "status": "open"
     },
@@ -2429,6 +2435,15 @@
       "status": "open"
     },
     {
+      "id": "tallow-hair-ancestral-beauty",
+      "niche": "Ethically sourced, ready-to-use tallow-based hair care products and DIY ancestral beauty guides.",
+      "total_score": 77,
+      "suggested_archetype": "physical-product",
+      "rationale": "This is a direct product opportunity driven by a recent viral trend. While some small players exist, there's room for a brand that emphasizes ethical sourcing, high-quality formulations, and clear educational content. A solo founder can start with a limited SKU range via Printify/Shopify, focusing on strong branding and community building around ancestral wellness.",
+      "pitched": true,
+      "status": "open"
+    },
+    {
       "id": "aquascaping-aesthetic-mastery",
       "niche": "High-aesthetic aquascaping lifestyle merch and advanced guides",
       "total_score": 76.5,
@@ -2556,6 +2571,58 @@
     }
   ],
   "empire_battle_log": [
+    {
+      "ts": "2026-06-04T15:55:19.762Z",
+      "tenant": "day14-realty",
+      "actor": "realty-scout",
+      "action": "scout_run",
+      "scaffolded": 0,
+      "properties": 170137,
+      "a_tier": 19892
+    },
+    {
+      "ts": "2026-06-04T15:55:19.202Z",
+      "tenant": "day14-realty",
+      "actor": "re-freshness-monitor",
+      "action": "freshness_tracked",
+      "total_properties": 170137,
+      "added_last_run": 23981,
+      "added_7d": 23981,
+      "enriched_pct": 0
+    },
+    {
+      "ts": "2026-06-04T15:55:18.602Z",
+      "tenant": "day14-realty",
+      "actor": "re-deal-alerter",
+      "action": "deals_alerted",
+      "a_tier": 19892,
+      "new_alerts": 3362
+    },
+    {
+      "ts": "2026-06-04T15:55:18.122Z",
+      "tenant": "day14-realty",
+      "actor": "re-evaluation-agent",
+      "action": "deals_scored",
+      "evaluated": 170137,
+      "tier_a": 19892,
+      "tier_b": 20346,
+      "top_deal": "3030 39TH ST SW (96)"
+    },
+    {
+      "ts": "2026-06-04T15:55:16.730Z",
+      "tenant": "day14-realty",
+      "actor": "re-enrichment-agent",
+      "action": "enrichment_skipped_no_key",
+      "pending": 167077
+    },
+    {
+      "ts": "2026-06-04T15:55:16.462Z",
+      "tenant": "day14-realty",
+      "actor": "re-comp-analyst",
+      "action": "comps_computed",
+      "properties": 170137,
+      "comp_arvs": 98424
+    },
     {
       "ts": "2026-06-04T15:40:54.188Z",
       "tenant": "day14-realty",
@@ -2746,21 +2813,6 @@
       "top_deal": "3030 39TH ST SW (96)"
     },
     {
-      "ts": "2026-06-04T14:40:29.796Z",
-      "tenant": "day14-realty",
-      "actor": "re-enrichment-agent",
-      "action": "enrichment_skipped_no_key",
-      "pending": 143524
-    },
-    {
-      "ts": "2026-06-04T14:40:29.604Z",
-      "tenant": "day14-realty",
-      "actor": "re-comp-analyst",
-      "action": "comps_computed",
-      "properties": 146156,
-      "comp_arvs": 86785
-    },
-    {
       "ts": "2026-06-04T14:36:29.665Z",
       "tenant": "kennum-lawn-care",
       "actor": "lawn-care-gm",
@@ -2794,47 +2846,6 @@
       "scheduled": 0,
       "rolled_for_weather": 0,
       "avg_density": 0
-    },
-    {
-      "ts": "2026-06-04T14:36:29.657Z",
-      "tenant": "kennum-lawn-care",
-      "actor": "pipeline-agent",
-      "action": "pipeline_advanced",
-      "quoted": 0,
-      "opened": 0,
-      "invoiced": 0,
-      "open_leads": 0,
-      "pipeline_value": 0,
-      "outstanding_cents": 0
-    },
-    {
-      "ts": "2026-06-04T14:28:32.657Z",
-      "tenant": "day14-realty",
-      "actor": "re-distress-monitor",
-      "action": "distress_scanned",
-      "scanned": 146156,
-      "hot_leads": 29718,
-      "top": "213 COLLIER BLVD (w3)"
-    },
-    {
-      "ts": "2026-06-04T14:28:32.458Z",
-      "tenant": "day14-realty",
-      "actor": "re-county-feed-agent",
-      "action": "county_feed_run",
-      "targets": 12,
-      "active": 10,
-      "needs_csv": 2,
-      "api_sourced": 0
-    },
-    {
-      "ts": "2026-06-04T14:28:31.603Z",
-      "tenant": "day14-realty",
-      "actor": "re-intake-agent",
-      "action": "county_records_ingested",
-      "ingested": 17984,
-      "skipped": 16,
-      "files": 3,
-      "total_properties": 146156
     }
   ],
   "human_todos": [
