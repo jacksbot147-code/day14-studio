@@ -180,7 +180,10 @@ export function CmdKPalette() {
         style={{
           position: "fixed",
           right: 22,
-          bottom: 22,
+          // Respect iOS safe-area-inset so the pill never tucks under the
+          // home indicator on iPhone Safari. Falls back to a flat 22px on
+          // browsers without env() support.
+          bottom: "calc(22px + env(safe-area-inset-bottom, 0px))",
           zIndex: 60,
           display: "inline-flex",
           alignItems: "center",

@@ -1,5 +1,3 @@
-"use client";
-
 /**
  * PathCrumb — a faint monospace path label that sits above each section's
  * eyebrow. Sets the IDE-pane frame:
@@ -10,11 +8,9 @@
  *   ===
  *   We use it on six of our own.
  *
- * Types in with a brief cursor when its section enters view. Renders
- * statically (full text, faint) on SSR for SEO and screen readers.
+ * Renders as static text — no TypeIn animation, no cursor. Kept very
+ * subtle so it reads as ambient frame rather than UI noise.
  */
-
-import { TypeIn } from "./type-in";
 
 interface PathCrumbProps {
   /** The path segment after ~/empire/. E.g. "case-studies", "pricing". */
@@ -30,14 +26,15 @@ export function PathCrumb({ path, className = "" }: PathCrumbProps) {
       className={className}
       style={{
         fontFamily: 'ui-monospace, "SF Mono", Menlo, "JetBrains Mono", monospace',
-        fontSize: 11,
-        letterSpacing: "0.04em",
+        fontSize: 10,
+        letterSpacing: "0.05em",
         color: "var(--warm-gray-400, #8a8579)",
         marginBottom: 12,
         fontWeight: 500,
+        opacity: 0.45,
       }}
     >
-      <TypeIn text={full} cps={120} triggerOnView cursor />
+      {full}
     </div>
   );
 }

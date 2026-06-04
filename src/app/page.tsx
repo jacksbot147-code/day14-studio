@@ -151,21 +151,27 @@ const OS_CASE_STUDIES: Array<{
 const OS_STEPS = [
   {
     n: "01",
-    title: "Add a tenant",
+    title: "Scope",
     body:
-      "One config entry. The OS picks up the tenant everywhere — admin dashboard, inbox routing, deploy strip, scheduled tasks, work-log.",
+      "20-minute call. We pin down what you actually need (not what a typical agency would scope). Fixed quote in 48 hours.",
+    shipped:
+      "What we ship: a Loom of the scope call, the fixed quote, and a Day 1 kickoff.",
   },
   {
     n: "02",
-    title: "Schedule the agents",
+    title: "Build",
     body:
-      "Daily briefing, content drafts, image generation, deploy commit, EOD evidence check. Each agent writes to the work-log when it ships, surfaces to the inbox when it can't.",
+      "We design and build on Day14 OS — the same stack that runs our six businesses. You get a daily Loom update so you see progress without having to ask.",
+    shipped:
+      "What we ship: a private staging URL by Day 3, daily Looms, a code review by Day 7.",
   },
   {
     n: "03",
-    title: "Live in the inbox",
+    title: "Launch + Live",
     body:
-      "The operator's job is one screen: /admin/inbox. Everything else is either automated or evidence-verified. If it's not in the inbox, it doesn't need you.",
+      "Site or app ships in 5–28 days depending on tier. Hosted on Day14 OS forever. Scheduled agents handle the boring stuff (deploys, content drafts, briefings) so it runs without you.",
+    shipped:
+      "What we ship: live site at your domain + 6 months of Day14 OS hosting + agents handling the ops.",
   },
 ];
 
@@ -433,8 +439,13 @@ function CaseStudies() {
           </p>
         </div>
 
-        <div className="mt-20 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {OS_CASE_STUDIES.map((cs) => (
+        {(() => {
+          // Split LIVE from PAUSED/PARKED so we can render an honest
+          // separator heading between the two rows — "here are the three
+          // shipping today; here are three more we built and put on hold."
+          const live = OS_CASE_STUDIES.filter((cs) => cs.state === "live");
+          const held = OS_CASE_STUDIES.filter((cs) => cs.state !== "live");
+          const renderTile = (cs: typeof OS_CASE_STUDIES[number]) => (
             <article
               key={cs.slug}
               className={cn(
@@ -461,8 +472,26 @@ function CaseStudies() {
                 <StatePill state={cs.state} />
               </div>
             </article>
-          ))}
-        </div>
+          );
+          return (
+            <>
+              <div className="mt-20 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+                {live.map(renderTile)}
+              </div>
+              {held.length > 0 ? (
+                <div className="mt-20 flex items-center gap-4">
+                  <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-warm-gray-500">
+                    Also built (paused or held)
+                  </h3>
+                  <div className="h-px flex-1 bg-warm-gray-100" />
+                </div>
+              ) : null}
+              <div className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+                {held.map(renderTile)}
+              </div>
+            </>
+          );
+        })()}
 
         <p className="mx-auto mt-16 max-w-2xl text-center font-mono text-xs uppercase tracking-[0.22em] text-warm-gray-400">
           Same OS · Same inbox · Same evidence verifier
@@ -496,25 +525,12 @@ function StatePill({ state }: { state: "live" | "paused" | "parked" }) {
 /* -------------------------------------------------------------------------- */
 
 function HowItWorks() {
-  // Apple-style staircase: each step takes a full row, image (terminal)
-  // and copy alternate sides. A massive ghost numeral sits behind the row
-  // as background art, in warm-gray-100 — present but not loud. The cream
-  // surface lets the light TerminalSnippet variant carry the product-feel
-  // without flipping the section into a dark slab.
-  const terminalsByStep: Array<Array<{ text: string; output?: string }>> = [
-    [
-      { text: "day14 new-tenant my-brand" },
-      { text: "day14 deploy my-brand", output: "✓ deployed to my-brand.day14.us" },
-    ],
-    [
-      { text: "day14 schedule daily-briefing 07:30" },
-      { text: "day14 schedule end-of-day 16:00", output: "✓ 2 agents scheduled" },
-    ],
-    [
-      { text: "open day14.us/admin/inbox" },
-      { text: "# approve / skip — one screen", output: "12 items waiting → 0" },
-    ],
-  ];
+  // Apple-style staircase: each step takes a full row, copy on one side,
+  // an italic "what we ship" quote on the other. A massive ghost numeral
+  // sits behind the row as background art, in warm-gray-100 — present but
+  // not loud. Buyer-facing rewrite: the TerminalSnippet operator commands
+  // have been replaced with plain-language deliverables (what the buyer
+  // gets at each step).
 
   return (
     <section id="how" className="bg-paper-cream py-32 sm:py-40">
@@ -534,9 +550,8 @@ function HowItWorks() {
         <div className="mt-24 flex flex-col gap-24 sm:gap-32">
           {OS_STEPS.map((s, i) => {
             // Alternate which side the copy sits on. Step 1 + 3: copy left,
-            // terminal right. Step 2: terminal left, copy right.
+            // shipped-quote right. Step 2: shipped-quote left, copy right.
             const reverse = i % 2 === 1;
-            const terminalLines = terminalsByStep[i] ?? [];
             return (
               <div key={s.n} className="relative">
                 {/* Ghost numeral — 200-280px warm-gray-100, sits behind the
@@ -571,11 +586,9 @@ function HowItWorks() {
                     </p>
                   </div>
                   <div>
-                    <TerminalSnippet
-                      title={`step ${s.n}`}
-                      lines={terminalLines}
-                      variant="light"
-                    />
+                    <p className="max-w-md text-[15px] italic leading-[1.55] text-warm-gray-500">
+                      {s.shipped}
+                    </p>
                   </div>
                 </div>
               </div>

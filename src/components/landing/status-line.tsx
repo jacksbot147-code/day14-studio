@@ -18,6 +18,7 @@
  */
 
 import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 const SECTION_LABELS: Record<string, string> = {
   loom: "loom",
@@ -31,6 +32,10 @@ const SECTION_LABELS: Record<string, string> = {
 export function StatusLine() {
   const [scrollPct, setScrollPct] = useState(0);
   const [section, setSection] = useState<string>("hero");
+  // visible — gate first paint until the user has scrolled past 25% of the
+  // page. Avoids hitting a non-tech buyer with vim-style chrome on the
+  // first screen.
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const onScroll = () => {
@@ -39,6 +44,7 @@ export function StatusLine() {
       const max = (doc.scrollHeight - window.innerHeight) || 1;
       const pct = Math.min(100, Math.max(0, Math.round((scrollTop / max) * 100)));
       setScrollPct(pct);
+      if (pct >= 25) setVisible(true);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -83,61 +89,70 @@ export function StatusLine() {
   const sectionLabel = section === "hero" ? "hero" : SECTION_LABELS[section] ?? section;
 
   return (
-    <div
-      aria-hidden
-      style={{
-        position: "fixed",
-        bottom: 0,
-        left: 0,
-        right: 0,
-        zIndex: 50,
-        padding: "5px 16px",
-        background: "rgba(10,10,10,0.92)",
-        backdropFilter: "blur(8px)",
-        borderTop: "1px solid rgba(255,255,255,0.06)",
-        color: "rgba(255,255,255,0.55)",
-        fontFamily: 'ui-monospace, "SF Mono", Menlo, "JetBrains Mono", monospace',
-        fontSize: 10.5,
-        letterSpacing: "0.04em",
-        display: "none",
-        alignItems: "center",
-        gap: 12,
-        pointerEvents: "none",
-        userSelect: "none",
-      }}
-      className="day14-statusline"
-    >
-      <span style={{ color: "#fb923c" }}>~/day14.us</span>
-      <Divider />
-      <span>
-        <span style={{ color: "rgba(255,255,255,0.85)" }}>{scrollPct}%</span>
-        <span style={{ color: "rgba(255,255,255,0.30)" }}> scrolled</span>
-      </span>
-      <Divider />
-      <span>
-        <span style={{ color: "rgba(255,255,255,0.30)" }}>section: </span>
-        <span style={{ color: "rgba(255,255,255,0.85)" }}>{sectionLabel}</span>
-      </span>
-      <span style={{ marginLeft: "auto", color: "rgba(255,255,255,0.40)" }}>
-        <kbd style={{
-          padding: "1px 6px",
-          borderRadius: 4,
-          background: "rgba(255,255,255,0.06)",
-          color: "rgba(255,255,255,0.65)",
-          fontFamily: "inherit",
-          fontSize: 9.5,
-          fontWeight: 700,
-        }}>
-          ⌘K
-        </kbd>{" "}
-        to search
-      </span>
-      <style>{`
-        @media (min-width: 768px) {
-          .day14-statusline { display: flex !important; }
-        }
-      `}</style>
-    </div>
+    <AnimatePresence>
+      {visible ? (
+        <motion.div
+          key="statusline"
+          aria-hidden
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 8 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+          style={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: 50,
+            padding: "5px 16px",
+            background: "rgba(10,10,10,0.92)",
+            backdropFilter: "blur(8px)",
+            borderTop: "1px solid rgba(255,255,255,0.06)",
+            color: "rgba(255,255,255,0.55)",
+            fontFamily: 'ui-monospace, "SF Mono", Menlo, "JetBrains Mono", monospace',
+            fontSize: 10.5,
+            letterSpacing: "0.04em",
+            display: "none",
+            alignItems: "center",
+            gap: 12,
+            pointerEvents: "none",
+            userSelect: "none",
+          }}
+          className="day14-statusline"
+        >
+          <span style={{ color: "#fb923c" }}>~/day14.us</span>
+          <Divider />
+          <span>
+            <span style={{ color: "rgba(255,255,255,0.85)" }}>{scrollPct}%</span>
+            <span style={{ color: "rgba(255,255,255,0.30)" }}> scrolled</span>
+          </span>
+          <Divider />
+          <span>
+            <span style={{ color: "rgba(255,255,255,0.30)" }}>section: </span>
+            <span style={{ color: "rgba(255,255,255,0.85)" }}>{sectionLabel}</span>
+          </span>
+          <span style={{ marginLeft: "auto", color: "rgba(255,255,255,0.40)" }}>
+            <kbd style={{
+              padding: "1px 6px",
+              borderRadius: 4,
+              background: "rgba(255,255,255,0.06)",
+              color: "rgba(255,255,255,0.65)",
+              fontFamily: "inherit",
+              fontSize: 9.5,
+              fontWeight: 700,
+            }}>
+              ⌘K
+            </kbd>{" "}
+            to search
+          </span>
+          <style>{`
+            @media (min-width: 768px) {
+              .day14-statusline { display: flex !important; }
+            }
+          `}</style>
+        </motion.div>
+      ) : null}
+    </AnimatePresence>
   );
 }
 
