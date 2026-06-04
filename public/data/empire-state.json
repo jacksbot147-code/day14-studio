@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-04T16:42:44.191Z",
+  "generated_at": "2026-06-04T16:57:50.863Z",
   "tenants": [
     {
       "slug": "day14",
@@ -610,6 +610,16 @@
       "streak": 0,
       "recent_audit": [
         {
+          "ts": "2026-06-04T16:55:22.653Z",
+          "tenant": "day14-realty",
+          "actor": "re-market-expander",
+          "action": "market_expanded",
+          "watch_list": 12,
+          "added": 0,
+          "counties": [],
+          "reason": "at cap (12 counties)"
+        },
+        {
           "ts": "2026-06-04T15:55:19.762Z",
           "tenant": "day14-realty",
           "actor": "realty-scout",
@@ -877,16 +887,6 @@
           "scanned": 128172,
           "hot_leads": 24191,
           "top": "213 COLLIER BLVD (w3)"
-        },
-        {
-          "ts": "2026-06-04T13:17:40.761Z",
-          "tenant": "day14-realty",
-          "actor": "re-county-feed-agent",
-          "action": "county_feed_run",
-          "targets": 12,
-          "active": 9,
-          "needs_csv": 3,
-          "api_sourced": 0
         }
       ],
       "content_counts": {
@@ -1037,9 +1037,9 @@
       "name": "auto-restart-watchdog",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T16:42:20.325Z"
+      "lastBeat": "2026-06-04T16:57:20.363Z"
     },
     {
       "name": "auto-restart-watchdog-cycle",
@@ -1047,7 +1047,7 @@
       "status": "healthy",
       "ageMin": 2,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T16:40:58.456Z"
+      "lastBeat": "2026-06-04T16:55:58.451Z"
     },
     {
       "name": "customer-success",
@@ -1055,7 +1055,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T16:42:33.997Z"
+      "lastBeat": "2026-06-04T16:57:34.036Z"
     },
     {
       "name": "expansion-prompter",
@@ -1063,13 +1063,13 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T16:42:01.724Z"
+      "lastBeat": "2026-06-04T16:57:01.768Z"
     },
     {
       "name": "gmail-cs-triage",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 4,
+      "ageMin": 19,
       "cadenceMin": 30,
       "lastBeat": "2026-06-04T16:39:00.000Z"
     },
@@ -1079,7 +1079,7 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T16:42:00.802Z"
+      "lastBeat": "2026-06-04T16:57:00.841Z"
     },
     {
       "name": "growth-watcher",
@@ -1087,7 +1087,7 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T16:42:00.684Z"
+      "lastBeat": "2026-06-04T16:57:00.720Z"
     },
     {
       "name": "hot-flash-co-orders",
@@ -1095,13 +1095,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T16:42:40.907Z"
+      "lastBeat": "2026-06-04T16:57:40.945Z"
     },
     {
       "name": "lawn-care-gm-kennum-lawn-care",
       "kind": "oneshot",
       "status": "healthy",
-      "ageMin": 6,
+      "ageMin": 21,
       "cadenceMin": 30,
       "lastBeat": "2026-06-04T16:36:30.542Z"
     },
@@ -1111,7 +1111,7 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T16:42:00.851Z"
+      "lastBeat": "2026-06-04T16:57:00.886Z"
     },
     {
       "name": "outbox-deadletter",
@@ -1119,29 +1119,29 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T16:42:38.020Z"
+      "lastBeat": "2026-06-04T16:57:38.054Z"
     },
     {
       "name": "outbox-deadletter-cycle",
       "kind": "daemon",
       "status": "stale",
-      "ageMin": 28,
+      "ageMin": 13,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T16:14:56.192Z"
+      "lastBeat": "2026-06-04T16:44:56.197Z"
     },
     {
       "name": "proactive-monitor",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 0,
+      "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T16:42:16.287Z"
+      "lastBeat": "2026-06-04T16:57:16.321Z"
     },
     {
       "name": "realty-scout-day14-realty",
       "kind": "oneshot",
       "status": "healthy",
-      "ageMin": 47,
+      "ageMin": 62,
       "cadenceMin": 60,
       "lastBeat": "2026-06-04T15:55:22.323Z"
     },
@@ -1149,9 +1149,9 @@
       "name": "recursive-expansion",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T16:41:46.946Z"
+      "lastBeat": "2026-06-04T16:57:46.990Z"
     },
     {
       "name": "skill-multiplier",
@@ -1159,13 +1159,13 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T16:42:00.858Z"
+      "lastBeat": "2026-06-04T16:57:00.895Z"
     },
     {
       "name": "stripe-cs-loop",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 19,
+      "ageMin": 35,
       "cadenceMin": 60,
       "lastBeat": "2026-06-04T16:23:15.000Z"
     },
@@ -1175,13 +1175,13 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T16:42:00.873Z"
+      "lastBeat": "2026-06-04T16:57:00.912Z"
     },
     {
       "name": "telegram-poller",
       "kind": "daemon",
       "status": "error",
-      "ageMin": 17953,
+      "ageMin": 17968,
       "cadenceMin": 1,
       "lastBeat": "2026-05-23T05:29:56.124Z"
     },
@@ -1189,7 +1189,7 @@
       "name": "vercel-deploy-monitor",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 39,
+      "ageMin": 54,
       "cadenceMin": 60,
       "lastBeat": "2026-06-04T16:03:54.000Z"
     },
@@ -1199,7 +1199,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-04T16:42:39.432Z"
+      "lastBeat": "2026-06-04T16:57:39.474Z"
     }
   ],
   "skill_counts": {
@@ -1382,6 +1382,15 @@
       "status": "open"
     },
     {
+      "id": "senior-digital-social-hub",
+      "niche": "Curated digital connection & tech literacy for socially isolated seniors",
+      "total_score": 87,
+      "suggested_archetype": "community",
+      "rationale": "Many seniors desire connection but are intimidated by technology. A curated community offers a safe, supportive environment for them to learn and engage. A solo founder can curate content (tutorials, app recommendations), host virtual social events, and foster peer-to-peer support. This combines practical tech literacy with the crucial emotional need for social connection, offering a holistic solu",
+      "pitched": true,
+      "status": "open"
+    },
+    {
       "id": "supply-chain-esg-supplier-kit",
       "niche": "ESG and due diligence compliance for small to medium suppliers.",
       "total_score": 87,
@@ -1513,6 +1522,15 @@
       "total_score": 85,
       "suggested_archetype": "physical-product",
       "rationale": "The substantial growth in flat-back earrings highlights a widespread unmet need for comfortable piercing solutions. By offering both modern, sensitive-skin-friendly jewelry and comprehensive, gentle aftercare products, we can create a trusted brand that solves common pain points (discomfort, irritation, removal for sleep) for a growing demographic of piercing enthusiasts and parents.",
+      "pitched": true,
+      "status": "open"
+    },
+    {
+      "id": "encore-career-launchpad",
+      "niche": "Guided launchpad for flexible, purpose-driven 'encore careers'",
+      "total_score": 85,
+      "suggested_archetype": "course",
+      "rationale": "Many experienced professionals want to continue contributing post-retirement but lack a clear roadmap for identifying and launching a flexible 'encore career' in today's landscape. A solo founder can create a structured online course that guides them through self-assessment, market identification for fractional/consulting roles, modern personal branding, and practical steps for setting up a new pr",
       "pitched": true,
       "status": "open"
     },
@@ -1711,6 +1729,15 @@
       "total_score": 83,
       "suggested_archetype": "physical-product",
       "rationale": "This opportunity capitalizes on the growing experience economy and the demand for personalized, meaningful engagement in hobbies and travel. A solo founder can curate specialized physical kits (e.g., 'Urban Foraging & Sketching Kit,' 'Analog Photography Immersion Kit') combined with digital guides. This offers a tangible product that enhances intangible experiences, leveraging the 'Brand of One' a",
+      "pitched": true,
+      "status": "open"
+    },
+    {
+      "id": "digital-divorce-asset-toolkit",
+      "niche": "Actionable toolkit for digital asset division in divorce",
+      "total_score": 83,
+      "suggested_archetype": "info-product",
+      "rationale": "The complexity and novelty of digital assets in divorce create a significant knowledge gap for individuals and even many legal professionals. A solo founder can leverage automation to create and distribute a comprehensive, easy-to-understand info-product that empowers individuals to identify, document, and strategize the division of these assets, potentially saving them significant legal fees or e",
       "pitched": true,
       "status": "open"
     },
@@ -2572,6 +2599,16 @@
   ],
   "empire_battle_log": [
     {
+      "ts": "2026-06-04T16:55:22.653Z",
+      "tenant": "day14-realty",
+      "actor": "re-market-expander",
+      "action": "market_expanded",
+      "watch_list": 12,
+      "added": 0,
+      "counties": [],
+      "reason": "at cap (12 counties)"
+    },
+    {
       "ts": "2026-06-04T16:36:30.542Z",
       "tenant": "kennum-lawn-care",
       "actor": "lawn-care-gm",
@@ -2840,14 +2877,6 @@
       "added_last_run": 17984,
       "added_7d": 17984,
       "enriched_pct": 0
-    },
-    {
-      "ts": "2026-06-04T14:40:31.178Z",
-      "tenant": "day14-realty",
-      "actor": "re-deal-alerter",
-      "action": "deals_alerted",
-      "a_tier": 16589,
-      "new_alerts": 2271
     }
   ],
   "human_todos": [
