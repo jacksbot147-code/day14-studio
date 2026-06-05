@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-05T00:15:22.215Z",
+  "generated_at": "2026-06-05T00:30:28.805Z",
   "tenants": [
     {
       "slug": "day14",
@@ -611,6 +611,28 @@
       "streak": 0,
       "recent_audit": [
         {
+          "ts": "2026-06-05T00:30:28.674Z",
+          "tenant": "day14-realty",
+          "actor": "re-county-data-fetcher",
+          "action": "county_data_fetched",
+          "fl_counties": 12,
+          "fetched": 4,
+          "properties": 23045,
+          "skipped_non_fl": 0,
+          "circuit_tripped": false,
+          "errors": []
+        },
+        {
+          "ts": "2026-06-05T00:29:36.870Z",
+          "tenant": "day14-realty",
+          "actor": "re-market-expander",
+          "action": "market_expanded",
+          "watch_list": 12,
+          "added": 0,
+          "counties": [],
+          "reason": "at cap (12 counties)"
+        },
+        {
           "ts": "2026-06-04T23:29:33.495Z",
           "tenant": "day14-realty",
           "actor": "realty-scout",
@@ -872,25 +894,6 @@
           "action": "comps_computed",
           "properties": 226292,
           "comp_arvs": 138680
-        },
-        {
-          "ts": "2026-06-04T19:50:52.222Z",
-          "tenant": "day14-realty",
-          "actor": "re-distress-monitor",
-          "action": "distress_scanned",
-          "scanned": 226292,
-          "hot_leads": 45303,
-          "top": "213 COLLIER BLVD (w3)"
-        },
-        {
-          "ts": "2026-06-04T19:50:51.882Z",
-          "tenant": "day14-realty",
-          "actor": "re-county-feed-agent",
-          "action": "county_feed_run",
-          "targets": 12,
-          "active": 12,
-          "needs_csv": 0,
-          "api_sourced": 0
         }
       ],
       "content_counts": {
@@ -1043,7 +1046,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-05T00:15:21.110Z"
+      "lastBeat": "2026-06-05T00:30:21.150Z"
     },
     {
       "name": "auto-restart-watchdog-cycle",
@@ -1051,7 +1054,7 @@
       "status": "healthy",
       "ageMin": 4,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-05T00:10:58.595Z"
+      "lastBeat": "2026-06-05T00:26:08.741Z"
     },
     {
       "name": "customer-success",
@@ -1059,7 +1062,7 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-05T00:14:34.665Z"
+      "lastBeat": "2026-06-05T00:29:34.702Z"
     },
     {
       "name": "expansion-prompter",
@@ -1067,13 +1070,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-05T00:15:02.467Z"
+      "lastBeat": "2026-06-05T00:30:02.503Z"
     },
     {
       "name": "gmail-cs-triage",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 6,
+      "ageMin": 21,
       "cadenceMin": 30,
       "lastBeat": "2026-06-05T00:09:28.000Z"
     },
@@ -1083,7 +1086,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-05T00:15:01.479Z"
+      "lastBeat": "2026-06-05T00:30:01.511Z"
     },
     {
       "name": "growth-watcher",
@@ -1091,7 +1094,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-05T00:15:01.352Z"
+      "lastBeat": "2026-06-05T00:30:01.388Z"
     },
     {
       "name": "hot-flash-co-orders",
@@ -1099,13 +1102,13 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-05T00:14:41.574Z"
+      "lastBeat": "2026-06-05T00:29:41.606Z"
     },
     {
       "name": "lawn-care-gm-kennum-lawn-care",
       "kind": "oneshot",
       "status": "healthy",
-      "ageMin": 9,
+      "ageMin": 24,
       "cadenceMin": 30,
       "lastBeat": "2026-06-05T00:06:32.575Z"
     },
@@ -1115,7 +1118,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-05T00:15:01.575Z"
+      "lastBeat": "2026-06-05T00:30:01.612Z"
     },
     {
       "name": "outbox-deadletter",
@@ -1123,13 +1126,13 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-05T00:14:38.710Z"
+      "lastBeat": "2026-06-05T00:29:38.747Z"
     },
     {
       "name": "outbox-deadletter-cycle",
       "kind": "daemon",
-      "status": "healthy",
-      "ageMin": 0,
+      "status": "stale",
+      "ageMin": 16,
       "cadenceMin": 1,
       "lastBeat": "2026-06-05T00:14:56.255Z"
     },
@@ -1139,13 +1142,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-05T00:15:17.040Z"
+      "lastBeat": "2026-06-05T00:30:17.078Z"
     },
     {
       "name": "realty-scout-day14-realty",
       "kind": "oneshot",
       "status": "healthy",
-      "ageMin": 46,
+      "ageMin": 61,
       "cadenceMin": 60,
       "lastBeat": "2026-06-04T23:29:36.518Z"
     },
@@ -1155,7 +1158,7 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-05T00:14:47.674Z"
+      "lastBeat": "2026-06-05T00:29:47.714Z"
     },
     {
       "name": "skill-multiplier",
@@ -1163,15 +1166,15 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-05T00:15:01.553Z"
+      "lastBeat": "2026-06-05T00:30:01.591Z"
     },
     {
       "name": "stripe-cs-loop",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 51,
+      "ageMin": 6,
       "cadenceMin": 60,
-      "lastBeat": "2026-06-04T23:24:36.000Z"
+      "lastBeat": "2026-06-05T00:24:07.000Z"
     },
     {
       "name": "system-pulse",
@@ -1179,21 +1182,21 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-05T00:15:01.670Z"
+      "lastBeat": "2026-06-05T00:30:01.708Z"
     },
     {
       "name": "telegram-poller",
       "kind": "daemon",
       "status": "error",
-      "ageMin": 18405,
+      "ageMin": 18421,
       "cadenceMin": 1,
       "lastBeat": "2026-05-23T05:29:56.124Z"
     },
     {
       "name": "vercel-deploy-monitor",
       "kind": "daemon",
-      "status": "healthy",
-      "ageMin": 11,
+      "status": "stale",
+      "ageMin": 27,
       "cadenceMin": 5,
       "lastBeat": "2026-06-05T00:03:58.000Z"
     },
@@ -1203,7 +1206,7 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-05T00:14:40.130Z"
+      "lastBeat": "2026-06-05T00:29:40.171Z"
     }
   ],
   "skill_counts": {
@@ -2747,6 +2750,28 @@
   ],
   "empire_battle_log": [
     {
+      "ts": "2026-06-05T00:30:28.674Z",
+      "tenant": "day14-realty",
+      "actor": "re-county-data-fetcher",
+      "action": "county_data_fetched",
+      "fl_counties": 12,
+      "fetched": 4,
+      "properties": 23045,
+      "skipped_non_fl": 0,
+      "circuit_tripped": false,
+      "errors": []
+    },
+    {
+      "ts": "2026-06-05T00:29:36.870Z",
+      "tenant": "day14-realty",
+      "actor": "re-market-expander",
+      "action": "market_expanded",
+      "watch_list": 12,
+      "added": 0,
+      "counties": [],
+      "reason": "at cap (12 counties)"
+    },
+    {
       "ts": "2026-06-05T00:06:32.575Z",
       "tenant": "kennum-lawn-care",
       "actor": "lawn-care-gm",
@@ -3011,24 +3036,6 @@
       "added_last_run": 18880,
       "added_7d": 18880,
       "enriched_pct": 0
-    },
-    {
-      "ts": "2026-06-04T21:47:41.603Z",
-      "tenant": "day14-realty",
-      "actor": "re-deal-alerter",
-      "action": "deals_alerted",
-      "a_tier": 30344,
-      "new_alerts": 2141
-    },
-    {
-      "ts": "2026-06-04T21:47:40.916Z",
-      "tenant": "day14-realty",
-      "actor": "re-evaluation-agent",
-      "action": "deals_scored",
-      "evaluated": 245172,
-      "tier_a": 30344,
-      "tier_b": 31356,
-      "top_deal": "3030 39TH ST SW (96)"
     }
   ],
   "human_todos": [
