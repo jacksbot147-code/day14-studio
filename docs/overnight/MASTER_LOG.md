@@ -51,3 +51,4 @@
 [2026-06-04 23:00 ET] nightly-polish COMPLETE → polish-2026-06-04.md, confidence: 0.85
 [2026-06-05 09:00 ET] daily-kickoff COMPLETE → kickoff-2026-06-05.md, confidence: 0.7
 [2026-06-05 17:00 ET] daily-eod COMPLETE → eod-2026-06-05.md, confidence: 0.15
+[2026-06-05 23:00 ET] nightly-polish COMPLETE → polish-2026-06-05.md, confidence: 0.85
