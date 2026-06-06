@@ -241,7 +241,7 @@ export default async function StackPage() {
                 See pricing
               </Link>
               <a href="https://cal.com/day14/intro" className="btn-ghost">
-                Book scope call
+                Book intro call
               </a>
             </div>
             <div className="mx-auto max-w-md border-t border-ink-100 pt-8">

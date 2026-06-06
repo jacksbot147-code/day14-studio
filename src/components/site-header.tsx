@@ -34,7 +34,7 @@ export function SiteHeader() {
         </nav>
 
         <a href={SITE.bookingUrl} className="btn-ember text-[13px]">
-          Book scope call
+          Book intro call
         </a>
       </div>
     </header>

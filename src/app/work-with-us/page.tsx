@@ -4,8 +4,8 @@ import { SITE } from "@/lib/site";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
-const TITLE = `Hire Day14 — Build studio shipping sites and apps in days, not months`;
-const DESCRIPTION = `Day14 builds custom websites and apps for local businesses, founders, and small teams. From $1,500 single-page sites to $24k+ multi-tenant platforms. Hosted on Day14 OS forever. Fixed price, no SOWs, shipped in days.`;
+const TITLE = `Hire Day14 — Sites and apps shipped in days, not months`;
+const DESCRIPTION = `I build custom websites and apps for local businesses, founders, and small teams. From $1,500 single-page sites to $24k+ multi-tenant platforms. Hosted on Day14 OS forever. Fixed price, no SOWs, shipped in days.`;
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -62,12 +62,12 @@ function Hero() {
         <br className="hidden sm:block" /> Ship it in days.
       </h1>
       <p className="mt-7 max-w-2xl text-lg text-ink-500 sm:text-xl">
-        {SITE.brand} is a build studio that ships custom websites and apps in days, not months &mdash; from $1,500 single-page sites for local businesses up to $24k+ multi-tenant platforms. Every build runs on Day14 OS, the platform we built ourselves to run our own six businesses.
+        I&rsquo;m Jack. I build custom websites and apps in days, not months &mdash; from $1,500 single-page sites for local businesses up to $24k+ multi-tenant platforms. Every build runs on Day14 OS, the platform I built to run my own six businesses.
       </p>
 
       <div className="mt-9 flex flex-wrap gap-3">
         <a href={SITE.bookingUrl} className="btn-ember">
-          Book a 20-min scope call
+          Book a 15-min intro call
         </a>
         <Link href="/intake" className="btn-ghost">
           Or fill out the intake form
@@ -84,12 +84,12 @@ function WhatWeBuild() {
     {
       label: "Sites",
       title: "Beautiful, fast, conversion-ready.",
-      body: "Single-page sites for local businesses and solo professionals (Spark, $1,500, 5 days). Multi-page marketing sites for founders launching a brand (Studio, $9,000, 14 days). Custom design every time, no Webflow templates with our markup on top.",
+      body: "Single-page sites for local businesses and solo professionals (Spark, $1,500, 5 days). Multi-page marketing sites for founders launching a brand (Studio, $9,000, 14 days). Custom design every time, no Webflow templates with my markup on top.",
     },
     {
       label: "Apps",
       title: "Customer portals, admin, billing.",
-      body: "Full software platforms with marketing site + customer portal + admin app + billing wired live (Platform, $24,000, 4 weeks). Same stack we run our six businesses on. Built so you can actually operate it, not so it looks good in a screenshot.",
+      body: "Full software platforms with marketing site + customer portal + admin app + billing wired live (Platform, $24,000, 4 weeks). Same stack I run my six businesses on. Built so you can actually operate it, not so it looks good in a screenshot.",
     },
     {
       label: "Custom",
@@ -158,7 +158,7 @@ function WhoItsFor() {
           <p className="mt-5 text-ink-500">
             We don&rsquo;t pretend to fit every brief. The page above shows the
             shapes that work; the page below shows the shapes that don&rsquo;t.
-            If you see your business in the left column, the scope call will
+            If you see your business in the left column, the intro call will
             be fast.
           </p>
         </div>
@@ -328,7 +328,7 @@ function FinalCta() {
               Tell us what you want built.
             </h2>
             <p className="mt-4 max-w-xl text-paper-200">
-              20-minute scope call. We come back with a fixed quote in 48 hours and a shipped build in 14 days. Three slots open for July.
+              15-minute intro call. We come back with a fixed quote in 48 hours and a shipped build in 14 days. Three slots open for July.
             </p>
           </div>
           <div>
@@ -336,7 +336,7 @@ function FinalCta() {
               href={SITE.bookingUrl}
               className="btn-ember w-full justify-center text-base"
             >
-              Book a 20-min scope call
+              Book a 15-min intro call
             </a>
             <Link
               href="/intake"

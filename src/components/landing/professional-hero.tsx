@@ -78,7 +78,7 @@ export function ProfessionalHero() {
             className="text-[2.875rem] font-extrabold leading-[0.98] tracking-[-0.035em] text-ink sm:text-[64px] lg:text-[88px] xl:text-[104px]"
           >
             <DecryptText
-              text="We build websites and apps"
+              text="I build websites and apps"
               durationMs={900}
               startAt={300}
             />
@@ -110,9 +110,9 @@ export function ProfessionalHero() {
             transition={{ duration: 0.7, delay: 0.16, ease: [0.22, 1, 0.36, 1] }}
             className="mx-auto mt-9 max-w-2xl text-[18px] leading-[1.55] text-warm-gray-500 sm:mt-11 sm:text-[21px] lg:text-[22px] lg:leading-[1.5]"
           >
-            Day14 is a small studio that builds custom sites and apps for
-            local businesses, founders, and small teams. Shipped fast.
-            Operated forever on the platform we built ourselves.{" "}
+            One operator. Custom sites and apps for local businesses,
+            founders, and small teams. Shipped fast. Operated forever on
+            Day14 OS — the platform I built to run my own six.{" "}
             <span className="font-semibold text-ink">From $1,500.</span>
           </motion.p>
 
@@ -142,7 +142,7 @@ export function ProfessionalHero() {
                   "0 10px 28px -8px rgba(239,108,51,0.55), inset 0 1px 0 rgba(255,255,255,0.30)";
               }}
             >
-              Book a 20-min scope call
+              Book a 15-min intro call
               <span aria-hidden style={{ marginLeft: 2 }}>
                 →
               </span>
@@ -155,15 +155,35 @@ export function ProfessionalHero() {
             </a>
           </motion.div>
 
+          {/* Operator strip — one operator, real name, real phone.
+              Marisol audit said "if you don't trust phone numbers, why would
+              I trust you to build me one?" Praveen said "name a real human."
+              This block addresses both with one line above the trust strip. */}
+          <motion.div
+            initial={reduce ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.36 }}
+            className="mt-6 text-[13px] text-warm-gray-500"
+          >
+            Jack Boppington · solo operator ·{" "}
+            <a
+              href="tel:+10000000000"
+              className="font-semibold text-ink underline decoration-warm-gray-200 underline-offset-4 transition-colors duration-150 hover:decoration-ember-500"
+            >
+              {/* TODO: replace with real phone number */}
+              (000) 000-0000
+            </a>
+          </motion.div>
+
           {/* Quiet trust line below the CTAs */}
           <motion.div
             initial={reduce ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.42 }}
-            className="mt-7 font-mono text-[11px] uppercase tracking-[0.18em] text-warm-gray-400"
+            className="mt-5 font-mono text-[11px] uppercase tracking-[0.18em] text-warm-gray-400"
           >
             <DecryptText
-              text="Fixed price · No SOWs · Six brands of ours run on it"
+              text="Fixed price · No SOWs · Six brands of mine run on it"
               durationMs={650}
               startAt={2200}
             />

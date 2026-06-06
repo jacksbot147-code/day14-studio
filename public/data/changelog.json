@@ -1,0 +1,154 @@
+{
+  "generated_at": "2026-06-05T02:00:00-04:00",
+  "version": "0.1",
+  "note": "Public ship log. Curated from WORK-LOG.md + git commits + tenant deploys. Updated when meaningful things ship.",
+  "entries": [
+    {
+      "date": "2026-06-05",
+      "tenant": "studio",
+      "kind": "feature",
+      "summary": "Shipped /voice-check — paste any copy, get banned-word flagging + voice score. Runs client-side.",
+      "evidence": "src/app/voice-check/page.tsx"
+    },
+    {
+      "date": "2026-06-05",
+      "tenant": "studio",
+      "kind": "feature",
+      "summary": "Shipped /calculator — interactive scope calculator with 14 feature toggles, real price + launch date.",
+      "evidence": "src/app/calculator/page.tsx"
+    },
+    {
+      "date": "2026-06-05",
+      "tenant": "studio",
+      "kind": "feature",
+      "summary": "Shipped /capabilities — full scope of what I build, what I bring, what I don't do, procurement-ready.",
+      "evidence": "src/app/capabilities/page.tsx"
+    },
+    {
+      "date": "2026-06-05",
+      "tenant": "studio",
+      "kind": "voice",
+      "summary": "Site-wide voice pass: 'we/our' → 'I/my', 'scope call' → 'intro call'. 14 files cleaned.",
+      "evidence": "commit cd08422"
+    },
+    {
+      "date": "2026-06-05",
+      "tenant": "studio",
+      "kind": "feature",
+      "summary": "3 new live case-study tiles on homepage: Splash Jacks Pools, Casamoré, Buildbridge.",
+      "evidence": "src/app/page.tsx OS_CASE_STUDIES"
+    },
+    {
+      "date": "2026-06-05",
+      "tenant": "studio",
+      "kind": "doc",
+      "summary": "Shipped docs/VOICE.md — canonical voice doc with banned-word list and signature moves.",
+      "evidence": "studio/docs/VOICE.md"
+    },
+    {
+      "date": "2026-06-04",
+      "tenant": "studio",
+      "kind": "ui",
+      "summary": "Mobile dial-back: CmdKPalette + StatusLine hidden on mobile per persona audit.",
+      "evidence": "src/app/page.tsx"
+    },
+    {
+      "date": "2026-06-04",
+      "tenant": "studio",
+      "kind": "ui",
+      "summary": "Hero rebuild: ProfessionalHero — plain-English headline, no jargon, no typing gate.",
+      "evidence": "src/components/landing/professional-hero.tsx"
+    },
+    {
+      "date": "2026-06-04",
+      "tenant": "studio",
+      "kind": "strategy",
+      "summary": "Pricing: added Spark tier ($1.5k local sites) + ops ladder $49/$149/$299.",
+      "evidence": "commit 5d162c0"
+    },
+    {
+      "date": "2026-06-03",
+      "tenant": "studio",
+      "kind": "pivot",
+      "summary": "Strategic pivot: Day14 = build studio running on Day14 OS. New headline, per-build pricing, intro-call CTA.",
+      "evidence": "commit 521806f"
+    },
+    {
+      "date": "2026-06-02",
+      "tenant": "alignmd",
+      "kind": "feature",
+      "summary": "Migrations 0011-0013 prepared: credentialing packet, dossier auto-gen, facility job management.",
+      "evidence": "APPLY-ALIGNMD-MIGRATIONS.sql"
+    },
+    {
+      "date": "2026-06-02",
+      "tenant": "studio",
+      "kind": "asset",
+      "summary": "Generated 8 cinematic landing images via Gemini, 9.5 MB total.",
+      "evidence": "public/images/landing/"
+    },
+    {
+      "date": "2026-05-29",
+      "tenant": "day14-os",
+      "kind": "publish",
+      "summary": "Manifesto + one-pager published. Day14 OS waitlist opened (paused 6 days later, replaced by build-studio pitch).",
+      "evidence": "DAY14-OS-MANIFESTO.md"
+    },
+    {
+      "date": "2026-05-28",
+      "tenant": "alignmd",
+      "kind": "feature",
+      "summary": "Phase 7 shipped: full clinician onboarding flow live on production.",
+      "evidence": "ALIGNMD-WALKTHROUGH"
+    },
+    {
+      "date": "2026-05-22",
+      "tenant": "casamore",
+      "kind": "ops",
+      "summary": "Scheduled-task cadence stabilized: nightly polish, weekly UX audit, monthly analytics.",
+      "evidence": "studio scheduled tasks"
+    },
+    {
+      "date": "2026-05-20",
+      "tenant": "studio",
+      "kind": "infra",
+      "summary": "Customer-success state file bootstrapped. Daily heartbeat polling.",
+      "evidence": "businesses/_shared/founder-ops/customer-success-state.json"
+    },
+    {
+      "date": "2026-05-18",
+      "tenant": "buildbridge",
+      "kind": "feature",
+      "summary": "Storm Mode shipped: NOAA RSS → contractor mobilization 4-channel fan-out.",
+      "evidence": "buildbridge migrations 0011-0014"
+    },
+    {
+      "date": "2026-05-15",
+      "tenant": "splash-jacks-pools",
+      "kind": "feature",
+      "summary": "Photo-proof pipeline live: sharp + EXIF + GPS + timestamp watermarking on every visit.",
+      "evidence": "splash-jacks-pools repo"
+    }
+  ],
+  "tenants": {
+    "studio": { "label": "Day14 Studio", "color": "#475569" },
+    "alignmd": { "label": "AlignMD", "color": "#3B82F6" },
+    "splash-jacks-pools": { "label": "Splash Jacks", "color": "#0EA5E9" },
+    "casamore": { "label": "Casamoré", "color": "#EF6C33" },
+    "buildbridge": { "label": "Buildbridge", "color": "#0F766E" },
+    "life-loophole": { "label": "Life Loophole", "color": "#CA8A04" },
+    "day14-os": { "label": "Day14 OS", "color": "#475569" }
+  },
+  "kinds": {
+    "feature": { "label": "Feature", "color": "ember" },
+    "voice": { "label": "Voice", "color": "amber" },
+    "ui": { "label": "UI", "color": "blue" },
+    "doc": { "label": "Doc", "color": "gray" },
+    "strategy": { "label": "Strategy", "color": "purple" },
+    "pivot": { "label": "Pivot", "color": "rose" },
+    "asset": { "label": "Asset", "color": "teal" },
+    "publish": { "label": "Publish", "color": "green" },
+    "ops": { "label": "Ops", "color": "gray" },
+    "infra": { "label": "Infra", "color": "gray" }
+  }
+}

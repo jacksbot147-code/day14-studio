@@ -47,7 +47,7 @@ interface Command {
 // palette sees useful actions, not internal-ops jargon). The "Behind the
 // scenes" group keeps the OS-personality without confusing prospects.
 const COMMANDS: Command[] = [
-  { id: "book-call",        label: "Book a 20-min scope call",                         group: "Talk to us",      hint: "↵ to open" },
+  { id: "book-call",        label: "Book a 15-min intro call",                         group: "Talk to us",      hint: "↵ to open" },
   { id: "see-pricing",      label: "See pricing — Spark / Studio / Platform / Custom", group: "Talk to us" },
   { id: "email-jack",       label: "Email Jack directly",                              group: "Talk to us" },
 

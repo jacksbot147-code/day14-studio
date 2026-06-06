@@ -23,6 +23,7 @@ import { MeshGradient } from "@/components/landing/mesh-gradient";
 import { TerminalSnippet } from "@/components/landing/terminal-snippet";
 import { CinematicImage } from "@/components/landing/cinematic-image";
 import { ProfessionalHero } from "@/components/landing/professional-hero";
+import { WorkLogTicker } from "@/components/landing/work-log-ticker";
 import { DeployStrip } from "@/components/deploy-strip";
 import { WaitlistForm } from "@/components/WaitlistForm";
 
@@ -44,9 +45,9 @@ const LOOM_EMBED_URL = "";
 
 // Page-level metadata overrides the layout defaults for the home route.
 // Other routes (case studies, about, etc.) keep the layout defaults.
-const TITLE = "Day14 — Build studio running on its own OS. Sites and apps shipped in 14 days.";
+const TITLE = "Day14 — Sites and apps for small businesses. Live in 14 days.";
 const DESCRIPTION =
-  "Day14 is a build studio with its own operating system. We ship sites and apps in 14 days, then $299/mo keeps them running on Day14 OS — the same stack we use for six of our own businesses. Now booking 3 builds for July.";
+  "I'm Jack. I build sites and apps for small businesses in 14 days, then $149/mo keeps them running on Day14 OS — the same stack I use for six of my own. Now booking 3 builds for July.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -92,20 +93,50 @@ const OS_CASE_STUDIES: Array<{
     name: "AlignMD",
     title: "Credential-aware staffing, end to end.",
     story:
-      "Clinician intake that used to take 40 minutes now takes 4. Same admin app the operator runs every other tenant from.",
+      "Clinician intake that used to take 40 minutes now takes 4. Same admin app I run every other business from.",
     state: "live",
     brandColor: "#3B82F6",
     size: "tall",
+  },
+  {
+    slug: "splash-jacks-pools",
+    name: "Splash Jacks Pools",
+    title: "A real platform for a real pool guy.",
+    story:
+      "Customer booking, route dispatch, photo-proof visits with GPS+timestamp, Stripe billing. Live in Southwest Florida — replaced a Squarespace brochure with software that runs the business.",
+    state: "live",
+    brandColor: "#0EA5E9",
+    size: "tall",
+  },
+  {
+    slug: "casamore",
+    name: "Casamoré",
+    title: "Silent disco with a brand that doesn't blink.",
+    story:
+      "18 marketing pages, 19 essays, poster series, MailerLite-wired waitlist. The site runs itself on scheduled agents — nightly polish, weekly UX audit, monthly analytics, T-minus rituals for every show.",
+    state: "live",
+    brandColor: "#EF6C33",
+    size: "tall",
+  },
+  {
+    slug: "buildbridge",
+    name: "Buildbridge",
+    title: "Hurricane-season marketplace, 14 SQL migrations deep.",
+    story:
+      "Homeowner-contractor marketplace with Stripe escrow, multi-county permit lookups, and Storm Mode — NOAA-triggered contractor mobilization in hours. Private beta.",
+    state: "live",
+    brandColor: "#0F766E",
+    size: "short",
   },
   {
     slug: "life-loophole",
     name: "Life Loophole",
     title: "Editorial finance, drafted by an agent nightly.",
     story:
-      "A scheduled agent ships essays in brand voice each night. Operator reviews and publishes from the inbox.",
+      "A background automation drafts essays in brand voice each night. I review and publish from the inbox.",
     state: "live",
     brandColor: "#CA8A04",
-    size: "tall",
+    size: "short",
   },
   {
     slug: "day14",
@@ -114,37 +145,7 @@ const OS_CASE_STUDIES: Array<{
     story:
       "Multi-tenant studio, scheduled agents, evidence-verified work-log. The same code stack runs all six brands.",
     state: "live",
-    brandColor: "#EF6C33",
-    size: "tall",
-  },
-  {
-    slug: "day14-realty",
-    name: "Day14 Realty",
-    title: "Coastal listings, paused for licensing.",
-    story:
-      "Brand and admin wired into the OS. On hold until broker-of-record paperwork clears.",
-    state: "paused",
-    brandColor: "#14805A",
-    size: "short",
-  },
-  {
-    slug: "hot-flash-co",
-    name: "Hot Flash Co",
-    title: "Menopause-positive D2C, parked.",
-    story:
-      "Site, copy, and product grid live in the OS. Held until capital lines up for the first inventory run.",
-    state: "parked",
-    brandColor: "#F472B6",
-    size: "short",
-  },
-  {
-    slug: "kennum-lawn-care",
-    name: "Kennum Lawn Care",
-    title: "Local landscape services, parked.",
-    story:
-      "Booking + dispatch wired against the same admin. Reactivates when route density returns to profitable.",
-    state: "parked",
-    brandColor: "#65A30D",
+    brandColor: "#475569",
     size: "short",
   },
 ];
@@ -154,17 +155,17 @@ const OS_STEPS = [
     n: "01",
     title: "Scope",
     body:
-      "20-minute call. We pin down what you actually need (not what a typical agency would scope). Fixed quote in 48 hours.",
+      "15-minute call. I pin down what you actually need (not what a typical agency would scope). Fixed quote in 48 hours.",
     shipped:
-      "What we ship: a Loom of the scope call, the fixed quote, and a Day 1 kickoff.",
+      "What I ship: a Loom of the intro call, the fixed quote, and a Day 1 kickoff.",
   },
   {
     n: "02",
     title: "Build",
     body:
-      "We design and build on Day14 OS — the same stack that runs our six businesses. You get a daily Loom update so you see progress without having to ask.",
+      "I design and build on Day14 OS — the same stack that runs my six businesses. You get a daily Loom update so you see progress without having to ask.",
     shipped:
-      "What we ship: a private staging URL by Day 3, daily Looms, a code review by Day 7.",
+      "What I ship: a private staging URL by Day 3, daily Looms, a code review by Day 7.",
   },
   {
     n: "03",
@@ -172,7 +173,7 @@ const OS_STEPS = [
     body:
       "Site or app ships in 5–28 days depending on tier. Hosted on Day14 OS forever. Scheduled agents handle the boring stuff (deploys, content drafts, briefings) so it runs without you.",
     shipped:
-      "What we ship: live site at your domain + 6 months of Day14 OS hosting + agents handling the ops.",
+      "What I ship: live site at your domain + 6 months of Day14 OS hosting + agents handling the ops.",
   },
 ];
 
@@ -225,7 +226,7 @@ const OS_TIERS: OsTier[] = [
     cadence: "one-time",
     timeline: "Shipped in 4 weeks",
     bestFor:
-      "Operators launching a real software business — site, customer portal, admin app, billing, the works. Same stack we run our six on.",
+      "Operators launching a real software business — site, customer portal, admin app, billing, the works. Same stack I run my six on.",
     includes: [
       "Marketing site + customer portal + admin app",
       "Billing + onboarding flows wired live",
@@ -237,7 +238,7 @@ const OS_TIERS: OsTier[] = [
   {
     name: "Custom",
     price: "Talk to us",
-    cadence: "scope call",
+    cadence: "intro call",
     timeline: "6-12 weeks",
     bestFor:
       "Multi-tenant platforms, marketplaces, anything bespoke. Full Day14 OS — agents, evidence verifier, work-log, the lot.",
@@ -262,6 +263,10 @@ export default function HomePage() {
         {/* DeployStrip hidden — internal-ops messages confused non-tech
             buyers. Keep the import so the component file stays referenced. */}
         {/* <DeployStrip /> */}
+        {/* WorkLogTicker — live work-log feed from /data/changelog.json.
+            Replaces the empty-Loom-slot "trust gap" identified in the
+            2026-06-04 persona audit. Real proof, not faked. */}
+        <BuildReveal><WorkLogTicker /></BuildReveal>
         {/* BuildReveal wraps each section so its content fades up cleanly
             on viewport entry (opacity 0 → 1 + 12px translate). Blur and
             scale were removed for clarity. */}
@@ -275,11 +280,18 @@ export default function HomePage() {
       <SiteFooter />
       {/* Phase C — interactive Cmd+K palette. Floating "Ask anything" pill
           bottom-right; press ⌘K (or Ctrl+K) anywhere to open. 14 real-feeling
-          Day14 OS commands, live fuzzy filter, faked "execute" with toast. */}
-      <CmdKPalette />
+          Day14 OS commands, live fuzzy filter, faked "execute" with toast.
+          Hidden on mobile per persona audit — Marisol + Tasha bounced on
+          terminal/CLI accents; no keyboard on phones makes this irrelevant. */}
+      <div className="hidden md:block">
+        <CmdKPalette />
+      </div>
       {/* Vim-style status line fixed at the bottom of every viewport.
-          Live scroll-position percent + current section + ⌘K hint. */}
-      <StatusLine />
+          Live scroll-position percent + current section + ⌘K hint.
+          Hidden on mobile — eats vertical space on the smallest screens. */}
+      <div className="hidden md:block">
+        <StatusLine />
+      </div>
     </>
   );
 }
@@ -363,10 +375,10 @@ function LoomDemo() {
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-3">
             <a href="#book" className="btn-ember">
-              Book a scope call →
+              Book a 15-min intro call →
             </a>
             <a href="#case-studies" className="btn-ghost">
-              See our work
+              See three live builds ↓
             </a>
           </div>
         </div>
@@ -390,13 +402,13 @@ function LoomDemo() {
                   Recording this week
                 </div>
                 <p className="mx-auto mt-4 max-w-md text-[15px] leading-[1.55] text-warm-gray-500">
-                  Demo video drops in a few days. In the meantime, the fastest way to see Day14 in action is a 20-minute scope call.
+                  Demo video drops in a few days. In the meantime, the fastest way to see Day14 in action is a 15-minute intro call — free, no pressure.
                 </p>
                 <a
                   href="#book"
                   className="mt-6 inline-flex items-center gap-2 rounded-full bg-ember-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors duration-150 hover:bg-ember-600"
                 >
-                  Book a scope call &rarr;
+                  Book a 15-min intro call &rarr;
                 </a>
               </div>
             </div>
@@ -433,7 +445,7 @@ function CaseStudies() {
             <DecryptText text="Built and operated on Day14 OS" durationMs={600} triggerOnView />
           </div>
           <h2 className="text-[56px] font-extrabold leading-[0.98] tracking-[-0.04em] text-ink sm:text-[72px] lg:text-[80px]">
-            <DecryptText text="We use it on six of our own." durationMs={800} startAt={250} triggerOnView />
+            <DecryptText text="I use it on six of my own." durationMs={800} startAt={250} triggerOnView />
           </h2>
           <p className="mx-auto mt-8 max-w-2xl text-[17px] leading-[1.6] text-warm-gray-500 sm:text-[18px]">
             Every tile below is a real product running on Day14 OS &mdash; ours. Same admin, same agents, same evidence verifier. Different brand, different vertical, same 14-day cadence.
@@ -470,9 +482,9 @@ function CaseStudies() {
                 {cs.story}
               </p>
               <div className="mt-auto flex items-center justify-between gap-3 pt-6">
-                {cs.slug === "alignmd" ? (
+                {["alignmd", "splash-jacks-pools", "casamore", "buildbridge"].includes(cs.slug) ? (
                   <Link
-                    href="/case-studies/alignmd"
+                    href={`/case-studies/${cs.slug}`}
                     className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-ember-600 transition-colors hover:text-ember-500"
                   >
                     Read the case study →
@@ -642,7 +654,7 @@ function Pricing() {
             <DecryptText text="$1,500 to custom." durationMs={700} startAt={250} triggerOnView />
           </h2>
           <p className="mx-auto mt-8 max-w-2xl text-[17px] leading-[1.6] text-warm-gray-500 sm:text-[18px]">
-            Fixed price, fixed timeline, no SOWs. Pick the size that fits the job &mdash; your build lives on Day14 OS, the same stack that runs all six of our own businesses.
+            Fixed price, fixed timeline, no SOWs. Pick the size that fits the job &mdash; your build lives on Day14 OS, the same stack that runs all six of my own.
           </p>
         </div>
 
@@ -703,7 +715,7 @@ function Pricing() {
                 href="#book"
                 className="mt-8 inline-flex items-center justify-center self-start rounded-full bg-ember-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors duration-150 hover:bg-ember-600"
               >
-                Book a scope call →
+                Book a 15-min intro call →
               </a>
             </article>
           ))}
@@ -722,10 +734,10 @@ function Pricing() {
 /* -------------------------------------------------------------------------- */
 
 function Waitlist() {
-  // PRIMARY CONVERSION — Book a scope call. The build-studio pitch closes
+  // PRIMARY CONVERSION — Book a 15-min intro call. The build-studio pitch closes
   // here. WaitlistForm component is kept (it's a working email-capture
   // endpoint) but reframed: drop your email + a one-line "what you want
-  // built" and we come back with a 20-min scope call slot.
+  // built" and we come back with a 15-min intro call slot.
   const cardShadow =
     "0 24px 60px -20px rgba(239, 108, 51, 0.10), 0 8px 24px -8px rgba(15, 23, 42, 0.06)";
 
@@ -744,10 +756,10 @@ function Waitlist() {
             <DecryptText text="Now booking · July" durationMs={500} triggerOnView />
           </div>
           <h2 className="text-[40px] font-extrabold leading-[1.02] tracking-[-0.035em] text-ink sm:text-[56px] lg:text-[64px]">
-            <DecryptText text="Tell us what you want built." durationMs={750} startAt={250} triggerOnView />
+            <DecryptText text="Tell me what you want built." durationMs={750} startAt={250} triggerOnView />
           </h2>
           <p className="mt-7 text-[17px] leading-[1.6] text-warm-gray-500 sm:text-[18px]">
-            20-minute scope call. We come back with a fixed quote in 48 hours and a shipped build in 14 days. Three slots open for July.
+            15-minute intro call — free, no pressure. I come back with a fixed quote in 48 hours and a shipped build in 14 days. Three slots open for July.
           </p>
         </div>
 
@@ -757,13 +769,13 @@ function Waitlist() {
         >
           <div className="text-center">
             <div className="font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-ember-600">
-              Day14 · scope call request
+              Day14 · intro call request
             </div>
             <h3 className="mt-2 text-[22px] font-extrabold tracking-[-0.025em] text-ink">
               Drop your email below.
             </h3>
             <p className="mt-2 text-[15px] leading-[1.55] text-warm-gray-500">
-              We&rsquo;ll reply within 24 hours with a Cal link to book a 20-min scope call.
+              I&rsquo;ll reply within 24 hours with a Cal link to book a 15-min intro call.
             </p>
           </div>
           <div className="mt-6">
@@ -777,7 +789,7 @@ function Waitlist() {
         <p className="mx-auto mt-10 max-w-md text-center text-[13px] text-warm-gray-400">
           Or email{" "}
           <a
-            href={`mailto:${SITE.email}?subject=Day14%20scope%20call`}
+            href={`mailto:${SITE.email}?subject=Day14%20intro%20call`}
             className="font-semibold text-warm-gray-500 underline decoration-warm-gray-200 underline-offset-4 transition-colors duration-150 hover:text-ink hover:decoration-ember-500"
           >
             {SITE.email}
@@ -809,7 +821,7 @@ function FooterCta() {
           </div>
           <h2 className="text-[32px] font-extrabold leading-[1.05] tracking-[-0.035em] text-ink sm:text-[40px] lg:text-[44px]">
             <DecryptText
-              text="Don't need us to build it? Host on the OS for $299/mo."
+              text="Don't need me to build it? Host on the OS for $299/mo."
               durationMs={900}
               startAt={250}
               triggerOnView

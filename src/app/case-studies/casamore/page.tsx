@@ -343,7 +343,7 @@ function NextCta() {
           </div>
           <div>
             <a href={SITE.bookingUrl} className="btn-ember w-full justify-center text-base">
-              Book a 20-min scope call
+              Book a 15-min intro call
             </a>
             <Link
               href="/"

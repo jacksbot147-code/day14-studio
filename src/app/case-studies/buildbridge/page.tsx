@@ -72,7 +72,7 @@ function Header() {
       </p>
 
       <p className="mt-4 max-w-2xl text-base text-ink-400">
-        Preview is currently SSO-gated. Ask on the scope call for a guided
+        Preview is currently SSO-gated. Ask on the intro call for a guided
         walkthrough — we&rsquo;ll screen-share the full operator + contractor +
         homeowner flows live.
       </p>

@@ -27,6 +27,11 @@ export function SiteFooter() {
             <div className="eyebrow mb-3">Product</div>
             <ul className="space-y-2 text-sm text-ink-500">
               <li><a href="/#pricing" className="transition-colors duration-150 hover:text-ink">Pricing</a></li>
+              <li><Link href="/calculator" className="transition-colors duration-150 hover:text-ink">Scope calculator</Link></li>
+              <li><Link href="/capabilities" className="transition-colors duration-150 hover:text-ink">Capabilities</Link></li>
+              <li><Link href="/voice-check" className="transition-colors duration-150 hover:text-ink">Voice checker</Link></li>
+              <li><Link href="/changelog" className="transition-colors duration-150 hover:text-ink">Changelog</Link></li>
+              <li><Link href="/honest" className="transition-colors duration-150 hover:text-ink">Honest objections</Link></li>
               <li><Link href="/stack" className="transition-colors duration-150 hover:text-ink">The stack</Link></li>
               <li><Link href="/compare" className="transition-colors duration-150 hover:text-ink">Compare</Link></li>
               <li><a href="/#how" className="transition-colors duration-150 hover:text-ink">How it works</a></li>
@@ -51,7 +56,7 @@ export function SiteFooter() {
           <div>
             <div className="eyebrow mb-3">Talk</div>
             <ul className="space-y-2 text-sm text-ink-500">
-              <li><a href={SITE.bookingUrl} className="transition-colors duration-150 hover:text-ink">Book scope call</a></li>
+              <li><a href={SITE.bookingUrl} className="transition-colors duration-150 hover:text-ink">Book intro call</a></li>
               <li><a href={`mailto:${SITE.email}`} className="transition-colors duration-150 hover:text-ink">{SITE.email}</a></li>
               <li><Link href="/newsletter" className="transition-colors duration-150 hover:text-ink">Newsletter</Link></li>
               <li><Link href="/press" className="transition-colors duration-150 hover:text-ink">Press kit</Link></li>

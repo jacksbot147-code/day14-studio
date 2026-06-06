@@ -76,7 +76,7 @@ export default function FAQPage() {
               href="https://cal.com/day14/intro"
               className="underline decoration-ember-300 underline-offset-4 transition-colors hover:decoration-ember-500"
             >
-              the scope call
+              the intro call
             </a>{" "}
             or email{" "}
             <a
@@ -124,7 +124,7 @@ export default function FAQPage() {
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <a href="https://cal.com/day14/intro" className="btn-primary">
-                Book scope call
+                Book intro call
               </a>
               <Link href="/stack" className="btn-ghost">
                 See the stack

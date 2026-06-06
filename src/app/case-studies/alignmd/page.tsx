@@ -245,7 +245,7 @@ function NextCta() {
               Want a platform like AlignMD?
             </h2>
             <p className="mt-4 max-w-xl text-paper-200">
-              Platform tier is $24,000, shipped in 4 weeks. Same stack, same agents, your brand. 20-minute scope call to figure out if the fit is real.
+              Platform tier is $24,000, shipped in 4 weeks. Same stack, same agents, your brand. 15-minute intro call to figure out if the fit is real.
             </p>
           </div>
           <div>
@@ -253,7 +253,7 @@ function NextCta() {
               href={SITE.bookingUrl}
               className="btn-ember w-full justify-center text-base"
             >
-              Book a 20-min scope call
+              Book a 15-min intro call
             </a>
             <Link
               href="/work-with-us"

@@ -366,7 +366,7 @@ export function FullTerminalHero() {
               >
                 ⏎
               </kbd>
-              <span>Book a 20-min scope call</span>
+              <span>Book a 15-min intro call</span>
               <Cursor />
             </a>
 

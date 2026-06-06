@@ -52,7 +52,7 @@ function Hero() {
 
       <div className="mt-9 flex flex-wrap gap-3">
         <a href={SITE.bookingUrl} className="btn-ember">
-          Book a 20-min scope call
+          Book a 15-min intro call
         </a>
         <Link href="/about" className="btn-ghost">
           How Day14 works →
@@ -561,7 +561,7 @@ function FaqSubset() {
       <div className="mx-auto max-w-2xl text-center">
         <div className="eyebrow mb-4 justify-center">Three honest questions</div>
         <h2 className="text-3xl font-extrabold tracking-tightest text-ink sm:text-4xl">
-          The objections we hear every scope call.
+          The objections we hear every intro call.
         </h2>
       </div>
 
@@ -623,7 +623,7 @@ function FinalCta() {
               href={SITE.bookingUrl}
               className="btn-ember w-full justify-center text-base"
             >
-              Book a 20-min scope call
+              Book a 15-min intro call
             </a>
             <Link
               href="/about"

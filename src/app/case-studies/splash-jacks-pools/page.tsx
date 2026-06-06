@@ -382,13 +382,13 @@ function NextCta() {
             </h2>
             <p className="mt-4 max-w-xl text-paper-200">
               Three slots open this month for {SITE.location} service operators.
-              20-minute scope call, fixed price, signed order form same day if
+              15-minute intro call, fixed price, signed order form same day if
               it&rsquo;s a fit.
             </p>
           </div>
           <div>
             <a href={SITE.bookingUrl} className="btn-ember w-full justify-center text-base">
-              Book a 20-min scope call
+              Book a 15-min intro call
             </a>
             <Link
               href="/"
