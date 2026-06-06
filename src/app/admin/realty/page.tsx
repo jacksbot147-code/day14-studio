@@ -86,10 +86,10 @@ export default async function RealtyDashboard() {
               <div className="kpi-label">Added last run</div>
               <div
                 className="kpi-value"
-                style={fresh.added_last_run > 0 ? { color: "var(--green)" } : undefined}
+                style={(fresh.added_last_run ?? 0) > 0 ? { color: "var(--green)" } : undefined}
               >
-                {fresh.added_last_run > 0 ? "+" : ""}
-                {fresh.added_last_run.toLocaleString()}
+                {(fresh.added_last_run ?? 0) > 0 ? "+" : ""}
+                {(fresh.added_last_run ?? 0).toLocaleString()}
               </div>
               <div className="kpi-sub">updated {rel(fresh.updated_at)}</div>
             </div>
@@ -97,18 +97,18 @@ export default async function RealtyDashboard() {
               <div className="kpi-label">Added (7 days)</div>
               <div
                 className="kpi-value"
-                style={fresh.added_7d > 0 ? { color: "var(--green)" } : undefined}
+                style={(fresh.added_7d ?? 0) > 0 ? { color: "var(--green)" } : undefined}
               >
-                {fresh.added_7d > 0 ? "+" : ""}
-                {fresh.added_7d.toLocaleString()}
+                {(fresh.added_7d ?? 0) > 0 ? "+" : ""}
+                {(fresh.added_7d ?? 0).toLocaleString()}
               </div>
               <div className="kpi-sub">{fresh.runs_tracked ?? 0} runs tracked</div>
             </div>
             <div className="kpi">
               <div className="kpi-label">Enriched</div>
-              <div className="kpi-value">{fresh.enriched_pct}%</div>
+              <div className="kpi-value">{fresh.enriched_pct ?? 0}%</div>
               <div className="kpi-sub">
-                {fresh.enriched_count.toLocaleString()} of {fresh.total_properties.toLocaleString()}
+                {(fresh.enriched_count ?? 0).toLocaleString()} of {(fresh.total_properties ?? 0).toLocaleString()}
               </div>
             </div>
             <div className="kpi">
