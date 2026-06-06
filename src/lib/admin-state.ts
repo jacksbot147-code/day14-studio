@@ -301,27 +301,40 @@ interface RealtySummary {
     signals?: string[];
     county?: string;
   }>;
+  /** Full evaluations for the ranked deals — when present, the board and the
+   *  per-property detail page render real flip/rental/wholesale numbers. */
+  deals_full?: REEvaluation[];
+  /** Full property records for the ranked deals so the per-property gameplan
+   *  page resolves instead of 404ing in production. */
+  properties?: Array<Record<string, unknown>>;
   freshness?: REFreshness;
 }
 
 function summaryToOps(summary: RealtySummary): TenantOps {
-  const evaluations: REEvaluation[] = (summary.top_a_deals ?? []).map((d) => ({
-    property_id: d.id,
-    address: d.address,
-    city: d.city,
-    value_cents: d.value_cents,
-    score: d.score,
-    tier: d.tier,
-    best_play: d.best_play,
-    signals: d.signals ?? [],
-    flip: { arv_cents: 0, repairs_cents: 0, mao_cents: 0, est_profit_cents: 0, score: 0 },
-    rental: { monthly_rent_cents: 0, cap_rate_pct: 0, rent_to_value_pct: 0, score: 0 },
-    wholesale: { equity_cents: 0, equity_pct: 0, score: 0 },
-  }));
+  // Prefer the full evaluations (rich flip/rental/wholesale data) when the
+  // summary carries them; otherwise fall back to the slim top_a_deals shape
+  // with zeroed sub-objects (older summaries).
+  const evaluations: REEvaluation[] =
+    summary.deals_full && summary.deals_full.length
+      ? summary.deals_full
+      : (summary.top_a_deals ?? []).map((d) => ({
+          property_id: d.id,
+          address: d.address,
+          city: d.city,
+          value_cents: d.value_cents,
+          score: d.score,
+          tier: d.tier,
+          best_play: d.best_play,
+          signals: d.signals ?? [],
+          flip: { arv_cents: 0, repairs_cents: 0, mao_cents: 0, est_profit_cents: 0, score: 0 },
+          rental: { monthly_rent_cents: 0, cap_rate_pct: 0, rent_to_value_pct: 0, score: 0 },
+          wholesale: { equity_cents: 0, equity_pct: 0, score: 0 },
+        }));
   return {
     slug: summary.slug,
     generated_at: summary.generated_at,
     evaluations,
+    properties: summary.properties ?? [],
     freshness: summary.freshness,
     summary_only: true,
   };

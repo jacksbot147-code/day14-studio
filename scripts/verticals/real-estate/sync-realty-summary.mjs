@@ -60,11 +60,15 @@ async function main() {
     readJson(path.join(OPS_DIR, "freshness.json"), {}),
   ]);
 
-  // Build a property-id → county lookup so the summary can group by county
-  // without paying for the whole 53 MB properties payload.
+  // Build property-id → county and property-id → full-record lookups so the
+  // summary can group by county and embed the ranked deals' property records.
   const countyById = new Map();
+  const propById = new Map();
   for (const p of properties) {
-    if (p && p.id) countyById.set(String(p.id), p.county || "unknown");
+    if (p && p.id) {
+      countyById.set(String(p.id), p.county || "unknown");
+      propById.set(String(p.id), p);
+    }
   }
 
   const byTier = {};
@@ -75,23 +79,34 @@ async function main() {
     inc(byCounty, county);
   }
 
-  // Top A-tier deals only, slimmed to the columns the dashboard needs to
-  // render a ranked list. Drops flip/rental/wholesale sub-objects.
-  const aTier = evaluations
+  // Top A-tier deals, ranked. We keep the FULL evaluation objects (for the
+  // board scores + the per-property gameplan page) and also emit a slimmed
+  // list for any lightweight consumer.
+  const topFull = evaluations
     .filter((e) => (e.tier || "").startsWith("A"))
     .sort((a, b) => (b.score || 0) - (a.score || 0))
-    .slice(0, TOP_A_LIMIT)
-    .map((e) => ({
-      id: e.property_id,
-      address: e.address,
-      city: e.city,
-      score: e.score,
-      tier: e.tier,
-      best_play: e.best_play,
-      value_cents: e.value_cents,
-      signals: Array.isArray(e.signals) ? e.signals.slice(0, 4) : [],
-      county: countyById.get(String(e.property_id)) || "unknown",
-    }));
+    .slice(0, TOP_A_LIMIT);
+
+  const aTier = topFull.map((e) => ({
+    id: e.property_id,
+    address: e.address,
+    city: e.city,
+    score: e.score,
+    tier: e.tier,
+    best_play: e.best_play,
+    value_cents: e.value_cents,
+    signals: Array.isArray(e.signals) ? e.signals.slice(0, 4) : [],
+    county: countyById.get(String(e.property_id)) || "unknown",
+  }));
+
+  // Full property records for those ranked deals, so /admin/realty/[id]
+  // resolves in production instead of 404ing.
+  const topProperties = topFull
+    .map((e) => propById.get(String(e.property_id)))
+    .filter(Boolean);
+
+  const total = freshness.total_properties || evaluations.length;
+  const enrichedCount = freshness.enriched_count ?? freshness.enriched ?? 0;
 
   const summary = {
     slug: "day14-realty",
@@ -106,15 +121,23 @@ async function main() {
       by_county: byCounty,
     },
     top_a_deals: aTier,
+    deals_full: topFull,
+    properties: topProperties,
     freshness: {
       updated_at: freshness.updated_at || null,
       first_tracked_at: freshness.first_tracked_at || null,
-      total_properties: freshness.total_properties || evaluations.length,
+      total_properties: total,
+      enriched_count: enrichedCount,
+      enriched_pct:
+        freshness.enriched_pct ??
+        (total ? Math.round((enrichedCount / total) * 100) : 0),
       a_tier: freshness.a_tier || byTier["A — pursue now"] || 0,
       counties: freshness.counties || Object.keys(byCounty).length,
       active_counties: freshness.active_counties || 0,
       added_last_run: freshness.added_last_run || 0,
       added_7d: freshness.added_7d || 0,
+      runs_tracked: freshness.runs_tracked ?? 0,
+      history: Array.isArray(freshness.history) ? freshness.history.slice(-30) : [],
     },
   };
 
