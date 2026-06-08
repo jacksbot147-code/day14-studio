@@ -173,3 +173,45 @@ For each dossier it re-reads the **source** OCR text with an *independent, deter
 2. **No upstream** is configured for `redesign/apple-base44-2026-06-03`; use `git push -u origin redesign/apple-base44-2026-06-03` to set it.
 
 **Note on the stub queue:** tonight's queue is stub data because no clinician dossier has been run through a *live* credential-parse yet. The agents are production-shaped and will pick up real `CREDENTIAL-PARSED-*.json` records automatically once `credential-parse-v2 --live` is run from Jack's terminal. Both output artifacts mark stub provenance explicitly so a downstream reader never mistakes sample rows for real intake.
+
+---
+
+## T9 shipped
+
+**Task:** `night-t9-alignmd-admin-ui` (T9 of 10) · autonomous overnight run · 2026-06-08
+**Branch:** `redesign/apple-base44-2026-06-03` (studio) — not main.
+
+Polished the AlignMD **operator admin workflow UI** so the structured output the T4/T5 agents now produce actually *surfaces* for the operator. The admin route already existed (`src/app/admin/alignmd/page.tsx`) but was a read-only repo/build window — it had no dossier queue. Added one, with all three requested polishes, in the clinical-calm aesthetic (cool blue `#3b82f6`, hairline rules, system sans-serif, generous negative space; scoped under `.amd-dossiers` so it never touches the ember admin chrome).
+
+### 1. Dossier queue with priority sort
+`src/lib/alignmd-dossiers.ts` (NEW) — server-side loader + a pure, unit-testable priority model. It reads the operator queue and joins the **real** `verifier-flags.json` onto each dossier by `dossier_id`, then sorts by the task's three keys, in order:
+1. **license-status urgency** — expired first, then expiring inside 30 days, then never-checked / stale (>90 days since last check);
+2. **verifier-flag presence + severity** — flagged dossiers rise within their urgency band, worst severity first;
+3. **contract value desc, then nearest placement date.**
+
+Each row carries one **chip naming its top sort reason** — `"license expired 9d ago"`, `"expiring in 14 days"`, `"license never verified"`, `"verifier flag: license-number mismatch"`, or `"high-value placement · $305k"` — picked in the same priority order, tone-coded red/amber/blue.
+
+### 2. One-click approve workflow
+Each row gets a primary **Approve** (advances the dossier to "ready for placement") and a secondary **Kick back** (prompts for a note, then returns the dossier to the clinician portal with the operator's reason). Both are **UI-only** with an `undo` affordance; the two backend writes (placement-queue advance, clinician-portal POST) are marked with explicit `TODO(backend)` comments in `dossier-queue.tsx`.
+
+### 3. Verifier-flag inline display
+When `verifier-flags.json` has entries for a dossier, the row shows a flag-count pill and an expandable **accordion** that renders each flag in place — field, severity, parsed-vs-source diff, and the recommended fix — so the operator reads the mismatch without clicking through to another screen.
+
+### Files
+| File | Change |
+|---|---|
+| `src/lib/alignmd-dossiers.ts` | **new** — dossier loader + priority sort + chip model (pure fns + fs loader) |
+| `src/app/admin/alignmd/dossier-queue.tsx` | **new** — client workflow UI (sorted rows, approve/kick-back, flag accordion, clinical-calm scoped CSS) |
+| `src/app/admin/alignmd/page.tsx` | edited — loads the queue server-side and renders the new "Dossier queue" section above repo state |
+| `public/data/alignmd/dossier-queue.json` | **new** — clearly-marked **sample** operator queue (`is_sample:true`); `dossier_id`s intentionally match `verifier-flags.json` so the accordion renders against real flags |
+
+### Verification
+- `npm run typecheck` (both tsconfigs) → pass. `npm run lint` → no warnings or errors.
+- Sort logic verified against the seed: ordering came out `reyes-az` (expired −9d) → `okwu-ga` (expiring +14d) → `okafor-tx` (never checked) → `doe-fl-MISMATCH` (rank-3, high-severity flags sort it ahead of its band) → `bianchi-wa` (rank-3, clean) — i.e. all three sort dimensions and the flag accordion exercised by the sample data.
+- No new dependencies; no files deleted.
+
+**Note on sample data:** like T5's queue, the dossier rows are stub/sample (`is_sample:true`, surfaced with a warn banner in the UI). They link to the real verifier flags so the inline accordion is demonstrable today; real dossiers replace them unchanged once a live credential-parse runs.
+
+**Committed:** the five files above as `db26b81` (`innovation-t9: AlignMD admin workflow UI — priority sort + one-click approve + verifier-flag inline display`) onto `redesign/apple-base44-2026-06-03` — parented on T7's `3b68c83`. The stale `.git/index.lock` + `.git/next-index-7.lock` (from the earlier T4 run) still can't be removed from the sandbox (`.git` mount denies `unlink`), so this commit was again built with plumbing via a temp `GIT_INDEX_FILE` seeded from HEAD — capturing **only** the five intended T9 files, none of the unrelated dirty/`D` working-tree state left by prior runs.
+
+**Push — BLOCKED (needs Jack's terminal):** `git push origin redesign/apple-base44-2026-06-03` failed with `could not read Username for 'https://github.com'` — identical to T5. The sandbox has no GitHub credential for the HTTPS remote, so the push can't authenticate non-interactively. The commit is in place locally; run the push from an authenticated terminal (`git push -u origin redesign/apple-base44-2026-06-03`). Housekeeping still pending from T5: `rm -f .git/index.lock .git/next-index-7.lock` before the next interactive git command.

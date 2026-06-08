@@ -1,7 +1,9 @@
 import { loadTenantOps } from "@/lib/admin-state";
 import { loadAlignmdSummary } from "@/lib/alignmd-bridge";
+import { loadDossierQueue } from "@/lib/alignmd-dossiers";
 import { AdminNav, ADMIN_CSS, PageHint } from "../layout-bits";
 import { Card, EmptyState, Kpi, StatusBanner } from "@/components/ui";
+import { DossierQueue } from "./dossier-queue";
 
 export const metadata = { title: "AlignMD — Day14 Admin", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -35,9 +37,10 @@ function relativeTime(iso: string): string {
 }
 
 export default async function AlignMdPage() {
-  const [ops, repo] = await Promise.all([
+  const [ops, repo, queue] = await Promise.all([
     loadTenantOps("alignmd"),
     loadAlignmdSummary(),
+    loadDossierQueue(),
   ]);
   const build = ops.build;
   const phases = build?.phases ?? [];
@@ -87,6 +90,32 @@ export default async function AlignMdPage() {
       <div className="sub">
         {build?.tagline || "Precision Matching for Modern Healthcare"} · Day14 segment
       </div>
+
+      <div className="section-header">
+        <div className="section-title">Dossier queue</div>
+        <div className="section-link" style={{ cursor: "default" }}>
+          {queue.dossiers.length} awaiting review
+          {queue.flagsTotal ? ` · ${queue.flagsTotal} flagged` : ""}
+        </div>
+      </div>
+      <PageHint>
+        Credential dossiers assembled by the agent fleet, ranked by review
+        priority. Expiring or flagged dossiers rise to the top; approve to
+        advance to placement or kick back to the clinician with a note.
+      </PageHint>
+      {queue.isSample ? (
+        <StatusBanner
+          tone="warn"
+          headline="Showing the sample dossier queue."
+          detail="No live credential-parse has assembled real dossiers yet — these rows are seeded stubs (linked to the real verifier-flags.json). Real dossiers slot in unchanged once credential-parse runs."
+          style={{ marginBottom: 12 }}
+        />
+      ) : null}
+      <DossierQueue
+        dossiers={queue.dossiers}
+        isSample={queue.isSample}
+        flagsTotal={queue.flagsTotal}
+      />
 
       <div className="section-header"><div className="section-title">Repo state</div></div>
       <StatusBanner

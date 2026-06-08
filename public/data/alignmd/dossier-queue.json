@@ -1,0 +1,87 @@
+{
+  "source": "alignmd-dossier-assembly",
+  "version": 1,
+  "is_sample": true,
+  "generated_for": "operator-admin-ui",
+  "_meta": {
+    "purpose": "Operator dossier queue surfaced by /admin/alignmd. Each row is a clinician credential dossier awaiting operator review before placement. These are SAMPLE rows (is_sample/is_stub true) — no live credential-parse has produced real dossiers yet (see ALIGNMD-AGENT-ROADMAP T5 'stub queue' note). dossier_id values intentionally match public/data/alignmd/verifier-flags.json so the verifier-flag inline accordion renders against real flag data.",
+    "as_of": "2026-06-08"
+  },
+  "dossiers": [
+    {
+      "dossier_id": "STUB-reyes-az",
+      "provider_name": "Marcus Reyes, DO",
+      "specialty": "Emergency Medicine",
+      "license_number": "DO-44871",
+      "issuing_state": "AZ",
+      "board_name": "Arizona Board of Osteopathic Examiners",
+      "expiration_date": "2026-05-30",
+      "last_check_date": "2026-02-14",
+      "contract_value_usd": 218000,
+      "placement_date": "2026-06-22",
+      "stage": "operator_review",
+      "is_stub": true,
+      "source_filename": "sample-az-license.txt"
+    },
+    {
+      "dossier_id": "STUB-okwu-ga",
+      "provider_name": "Ada Okwu, NP",
+      "specialty": "Family Nurse Practitioner",
+      "license_number": "RN-209884",
+      "issuing_state": "GA",
+      "board_name": "Georgia Board of Nursing",
+      "expiration_date": "2026-06-22",
+      "last_check_date": "2026-04-02",
+      "contract_value_usd": 142000,
+      "placement_date": "2026-07-01",
+      "stage": "operator_review",
+      "is_stub": true,
+      "source_filename": "sample-ga-license.txt"
+    },
+    {
+      "dossier_id": "STUB-doe-fl-MISMATCH",
+      "provider_name": "Jonathan Doe, MD",
+      "specialty": "Internal Medicine",
+      "license_number": "ME99887",
+      "issuing_state": "FL",
+      "board_name": "Florida Board of Medicine",
+      "expiration_date": "2026-12-31",
+      "last_check_date": "2026-05-20",
+      "contract_value_usd": 305000,
+      "placement_date": "2026-08-15",
+      "stage": "operator_review",
+      "is_stub": true,
+      "source_filename": "sample-fl-license.txt"
+    },
+    {
+      "dossier_id": "STUB-okafor-tx",
+      "provider_name": "Jane A. Okafor, MD",
+      "specialty": "Anesthesiology",
+      "license_number": "K4821",
+      "issuing_state": "TX",
+      "board_name": "Texas Medical Board",
+      "expiration_date": "2027-08-31",
+      "last_check_date": null,
+      "contract_value_usd": 412000,
+      "placement_date": "2026-09-09",
+      "stage": "operator_review",
+      "is_stub": true,
+      "source_filename": "sample-tmb-license.txt"
+    },
+    {
+      "dossier_id": "STUB-bianchi-wa",
+      "provider_name": "Lucia Bianchi, PA-C",
+      "specialty": "Orthopedic Surgery PA",
+      "license_number": "PA-77310",
+      "issuing_state": "WA",
+      "board_name": "Washington Medical Commission",
+      "expiration_date": "2027-03-15",
+      "last_check_date": "2026-05-28",
+      "contract_value_usd": 156000,
+      "placement_date": "2026-07-20",
+      "stage": "operator_review",
+      "is_stub": true,
+      "source_filename": "sample-wa-license.txt"
+    }
+  ]
+}
