@@ -58,31 +58,46 @@ async function brandSiteUrls(now: Date): Promise<MetadataRoute.Sitemap> {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
-  const urls: MetadataRoute.Sitemap = [
-    { url: BASE, lastModified: now, changeFrequency: "weekly", priority: 1 },
-    { url: `${BASE}/stack`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+
+  // Primary marketing surface — build-studio positioning. Priorities and
+  // changeFrequency per the T7 spec: 1.0 for home; 0.8 for the three core
+  // conversion/proof pages (work-with-us, process, status); 0.6 for the
+  // rest. lastModified is the build time so crawlers see a fresh stamp.
+  const primary: MetadataRoute.Sitemap = [
+    { url: BASE, lastModified: now, changeFrequency: "weekly", priority: 1.0 },
+    { url: `${BASE}/work-with-us`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${BASE}/process`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${BASE}/status`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${BASE}/faq`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${BASE}/stack`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${BASE}/compare`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${BASE}/about`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${BASE}/case-studies/alignmd`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${BASE}/case-studies/casamore`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${BASE}/case-studies/buildbridge`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${BASE}/case-studies/splash-jacks-pools`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${BASE}/case-studies/hot-flash-co`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${BASE}/brands`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${BASE}/press`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+  ];
+
+  // Secondary / utility routes kept from the prior sitemap so existing
+  // coverage doesn't regress. Not part of the T7 primary-route spec.
+  const secondary: MetadataRoute.Sitemap = [
     { url: `${BASE}/builds`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
-    { url: `${BASE}/compare`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${BASE}/work-with-us`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${BASE}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE}/newsletter`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    { url: `${BASE}/faq`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
-    { url: `${BASE}/press`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     { url: `${BASE}/tools`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE}/verticals/mobile-service`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE}/verticals/membership`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE}/verticals/food`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE}/privacy`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
     { url: `${BASE}/terms`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
     { url: `${BASE}/refunds`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
-    { url: `${BASE}/case-studies/splash-jacks-pools`, lastModified: now, priority: 0.8 },
-    { url: `${BASE}/case-studies/casamore`, lastModified: now, priority: 0.7 },
-    { url: `${BASE}/case-studies/buildbridge`, lastModified: now, priority: 0.7 },
-    { url: `${BASE}/case-studies/hot-flash-co`, lastModified: now, priority: 0.7 },
-    { url: `${BASE}/verticals/mobile-service`, lastModified: now, priority: 0.6 },
-    { url: `${BASE}/verticals/membership`, lastModified: now, priority: 0.6 },
-    { url: `${BASE}/verticals/food`, lastModified: now, priority: 0.6 },
-    { url: `${BASE}/brands`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
   ];
+
   return [
-    ...urls,
+    ...primary,
+    ...secondary,
     ...kennumUrls(now),
     ...hotFlashCoUrls(now),
     ...lifeLoopholeUrls(now),

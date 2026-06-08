@@ -1,42 +1,77 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { RequestedPath } from "@/components/requested-path";
 
-export const metadata = {
-  title: "Not found — Day14",
+export const metadata: Metadata = {
+  title: "Page not found",
+  description:
+    "We didn't build this one. Here's what's actually live on Day14.",
+  robots: { index: false, follow: true },
 };
+
+/**
+ * Custom 404 — on-brand failure state.
+ *
+ * Brand-animator personality move ("Custom 404 with personality"): cream
+ * paper surface, one big ember numeral, plain-English copy, a single ember
+ * CTA, and a quiet monospace path line. Fully SSR-rendered; no client JS is
+ * required for the page to render or for navigation to work.
+ */
+
+const LINKS: Array<{ href: string; label: string }> = [
+  { href: "/", label: "Home" },
+  { href: "/work-with-us", label: "Work with us" },
+  { href: "/#pricing", label: "Pricing" },
+  { href: "/case-studies/alignmd", label: "AlignMD case study" },
+  { href: "/process", label: "How we ship" },
+  { href: "/status", label: "Live status" },
+];
 
 export default function NotFound() {
   return (
     <>
-    <SiteHeader />
-    <main style={{ maxWidth: 640, margin: "0 auto", padding: "120px 32px", textAlign: "center", fontFamily: "-apple-system, BlinkMacSystemFont, system-ui, sans-serif" }}>
-      <div style={{ fontSize: 80, marginBottom: 16, opacity: 0.4 }}>404</div>
-      <h1 style={{ fontSize: 36, letterSpacing: "-0.02em", marginBottom: 16, color: "#2F2A33" }}>
-        That page doesn't exist.
-      </h1>
-      <p style={{ fontSize: 17, color: "#7A6F8F", lineHeight: 1.6, marginBottom: 32 }}>
-        Probably moved, mistyped, or never existed in the first place. Here's what's actually live:
-      </p>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 12, maxWidth: 520, margin: "0 auto 32px" }}>
-        {[
-          { href: "/", label: "Home" },
-          { href: "/stack", label: "The stack" },
-          { href: "/builds", label: "Active builds" },
-          { href: "/case-studies/splash-jacks-pools", label: "Case study" },
-          { href: "/newsletter", label: "Newsletter" },
-          { href: "/#pricing", label: "Pricing" },
-        ].map((l) => (
-          <Link key={l.href} href={l.href} style={{ padding: "12px 16px", background: "white", border: "1px solid #E5DDD0", borderRadius: 8, color: "#2F2A33", textDecoration: "none", fontSize: 14 }}>
-            {l.label} →
+      <SiteHeader />
+      <main className="container-page flex min-h-[70vh] flex-col items-start justify-center py-24">
+        <div className="eyebrow mb-6">Error 404</div>
+
+        <div className="text-[88px] font-extrabold leading-none tracking-tightest text-ember-500 sm:text-[140px]">
+          404
+        </div>
+
+        <h1 className="mt-4 text-[34px] font-extrabold leading-[1.05] tracking-tightest text-ink sm:text-[48px]">
+          Page not found.
+        </h1>
+
+        <p className="mt-6 max-w-xl text-lg text-ink-500">
+          We didn&rsquo;t build this one. (Yet.) Try one of these instead:
+        </p>
+
+        <div className="mt-8 grid w-full max-w-2xl grid-cols-1 gap-3 sm:grid-cols-2">
+          {LINKS.map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              className="group flex items-center justify-between rounded-sm border border-ink-100 bg-paper-50 px-4 py-3 text-sm font-semibold text-ink transition-colors duration-150 ease-out hover:border-ink"
+            >
+              {l.label}
+              <span className="font-mono text-ink-300 transition-colors group-hover:text-ember-600">
+                →
+              </span>
+            </Link>
+          ))}
+        </div>
+
+        <div className="mt-10">
+          <Link href="/" className="btn-ember">
+            ← Back to home
           </Link>
-        ))}
-      </div>
-      <p style={{ fontSize: 13, color: "#999" }}>
-        Or <a href="https://cal.com/day14/intro" style={{ color: "#7A6F8F" }}>book a 30-min intro call</a> · <a href="mailto:hello@day14.us" style={{ color: "#7A6F8F" }}>hello@day14.us</a>
-      </p>
-    </main>
-    <SiteFooter />
+        </div>
+
+        <RequestedPath />
+      </main>
+      <SiteFooter />
     </>
   );
 }
