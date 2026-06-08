@@ -29,6 +29,7 @@ export function SiteFooter() {
               <li><a href="/#pricing" className="transition-colors duration-150 hover:text-ink">Pricing</a></li>
               <li><Link href="/calculator" className="transition-colors duration-150 hover:text-ink">Scope calculator</Link></li>
               <li><Link href="/capabilities" className="transition-colors duration-150 hover:text-ink">Capabilities</Link></li>
+              <li><Link href="/process" className="transition-colors duration-150 hover:text-ink">The 14-day process</Link></li>
               <li><Link href="/voice-check" className="transition-colors duration-150 hover:text-ink">Voice checker</Link></li>
               <li><Link href="/changelog" className="transition-colors duration-150 hover:text-ink">Changelog</Link></li>
               <li><Link href="/honest" className="transition-colors duration-150 hover:text-ink">Honest objections</Link></li>
