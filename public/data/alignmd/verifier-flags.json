@@ -1,0 +1,51 @@
+{
+  "agent": "alignmd-evidence-verifier",
+  "version": 2,
+  "_meta": {
+    "purpose": "Operator-admin review queue. Each flag is a field where credential-parse output disagreed with an independent re-read of the source document. The AlignMD operator admin reads this file to surface dossiers needing manual review before assembly."
+  },
+  "flags": [
+    {
+      "dossier_id": "STUB-doe-fl-MISMATCH",
+      "source_filename": "sample-fl-license.txt",
+      "field": "license_number",
+      "parsed_value": "ME99887",
+      "source_value": "ME77654",
+      "severity": "high",
+      "mismatch_detail": "parser=\"ME99887\" vs source re-read=\"ME77654\"",
+      "recommended_fix": "Re-OCR the license-number field and re-key manually; license number must match the source exactly before assembly.",
+      "method": "deterministic-reread",
+      "is_stub": true,
+      "checked_at": "2026-06-08T07:11:50.804Z"
+    },
+    {
+      "dossier_id": "STUB-doe-fl-MISMATCH",
+      "source_filename": "sample-fl-license.txt",
+      "field": "expiration_date",
+      "parsed_value": "2026-12-31",
+      "source_value": "2028-01-31",
+      "severity": "high",
+      "mismatch_detail": "parser=\"2026-12-31\" vs source re-read=\"2028-01-31\"",
+      "recommended_fix": "Confirm the expiration date against the source image; correct the parsed value (ISO YYYY-MM-DD).",
+      "method": "deterministic-reread",
+      "is_stub": true,
+      "checked_at": "2026-06-08T07:11:50.804Z"
+    }
+  ],
+  "runs": [
+    {
+      "ran_at": "2026-06-08T07:11:50.804Z",
+      "check_date": "2026-06-08",
+      "queue_source": "stub (no CREDENTIAL-PARSED-*.json present; live credential-parse never fired)",
+      "is_stub_queue": true,
+      "dossiers_checked": 2,
+      "flags_added": 2,
+      "coverage": {
+        "queue": 2,
+        "with_source": 2,
+        "no_source": 0,
+        "model_mode": "staged"
+      }
+    }
+  ]
+}

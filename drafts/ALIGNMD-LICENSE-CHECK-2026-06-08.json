@@ -1,0 +1,49 @@
+{
+  "agent": "alignmd-license-status",
+  "version": 2,
+  "generated_at": "2026-06-08T07:11:13.724Z",
+  "check_date": "2026-06-08",
+  "queue_source": "stub (no CREDENTIAL-PARSED-*.json present; live credential-parse never fired)",
+  "is_stub_queue": true,
+  "staleness_threshold_days": 90,
+  "network_calls": 0,
+  "model_calls": 0,
+  "note": "Lookup payloads are STAGED, not executed. No state board was contacted from this sandbox (boards block bots; primary-source verification must run from an authorized environment). state-boards.json loaded (50 boards)",
+  "totals": {
+    "queue": 1,
+    "needs_human_verification": 1,
+    "ok": 0
+  },
+  "rows": [
+    {
+      "dossier_id": "STUB-okafor-tx",
+      "provider_name": "Jane A. Okafor, MD",
+      "is_stub": true,
+      "license_number": "K4821",
+      "issuing_state": "TX",
+      "board_name": "Texas Medical Board",
+      "expiration_date": "2027-08-31",
+      "last_check_date": null,
+      "days_since_last_check": null,
+      "days_to_expiry": 449,
+      "expired": false,
+      "expiring_soon": false,
+      "needs_human_verification": true,
+      "reason": "no prior license check on record (never verified); board lookup_url is an unverified T4 scaffold",
+      "staged_lookup": {
+        "resolvable": true,
+        "method": "POST_FORM",
+        "url": "https://profile.tmb.state.tx.us/Search.aspx",
+        "form_fields": {
+          "license_number": "K4821",
+          "last_name": "Okafor",
+          "first_name": "Jane"
+        },
+        "expected_check": "Open the lookup URL, submit the form_fields, and confirm an active license matching license_number with expiration_date = 2027-08-31.",
+        "board_lookup_verified": false,
+        "note": "lookup_url is a T4 scaffold value (lookup_verified:false) — confirm it resolves before relying on it."
+      },
+      "source_filename": "sample-tmb-license.txt"
+    }
+  ]
+}
