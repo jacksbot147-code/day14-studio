@@ -43,6 +43,7 @@ export function SiteFooter() {
           <div>
             <div className="eyebrow mb-3">Proof</div>
             <ul className="space-y-2 text-sm text-ink-500">
+              <li><Link href="/status" className="transition-colors duration-150 hover:text-ink">Status</Link></li>
               <li><Link href="/brands" className="transition-colors duration-150 hover:text-ink">Brands</Link></li>
               <li><Link href="/builds" className="transition-colors duration-150 hover:text-ink">Active builds</Link></li>
               <li><Link href="/case-studies/alignmd" className="transition-colors duration-150 hover:text-ink">AlignMD</Link></li>
