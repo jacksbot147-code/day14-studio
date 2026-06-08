@@ -100,3 +100,30 @@ Build beefups **#3 and #4**, consuming T4's outputs:
 
 ## Constraints honored this run
 Read-only audit. No files deleted, no dependencies added, nothing pushed to `main`. This document is the only artifact; it commits to `redesign/apple-base44-2026-06-03`.
+
+---
+
+## T4 shipped
+
+**Task:** `night-t4-alignmd-credential-parse-beefup` (T4 of 10) · autonomous overnight run · 2026-06-08
+**Branch:** `redesign/apple-base44-2026-06-03` (studio) — not main.
+
+Shipped roadmap beefup **#1 (credential-parse v2)** in full — all three sub-priorities (A/B/C), staged per the Day14 OS shared-agent pattern so the model-call infra (budget-gate) stays in studio while the seed data lands under `public/data/alignmd/`.
+
+**A) Structured-JSON extraction prompt + field validation** — `scripts/_internal/alignmd-credential-parse-v2.mjs`. Defines `CREDENTIAL_SCHEMA` (the dossier-assembly input contract): `license_number, issuing_state, expiration_date, board_name, specialty, malpractice_carrier, employment_history`, each with a field-by-field validator (ISO-date enforcement, 2-letter state codes, employment-history shape). Builds a conservative Haiku (`claude-haiku-4-5-20251001`) system+user prompt that returns JSON-only and is told to null-out uncertain fields rather than hallucinate. Successful parses are validated, normalized, cross-referenced to a state board, and written as a dossier-ready record.
+
+**B) Failure-handling** — no more silent drop. Read / model / json_parse / validation failures each append to `drafts/INTAKE-FAILED-<date>.json` with the error, source filename, stage, and a suggested manual-review path (`/providers/<provider_id>/verification` in AlignMD). Atomic temp-then-rename writes; merges into an existing same-day file rather than clobbering.
+
+**C) State-board seed** — `public/data/alignmd/state-boards.json`: all 50 states, each with official allopathic board name, board URL, public license-lookup entry point, query method (mostly `POST_FORM`), a latency estimate, and a `lookup_verified:false` flag. Includes an FSMB DocInfo national-aggregator fallback and a `_meta` block flagging that board **names** are high-confidence but **URLs/latency are scaffold values T5/a human must verify** before any production lookup. This is the input T5's license-status agent reads.
+
+**Cost safety:** the agent **stages, it does not spend.** Default run builds the prompt and writes a STAGED payload with zero network calls. A real Haiku call only fires behind `--live` AND a present `ANTHROPIC_API_KEY` AND an open `budget-gate.mjs` gate — left un-fired here per the "paid calls need Jack's terminal" constraint.
+
+**Verification run:**
+- `node --check scripts/_internal/alignmd-credential-parse-v2.mjs` → syntax OK.
+- `node ... --self-test` → 5/5 checks pass (good record validates, `issuing_state` normalizes `tx`→`TX`, bad record rejected with 3 field errors, TX state-board matched).
+- Dry-run staged a sample TMB license; failure-path run (missing input) correctly logged to `INTAKE-FAILED`.
+- No TS changed → typecheck/lint not required by the task condition.
+
+**Committed/pushed:** `scripts/_internal/alignmd-credential-parse-v2.mjs`, `public/data/alignmd/state-boards.json`, and this doc. (Test-run scratch outputs `CREDENTIAL-PARSE-STAGED-2026-06-08.json` / `INTAKE-FAILED-2026-06-08.json` were left **untracked / not committed** — they contain only sample + fake-missing-file data and should not be read by T5 as real intake.)
+
+**For T5:** the parse schema and `state-boards.json` are both in place — the dependency the sequencing note flagged is satisfied. license-status can read `state-boards.json[].lookup_url` + `query_method` and stage payloads; evidence-verifier can diff against the `credential` block shape emitted by a successful parse.
