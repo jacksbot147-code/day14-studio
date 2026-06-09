@@ -56,7 +56,7 @@ function Header() {
         <span className="h-1 w-1 rounded-full bg-ink-200" />
         <span>{CASE.location}</span>
         <span className="h-1 w-1 rounded-full bg-ink-200" />
-        <span className="text-ember-600">Preview · SSO-gated</span>
+        <span className="text-ember-600">Reference build · Preview · SSO-gated</span>
       </div>
 
       <h1 className="mt-5 max-w-4xl text-[40px] font-extrabold leading-[1.05] tracking-tightest text-ink sm:text-[60px]">
