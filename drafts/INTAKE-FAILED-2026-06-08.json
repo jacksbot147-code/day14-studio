@@ -1,0 +1,19 @@
+{
+  "date": "2026-06-08",
+  "agent": "alignmd-credential-parse-v2",
+  "failures": [
+    {
+      "recorded_at": "2026-06-08T06:36:34.412Z",
+      "source_filename": "missing.pdf",
+      "stage": "read",
+      "error": "Error: ENOENT: no such file or directory, open '/nope/missing.txt'",
+      "suggested_manual_review": {
+        "app": "alignmd",
+        "route": "/providers/<provider_id>/verification",
+        "action": "Open a manual credential review; re-key the fields the parser could not extract.",
+        "source_filename": "missing.pdf"
+      },
+      "staged_prompt_present": false
+    }
+  ]
+}
