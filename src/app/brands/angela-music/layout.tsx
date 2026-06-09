@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { brandTheme as t } from "./theme";
 
-const TITLE = `${t.brandName} — In-Home Music Lessons in ${t.serviceArea.split(" · ")[0]}`;
-const DESCRIPTION = `${t.brandName} with Angela Currier. In-home piano, guitar, voice, drums, and strings lessons for kids and teens in Naples, Bonita Springs, Marco Island, and Estero. Transparent pricing, real progress, lessons that come to you.`;
+const TITLE = `${t.brandName} — Private Music Lessons in Naples, FL`;
+const DESCRIPTION = `${t.brandName} with Angela Currier. Private piano, guitar, voice, and music theory lessons in Naples and Southwest Florida. 13 years certified. Ages 3 to retired. Week-by-week scheduling, customized to each student.`;
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
