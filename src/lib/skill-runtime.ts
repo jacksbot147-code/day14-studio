@@ -15,7 +15,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
-import { findSkill, type SkillEntry } from "./skill-registry.generated";
+import type { SkillEntry } from "./skill-registry.generated";
+import { findSkill, findSkillsByTrigger } from "./registry-loader";
 import { logSkillInvocation, logAdHoc } from "./work-register";
 
 const SKILL_ROOT = path.join(
@@ -46,7 +47,7 @@ export interface SkillInvocationResult {
 
 // ---- parse a SKILL.md ----
 export async function loadSkill(name: string): Promise<SkillLoaded | null> {
-  const entry = findSkill(name);
+  const entry = await findSkill(name);
   if (!entry) return null;
   const filePath = path.join(SKILL_ROOT, name, "SKILL.md");
   if (!existsSync(filePath)) return null;
@@ -194,6 +195,5 @@ export async function suggestSkills(
   intent: string,
   maxResults = 5
 ): Promise<SkillEntry[]> {
-  const { findSkillsByTrigger } = await import("./skill-registry.generated");
-  return findSkillsByTrigger(intent).slice(0, maxResults);
+  return (await findSkillsByTrigger(intent)).slice(0, maxResults);
 }

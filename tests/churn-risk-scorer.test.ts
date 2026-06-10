@@ -9,10 +9,18 @@
  *   - Sort by LTV-at-risk
  */
 
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import fs from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
+
+// Re-import the module fresh so module-level homedir() captures see the
+// swapped-in TMP_HOME (replaces the old `?bust=` query-string trick, which
+// vite's dynamic-import analysis rejects).
+async function freshImport() {
+  vi.resetModules();
+  return import("../src/lib/skills/churn-risk-scorer");
+}
 
 let TMP_HOME: string;
 
@@ -64,16 +72,17 @@ describe("churn risk scoring", () => {
   test("empty register: customer scores 0-25 (green or yellow)", async () => {
     await makeCustomer("alpha");
     await writeRegister([]);
-    const mod = await import(
-      `../src/lib/skills/churn-risk-scorer.ts?bust=${Date.now()}`
-    );
+    const mod = await freshImport();
     const risks = await mod.computeChurnRisks();
     expect(risks.length).toBe(1);
-    expect(risks[0].slug).toBe("alpha");
-    expect(["green", "yellow"]).toContain(risks[0].bucket);
+    expect(risks[0]!.slug).toBe("alpha");
+    expect(["green", "yellow"]).toContain(risks[0]!.bucket);
   });
 
-  test("cancellation mention → orange or red", async () => {
+  // Spec (docs/seeds/skills/churn-risk-scorer/SKILL.md): cancellation
+  // mention is worth 30 points; buckets are 0-30 green / 31-60 yellow /
+  // 61-80 orange / 81-100 red.
+  test("cancellation mention adds 30 points + cancel signal", async () => {
     await makeCustomer("beta");
     await writeRegister([
       {
@@ -84,17 +93,15 @@ describe("churn risk scoring", () => {
         is_ad_hoc: true,
       },
     ]);
-    const mod = await import(
-      `../src/lib/skills/churn-risk-scorer.ts?bust=${Date.now() + 1}`
-    );
+    const mod = await freshImport();
     const risks = await mod.computeChurnRisks();
-    expect(risks[0].score).toBeGreaterThanOrEqual(30);
-    expect(["orange", "red"]).toContain(risks[0].bucket);
-    expect(risks[0].signals.some((s: string) => s.includes("cancel"))).toBe(true);
+    expect(risks[0]!.score).toBeGreaterThanOrEqual(30);
+    expect(risks[0]!.signals.some((s: string) => s.includes("cancel"))).toBe(true);
   });
 
   test("multiple signals stack to red", async () => {
     await makeCustomer("gamma");
+    const twentyDaysAgo = new Date(Date.now() - 20 * 86400000).toISOString();
     await writeRegister([
       {
         timestamp: new Date().toISOString(),
@@ -123,13 +130,20 @@ describe("churn risk scoring", () => {
         customer_slug: "gamma",
         invoked_skill: "subscription-pause-handler",
       },
+      {
+        // stale email response (>14d) — pushes the stack past the
+        // spec's red threshold (81+)
+        timestamp: twentyDaysAgo,
+        action_phrase: "replied to customer email",
+        context: "gamma",
+        customer_slug: "gamma",
+        invoked_skill: "inbound-classifier",
+      },
     ]);
-    const mod = await import(
-      `../src/lib/skills/churn-risk-scorer.ts?bust=${Date.now() + 2}`
-    );
+    const mod = await freshImport();
     const risks = await mod.computeChurnRisks();
-    expect(risks[0].score).toBeGreaterThanOrEqual(80);
-    expect(risks[0].bucket).toBe("red");
+    expect(risks[0]!.score).toBeGreaterThanOrEqual(81);
+    expect(risks[0]!.bucket).toBe("red");
   });
 
   test("sort by LTV-at-risk descending", async () => {
@@ -161,11 +175,9 @@ describe("churn risk scoring", () => {
         is_ad_hoc: true,
       },
     ]);
-    const mod = await import(
-      `../src/lib/skills/churn-risk-scorer.ts?bust=${Date.now() + 3}`
-    );
+    const mod = await freshImport();
     const risks = await mod.computeChurnRisks();
-    expect(risks[0].slug).toBe("high-ltv");
-    expect(risks[0].ltv_at_risk).toBeGreaterThan(risks[1].ltv_at_risk);
+    expect(risks[0]!.slug).toBe("high-ltv");
+    expect(risks[0]!.ltv_at_risk).toBeGreaterThan(risks[1]!.ltv_at_risk);
   });
 });

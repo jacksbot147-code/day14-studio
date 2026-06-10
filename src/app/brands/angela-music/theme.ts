@@ -5,6 +5,7 @@
 // testimonials, no invented neighborhood lists, no invented student
 // counts. Placeholders for missing inputs (phone, email, photo, exact
 // pricing) marked with TODO comments — Jack swaps when Angela sends them.
+import type { BrandTheme } from "@/components/brand/theme";
 
 export const brandTheme = {
   slug: "angela-music",
@@ -28,7 +29,7 @@ export const brandTheme = {
     heading: "'Playfair Display', Georgia, serif",
     body: "'Inter', system-ui, -apple-system, sans-serif",
   },
-};
+} satisfies BrandTheme;
 
 // Three lesson lengths. Prices intentionally "TBD" until Angela confirms.
 // The page displays them as "text for current rates" rather than fake

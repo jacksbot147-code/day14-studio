@@ -3,6 +3,10 @@ import { notFound } from "next/navigation";
 import { brandTheme as t } from "../../theme";
 import { blogPosts, getPost, formatPostDate } from "../../blog-posts";
 
+// Content is compiled in from blog-posts.ts — ISR with a long window keeps
+// posts static while picking up content changes cheaply.
+export const revalidate = 3600;
+
 export function generateStaticParams() {
   return blogPosts.map((p) => ({ slug: p.slug }));
 }

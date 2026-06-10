@@ -9,10 +9,18 @@
  *   - Missing customer: error
  */
 
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import fs from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
+
+// Re-import the module fresh so module-level homedir() captures see the
+// swapped-in TMP_HOME (replaces the old `?bust=` query-string trick, which
+// vite's dynamic-import analysis rejects).
+async function freshImport() {
+  vi.resetModules();
+  return import("../src/lib/skills/refund-handler");
+}
 
 let TMP_HOME: string;
 
@@ -57,16 +65,14 @@ describe("refund decision", () => {
       signup_date: recent,
       last_charge_amount: 49700, // $497
     });
-    const mod = await import(
-      `../src/lib/skills/refund-handler.ts?bust=${Date.now()}`
-    );
+    const mod = await freshImport();
     const result = await mod.processRefund({
       customer_slug: "alpha",
       reason: "test",
     });
     expect(result.ok).toBe(true);
-    expect(result.decision.action).toBe("auto_issue");
-    expect(result.decision.window).toBe("7d");
+    expect(result.decision!.action).toBe("auto_issue");
+    expect(result.decision!.window).toBe("7d");
   });
 
   test("within 7 days + large amount → queue_for_tap", async () => {
@@ -75,15 +81,13 @@ describe("refund decision", () => {
       signup_date: recent,
       last_charge_amount: 100000, // $1000
     });
-    const mod = await import(
-      `../src/lib/skills/refund-handler.ts?bust=${Date.now() + 1}`
-    );
+    const mod = await freshImport();
     const result = await mod.processRefund({
       customer_slug: "beta",
       reason: "test",
     });
-    expect(result.decision.action).toBe("queue_for_tap");
-    expect(result.decision.window).toBe("7d");
+    expect(result.decision!.action).toBe("queue_for_tap");
+    expect(result.decision!.window).toBe("7d");
   });
 
   test("7-30 day window → queue_for_tap", async () => {
@@ -92,15 +96,13 @@ describe("refund decision", () => {
       signup_date: midRange,
       last_charge_amount: 49700,
     });
-    const mod = await import(
-      `../src/lib/skills/refund-handler.ts?bust=${Date.now() + 2}`
-    );
+    const mod = await freshImport();
     const result = await mod.processRefund({
       customer_slug: "gamma",
       reason: "found cheaper",
     });
-    expect(result.decision.action).toBe("queue_for_tap");
-    expect(result.decision.window).toBe("30d");
+    expect(result.decision!.action).toBe("queue_for_tap");
+    expect(result.decision!.window).toBe("30d");
   });
 
   test("outside 30 days → decline_with_credit", async () => {
@@ -109,21 +111,17 @@ describe("refund decision", () => {
       signup_date: old,
       last_charge_amount: 49700,
     });
-    const mod = await import(
-      `../src/lib/skills/refund-handler.ts?bust=${Date.now() + 3}`
-    );
+    const mod = await freshImport();
     const result = await mod.processRefund({
       customer_slug: "delta",
       reason: "changed mind",
     });
-    expect(result.decision.action).toBe("decline_with_credit");
-    expect(result.decision.window).toBe("outside");
+    expect(result.decision!.action).toBe("decline_with_credit");
+    expect(result.decision!.window).toBe("outside");
   });
 
   test("missing customer → error", async () => {
-    const mod = await import(
-      `../src/lib/skills/refund-handler.ts?bust=${Date.now() + 4}`
-    );
+    const mod = await freshImport();
     const result = await mod.processRefund({
       customer_slug: "does-not-exist",
       reason: "test",
@@ -138,9 +136,7 @@ describe("refund decision", () => {
       signup_date: recent,
       last_charge_amount: 49700,
     });
-    const mod = await import(
-      `../src/lib/skills/refund-handler.ts?bust=${Date.now() + 5}`
-    );
+    const mod = await freshImport();
     await mod.processRefund({
       customer_slug: "epsilon",
       reason: "test",

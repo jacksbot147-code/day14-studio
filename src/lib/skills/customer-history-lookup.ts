@@ -15,6 +15,7 @@ import { existsSync } from "node:fs";
 import { homedir } from "node:os";
 import type { SkillInvocationContext } from "../skill-runtime";
 import type { SkillOutcome } from "../skill-runner";
+import { lookupByEmail } from "../customer-index";
 
 const HOME = homedir();
 const SHARED = path.join(HOME, "Documents/businesses/_shared");
@@ -52,21 +53,10 @@ async function readSafe(p: string): Promise<string | null> {
 }
 
 async function findSlugByEmail(email: string): Promise<string | null> {
-  if (!existsSync(CUSTOMERS)) return null;
-  const slugs = await fs.readdir(CUSTOMERS);
-  for (const slug of slugs) {
-    const brandPath = path.join(CUSTOMERS, slug, "01-brand.json");
-    if (!existsSync(brandPath)) continue;
-    try {
-      const brand = JSON.parse(await fs.readFile(brandPath, "utf8")) as { email?: string };
-      if (brand.email && brand.email.toLowerCase() === email.toLowerCase()) {
-        return slug;
-      }
-    } catch {
-      // skip
-    }
-  }
-  return null;
+  // Cached index over every customer's 01-brand.json — replaces the
+  // per-lookup scan of the customers directory.
+  const entry = await lookupByEmail(email);
+  return entry?.slug ?? null;
 }
 
 function countOccurrences(text: string, pattern: RegExp): number {

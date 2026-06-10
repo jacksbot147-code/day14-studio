@@ -10,6 +10,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { homedir } from "node:os";
+import { logError } from "./work-register";
 
 const BUSINESSES_DIR = path.join(homedir(), "Documents/businesses");
 const DAY14_CUSTOMERS_DIR = path.join(BUSINESSES_DIR, "day14/customers");
@@ -133,7 +134,12 @@ export async function initializeDossier(
       content = await fs.readFile(templatePath, "utf8");
     } catch (err) {
       // Skip files that don't exist in the template — log and continue
-      console.warn(`Template file missing: ${filename}, skipping`);
+      // (surfaced on /dashboard/system via the work-register error entry)
+      await logError(
+        "dossier-initializer",
+        `template file missing: ${filename}, skipping`,
+        `customer-${input.slug}`
+      );
       continue;
     }
 
@@ -157,7 +163,12 @@ export async function initializeDossier(
         brand._meta.version = 1;
         content = JSON.stringify(brand, null, 2);
       } catch (err) {
-        console.warn(`Failed to parse brand.json template, writing as-is`);
+        await logError(
+          "dossier-initializer",
+          err,
+          `customer-${input.slug}`,
+          "failed to parse brand.json template, writing as-is"
+        );
       }
     } else {
       // Markdown files — simple string replace

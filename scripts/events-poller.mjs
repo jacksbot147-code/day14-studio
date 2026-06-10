@@ -41,7 +41,8 @@ const MASTER_LOG = path.join(
 const ENV_FILE = path.join(homedir(), "Documents/studio/.env.local");
 const HEARTBEAT_FILE = path.join(POLLER_DIR, "events-poller-heartbeat.log");
 
-const POLL_INTERVAL_MS = 10_000;
+const POLL_INTERVAL_MS = 10_000; // base interval
+const POLL_INTERVAL_MAX_MS = 60_000; // backoff ceiling
 const HEARTBEAT_INTERVAL_MS = 60_000;
 
 // ---- env loader ----
@@ -279,6 +280,7 @@ const HANDLERS = {
 };
 
 // ---- dispatch loop ----
+// Returns "active" | "empty" | "error" so the scheduler can adapt.
 async function dispatchLoop() {
   try {
     // Fetch unprocessed events (limit 20 per cycle)
@@ -286,7 +288,7 @@ async function dispatchLoop() {
       `events?processed_at=is.null&order=created_at.asc&limit=20`
     );
 
-    if (events.length === 0) return;
+    if (events.length === 0) return "empty";
 
     for (const event of events) {
       const handler = HANDLERS[event.kind];
@@ -312,9 +314,50 @@ async function dispatchLoop() {
     }
 
     await log(`Processed ${events.length} event(s)`);
+    return "active";
   } catch (err) {
     await log(`Dispatch loop error: ${err.message}`);
+    return "error";
   }
+}
+
+// ---- adaptive poll scheduler ----
+// 10s base; doubles after consecutive empty polls (10 → 20 → 40 → 60s cap).
+// Resets to 10s on activity, and on recovery after an error (so a flaky
+// Supabase connection doesn't leave us stuck at the slow end).
+let currentIntervalMs = POLL_INTERVAL_MS;
+let lastOutcomeWasError = false;
+
+function nextInterval(outcome) {
+  if (outcome === "active") {
+    lastOutcomeWasError = false;
+    return POLL_INTERVAL_MS;
+  }
+  if (outcome === "error") {
+    lastOutcomeWasError = true;
+    return POLL_INTERVAL_MS;
+  }
+  // empty poll
+  if (lastOutcomeWasError) {
+    // first clean poll after an error — error recovery, reset to base
+    lastOutcomeWasError = false;
+    return POLL_INTERVAL_MS;
+  }
+  return Math.min(currentIntervalMs * 2, POLL_INTERVAL_MAX_MS);
+}
+
+function schedulePoll() {
+  setTimeout(async () => {
+    const outcome = await dispatchLoop();
+    const previous = currentIntervalMs;
+    currentIntervalMs = nextInterval(outcome);
+    if (currentIntervalMs !== previous) {
+      await log(
+        `Poll interval ${previous / 1000}s → ${currentIntervalMs / 1000}s (${outcome})`
+      );
+    }
+    schedulePoll();
+  }, currentIntervalMs);
 }
 
 // ---- main ----
@@ -345,10 +388,11 @@ async function main() {
     );
   }
 
-  setInterval(dispatchLoop, POLL_INTERVAL_MS);
-  setInterval(heartbeat, HEARTBEAT_INTERVAL_MS);
+  setInterval(heartbeat, HEARTBEAT_INTERVAL_MS); // heartbeat stays flat 60s
 
-  await dispatchLoop(); // immediate first pass
+  const firstOutcome = await dispatchLoop(); // immediate first pass
+  currentIntervalMs = nextInterval(firstOutcome);
+  schedulePoll(); // adaptive 10s→60s backoff loop
   await heartbeat();
 
   await log("Events poller running.");

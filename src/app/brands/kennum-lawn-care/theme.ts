@@ -1,6 +1,7 @@
 // Brand theme + content for Kennum Lawn Care.
 // Hand-built service-business site — content is inlined so it renders fully
 // on Vercel with no runtime filesystem or API dependency.
+import type { BrandTheme } from "@/components/brand/theme";
 
 export const brandTheme = {
   slug: "kennum-lawn-care",
@@ -19,7 +20,7 @@ export const brandTheme = {
     heading: "'Poppins', system-ui, -apple-system, sans-serif",
     body: "'Inter', system-ui, -apple-system, sans-serif",
   },
-};
+} satisfies BrandTheme;
 
 export interface Service {
   title: string;

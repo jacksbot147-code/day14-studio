@@ -20,12 +20,6 @@ import path from "node:path";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
 import {
-  SKILL_COUNT,
-  META_SKILL_COUNT,
-  DOMAIN_SKILL_COUNT,
-  SKILLS,
-} from "@/lib/skill-registry.generated";
-import {
   DraftActions,
   CardActions,
   ResetCircuitButton,
@@ -198,6 +192,10 @@ async function gatherStats() {
 }
 
 export default async function DashboardPage() {
+  // Lazy server-side import — the generated registry is ~thousands of LOC;
+  // loading it on demand keeps it out of any shared/client bundle graph.
+  const { SKILL_COUNT, META_SKILL_COUNT, DOMAIN_SKILL_COUNT, SKILLS } =
+    await import("@/lib/skill-registry.generated");
   const stats = await gatherStats();
 
   const sysBadge =

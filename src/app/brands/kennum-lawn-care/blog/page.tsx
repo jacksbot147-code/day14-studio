@@ -24,6 +24,10 @@ export const metadata = {
   },
 };
 
+// Content is compiled in from blog-posts.ts — ISR with a long window keeps
+// the page static while picking up redeploys/content changes cheaply.
+export const revalidate = 3600;
+
 export default function KennumBlogIndex() {
   const posts = [...blogPosts].sort((a, b) => (a.date < b.date ? 1 : -1));
 

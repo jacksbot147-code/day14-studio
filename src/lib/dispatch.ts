@@ -15,7 +15,7 @@
 
 import { invokeSkill, suggestSkills, type SkillInvocationResult } from "./skill-runtime";
 import { logAdHoc } from "./work-register";
-import { findSkill } from "./skill-registry.generated";
+import { findSkill } from "./registry-loader";
 
 export type EventSource =
   | "stripe-webhook"
@@ -150,7 +150,7 @@ export async function dispatch(event: DispatchEvent): Promise<DispatchResult> {
   }
 
   // 4. Fallback to inbound-classifier (it'll route to the right skill or surface to Jack)
-  if (findSkill("inbound-classifier")) {
+  if (await findSkill("inbound-classifier")) {
     const result = await invokeSkill("inbound-classifier", {
       ...ctx,
       inputs: {

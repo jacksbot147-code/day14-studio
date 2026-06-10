@@ -5,16 +5,8 @@
  * Pulled from skill-graph.generated.ts (regenerate with `npm run graph:generate`).
  */
 
-import {
-  NODES,
-  EDGES,
-  NODE_COUNT,
-  EDGE_COUNT,
-  HUBS,
-  ORPHANS,
-} from "@/lib/skill-graph.generated";
-import { SKILLS } from "@/lib/skill-registry.generated";
 import Link from "next/link";
+import type { GraphNode } from "@/lib/skill-graph.generated";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +14,22 @@ interface PageProps {
   searchParams: { skill?: string };
 }
 
-export default function GraphPage({ searchParams }: PageProps) {
+interface GraphHub {
+  id: string;
+  total: number;
+  inDegree: number;
+  outDegree: number;
+}
+
+export default async function GraphPage({ searchParams }: PageProps) {
+  // Lazy server-side imports — the generated graph + registry are ~7,400
+  // LOC combined; loading them on demand keeps them out of any shared or
+  // client bundle graph. This page is a server component, so the data
+  // never ships to the browser either way.
+  const { NODES, EDGES, NODE_COUNT, EDGE_COUNT, HUBS, ORPHANS } =
+    await import("@/lib/skill-graph.generated");
+  const { SKILLS } = await import("@/lib/skill-registry.generated");
+
   const focused = searchParams.skill;
   const focusedSkill = focused ? SKILLS.find((s) => s.name === focused) : null;
   const focusedNode = focused ? NODES.find((n) => n.id === focused) : null;
@@ -64,13 +71,31 @@ export default function GraphPage({ searchParams }: PageProps) {
           outDegree={focusedNode?.outDegree ?? 0}
         />
       ) : (
-        <OverviewGrid />
+        <OverviewGrid
+          nodes={NODES}
+          nodeCount={NODE_COUNT}
+          edgeCount={EDGE_COUNT}
+          hubs={HUBS}
+          orphans={ORPHANS}
+        />
       )}
     </main>
   );
 }
 
-function OverviewGrid() {
+function OverviewGrid({
+  nodes: NODES,
+  nodeCount: NODE_COUNT,
+  edgeCount: EDGE_COUNT,
+  hubs: HUBS,
+  orphans: ORPHANS,
+}: {
+  nodes: readonly GraphNode[];
+  nodeCount: number;
+  edgeCount: number;
+  hubs: readonly GraphHub[];
+  orphans: readonly string[];
+}) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Top hubs */}

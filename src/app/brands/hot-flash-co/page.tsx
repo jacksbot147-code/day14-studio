@@ -1,9 +1,13 @@
 import { brandTheme as t } from "./theme";
 import Link from "next/link";
-import { fetchTenantProducts, fetchLatestBlogPosts } from "@/lib/brand-data";
+import { fetchLatestBlogPosts } from "@/lib/brand-data";
+import { getHotFlashProducts } from "./printify";
+import { BrandCtaLink } from "@/components/brand/cta-link";
+
+export const revalidate = 300;
 
 export default async function Page() {
-  const products = await fetchTenantProducts("hot-flash-co");
+  const products = await getHotFlashProducts();
   const posts = await fetchLatestBlogPosts("hot-flash-co", 3);
   const featured = products.slice(0, 3);
 
@@ -12,7 +16,7 @@ export default async function Page() {
       <section style={{ padding: "120px 32px 80px", textAlign: "center", maxWidth: 800, margin: "0 auto" }}>
         <h1 style={{ fontFamily: t.fonts.heading, fontSize: 56, letterSpacing: "-0.03em", lineHeight: 1.05, color: t.colors.primary }}>Hot Flash Co</h1>
         <p style={{ fontSize: 18, color: t.colors.secondary, marginTop: 16, maxWidth: 600, marginInline: "auto" }}>Print-on-demand humor for perimenopause and menopause — the smartest funny aunt at the table, making women feel seen, not pitied.</p>
-        <Link href={`/brands/hot-flash-co/products`} style={{ display: "inline-block", marginTop: 32, padding: "14px 28px", background: t.colors.primary, color: "white", borderRadius: 8, textDecoration: "none", fontSize: 15, fontWeight: 500 }}>Browse the shop →</Link>
+        <BrandCtaLink theme={t} href={`/brands/hot-flash-co/products`}>Browse the shop →</BrandCtaLink>
       </section>
 
       {featured.length > 0 && (

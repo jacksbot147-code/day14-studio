@@ -10,10 +10,18 @@
  *   - Dossier 02-status.md gets entry
  */
 
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import fs from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
+
+// Re-import the module fresh so module-level homedir() captures see the
+// swapped-in TMP_HOME (replaces the old `?bust=` query-string trick, which
+// vite's dynamic-import analysis rejects).
+async function freshImport() {
+  vi.resetModules();
+  return import("../src/lib/skills/subscription-pause-handler");
+}
 
 let TMP_HOME: string;
 
@@ -56,9 +64,7 @@ async function makeCustomer(slug: string, extras: object = {}) {
 describe("subscription pause", () => {
   test("successful pause queues card + writes status", async () => {
     await makeCustomer("alpha");
-    const mod = await import(
-      `../src/lib/skills/subscription-pause-handler.ts?bust=${Date.now()}`
-    );
+    const mod = await freshImport();
     const result = await mod.processPause({
       customer_slug: "alpha",
       reason: "vacation",
@@ -71,9 +77,7 @@ describe("subscription pause", () => {
 
   test("default duration is 30 days", async () => {
     await makeCustomer("beta");
-    const mod = await import(
-      `../src/lib/skills/subscription-pause-handler.ts?bust=${Date.now() + 1}`
-    );
+    const mod = await freshImport();
     const result = await mod.processPause({
       customer_slug: "beta",
       reason: "test",
@@ -86,9 +90,7 @@ describe("subscription pause", () => {
 
   test("duration capped at 30 days", async () => {
     await makeCustomer("gamma");
-    const mod = await import(
-      `../src/lib/skills/subscription-pause-handler.ts?bust=${Date.now() + 2}`
-    );
+    const mod = await freshImport();
     const result = await mod.processPause({
       customer_slug: "gamma",
       reason: "test",
@@ -102,9 +104,7 @@ describe("subscription pause", () => {
 
   test("already-paused customer → error", async () => {
     await makeCustomer("delta", { status: "paused" });
-    const mod = await import(
-      `../src/lib/skills/subscription-pause-handler.ts?bust=${Date.now() + 3}`
-    );
+    const mod = await freshImport();
     const result = await mod.processPause({
       customer_slug: "delta",
       reason: "test",
@@ -114,9 +114,7 @@ describe("subscription pause", () => {
   });
 
   test("missing customer → error", async () => {
-    const mod = await import(
-      `../src/lib/skills/subscription-pause-handler.ts?bust=${Date.now() + 4}`
-    );
+    const mod = await freshImport();
     const result = await mod.processPause({
       customer_slug: "ghost",
       reason: "test",
@@ -127,9 +125,7 @@ describe("subscription pause", () => {
 
   test("dossier status file updated", async () => {
     await makeCustomer("epsilon");
-    const mod = await import(
-      `../src/lib/skills/subscription-pause-handler.ts?bust=${Date.now() + 5}`
-    );
+    const mod = await freshImport();
     await mod.processPause({
       customer_slug: "epsilon",
       reason: "out of town",
@@ -150,9 +146,7 @@ describe("subscription pause", () => {
         { paused_at: new Date(Date.now() - 30 * 86400000).toISOString() },
       ],
     });
-    const mod = await import(
-      `../src/lib/skills/subscription-pause-handler.ts?bust=${Date.now() + 6}`
-    );
+    const mod = await freshImport();
     const result = await mod.processPause({
       customer_slug: "zeta",
       reason: "test",

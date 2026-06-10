@@ -14,7 +14,7 @@ import { existsSync } from "node:fs";
 import { homedir } from "node:os";
 import type { SkillInvocationContext } from "../skill-runtime";
 import type { SkillOutcome } from "../skill-runner";
-import { SKILLS } from "../skill-registry.generated";
+import { getSkills } from "../registry-loader";
 
 const HOME = homedir();
 const REGISTER = path.join(HOME, "Documents/businesses/_shared/growth/work-register.jsonl");
@@ -78,6 +78,7 @@ async function getSkillAgeDays(name: string): Promise<number> {
 }
 
 export async function computeDeprecationFlags(): Promise<DeprecationCandidate[]> {
+  const SKILLS = await getSkills();
   const lastFired = await readLastFired();
   const candidates: DeprecationCandidate[] = [];
   const now = Date.now();

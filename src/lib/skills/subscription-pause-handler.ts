@@ -30,9 +30,15 @@ interface CustomerSnapshot {
   slug: string;
   pause_history?: Array<{ paused_at: string; resumed_at?: string }>;
   current_mrr?: number;
+  monthly_amount?: number; // the canonical 01-brand.json field (see CLAUDE.md)
   stripe_subscription_id?: string;
   email?: string;
   status?: "active" | "paused" | "churned";
+}
+
+/** 01-brand.json carries `monthly_amount`; some snapshots use `current_mrr`. */
+function customerMrr(customer: CustomerSnapshot): number {
+  return customer.current_mrr ?? customer.monthly_amount ?? 0;
 }
 
 async function loadCustomer(slug: string): Promise<CustomerSnapshot | null> {
@@ -62,7 +68,7 @@ async function writeStatusUpdate(
   await fs.mkdir(dossierDir, { recursive: true });
   const statusPath = path.join(dossierDir, "02-status.md");
 
-  const entry = `\n## Paused at ${new Date().toISOString()}\n\n- Pause until: ${pauseUntil.toISOString()}\n- MRR deferred: $${customer.current_mrr ?? 0}\n- Reactivation prompt scheduled: ${new Date(pauseUntil.getTime() - 2 * 86400000).toISOString()}\n`;
+  const entry = `\n## Paused at ${new Date().toISOString()}\n\n- Pause until: ${pauseUntil.toISOString()}\n- MRR deferred: $${customerMrr(customer)}\n- Reactivation prompt scheduled: ${new Date(pauseUntil.getTime() - 2 * 86400000).toISOString()}\n`;
 
   if (existsSync(statusPath)) {
     await fs.appendFile(statusPath, entry, "utf8");
@@ -85,7 +91,7 @@ async function queuePauseConfirmationCard(
   const filename = `${Date.now()}-pause-confirm-${customer.slug}.json`;
   const filepath = path.join(TG_OUTBOX, filename);
 
-  const text = `⏸ *Pause subscription* — ${customer.slug}\n\nReason: "${req.reason}"\nPause until: ${pauseUntil.toISOString().slice(0, 10)}\nMRR deferred: $${customer.current_mrr ?? 0}\n\nConfirm? Site stays UP during pause.`;
+  const text = `⏸ *Pause subscription* — ${customer.slug}\n\nReason: "${req.reason}"\nPause until: ${pauseUntil.toISOString().slice(0, 10)}\nMRR deferred: $${customerMrr(customer)}\n\nConfirm? Site stays UP during pause.`;
 
   await fs.writeFile(
     filepath,
@@ -163,7 +169,7 @@ export async function processPause(req: PauseRequest): Promise<{
       reason: req.reason,
       duration_days: duration,
       pause_until: pauseUntil.toISOString(),
-      mrr_deferred: customer.current_mrr,
+      mrr_deferred: customerMrr(customer),
     },
     skill_invoked: "subscription-pause-handler",
     actor_source: "skill-runner",

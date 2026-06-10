@@ -1,0 +1,163 @@
+/**
+ * Tests for subscription-pause-handler.
+ *
+ * Verifies:
+ *   - Successful pause writes status + queues card
+ *   - Duration capped at 30 days
+ *   - Default duration is 30 days
+ *   - Already-paused customer → error
+ *   - Missing customer → error
+ *   - Dossier 02-status.md gets entry
+ */
+
+import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import fs from "node:fs/promises";
+import path from "node:path";
+import os from "node:os";
+
+let TMP_HOME: string;
+
+beforeEach(async () => {
+  TMP_HOME = await fs.mkdtemp(path.join(os.tmpdir(), "pause-test-"));
+  await fs.mkdir(
+    path.join(TMP_HOME, "Documents/businesses/_shared/customers"),
+    { recursive: true }
+  );
+  await fs.mkdir(
+    path.join(TMP_HOME, "Documents/businesses/_shared/telegram/outbox"),
+    { recursive: true }
+  );
+  await fs.mkdir(
+    path.join(TMP_HOME, "Documents/businesses/_shared/audit"),
+    { recursive: true }
+  );
+  process.env.HOME = TMP_HOME;
+});
+
+afterEach(async () => {
+  await fs.rm(TMP_HOME, { recursive: true, force: true });
+});
+
+async function makeCustomer(slug: string, extras: object = {}) {
+  const dir = path.join(TMP_HOME, `Documents/businesses/_shared/customers/${slug}`);
+  await fs.mkdir(dir, { recursive: true });
+  await fs.writeFile(
+    path.join(dir, "01-brand.json"),
+    JSON.stringify({
+      status: "active",
+      monthly_amount: 497,
+      stripe_subscription_id: "sub_test",
+      ...extras,
+    }),
+    "utf8"
+  );
+}
+
+describe("subscription pause", () => {
+  test("successful pause queues card + writes status", async () => {
+    await makeCustomer("alpha");
+    const mod = await import(
+      `../src/lib/skills/subscription-pause-handler.ts?bust=${Date.now()}`
+    );
+    const result = await mod.processPause({
+      customer_slug: "alpha",
+      reason: "vacation",
+    });
+    expect(result.ok).toBe(true);
+    expect(result.pause_until).toBeInstanceOf(Date);
+    expect(result.jack_tap_required).toBe(true);
+    expect(result.artifacts.length).toBeGreaterThan(0);
+  });
+
+  test("default duration is 30 days", async () => {
+    await makeCustomer("beta");
+    const mod = await import(
+      `../src/lib/skills/subscription-pause-handler.ts?bust=${Date.now() + 1}`
+    );
+    const result = await mod.processPause({
+      customer_slug: "beta",
+      reason: "test",
+    });
+    const diffDays = Math.round(
+      (result.pause_until!.getTime() - Date.now()) / 86400000
+    );
+    expect(diffDays).toBe(30);
+  });
+
+  test("duration capped at 30 days", async () => {
+    await makeCustomer("gamma");
+    const mod = await import(
+      `../src/lib/skills/subscription-pause-handler.ts?bust=${Date.now() + 2}`
+    );
+    const result = await mod.processPause({
+      customer_slug: "gamma",
+      reason: "test",
+      pause_duration_days: 90,
+    });
+    const diffDays = Math.round(
+      (result.pause_until!.getTime() - Date.now()) / 86400000
+    );
+    expect(diffDays).toBe(30);
+  });
+
+  test("already-paused customer → error", async () => {
+    await makeCustomer("delta", { status: "paused" });
+    const mod = await import(
+      `../src/lib/skills/subscription-pause-handler.ts?bust=${Date.now() + 3}`
+    );
+    const result = await mod.processPause({
+      customer_slug: "delta",
+      reason: "test",
+    });
+    expect(result.ok).toBe(false);
+    expect(result.error).toContain("already paused");
+  });
+
+  test("missing customer → error", async () => {
+    const mod = await import(
+      `../src/lib/skills/subscription-pause-handler.ts?bust=${Date.now() + 4}`
+    );
+    const result = await mod.processPause({
+      customer_slug: "ghost",
+      reason: "test",
+    });
+    expect(result.ok).toBe(false);
+    expect(result.error).toContain("not found");
+  });
+
+  test("dossier status file updated", async () => {
+    await makeCustomer("epsilon");
+    const mod = await import(
+      `../src/lib/skills/subscription-pause-handler.ts?bust=${Date.now() + 5}`
+    );
+    await mod.processPause({
+      customer_slug: "epsilon",
+      reason: "out of town",
+    });
+    const statusPath = path.join(
+      TMP_HOME,
+      "Documents/businesses/_shared/customers/epsilon/02-status.md"
+    );
+    const text = await fs.readFile(statusPath, "utf8");
+    expect(text).toContain("Paused at");
+    expect(text).toContain("$497");
+  });
+
+  test("third pause in 12 months → blocked", async () => {
+    await makeCustomer("zeta", {
+      pause_history: [
+        { paused_at: new Date(Date.now() - 90 * 86400000).toISOString() },
+        { paused_at: new Date(Date.now() - 30 * 86400000).toISOString() },
+      ],
+    });
+    const mod = await import(
+      `../src/lib/skills/subscription-pause-handler.ts?bust=${Date.now() + 6}`
+    );
+    const result = await mod.processPause({
+      customer_slug: "zeta",
+      reason: "test",
+    });
+    expect(result.ok).toBe(false);
+    expect(result.error).toContain("3rd pause");
+  });
+});

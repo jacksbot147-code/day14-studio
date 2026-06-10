@@ -16,7 +16,7 @@ import { existsSync } from "node:fs";
 import { homedir } from "node:os";
 import type { SkillInvocationContext } from "../skill-runtime";
 import type { SkillOutcome } from "../skill-runner";
-import { SKILL_NAMES } from "../skill-registry.generated";
+import { getSkillNames } from "../registry-loader";
 
 const HOME = homedir();
 const SHARED_SKILLS = path.join(HOME, "Documents/businesses/_shared/skills");
@@ -74,6 +74,7 @@ async function listSharedSkills(): Promise<string[]> {
 }
 
 export async function validateSkillName(name: string): Promise<ValidationResult> {
+  const SKILL_NAMES = await getSkillNames();
   const errors: string[] = [];
   const warnings: string[] = [];
   const nearMisses: string[] = [];

@@ -9,10 +9,18 @@
  *   - Churned customers: projected = 0
  */
 
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import fs from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
+
+// Re-import the module fresh so module-level homedir() captures see the
+// swapped-in TMP_HOME (replaces the old `?bust=` query-string trick, which
+// vite's dynamic-import analysis rejects).
+async function freshImport() {
+  vi.resetModules();
+  return import("../src/lib/skills/customer-ltv-calculator");
+}
 
 let TMP_HOME: string;
 
@@ -57,17 +65,15 @@ describe("LTV computation", () => {
       status: "active",
       vertical: "pool",
     });
-    const mod = await import(
-      `../src/lib/skills/customer-ltv-calculator.ts?bust=${Date.now()}`
-    );
+    const mod = await freshImport();
     const data = await mod.computeAllLtv();
     expect(data.customers.length).toBe(1);
-    expect(data.customers[0].realized).toBe(497);
-    expect(data.customers[0].segment).toContain("0-3mo");
+    expect(data.customers[0]!.realized).toBe(497);
+    expect(data.customers[0]!.segment).toContain("0-3mo");
     // 0-3mo bucket: 8% monthly churn → ~12.5 months expected
     // Projected ~ 497 * 12.5 = ~6212
-    expect(data.customers[0].projected_remaining).toBeGreaterThan(5000);
-    expect(data.customers[0].projected_remaining).toBeLessThan(7000);
+    expect(data.customers[0]!.projected_remaining).toBeGreaterThan(5000);
+    expect(data.customers[0]!.projected_remaining).toBeLessThan(7000);
   });
 
   test("established customer (15mo): large projected", async () => {
@@ -78,15 +84,13 @@ describe("LTV computation", () => {
       status: "active",
       vertical: "pool",
     });
-    const mod = await import(
-      `../src/lib/skills/customer-ltv-calculator.ts?bust=${Date.now() + 1}`
-    );
+    const mod = await freshImport();
     const data = await mod.computeAllLtv();
-    expect(data.customers[0].segment).toContain("12mo+");
+    expect(data.customers[0]!.segment).toContain("12mo+");
     // 12mo+ bucket: 1.2% monthly churn → ~83 months expected
     // Projected ~ 497 * 83 = ~41,251
-    expect(data.customers[0].projected_remaining).toBeGreaterThan(35000);
-    expect(data.customers[0].projected_remaining).toBeLessThan(50000);
+    expect(data.customers[0]!.projected_remaining).toBeGreaterThan(35000);
+    expect(data.customers[0]!.projected_remaining).toBeLessThan(50000);
   });
 
   test("churned customer: projected = 0", async () => {
@@ -96,12 +100,10 @@ describe("LTV computation", () => {
       monthly_amount: 497,
       status: "churned",
     });
-    const mod = await import(
-      `../src/lib/skills/customer-ltv-calculator.ts?bust=${Date.now() + 2}`
-    );
+    const mod = await freshImport();
     const data = await mod.computeAllLtv();
-    expect(data.customers[0].projected_remaining).toBe(0);
-    expect(data.customers[0].total_projected).toBe(1491);
+    expect(data.customers[0]!.projected_remaining).toBe(0);
+    expect(data.customers[0]!.total_projected).toBe(1491);
   });
 
   test("aggregate metrics computed", async () => {
@@ -117,9 +119,7 @@ describe("LTV computation", () => {
       monthly_amount: 497,
       status: "active",
     });
-    const mod = await import(
-      `../src/lib/skills/customer-ltv-calculator.ts?bust=${Date.now() + 3}`
-    );
+    const mod = await freshImport();
     const data = await mod.computeAllLtv();
     expect(data.customers.length).toBe(2);
     expect(data.total_realized).toBe(497 + 994);

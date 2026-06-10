@@ -1,13 +1,15 @@
 import { brandTheme as t } from "../theme";
 import Link from "next/link";
-import { fetchTenantProducts } from "@/lib/brand-data";
+import { getHotFlashProducts } from "../printify";
+import { BrandMain } from "@/components/brand/section";
 
 export const metadata = { title: "Shop" };
+export const revalidate = 300;
 
 export default async function ProductsPage() {
-  const products = await fetchTenantProducts("hot-flash-co");
+  const products = await getHotFlashProducts();
   return (
-    <main style={{ maxWidth: 1200, margin: "0 auto", padding: "60px 32px" }}>
+    <BrandMain maxWidth={1200}>
       <h1 style={{ fontFamily: t.fonts.heading, fontSize: 40, letterSpacing: "-0.02em", marginBottom: 8 }}>Shop</h1>
       <p style={{ color: t.colors.secondary, marginBottom: 40 }}>{products.length} products</p>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 24 }}>
@@ -23,6 +25,6 @@ export default async function ProductsPage() {
           </Link>
         ))}
       </div>
-    </main>
+    </BrandMain>
   );
 }

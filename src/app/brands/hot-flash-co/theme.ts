@@ -1,4 +1,6 @@
 // Auto-generated brand theme for Hot Flash Co
+import type { BrandTheme } from "@/components/brand/theme";
+
 export const brandTheme = {
   slug: "hot-flash-co",
   displayName: "Hot Flash Co",
@@ -16,4 +18,4 @@ export const brandTheme = {
     heading: "'Fraunces', system-ui, sans-serif",
     body: "'Work Sans', system-ui, sans-serif",
   },
-};
+} satisfies BrandTheme;

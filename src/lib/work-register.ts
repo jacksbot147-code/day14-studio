@@ -22,11 +22,13 @@ const REGISTER_PATH = path.join(GROWTH_DIR, "work-register.jsonl");
 export interface WorkEntry {
   action_phrase: string; // short, 8-15 words describing the work
   context: string; // customer slug, session id, etc.
+  type?: string; // entry type; "error" entries surface on /dashboard/system
   agent?: string; // which agent did the work
   customer_slug?: string;
   invoked_skill?: string; // if a skill was invoked, name it
   is_ad_hoc?: boolean; // true if no skill matched the work
   is_meta?: boolean; // true when this is a growth-cluster pattern (vs domain)
+  source?: string; // module/component that produced the entry (for errors)
   notes?: string;
 }
 
@@ -84,6 +86,34 @@ export async function logAdHoc(
 function isGrowthClusterContext(context: string): boolean {
   const META_PREFIXES = ["growth-", "skill-", "meta-", "draft-"];
   return META_PREFIXES.some((p) => context.startsWith(p));
+}
+
+/**
+ * Standardized error logging. Appends a `type: "error"` entry to the
+ * work-register so /dashboard/system can surface failures.
+ *
+ * Fire-and-forget like logAction — NEVER throws and NEVER changes the
+ * caller's control flow. Use in catch blocks that would otherwise be
+ * silent (or console.log-only) in consequential paths.
+ */
+export async function logError(
+  source: string,
+  err: unknown,
+  context = "system",
+  notes?: string
+): Promise<void> {
+  const message =
+    err instanceof Error ? err.message : typeof err === "string" ? err : JSON.stringify(err);
+  // Also keep the console trail for local debugging / poller logs
+  console.error(`[${source}] ${message}`);
+  return logAction({
+    action_phrase: `error in ${source}: ${message}`.slice(0, 300),
+    context,
+    type: "error",
+    source,
+    agent: source,
+    notes,
+  });
 }
 
 /**

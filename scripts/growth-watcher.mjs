@@ -46,6 +46,10 @@ const META_CIRCUIT_FILE = path.join(
 const POLLER_DIR = path.join(SHARED_DIR, "poller");
 const HEARTBEAT_FILE = path.join(POLLER_DIR, "growth-watcher-heartbeat.log");
 const SEEN_FILE = path.join(GROWTH_DIR, "growth-watcher-seen.json");
+const REGISTER_OFFSET_FILE = path.join(
+  POLLER_DIR,
+  "growth-watcher-register-offset.json"
+);
 const TELEGRAM_OUTBOX = path.join(SHARED_DIR, "telegram/outbox");
 const ENV_FILE = path.join(homedir(), "Documents/studio/.env.local");
 
@@ -177,9 +181,24 @@ async function saveSeen(seen) {
   await fs.writeFile(SEEN_FILE, JSON.stringify(seen, null, 2), "utf8");
 }
 
-// ---- read register ----
-async function readRegister() {
-  const text = await fs.readFile(REGISTER_PATH, "utf8");
+// ---- read register (incremental tail reads) ----
+//
+// The register is append-only JSONL and can grow large. Instead of
+// re-reading the whole file every 5-min cycle, we keep:
+//   - the accumulated parsed entries in memory (detection needs full
+//     history of occurrence counts, so the FIRST read after process
+//     start is a full read to seed memory)
+//   - a byte offset, persisted to _shared/poller/growth-watcher-register-offset.json
+// Each subsequent cycle stats the file and reads only the appended
+// bytes, parsing only complete new lines (writers always append
+// newline-terminated lines). If the file shrinks (truncate/rotation),
+// we fall back to a full re-read.
+
+let registerEntries = [];
+let registerOffset = 0;
+let registerSeeded = false;
+
+function parseRegisterLines(text) {
   return text
     .split("\n")
     .filter((l) => l.trim())
@@ -191,6 +210,81 @@ async function readRegister() {
       }
     })
     .filter(Boolean);
+}
+
+async function saveRegisterOffset() {
+  try {
+    await fs.writeFile(
+      REGISTER_OFFSET_FILE,
+      JSON.stringify(
+        { offset: registerOffset, saved_at: new Date().toISOString() },
+        null,
+        2
+      ),
+      "utf8"
+    );
+  } catch (err) {
+    await log(`Failed to persist register offset: ${err.message}`);
+  }
+}
+
+// Consume a buffer of register bytes up to (and including) the last
+// newline; returns { consumedText, consumedBytes }. Bytes after the last
+// newline belong to a partially-written line — left for the next cycle.
+function consumeCompleteLines(buf) {
+  const lastNewline = buf.lastIndexOf(0x0a); // "\n"
+  if (lastNewline === -1) return { consumedText: "", consumedBytes: 0 };
+  return {
+    consumedText: buf.subarray(0, lastNewline + 1).toString("utf8"),
+    consumedBytes: lastNewline + 1,
+  };
+}
+
+async function readRegister() {
+  let size;
+  try {
+    size = (await fs.stat(REGISTER_PATH)).size;
+  } catch {
+    return registerEntries; // register missing — keep what we have
+  }
+
+  // Full read: first cycle of this process, or file shrank (rotated/truncated)
+  if (!registerSeeded || size < registerOffset) {
+    if (registerSeeded && size < registerOffset) {
+      await log(
+        `Register shrank (${registerOffset} → ${size} bytes) — full re-read`
+      );
+    }
+    const buf = await fs.readFile(REGISTER_PATH);
+    const { consumedText, consumedBytes } = consumeCompleteLines(buf);
+    registerEntries = parseRegisterLines(consumedText);
+    registerOffset = consumedBytes;
+    registerSeeded = true;
+    await saveRegisterOffset();
+    return registerEntries;
+  }
+
+  // Nothing appended
+  if (size === registerOffset) return registerEntries;
+
+  // Incremental: read only the appended bytes
+  const fh = await fs.open(REGISTER_PATH, "r");
+  try {
+    const length = size - registerOffset;
+    const buf = Buffer.alloc(length);
+    const { bytesRead } = await fh.read(buf, 0, length, registerOffset);
+    const { consumedText, consumedBytes } = consumeCompleteLines(
+      buf.subarray(0, bytesRead)
+    );
+    if (consumedBytes > 0) {
+      registerEntries.push(...parseRegisterLines(consumedText));
+      registerOffset += consumedBytes;
+      await saveRegisterOffset();
+    }
+  } finally {
+    await fh.close();
+  }
+  return registerEntries;
 }
 
 // ---- normalize phrase for matching ----

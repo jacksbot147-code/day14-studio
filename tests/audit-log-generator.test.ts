@@ -10,13 +10,21 @@
  * Tests use a temporary AUDIT_DIR via env override — see redirectHome().
  */
 
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import fs from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
 
 // We need to redirect HOME before importing the module under test,
 // because it captures AUDIT_DIR at module load time. Use a sub-namespace.
+// Re-import the module fresh so module-level homedir() captures see the
+// swapped-in TMP_HOME (replaces the old `?bust=` query-string trick, which
+// vite's dynamic-import analysis rejects).
+async function freshImport() {
+  vi.resetModules();
+  return import("../src/lib/skills/audit-log-generator");
+}
+
 let TMP_HOME: string;
 
 beforeEach(async () => {
@@ -34,9 +42,7 @@ afterEach(async () => {
 describe("auditLog single entry", () => {
   test("appends entry with hash and prev_hash", async () => {
     // Re-import under the new HOME — use a fresh import for each test
-    const mod = await import(
-      `../src/lib/skills/audit-log-generator.ts?bust=${Date.now()}`
-    );
+    const mod = await freshImport();
     const result = await mod.auditLog({
       action: "test_action",
       actor: "test",
@@ -49,9 +55,7 @@ describe("auditLog single entry", () => {
 
 describe("auditLog hash chain", () => {
   test("multiple entries chain prev_hash correctly", async () => {
-    const mod = await import(
-      `../src/lib/skills/audit-log-generator.ts?bust=${Date.now() + 1}`
-    );
+    const mod = await freshImport();
     const r1 = await mod.auditLog({ action: "act1", actor: "test" });
     const r2 = await mod.auditLog({ action: "act2", actor: "test" });
     const r3 = await mod.auditLog({ action: "act3", actor: "test" });
@@ -70,9 +74,7 @@ describe("auditLog hash chain", () => {
   });
 
   test("tampering with an entry breaks the chain", async () => {
-    const mod = await import(
-      `../src/lib/skills/audit-log-generator.ts?bust=${Date.now() + 2}`
-    );
+    const mod = await freshImport();
     await mod.auditLog({ action: "act1", actor: "test" });
     await mod.auditLog({ action: "act2", actor: "test" });
     await mod.auditLog({ action: "act3", actor: "test" });
@@ -95,9 +97,7 @@ describe("auditLog hash chain", () => {
 
 describe("searchAudit", () => {
   test("filters by action", async () => {
-    const mod = await import(
-      `../src/lib/skills/audit-log-generator.ts?bust=${Date.now() + 3}`
-    );
+    const mod = await freshImport();
     await mod.auditLog({ action: "refund_issued", actor: "jack" });
     await mod.auditLog({ action: "draft_promoted", actor: "jack" });
     await mod.auditLog({ action: "refund_issued", actor: "jack" });
@@ -108,9 +108,7 @@ describe("searchAudit", () => {
   });
 
   test("filters by customer_slug", async () => {
-    const mod = await import(
-      `../src/lib/skills/audit-log-generator.ts?bust=${Date.now() + 4}`
-    );
+    const mod = await freshImport();
     await mod.auditLog({ action: "act", actor: "j", customer_slug: "alpha" });
     await mod.auditLog({ action: "act", actor: "j", customer_slug: "beta" });
     await mod.auditLog({ action: "act", actor: "j", customer_slug: "alpha" });

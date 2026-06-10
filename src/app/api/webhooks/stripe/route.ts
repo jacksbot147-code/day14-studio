@@ -4,22 +4,27 @@
  * Receives Stripe events, verifies signature, dispatches to downstream
  * handlers. Implementation of the `vercel-route-stripe-webhook` skill.
  *
- * Idempotency: every event gets recorded in Supabase `events` table
- * keyed by Stripe event_id. Re-runs are no-ops.
+ * Built on createWebhookHandler (src/lib/webhook-handler.ts):
+ *   - signature verification preserved exactly (stripe.webhooks.constructEvent)
+ *   - zod-validated payload shape
+ *   - file-backed idempotency on Stripe event.id (plus the existing
+ *     Supabase `events` table check inside the handler)
  *
  * NEVER use the anon key here — we need service-role to bypass RLS.
  */
 
 import Stripe from "stripe";
 import { NextRequest } from "next/server";
+import { z } from "zod";
 import { supabaseAdmin } from "@/lib/supabase-server";
+import { createWebhookHandler } from "@/lib/webhook-handler";
 import {
   initializeDossier,
   computeSlug,
   type Sku,
   type Vertical,
 } from "@/lib/dossier";
-import { logSkillInvocation, logAction } from "@/lib/work-register";
+import { logSkillInvocation, logError } from "@/lib/work-register";
 import { dispatch } from "@/lib/dispatch";
 
 export const runtime = "nodejs"; // signature verification needs raw body
@@ -31,117 +36,145 @@ function stripeClient(): Stripe {
   return new Stripe(key, { apiVersion: "2025-02-24.acacia" });
 }
 
-export async function POST(req: NextRequest) {
-  const sig = req.headers.get("stripe-signature");
-  if (!sig) {
-    return new Response("Missing stripe-signature header", { status: 401 });
-  }
+// Loose shape check over the verified Stripe event — constructEvent already
+// guarantees authenticity; this guards the fields the handlers rely on.
+const stripeEventSchema = z.looseObject({
+  id: z.string(),
+  type: z.string(),
+  livemode: z.boolean(),
+  created: z.number(),
+});
 
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-  if (!webhookSecret) {
-    return new Response("STRIPE_WEBHOOK_SECRET not configured", {
-      status: 500,
-    });
-  }
+export const POST = createWebhookHandler<typeof stripeEventSchema, Stripe.Event, NextRequest>({
+  source: "stripe",
 
-  // 1. Read raw body for signature verification
-  const body = await req.text();
-  const stripe = stripeClient();
-
-  let event: Stripe.Event;
-  try {
-    event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : "Unknown signature error";
-    console.error("[stripe-webhook] Signature verification failed:", msg);
-    return new Response(`Webhook signature error: ${msg}`, { status: 401 });
-  }
-
-  const sb = supabaseAdmin();
-
-  // 2. Idempotency — check if we've already processed this event
-  const { data: existing } = await sb
-    .from("events")
-    .select("id")
-    .eq("kind", `stripe-${event.type}`)
-    .filter("payload->>event_id", "eq", event.id)
-    .maybeSingle();
-
-  if (existing) {
-    console.log(`[stripe-webhook] Duplicate event ${event.id}, skipping`);
-    return new Response(JSON.stringify({ received: true, duplicate: true }), {
-      headers: { "content-type": "application/json" },
-    });
-  }
-
-  // 3. Dispatch
-  try {
-    switch (event.type) {
-      case "checkout.session.completed":
-        await handleCheckoutCompleted(event, sb);
-        break;
-      case "payment_intent.succeeded":
-        await handlePaymentSucceeded(event, sb);
-        break;
-      case "payment_intent.payment_failed":
-        await handlePaymentFailed(event, sb);
-        break;
-      case "charge.refunded":
-        await handleRefund(event, sb);
-        break;
-      case "customer.subscription.deleted":
-        await handleSubscriptionCanceled(event, sb);
-        break;
-      default:
-        console.log(`[stripe-webhook] Unhandled event: ${event.type}`);
+  verify: (req, body) => {
+    const sig = req.headers.get("stripe-signature");
+    if (!sig) {
+      return {
+        ok: false,
+        response: new Response("Missing stripe-signature header", { status: 401 }),
+      };
     }
 
-    // 4. Record the event (after handler success)
-    await sb.from("events").insert({
-      kind: `stripe-${event.type}`,
-      payload: {
-        event_id: event.id,
-        type: event.type,
-        livemode: event.livemode,
-        created: event.created,
-      },
-    });
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    if (!webhookSecret) {
+      return {
+        ok: false,
+        response: new Response("STRIPE_WEBHOOK_SECRET not configured", {
+          status: 500,
+        }),
+      };
+    }
 
-    // 5. Funnel into the unified dispatcher — telemetry + cross-cutting skills.
-    //    The dispatcher's source_routes map knows which skill to invoke for each event type.
-    //    Best-effort: dispatch failures don't fail the webhook.
+    const stripe = stripeClient();
     try {
-      await dispatch({
-        source: "stripe-webhook",
-        type: event.type,
-        context: `stripe-${event.id}`,
-        intentText: event.type,
-        payload: { event_id: event.id, livemode: event.livemode },
+      const event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
+      return { ok: true, context: event };
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Unknown signature error";
+      console.error("[stripe-webhook] Signature verification failed:", msg);
+      return {
+        ok: false,
+        response: new Response(`Webhook signature error: ${msg}`, { status: 401 }),
+      };
+    }
+  },
+
+  parse: (_req, _body, event) => ({ ok: true, payload: event }),
+
+  schema: stripeEventSchema,
+
+  eventId: (_payload, event) => event.id,
+
+  handle: async ({ verified: event }) => {
+    const sb = supabaseAdmin();
+
+    // Idempotency (second layer) — check if we've already processed this
+    // event via the Supabase `events` table
+    const { data: existing } = await sb
+      .from("events")
+      .select("id")
+      .eq("kind", `stripe-${event.type}`)
+      .filter("payload->>event_id", "eq", event.id)
+      .maybeSingle();
+
+    if (existing) {
+      console.log(`[stripe-webhook] Duplicate event ${event.id}, skipping`);
+      return new Response(JSON.stringify({ received: true, duplicate: true }), {
+        headers: { "content-type": "application/json" },
       });
-    } catch (dispatchErr) {
-      console.error("[stripe-webhook] dispatch failed:", dispatchErr);
     }
 
-    return new Response(JSON.stringify({ received: true }), {
-      headers: { "content-type": "application/json" },
-    });
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : "Handler error";
-    console.error(`[stripe-webhook] Handler failed for ${event.type}:`, err);
+    // Dispatch
+    try {
+      switch (event.type) {
+        case "checkout.session.completed":
+          await handleCheckoutCompleted(event, sb);
+          break;
+        case "payment_intent.succeeded":
+          await handlePaymentSucceeded(event, sb);
+          break;
+        case "payment_intent.payment_failed":
+          await handlePaymentFailed(event, sb);
+          break;
+        case "charge.refunded":
+          await handleRefund(event, sb);
+          break;
+        case "customer.subscription.deleted":
+          await handleSubscriptionCanceled(event, sb);
+          break;
+        default:
+          console.log(`[stripe-webhook] Unhandled event: ${event.type}`);
+      }
 
-    // Record the failure so we can replay manually
-    await sb.from("events").insert({
-      kind: `stripe-${event.type}-FAILED`,
-      payload: {
-        event_id: event.id,
-        type: event.type,
-        error: msg,
-      },
-    });
+      // Record the event (after handler success)
+      await sb.from("events").insert({
+        kind: `stripe-${event.type}`,
+        payload: {
+          event_id: event.id,
+          type: event.type,
+          livemode: event.livemode,
+          created: event.created,
+        },
+      });
 
-    return new Response(`Handler error: ${msg}`, { status: 500 });
-  }
-}
+      // Funnel into the unified dispatcher — telemetry + cross-cutting skills.
+      //    The dispatcher's source_routes map knows which skill to invoke for each event type.
+      //    Best-effort: dispatch failures don't fail the webhook.
+      try {
+        await dispatch({
+          source: "stripe-webhook",
+          type: event.type,
+          context: `stripe-${event.id}`,
+          intentText: event.type,
+          payload: { event_id: event.id, livemode: event.livemode },
+        });
+      } catch (dispatchErr) {
+        await logError("stripe-webhook", dispatchErr, `stripe-${event.id}`, "dispatch failed");
+      }
+
+      return new Response(JSON.stringify({ received: true }), {
+        headers: { "content-type": "application/json" },
+      });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Handler error";
+      await logError("stripe-webhook", err, `stripe-${event.id}`, `handler failed for ${event.type}`);
+
+      // Record the failure so we can replay manually
+      await sb.from("events").insert({
+        kind: `stripe-${event.type}-FAILED`,
+        payload: {
+          event_id: event.id,
+          type: event.type,
+          error: msg,
+        },
+      });
+
+      return new Response(`Handler error: ${msg}`, { status: 500 });
+    }
+  },
+});
 
 // ============================================================
 // Per-event handlers

@@ -16,7 +16,7 @@
  */
 
 import { loadSkill, type SkillInvocationContext } from "./skill-runtime";
-import { logAction } from "./work-register";
+import { logAction, logError } from "./work-register";
 
 export interface SkillOutcome {
   ok: boolean;
@@ -86,8 +86,23 @@ async function tryHandCoded(
   ctx: SkillInvocationContext
 ): Promise<SkillOutcome | null> {
   try {
-    // Dynamic import; fails gracefully if module doesn't exist
-    const mod = (await import(`./skills/${name}.js`).catch(() => null)) as
+    // Dynamic import; fails gracefully if module doesn't exist.
+    // A missing module is the normal spec-only case; any OTHER load error
+    // (broken impl) is consequential — log it before falling back.
+    const mod = (await import(`./skills/${name}.js`).catch(async (err) => {
+      const code = (err as NodeJS.ErrnoException)?.code;
+      const isNotFound =
+        code === "MODULE_NOT_FOUND" || code === "ERR_MODULE_NOT_FOUND";
+      if (!isNotFound) {
+        await logError(
+          "skill-runner",
+          err,
+          ctx.context,
+          `failed to load hand-coded impl for ${name}; falling back`
+        );
+      }
+      return null;
+    })) as
       | { run?: (c: SkillInvocationContext) => Promise<SkillOutcome> }
       | null;
     if (!mod || typeof mod.run !== "function") return null;
