@@ -74,12 +74,12 @@ echo
 echo "Run these AFTER --handover (replace <MINI-IP> if not set via MINI_IP=):"
 cat <<EOF
 
-  rsync -az --info=progress2 --exclude node_modules --exclude .next \\
+  rsync -azP --exclude node_modules --exclude .next \\
     "$STUDIO/" ${MINI_USER}@${MINI_IP}:Documents/studio/
 
-  rsync -az --info=progress2 "$BUSINESSES/" ${MINI_USER}@${MINI_IP}:Documents/businesses/
+  rsync -azP "$BUSINESSES/" ${MINI_USER}@${MINI_IP}:Documents/businesses/
 
-  rsync -az --info=progress2 --exclude node_modules --exclude .next \\
+  rsync -azP --exclude node_modules --exclude .next \\
     "$ALIGNMD/" ${MINI_USER}@${MINI_IP}:Documents/alignmd/
 
 Then ON THE MINI:
