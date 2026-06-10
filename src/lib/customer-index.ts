@@ -138,3 +138,26 @@ export async function lookupBySlug(slug: string): Promise<CustomerIndexEntry | n
   const idx = await getIndex();
   return idx.bySlug.get(slug) ?? null;
 }
+
+/** All indexed customers (read-only view over the cached index). */
+export async function listCustomers(): Promise<CustomerIndexEntry[]> {
+  const idx = await getIndex();
+  return [...idx.bySlug.values()];
+}
+
+/**
+ * Substring search over slug, email, and 01-brand.json string fields
+ * (name, vertical, status, etc.). Case-insensitive.
+ */
+export async function searchCustomers(query: string): Promise<CustomerIndexEntry[]> {
+  const q = query.trim().toLowerCase();
+  const all = await listCustomers();
+  if (!q) return all;
+  return all.filter((entry) => {
+    if (entry.slug.toLowerCase().includes(q)) return true;
+    if (entry.email && entry.email.toLowerCase().includes(q)) return true;
+    return Object.values(entry.brand).some(
+      (v) => typeof v === "string" && v.toLowerCase().includes(q)
+    );
+  });
+}

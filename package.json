@@ -13,12 +13,15 @@
     "graph:generate": "node scripts/generate-skill-graph.mjs",
     "skill-audit": "node scripts/skill-audit.mjs",
     "e2e": "node scripts/e2e-pipeline-test.mjs",
+    "mcp": "tsx scripts/mcp-server.mjs",
     "briefing": "node scripts/morning-briefing.mjs",
     "test": "vitest run",
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.3.170",
     "@anthropic-ai/sdk": "^0.32.1",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "@supabase/supabase-js": "^2.45.4",
     "@vercel/analytics": "^1.3.1",
     "clsx": "^2.1.1",
@@ -29,6 +32,7 @@
     "resend": "^4.0.1",
     "stripe": "^17.3.1",
     "tailwind-merge": "^2.5.4",
+    "tsx": "^4.22.4",
     "zod": "^4.4.3"
   },
   "devDependencies": {

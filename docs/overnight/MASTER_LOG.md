@@ -59,3 +59,4 @@
 [2026-06-08 17:00 ET] daily-eod COMPLETE → eod-2026-06-08.md, confidence: 0.2 (ran late — fired ~22:14 ET)
 [2026-06-08 23:00 ET] nightly-polish COMPLETE → polish-2026-06-08.md, confidence: 0.85
 [2026-06-09 09:00 ET] daily-kickoff COMPLETE → kickoff-2026-06-09.md, confidence: 0.7
+[2026-06-09 23:00 ET] nightly-polish COMPLETE → polish-2026-06-09.md, confidence: 0.9
