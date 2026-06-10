@@ -75,7 +75,7 @@ export function ProfessionalHero() {
             initial={reduce ? false : { opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-            className="text-[2.875rem] font-extrabold leading-[0.98] tracking-[-0.035em] text-ink sm:text-[64px] lg:text-[88px] xl:text-[104px]"
+            className="text-[clamp(2.875rem,5.9vw,6.5rem)] font-extrabold leading-[0.98] tracking-[-0.035em] text-ink"
           >
             <DecryptText
               text="I build websites and apps"
@@ -167,11 +167,10 @@ export function ProfessionalHero() {
           >
             Jack Boppington · solo operator ·{" "}
             <a
-              href="tel:+10000000000"
+              href="mailto:hello@day14.us"
               className="font-semibold text-ink underline decoration-warm-gray-200 underline-offset-4 transition-colors duration-150 hover:decoration-ember-500"
             >
-              {/* TODO: replace with real phone number */}
-              (000) 000-0000
+              hello@day14.us
             </a>
           </motion.div>
 
