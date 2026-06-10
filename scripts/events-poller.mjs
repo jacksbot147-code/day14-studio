@@ -268,6 +268,55 @@ async function handleCustomerReplyReceived(event) {
   }
 }
 
+/**
+ * console-prompt — remote command from /admin/console (see
+ * docs/admin-console-spec.md). Runs the prompt through bot-brain's
+ * processIncomingMessage — the SAME brain that handles Telegram
+ * freeform — then PATCHes the reply back onto the event row so the
+ * web console can render the round trip from anywhere. Also mirrors
+ * the exchange to _shared/console/replies/ (audit habit) and queues
+ * a Telegram copy when the bridge is up.
+ */
+async function handleConsolePrompt(event) {
+  const text = (event.payload?.text ?? "").trim();
+  if (!text) return;
+
+  const { processIncomingMessage } = await import("./bot-brain.mjs");
+  const result = await processIncomingMessage(text, { source: "admin-console" });
+  const reply = result?.reply ?? "(no reply)";
+  const repliedAt = new Date().toISOString();
+
+  // Reply rides the event row — the web console polls for this.
+  await sbPatch(`events?id=eq.${event.id}`, {
+    payload: { ...event.payload, reply, replied_at: repliedAt, action: result?.action ?? null },
+  });
+
+  // Audit mirror on the runtime box.
+  try {
+    const dir = path.join(SHARED_DIR, "console", "replies");
+    await fs.mkdir(dir, { recursive: true });
+    await fs.writeFile(
+      path.join(dir, `${event.id}.json`),
+      JSON.stringify({ prompt: text, reply, action: result?.action ?? null, replied_at: repliedAt }, null, 2)
+    );
+  } catch {
+    /* mirror is best-effort */
+  }
+
+  await appendMasterLog(
+    `[${repliedAt}] console-prompt → "${text.slice(0, 80)}" → ${result?.action ?? "reply"}`
+  );
+
+  if (TELEGRAM_CHAT_ID) {
+    await queueTelegramMessage({
+      chat_id: TELEGRAM_CHAT_ID,
+      text: `🖥️ *Console*\n\n${reply.slice(0, 500)}`,
+      parse_mode: undefined,
+      urgency: "P2",
+    });
+  }
+}
+
 // ---- dispatch table ----
 const HANDLERS = {
   "customer-deposit-paid": handleCustomerDepositPaid,
@@ -276,6 +325,7 @@ const HANDLERS = {
   "cal-meeting_ended": handleCalMeetingEnded,
   "customer-refunded": handleCustomerRefunded,
   "customer-reply-received": handleCustomerReplyReceived,
+  "console-prompt": handleConsolePrompt,
   // Add more handlers as needed; unknown kinds are silently acknowledged
 };
 
