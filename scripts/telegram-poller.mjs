@@ -37,6 +37,7 @@ const ENV_FILE = path.join(homedir(), 'Documents/studio/.env.local');
 const POLL_INTERVAL_MS = 5_000;
 const OUTBOX_SCAN_INTERVAL_MS = 2_000;
 const HEARTBEAT_INTERVAL_MS = 60_000;
+const MAX_SEND_RETRIES = 8; // then dead-letter — no more 581MB retry storms
 
 // ---- env loader (minimal, no deps) ----
 async function loadEnv() {
@@ -575,20 +576,39 @@ async function processOutbox() {
     try {
       payload = JSON.parse(await fs.readFile(filepath, 'utf8'));
     } catch (e) {
-      await log(`ERROR parse outbox ${filename}: ${e.message}`);
+      // corrupt JSON can never succeed — dead-letter immediately
+      try {
+        await fs.mkdir(path.join(OUTBOX_DIR, '_dead'), { recursive: true });
+        await fs.rename(filepath, path.join(OUTBOX_DIR, '_dead', filename));
+        await log(`DEAD-LETTERED (corrupt JSON): ${filename}: ${e.message}`);
+      } catch {
+        await log(`ERROR parse outbox ${filename}: ${e.message}`);
+      }
       continue;
     }
 
     if (payload.sent_at) continue; // already sent
+    if (payload.next_retry_at && Date.parse(payload.next_retry_at) > Date.now()) continue; // in backoff window
 
     try {
-      const result = await tgApi('sendMessage', {
+      const baseMsg = {
         chat_id: payload.chat_id ?? CHAT_ID,
         text: payload.text,
-        parse_mode: payload.parse_mode ?? 'MarkdownV2',
         reply_markup: payload.reply_markup,
         disable_notification: payload.urgency === 'P3',
-      });
+      };
+      let result;
+      try {
+        result = await tgApi('sendMessage', { ...baseMsg, parse_mode: payload.parse_mode ?? 'MarkdownV2' });
+      } catch (mdErr) {
+        if (/parse entities/i.test(mdErr.message)) {
+          // broken markdown — deliver as plain text rather than failing forever
+          result = await tgApi('sendMessage', baseMsg);
+          await log(`sent ${filename} as plain text (markdown rejected)`);
+        } else {
+          throw mdErr;
+        }
+      }
 
       payload.sent_at = new Date().toISOString();
       payload.sent_status = 'sent';
@@ -597,10 +617,25 @@ async function processOutbox() {
       await fs.writeFile(filepath, JSON.stringify(payload, null, 2));
       await log(`OUTBOX SENT: ${filename}`);
     } catch (err) {
-      await log(`ERROR send ${filename}: ${err.message}`);
+      payload.retry_count = (payload.retry_count ?? 0) + 1;
       payload.sent_status = 'error';
       payload.error_message = err.message;
-      await fs.writeFile(filepath, JSON.stringify(payload, null, 2));
+      if (payload.retry_count >= MAX_SEND_RETRIES) {
+        payload.dead_lettered_at = new Date().toISOString();
+        try {
+          await fs.mkdir(path.join(OUTBOX_DIR, '_dead'), { recursive: true });
+          await fs.writeFile(path.join(OUTBOX_DIR, '_dead', filename), JSON.stringify(payload, null, 2));
+          await fs.unlink(filepath);
+          await log(`DEAD-LETTERED after ${payload.retry_count} failures: ${filename}: ${err.message}`);
+        } catch (mvErr) {
+          await log(`ERROR dead-lettering ${filename}: ${mvErr.message}`);
+        }
+      } else {
+        const delayMs = Math.min(5_000 * 2 ** payload.retry_count, 3_600_000);
+        payload.next_retry_at = new Date(Date.now() + delayMs).toISOString();
+        await fs.writeFile(filepath, JSON.stringify(payload, null, 2));
+        await log(`ERROR send ${filename} (retry ${payload.retry_count}/${MAX_SEND_RETRIES}, next in ${Math.round(delayMs / 1000)}s): ${err.message}`);
+      }
     }
   }
 }
