@@ -103,6 +103,51 @@ async function callGemini(systemPrompt, userPrompt, apiKey, opts = {}) {
   return (await res.json())?.candidates?.[0]?.content?.parts?.[0]?.text || "";
 }
 
+async function callAnthropic(systemPrompt, userPrompt, apiKey, opts = {}) {
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: process.env.BRAIN_MODEL || "claude-haiku-4-5-20251001",
+      max_tokens: opts.maxTokens || 1500,
+      temperature: opts.temperature ?? 0.4,
+      system: systemPrompt,
+      messages: [{ role: "user", content: userPrompt }],
+    }),
+  });
+  if (!res.ok) throw new Error(`anthropic ${res.status}: ${(await res.text()).slice(0, 200)}`);
+  const json = await res.json();
+  return json?.content?.[0]?.text || "";
+}
+
+/**
+ * LLM router — Anthropic first (key added 2026-06-10), Gemini fallback.
+ * The Gemini free-tier key has been 429-quota-dead since May (todo-1),
+ * which silently killed every freeform Telegram/console reply.
+ */
+async function callLLM(systemPrompt, userPrompt, env, opts = {}) {
+  const errors = [];
+  if (env.ANTHROPIC_API_KEY) {
+    try {
+      return await callAnthropic(systemPrompt, userPrompt, env.ANTHROPIC_API_KEY, opts);
+    } catch (err) {
+      errors.push(err.message);
+    }
+  }
+  if (env.GEMINI_API_KEY) {
+    try {
+      return await callGemini(systemPrompt, userPrompt, env.GEMINI_API_KEY, opts);
+    } catch (err) {
+      errors.push(err.message);
+    }
+  }
+  throw new Error(`all LLM providers failed: ${errors.join(" | ") || "no API keys configured"}`);
+}
+
 const INTENT_SYSTEM = `You are the Day14 OS intent classifier. Classify a user message into ONE of:
 
 - "command": user wants a specific action executed (publish X, refund Y, generate Z)
@@ -124,7 +169,7 @@ Examples:
 
 export async function classifyIntent(message, env) {
   try {
-    const raw = await callGemini(INTENT_SYSTEM, message, env.GEMINI_API_KEY, { temperature: 0.1, maxTokens: 300 });
+    const raw = await callLLM(INTENT_SYSTEM, message, env, { temperature: 0.1, maxTokens: 300 });
     const cleaned = raw.replace(/```json\s*/g, "").replace(/```\s*$/g, "").trim();
     const s = cleaned.indexOf("{"), e = cleaned.lastIndexOf("}");
     return JSON.parse(cleaned.slice(s, e + 1));
@@ -144,7 +189,7 @@ You can reference any tenant by slug. You know about: business-bootstrap, brand-
 export async function answerQuestion(message, env) {
   const snapshot = await compactSnapshot();
   const userPrompt = `STATE SNAPSHOT:\n${snapshot}\n\n---\n\nJack asked: ${message}\n\nAnswer directly.`;
-  return await callGemini(QA_SYSTEM, userPrompt, env.GEMINI_API_KEY, { temperature: 0.3, maxTokens: 600 });
+  return await callLLM(QA_SYSTEM, userPrompt, env, { temperature: 0.3, maxTokens: 600 });
 }
 
 const CONVERSATION_SYSTEM = `You are Jack's business co-pilot. Day14 OS runs a multi-business empire on auto. You help Jack think, plan, decide.
@@ -158,7 +203,7 @@ Keep responses tight (under 150 words). Markdown OK.`;
 export async function chat(message, env) {
   const snapshot = await compactSnapshot();
   const userPrompt = `STATE:\n${snapshot}\n\n---\n\nJack: ${message}`;
-  return await callGemini(CONVERSATION_SYSTEM, userPrompt, env.GEMINI_API_KEY, { temperature: 0.7, maxTokens: 600 });
+  return await callLLM(CONVERSATION_SYSTEM, userPrompt, env, { temperature: 0.7, maxTokens: 600 });
 }
 
 export async function queueExpansionRequest(description, extracted) {
