@@ -108,11 +108,12 @@ async function tailPollerLog(maxEvents = 14): Promise<FeedEvent[]> {
     const events: FeedEvent[] = [];
     for (const line of lines) {
       const m = line.match(/^\[([^\]]+)\]\s*(.*)$/);
-      if (!m) continue;
+      const [, ts, msg] = m ?? [];
+      if (!ts || msg === undefined) continue;
       events.push({
-        ts: m[1],
-        level: /error|fail|fatal/i.test(m[2]) ? "error" : "info",
-        text: m[2].slice(0, 160),
+        ts,
+        level: /error|fail|fatal/i.test(msg) ? "error" : "info",
+        text: msg.slice(0, 160),
       });
     }
     return events.slice(-maxEvents).reverse();

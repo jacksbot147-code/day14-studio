@@ -21,6 +21,9 @@ const UPTIME_DIR = path.join(SHARED, "uptime");
 
 const TIMEOUT_MS = 5000;
 const ALERT_AFTER_MIN = 10;
+const POLL_CADENCE_MIN = 5; // LaunchAgent cycle interval
+// Down for ALERT_AFTER_MIN+ ⇒ this many consecutive failed checks.
+const ALERT_AFTER_CHECKS = Math.ceil(ALERT_AFTER_MIN / POLL_CADENCE_MIN);
 
 export interface UptimeCheck {
   customer_slug: string;
@@ -54,7 +57,12 @@ async function fetchWithTimeout(url: string, ms: number): Promise<UptimeCheck> {
     result.ms_to_ttfb = Date.now() - start;
     result.ok = res.status >= 200 && res.status < 400;
   } catch (err) {
-    result.error = err instanceof Error ? err.message : String(err);
+    const aborted = err instanceof Error && err.name === "AbortError";
+    result.error = aborted
+      ? `timeout after ${ms}ms`
+      : err instanceof Error
+        ? err.message
+        : String(err);
   } finally {
     clearTimeout(timer);
   }
@@ -91,7 +99,25 @@ async function discoverCustomerUrls(): Promise<
           continue;
         }
       } catch {
-        // fall through
+        // fall through to 02-status.md
+      }
+    }
+
+    // Fallback: `url:` or `domain:` line in 02-status.md frontmatter
+    const statusPath = path.join(dossierDir, "02-status.md");
+    if (existsSync(statusPath)) {
+      try {
+        const text = await fs.readFile(statusPath, "utf8");
+        const match =
+          text.match(/^url:\s*(\S+)\s*$/m) ??
+          text.match(/^domain:\s*(\S+)\s*$/m);
+        const raw = match?.[1];
+        if (raw) {
+          const url = raw.startsWith("http") ? raw : `https://${raw}`;
+          customers.push({ slug, url });
+        }
+      } catch {
+        // unreadable dossier file — skip this customer, don't kill the cycle
       }
     }
   }
@@ -112,46 +138,86 @@ export async function runUptimeCycle(): Promise<{
   await fs.mkdir(UPTIME_DIR, { recursive: true });
 
   for (const c of customers) {
-    const check = await fetchWithTimeout(c.url, TIMEOUT_MS);
-    check.customer_slug = c.slug;
-    checks.push(check);
+    // Isolate per customer — one bad dossier/log must not kill the cycle.
+    try {
+      const check = await fetchWithTimeout(c.url, TIMEOUT_MS);
+      check.customer_slug = c.slug;
+      checks.push(check);
 
-    // Log every check
-    const date = new Date().toISOString().slice(0, 10);
-    const logPath = path.join(UPTIME_DIR, `${c.slug}-${date}.jsonl`);
-    await fs.appendFile(logPath, JSON.stringify(check) + "\n", "utf8");
+      // Streak BEFORE this check, so we can detect threshold crossings
+      // and recoveries against prior state.
+      const priorDown = await countRecentDown(c.slug);
 
-    if (!check.ok) {
-      // Look at history — if down for ALERT_AFTER_MIN+ already, surface
-      const recentDown = await countRecentDown(c.slug);
-      if (recentDown >= 2) {
-        alerts.push(check);
+      // Log every check
+      const date = new Date().toISOString().slice(0, 10);
+      const logPath = path.join(UPTIME_DIR, `${c.slug}-${date}.jsonl`);
+      await fs.appendFile(logPath, JSON.stringify(check) + "\n", "utf8");
+
+      if (!check.ok) {
+        // Alert exactly once, when the streak first crosses the threshold.
+        // Spec hard rule 4: once known-down, suppress until recovered.
+        const consecutive = priorDown + 1;
+        if (consecutive === ALERT_AFTER_CHECKS) {
+          alerts.push(check);
+          await auditLog({
+            action: "uptime_alert",
+            actor: "automated:uptime-monitor",
+            customer_slug: c.slug,
+            details: {
+              url: c.url,
+              consecutive_failures: consecutive,
+              status: check.status,
+              ms_to_ttfb: check.ms_to_ttfb,
+              error: check.error,
+            },
+            skill_invoked: "uptime-monitor",
+            actor_source: "scheduled",
+          });
+        }
+      } else if (priorDown >= ALERT_AFTER_CHECKS) {
+        // Spec: on recovery, log a "back up" follow-up.
         await auditLog({
-          action: "uptime_alert",
+          action: "uptime_recovered",
           actor: "automated:uptime-monitor",
           customer_slug: c.slug,
           details: {
             url: c.url,
-            consecutive_failures: recentDown,
+            downtime_checks: priorDown,
+            approx_downtime_min: priorDown * POLL_CADENCE_MIN,
             status: check.status,
-            error: check.error,
+            ms_to_ttfb: check.ms_to_ttfb,
           },
           skill_invoked: "uptime-monitor",
           actor_source: "scheduled",
         });
       }
+    } catch (err) {
+      checks.push({
+        customer_slug: c.slug,
+        url: c.url,
+        status: null,
+        ms_to_ttfb: null,
+        ok: false,
+        error: `cycle error: ${err instanceof Error ? err.message : String(err)}`,
+        checked_at: new Date().toISOString(),
+      });
     }
   }
 
   return { checks, alerts };
 }
 
+/**
+ * Consecutive failed checks at the tail of today's log. Known limitation:
+ * only reads today's file, so a streak resets at midnight UTC — worst case
+ * is one re-alert per day for a multi-day outage, which is acceptable.
+ */
 async function countRecentDown(slug: string): Promise<number> {
   const date = new Date().toISOString().slice(0, 10);
   const logPath = path.join(UPTIME_DIR, `${slug}-${date}.jsonl`);
   if (!existsSync(logPath)) return 0;
   const text = await fs.readFile(logPath, "utf8");
-  const lines = text.trim().split("\n").filter(Boolean).reverse().slice(0, 5);
+  const lines = text.trim().split("\n").filter(Boolean).reverse().slice(0, 50);
   let downCount = 0;
   for (const line of lines) {
     try {
