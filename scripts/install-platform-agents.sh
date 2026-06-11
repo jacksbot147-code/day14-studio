@@ -32,9 +32,9 @@ cat > "$PLIST" <<EOF
   </dict>
   <key>ThrottleInterval</key><integer>60</integer>
   <key>StandardOutPath</key>
-  <string>$LOG_DIR/recursive-expansion.stdout.log</string>
+  <string>$HOME/Library/Logs/day14/recursive-expansion.stdout.log</string>
   <key>StandardErrorPath</key>
-  <string>$LOG_DIR/recursive-expansion.stderr.log</string>
+  <string>$HOME/Library/Logs/day14/recursive-expansion.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict>
     <key>PATH</key>
@@ -68,8 +68,8 @@ cat > "$PLIST" <<EOF
   <key>KeepAlive</key>
   <dict><key>SuccessfulExit</key><false/><key>Crashed</key><true/></dict>
   <key>ThrottleInterval</key><integer>60</integer>
-  <key>StandardOutPath</key><string>$LOG_DIR/video-pipeline.stdout.log</string>
-  <key>StandardErrorPath</key><string>$LOG_DIR/video-pipeline.stderr.log</string>
+  <key>StandardOutPath</key><string>$HOME/Library/Logs/day14/video-pipeline.stdout.log</string>
+  <key>StandardErrorPath</key><string>$HOME/Library/Logs/day14/video-pipeline.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict><key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string></dict>
 </dict>
@@ -99,8 +99,8 @@ cat > "$PLIST" <<EOF
   <key>KeepAlive</key>
   <dict><key>SuccessfulExit</key><false/><key>Crashed</key><true/></dict>
   <key>ThrottleInterval</key><integer>3600</integer>
-  <key>StandardOutPath</key><string>$LOG_DIR/skill-multiplier.stdout.log</string>
-  <key>StandardErrorPath</key><string>$LOG_DIR/skill-multiplier.stderr.log</string>
+  <key>StandardOutPath</key><string>$HOME/Library/Logs/day14/skill-multiplier.stdout.log</string>
+  <key>StandardErrorPath</key><string>$HOME/Library/Logs/day14/skill-multiplier.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict><key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string></dict>
 </dict>
@@ -133,8 +133,8 @@ cat > "$PLIST" <<EOF
     <dict><key>Hour</key><integer>14</integer><key>Minute</key><integer>0</integer></dict>
     <dict><key>Hour</key><integer>20</integer><key>Minute</key><integer>0</integer></dict>
   </array>
-  <key>StandardOutPath</key><string>$LOG_DIR/priority-allocator.stdout.log</string>
-  <key>StandardErrorPath</key><string>$LOG_DIR/priority-allocator.stderr.log</string>
+  <key>StandardOutPath</key><string>$HOME/Library/Logs/day14/priority-allocator.stdout.log</string>
+  <key>StandardErrorPath</key><string>$HOME/Library/Logs/day14/priority-allocator.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict><key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string></dict>
 </dict>
@@ -159,8 +159,8 @@ cat > "$PLIST" <<EOF
   <key>RunAtLoad</key><true/>
   <key>KeepAlive</key><dict><key>SuccessfulExit</key><false/><key>Crashed</key><true/></dict>
   <key>ThrottleInterval</key><integer>120</integer>
-  <key>StandardOutPath</key><string>$LOG_DIR/auto-restart-watchdog.stdout.log</string>
-  <key>StandardErrorPath</key><string>$LOG_DIR/auto-restart-watchdog.stderr.log</string>
+  <key>StandardOutPath</key><string>$HOME/Library/Logs/day14/auto-restart-watchdog.stdout.log</string>
+  <key>StandardErrorPath</key><string>$HOME/Library/Logs/day14/auto-restart-watchdog.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict><key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string></dict>
 </dict>
@@ -183,8 +183,8 @@ cat > "$PLIST" <<EOF
   <key>RunAtLoad</key><true/>
   <key>KeepAlive</key><dict><key>SuccessfulExit</key><false/><key>Crashed</key><true/></dict>
   <key>ThrottleInterval</key><integer>300</integer>
-  <key>StandardOutPath</key><string>$LOG_DIR/outbox-deadletter.stdout.log</string>
-  <key>StandardErrorPath</key><string>$LOG_DIR/outbox-deadletter.stderr.log</string>
+  <key>StandardOutPath</key><string>$HOME/Library/Logs/day14/outbox-deadletter.stdout.log</string>
+  <key>StandardErrorPath</key><string>$HOME/Library/Logs/day14/outbox-deadletter.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict><key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string></dict>
 </dict>
@@ -207,8 +207,8 @@ cat > "$PLIST" <<EOF
   <key>RunAtLoad</key><true/>
   <key>KeepAlive</key><dict><key>SuccessfulExit</key><false/><key>Crashed</key><true/></dict>
   <key>ThrottleInterval</key><integer>120</integer>
-  <key>StandardOutPath</key><string>$LOG_DIR/opportunity-scanner.stdout.log</string>
-  <key>StandardErrorPath</key><string>$LOG_DIR/opportunity-scanner.stderr.log</string>
+  <key>StandardOutPath</key><string>$HOME/Library/Logs/day14/opportunity-scanner.stdout.log</string>
+  <key>StandardErrorPath</key><string>$HOME/Library/Logs/day14/opportunity-scanner.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict><key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string></dict>
 </dict>
@@ -230,8 +230,8 @@ cat > "$PLIST" <<EOF
   <array><string>$NODE_BIN</string><string>$STUDIO/scripts/proactive-pitcher.mjs</string></array>
   <key>StartCalendarInterval</key>
   <dict><key>Hour</key><integer>7</integer><key>Minute</key><integer>0</integer></dict>
-  <key>StandardOutPath</key><string>$LOG_DIR/proactive-pitcher.stdout.log</string>
-  <key>StandardErrorPath</key><string>$LOG_DIR/proactive-pitcher.stderr.log</string>
+  <key>StandardOutPath</key><string>$HOME/Library/Logs/day14/proactive-pitcher.stdout.log</string>
+  <key>StandardErrorPath</key><string>$HOME/Library/Logs/day14/proactive-pitcher.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict><key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string></dict>
 </dict>
@@ -254,8 +254,8 @@ cat > "$PLIST" <<EOF
   <key>RunAtLoad</key><true/>
   <key>KeepAlive</key><dict><key>SuccessfulExit</key><false/><key>Crashed</key><true/></dict>
   <key>ThrottleInterval</key><integer>120</integer>
-  <key>StandardOutPath</key><string>$LOG_DIR/system-pulse.stdout.log</string>
-  <key>StandardErrorPath</key><string>$LOG_DIR/system-pulse.stderr.log</string>
+  <key>StandardOutPath</key><string>$HOME/Library/Logs/day14/system-pulse.stdout.log</string>
+  <key>StandardErrorPath</key><string>$HOME/Library/Logs/day14/system-pulse.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict><key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string></dict>
 </dict>
@@ -278,8 +278,8 @@ cat > "$PLIST" <<EOF
   <key>RunAtLoad</key><true/>
   <key>KeepAlive</key><dict><key>SuccessfulExit</key><false/><key>Crashed</key><true/></dict>
   <key>ThrottleInterval</key><integer>120</integer>
-  <key>StandardOutPath</key><string>$LOG_DIR/expansion-prompter.stdout.log</string>
-  <key>StandardErrorPath</key><string>$LOG_DIR/expansion-prompter.stderr.log</string>
+  <key>StandardOutPath</key><string>$HOME/Library/Logs/day14/expansion-prompter.stdout.log</string>
+  <key>StandardErrorPath</key><string>$HOME/Library/Logs/day14/expansion-prompter.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict><key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string></dict>
 </dict>
@@ -302,8 +302,8 @@ cat > "$PLIST" <<EOF
   <key>RunAtLoad</key><true/>
   <key>KeepAlive</key><dict><key>SuccessfulExit</key><false/><key>Crashed</key><true/></dict>
   <key>ThrottleInterval</key><integer>60</integer>
-  <key>StandardOutPath</key><string>$LOG_DIR/growth-narrator.stdout.log</string>
-  <key>StandardErrorPath</key><string>$LOG_DIR/growth-narrator.stderr.log</string>
+  <key>StandardOutPath</key><string>$HOME/Library/Logs/day14/growth-narrator.stdout.log</string>
+  <key>StandardErrorPath</key><string>$HOME/Library/Logs/day14/growth-narrator.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict><key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string></dict>
 </dict>
@@ -329,8 +329,8 @@ cat > "$PLIST" <<EOF
   </array>
   <key>StartInterval</key><integer>900</integer>
   <key>RunAtLoad</key><true/>
-  <key>StandardOutPath</key><string>$LOG_DIR/gamified-dashboard.stdout.log</string>
-  <key>StandardErrorPath</key><string>$LOG_DIR/gamified-dashboard.stderr.log</string>
+  <key>StandardOutPath</key><string>$HOME/Library/Logs/day14/gamified-dashboard.stdout.log</string>
+  <key>StandardErrorPath</key><string>$HOME/Library/Logs/day14/gamified-dashboard.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict><key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string></dict>
 </dict>

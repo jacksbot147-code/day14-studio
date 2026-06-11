@@ -63,9 +63,9 @@ EOF
   fi
   cat >> "$plist" <<EOF
   <key>StandardOutPath</key>
-  <string>$LOG_DIR/${TENANT}-${label}.stdout.log</string>
+  <string>$HOME/Library/Logs/day14/${TENANT}-${label}.stdout.log</string>
   <key>StandardErrorPath</key>
-  <string>$LOG_DIR/${TENANT}-${label}.stderr.log</string>
+  <string>$HOME/Library/Logs/day14/${TENANT}-${label}.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict>
     <key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string>

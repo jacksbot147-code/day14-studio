@@ -45,9 +45,9 @@ cat > "$PLIST_DAILY" <<EOF
   </dict>
   <key>RunAtLoad</key><false/>
   <key>StandardOutPath</key>
-  <string>$LOG_DIR/hot-flash-co-daily-engine.stdout.log</string>
+  <string>$HOME/Library/Logs/day14/hot-flash-co-daily-engine.stdout.log</string>
   <key>StandardErrorPath</key>
-  <string>$LOG_DIR/hot-flash-co-daily-engine.stderr.log</string>
+  <string>$HOME/Library/Logs/day14/hot-flash-co-daily-engine.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict>
     <key>PATH</key>
@@ -78,9 +78,9 @@ cat > "$PLIST_MARKETING" <<EOF
   </dict>
   <key>RunAtLoad</key><false/>
   <key>StandardOutPath</key>
-  <string>$LOG_DIR/hot-flash-co-marketing.stdout.log</string>
+  <string>$HOME/Library/Logs/day14/hot-flash-co-marketing.stdout.log</string>
   <key>StandardErrorPath</key>
-  <string>$LOG_DIR/hot-flash-co-marketing.stderr.log</string>
+  <string>$HOME/Library/Logs/day14/hot-flash-co-marketing.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict>
     <key>PATH</key>
@@ -112,9 +112,9 @@ cat > "$PLIST_ORDERS" <<EOF
   </dict>
   <key>ThrottleInterval</key><integer>60</integer>
   <key>StandardOutPath</key>
-  <string>$LOG_DIR/hot-flash-co-orders-watcher.stdout.log</string>
+  <string>$HOME/Library/Logs/day14/hot-flash-co-orders-watcher.stdout.log</string>
   <key>StandardErrorPath</key>
-  <string>$LOG_DIR/hot-flash-co-orders-watcher.stderr.log</string>
+  <string>$HOME/Library/Logs/day14/hot-flash-co-orders-watcher.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict>
     <key>PATH</key>

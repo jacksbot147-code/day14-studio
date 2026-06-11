@@ -24,8 +24,8 @@ cat > "$PLIST" <<EOF
   </array>
   <key>RunAtLoad</key><true/>
   <key>StartInterval</key><integer>900</integer>
-  <key>StandardOutPath</key><string>$LOG_DIR/admin-sync.stdout.log</string>
-  <key>StandardErrorPath</key><string>$LOG_DIR/admin-sync.stderr.log</string>
+  <key>StandardOutPath</key><string>$HOME/Library/Logs/day14/admin-sync.stdout.log</string>
+  <key>StandardErrorPath</key><string>$HOME/Library/Logs/day14/admin-sync.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict>
     <key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string>

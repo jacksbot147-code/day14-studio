@@ -25,8 +25,8 @@ make_plist_daily() {
   <array><string>$NODE_BIN</string><string>$script</string><string>$TENANT</string></array>
   <key>StartCalendarInterval</key>
   <dict><key>Hour</key><integer>$hour</integer><key>Minute</key><integer>$minute</integer></dict>
-  <key>StandardOutPath</key><string>$LOG_DIR/${TENANT}-${label}.stdout.log</string>
-  <key>StandardErrorPath</key><string>$LOG_DIR/${TENANT}-${label}.stderr.log</string>
+  <key>StandardOutPath</key><string>$HOME/Library/Logs/day14/${TENANT}-${label}.stdout.log</string>
+  <key>StandardErrorPath</key><string>$HOME/Library/Logs/day14/${TENANT}-${label}.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict><key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string><key>TENANT</key><string>$TENANT</string></dict>
 </dict>
@@ -56,8 +56,8 @@ cat > "$PLIST" <<EOF
   <key>ProgramArguments</key>
   <array><string>$NODE_BIN</string><string>$GENERIC/pinterest-publisher.mjs</string><string>$TENANT</string></array>
   <key>StartInterval</key><integer>1800</integer>
-  <key>StandardOutPath</key><string>$LOG_DIR/${TENANT}-pinterest-publisher.stdout.log</string>
-  <key>StandardErrorPath</key><string>$LOG_DIR/${TENANT}-pinterest-publisher.stderr.log</string>
+  <key>StandardOutPath</key><string>$HOME/Library/Logs/day14/${TENANT}-pinterest-publisher.stdout.log</string>
+  <key>StandardErrorPath</key><string>$HOME/Library/Logs/day14/${TENANT}-pinterest-publisher.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict><key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string><key>TENANT</key><string>$TENANT</string></dict>
 </dict>
@@ -80,8 +80,8 @@ cat > "$PLIST" <<EOF
   <key>ProgramArguments</key>
   <array><string>$NODE_BIN</string><string>$GENERIC/youtube-shorts-publisher.mjs</string><string>$TENANT</string></array>
   <key>StartInterval</key><integer>3600</integer>
-  <key>StandardOutPath</key><string>$LOG_DIR/${TENANT}-youtube-publisher.stdout.log</string>
-  <key>StandardErrorPath</key><string>$LOG_DIR/${TENANT}-youtube-publisher.stderr.log</string>
+  <key>StandardOutPath</key><string>$HOME/Library/Logs/day14/${TENANT}-youtube-publisher.stdout.log</string>
+  <key>StandardErrorPath</key><string>$HOME/Library/Logs/day14/${TENANT}-youtube-publisher.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict><key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string><key>TENANT</key><string>$TENANT</string></dict>
 </dict>
@@ -109,8 +109,8 @@ cat > "$PLIST" <<EOF
   <key>ProgramArguments</key>
   <array><string>$NODE_BIN</string><string>$GENERIC/full-content-pipeline.mjs</string><string>$TENANT</string></array>
   <key>StartCalendarInterval</key>$PIPE_CAL
-  <key>StandardOutPath</key><string>$LOG_DIR/${TENANT}-full-content-pipeline.stdout.log</string>
-  <key>StandardErrorPath</key><string>$LOG_DIR/${TENANT}-full-content-pipeline.stderr.log</string>
+  <key>StandardOutPath</key><string>$HOME/Library/Logs/day14/${TENANT}-full-content-pipeline.stdout.log</string>
+  <key>StandardErrorPath</key><string>$HOME/Library/Logs/day14/${TENANT}-full-content-pipeline.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict><key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string><key>TENANT</key><string>$TENANT</string></dict>
 </dict>
@@ -134,8 +134,8 @@ for SPEC in "instagram-publisher:1800" "linkedin-publisher:1800" "tiktok-publish
   <key>ProgramArguments</key>
   <array><string>$NODE_BIN</string><string>$GENERIC/${LABEL}.mjs</string><string>$TENANT</string></array>
   <key>StartInterval</key><integer>$INTERVAL</integer>
-  <key>StandardOutPath</key><string>$LOG_DIR/${TENANT}-${LABEL}.stdout.log</string>
-  <key>StandardErrorPath</key><string>$LOG_DIR/${TENANT}-${LABEL}.stderr.log</string>
+  <key>StandardOutPath</key><string>$HOME/Library/Logs/day14/${TENANT}-${LABEL}.stdout.log</string>
+  <key>StandardErrorPath</key><string>$HOME/Library/Logs/day14/${TENANT}-${LABEL}.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict><key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string><key>TENANT</key><string>$TENANT</string></dict>
 </dict>

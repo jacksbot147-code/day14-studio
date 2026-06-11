@@ -28,6 +28,7 @@ if [ ! -f "$HOME/Documents/studio/.env.local" ]; then
   exit 1
 fi
 
+mkdir -p "$HOME/Library/Logs/day14"
 mkdir -p "$LAUNCH_AGENTS_DIR"
 mkdir -p "$LOG_DIR"
 
@@ -61,10 +62,10 @@ cat > "$PLIST_PATH" <<EOF
     <integer>10</integer>
 
     <key>StandardOutPath</key>
-    <string>$LOG_DIR/poller.stdout.log</string>
+    <string>$HOME/Library/Logs/day14/poller.stdout.log</string>
 
     <key>StandardErrorPath</key>
-    <string>$LOG_DIR/poller.stderr.log</string>
+    <string>$HOME/Library/Logs/day14/poller.stderr.log</string>
 
     <key>EnvironmentVariables</key>
     <dict>

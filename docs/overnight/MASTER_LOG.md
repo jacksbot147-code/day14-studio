@@ -60,3 +60,7 @@
 [2026-06-08 23:00 ET] nightly-polish COMPLETE → polish-2026-06-08.md, confidence: 0.85
 [2026-06-09 09:00 ET] daily-kickoff COMPLETE → kickoff-2026-06-09.md, confidence: 0.7
 [2026-06-09 23:00 ET] nightly-polish COMPLETE → polish-2026-06-09.md, confidence: 0.9
+[2026-06-10 09:00 ET] daily-kickoff COMPLETE → kickoff-2026-06-10.md, confidence: 0.85
+[2026-06-10 17:00 ET] daily-eod COMPLETE → eod-2026-06-10.md, confidence: 0.6
+[2026-06-11T02:06:32.567Z] console-prompt → "todos" → todo-list
+[2026-06-11T02:06:38.122Z] console-prompt → "status" → chatted

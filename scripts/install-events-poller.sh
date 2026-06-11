@@ -24,7 +24,8 @@ if [ ! -f "$HOME/Documents/studio/.env.local" ]; then
   exit 1
 fi
 
-mkdir -p "$LAUNCH_AGENTS_DIR" "$LOG_DIR"
+mkdir -p "$HOME/Library/Logs/day14"
+mkdir -p "$HOME/Library/Logs/day14" "$LAUNCH_AGENTS_DIR" "$LOG_DIR"
 
 cat > "$PLIST_PATH" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -47,9 +48,9 @@ cat > "$PLIST_PATH" <<EOF
     <key>ThrottleInterval</key>
     <integer>10</integer>
     <key>StandardOutPath</key>
-    <string>$LOG_DIR/events-poller.stdout.log</string>
+    <string>$HOME/Library/Logs/day14/events-poller.stdout.log</string>
     <key>StandardErrorPath</key>
-    <string>$LOG_DIR/events-poller.stderr.log</string>
+    <string>$HOME/Library/Logs/day14/events-poller.stderr.log</string>
     <key>EnvironmentVariables</key>
     <dict>
         <key>PATH</key>

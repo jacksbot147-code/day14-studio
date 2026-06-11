@@ -32,8 +32,8 @@ EOF
 EOF
   fi
   cat >> "$plist" <<EOF
-  <key>StandardOutPath</key><string>$LOG_DIR/${label}.stdout.log</string>
-  <key>StandardErrorPath</key><string>$LOG_DIR/${label}.stderr.log</string>
+  <key>StandardOutPath</key><string>$HOME/Library/Logs/day14/${label}.stdout.log</string>
+  <key>StandardErrorPath</key><string>$HOME/Library/Logs/day14/${label}.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict><key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string></dict>
 </dict>
@@ -67,8 +67,8 @@ cat > "$PLIST" <<EOF
   <key>RunAtLoad</key><true/>
   <key>KeepAlive</key><dict><key>SuccessfulExit</key><false/><key>Crashed</key><true/></dict>
   <key>ThrottleInterval</key><integer>120</integer>
-  <key>StandardOutPath</key><string>$LOG_DIR/customer-success-agent.stdout.log</string>
-  <key>StandardErrorPath</key><string>$LOG_DIR/customer-success-agent.stderr.log</string>
+  <key>StandardOutPath</key><string>$HOME/Library/Logs/day14/customer-success-agent.stdout.log</string>
+  <key>StandardErrorPath</key><string>$HOME/Library/Logs/day14/customer-success-agent.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict><key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string></dict>
 </dict>
@@ -108,8 +108,8 @@ cat > "$PLIST" <<EOF
   <array><string>$NODE_BIN</string><string>$EMPLOYEES/devops-sre.mjs</string></array>
   <key>RunAtLoad</key><true/>
   <key>StartInterval</key><integer>14400</integer>
-  <key>StandardOutPath</key><string>$LOG_DIR/devops-sre.stdout.log</string>
-  <key>StandardErrorPath</key><string>$LOG_DIR/devops-sre.stderr.log</string>
+  <key>StandardOutPath</key><string>$HOME/Library/Logs/day14/devops-sre.stdout.log</string>
+  <key>StandardErrorPath</key><string>$HOME/Library/Logs/day14/devops-sre.stderr.log</string>
   <key>EnvironmentVariables</key>
   <dict><key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string></dict>
 </dict>

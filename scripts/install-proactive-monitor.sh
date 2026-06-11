@@ -42,9 +42,9 @@ cat > "$PLIST_PATH" <<EOF
     <key>ThrottleInterval</key>
     <integer>30</integer>
     <key>StandardOutPath</key>
-    <string>$LOG_DIR/proactive-monitor.stdout.log</string>
+    <string>$HOME/Library/Logs/day14/proactive-monitor.stdout.log</string>
     <key>StandardErrorPath</key>
-    <string>$LOG_DIR/proactive-monitor.stderr.log</string>
+    <string>$HOME/Library/Logs/day14/proactive-monitor.stderr.log</string>
     <key>EnvironmentVariables</key>
     <dict>
         <key>PATH</key>

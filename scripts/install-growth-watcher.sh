@@ -20,7 +20,8 @@ if [ -z "$NODE_BIN" ]; then
   exit 1
 fi
 
-mkdir -p "$LAUNCH_AGENTS_DIR" "$LOG_DIR"
+mkdir -p "$HOME/Library/Logs/day14"
+mkdir -p "$HOME/Library/Logs/day14" "$LAUNCH_AGENTS_DIR" "$LOG_DIR"
 
 cat > "$PLIST_PATH" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -40,9 +41,9 @@ cat > "$PLIST_PATH" <<EOF
     <key>ThrottleInterval</key>
     <integer>30</integer>
     <key>StandardOutPath</key>
-    <string>$LOG_DIR/growth-watcher.stdout.log</string>
+    <string>$HOME/Library/Logs/day14/growth-watcher.stdout.log</string>
     <key>StandardErrorPath</key>
-    <string>$LOG_DIR/growth-watcher.stderr.log</string>
+    <string>$HOME/Library/Logs/day14/growth-watcher.stderr.log</string>
     <key>EnvironmentVariables</key>
     <dict>
         <key>PATH</key>

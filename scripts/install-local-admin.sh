@@ -72,10 +72,10 @@ cat > "$PLIST_PATH" <<EOF
     <integer>15</integer>
 
     <key>StandardOutPath</key>
-    <string>$LOG_DIR/local-admin.stdout.log</string>
+    <string>$HOME/Library/Logs/day14/local-admin.stdout.log</string>
 
     <key>StandardErrorPath</key>
-    <string>$LOG_DIR/local-admin.stderr.log</string>
+    <string>$HOME/Library/Logs/day14/local-admin.stderr.log</string>
 
     <key>EnvironmentVariables</key>
     <dict>
