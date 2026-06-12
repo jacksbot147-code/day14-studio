@@ -7,6 +7,11 @@
  *   - 0-3mo bucket has highest churn → lowest projected
  *   - 12mo+ bucket has lowest churn → highest projected
  *   - Churned customers: projected = 0
+ *   - Paused customers: projected = 0
+ *   - <30d customers: projection TBD (conservative 0, flagged)
+ *   - Malformed dossier JSON doesn't kill the computation
+ *   - Report shows churn assumptions + renders TBD
+ *   - run(): outcome shape, single-customer mode, work-register + audit entries
  */
 
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
@@ -106,6 +111,48 @@ describe("LTV computation", () => {
     expect(data.customers[0]!.total_projected).toBe(1491);
   });
 
+  test("paused customer: projected = 0", async () => {
+    await makeCustomer("delta", {
+      signup_date: new Date(Date.now() - 120 * 86400000).toISOString(),
+      total_paid: 1988,
+      monthly_amount: 497,
+      status: "paused",
+    });
+    const mod = await freshImport();
+    const data = await mod.computeAllLtv();
+    expect(data.customers[0]!.projected_remaining).toBe(0);
+    expect(data.customers[0]!.total_projected).toBe(1988);
+    expect(data.customers[0]!.projection_tbd).toBe(false);
+  });
+
+  test("brand-new customer (<30d): projection TBD, conservative 0", async () => {
+    await makeCustomer("epsilon", {
+      signup_date: new Date(Date.now() - 10 * 86400000).toISOString(),
+      total_paid: 497,
+      monthly_amount: 497,
+      status: "active",
+    });
+    const mod = await freshImport();
+    const data = await mod.computeAllLtv();
+    expect(data.customers[0]!.projection_tbd).toBe(true);
+    expect(data.customers[0]!.projected_remaining).toBe(0);
+    expect(data.customers[0]!.total_projected).toBe(497);
+  });
+
+  test("malformed 01-brand.json: zeroed entry, no throw", async () => {
+    const dir = path.join(
+      TMP_HOME,
+      "Documents/businesses/_shared/customers/broken"
+    );
+    await fs.mkdir(dir, { recursive: true });
+    await fs.writeFile(path.join(dir, "01-brand.json"), "{not json!", "utf8");
+    const mod = await freshImport();
+    const data = await mod.computeAllLtv();
+    expect(data.customers.length).toBe(1);
+    expect(data.customers[0]!.realized).toBe(0);
+    expect(data.total_projected).toBe(0);
+  });
+
   test("aggregate metrics computed", async () => {
     await makeCustomer("alpha", {
       signup_date: new Date(Date.now() - 30 * 86400000).toISOString(),
@@ -125,5 +172,81 @@ describe("LTV computation", () => {
     expect(data.total_realized).toBe(497 + 994);
     expect(data.total_projected).toBeGreaterThan(data.total_realized);
     expect(data.avg_ltv).toBeGreaterThan(0);
+  });
+});
+
+describe("report + run()", () => {
+  test("report shows churn assumptions and renders TBD for <30d customers", async () => {
+    await makeCustomer("fresh", {
+      signup_date: new Date(Date.now() - 5 * 86400000).toISOString(),
+      total_paid: 497,
+      monthly_amount: 497,
+      status: "active",
+      vertical: "pool",
+    });
+    const mod = await freshImport();
+    const reportPath = await mod.writeLtvReport();
+    const text = await fs.readFile(reportPath, "utf8");
+    expect(text).toContain("## Assumptions");
+    expect(text).toContain("Churn assumption");
+    expect(text).toContain("8.0%/mo"); // 0-3mo default rate surfaced
+    expect(text).toContain("| TBD |"); // projected column for <30d customer
+  });
+
+  test("run(): ok outcome, artifact written, single-customer mode, logs land", async () => {
+    await makeCustomer("alpha", {
+      signup_date: new Date(Date.now() - 200 * 86400000).toISOString(),
+      total_paid: 3479,
+      monthly_amount: 497,
+      status: "active",
+      vertical: "pool",
+    });
+    const mod = await freshImport();
+    const outcome = await mod.run({
+      context: "test-session",
+      customer_slug: "alpha",
+      caller: "vitest",
+    });
+    expect(outcome.ok).toBe(true);
+    expect(outcome.artifacts?.length).toBe(1);
+    const result = outcome.result as {
+      customers: number;
+      customer_found: boolean;
+      customer: { slug: string } | null;
+    };
+    expect(result.customer_found).toBe(true);
+    expect(result.customer?.slug).toBe("alpha");
+
+    // Growth hook landed in the work register
+    const wr = await fs.readFile(
+      path.join(
+        TMP_HOME,
+        "Documents/businesses/_shared/growth/work-register.jsonl"
+      ),
+      "utf8"
+    );
+    expect(wr).toContain("invoked customer-ltv-calculator");
+
+    // Audit entry landed
+    const month = new Date().toISOString().slice(0, 7);
+    const audit = await fs.readFile(
+      path.join(
+        TMP_HOME,
+        `Documents/businesses/_shared/audit/audit-${month}.jsonl`
+      ),
+      "utf8"
+    );
+    expect(audit).toContain("ltv_report_generated");
+  });
+
+  test("run(): unknown customer_slug → customer_found false, still ok", async () => {
+    const mod = await freshImport();
+    const outcome = await mod.run({
+      context: "test-session",
+      customer_slug: "nobody",
+    });
+    expect(outcome.ok).toBe(true);
+    const result = outcome.result as { customer_found: boolean };
+    expect(result.customer_found).toBe(false);
   });
 });

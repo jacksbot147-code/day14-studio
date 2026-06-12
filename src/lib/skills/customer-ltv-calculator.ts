@@ -15,6 +15,8 @@ import { existsSync } from "node:fs";
 import { homedir } from "node:os";
 import type { SkillInvocationContext } from "../skill-runtime";
 import type { SkillOutcome } from "../skill-runner";
+import { auditLog } from "./audit-log-generator";
+import { logSkillInvocation } from "../work-register";
 
 const SHARED = path.join(homedir(), "Documents/businesses/_shared");
 const METRICS_DIR = path.join(SHARED, "metrics");
@@ -30,6 +32,12 @@ export interface CustomerLtv {
   expected_months_remaining: number;
   churn_rate_segment: number;
   segment: string;
+  /**
+   * Spec failure mode: customers under 30 days of tenure get no projection —
+   * "show TBD rather than guess". projected_remaining is 0 (conservative)
+   * and the report renders "TBD" instead of a number.
+   */
+  projection_tbd: boolean;
 }
 
 interface CustomerSummary {
@@ -116,9 +124,11 @@ function computeLtv(s: CustomerSummary): CustomerLtv {
     : 0;
   const bucket = tenureBucket(tenureMonths);
   const churnRate = DEFAULT_CHURN_BY_TENURE[bucket] ?? 0.05;
-  const expectedMonthsRemaining = s.status === "active" ? 1 / churnRate : 0;
-  const projectedRemaining =
-    s.status === "active" ? s.current_mrr * expectedMonthsRemaining : 0;
+  // Spec failure mode: <30 days tenure → project conservatively (TBD).
+  const projectionTbd = s.status === "active" && tenureMonths < 1;
+  const projects = s.status === "active" && !projectionTbd;
+  const expectedMonthsRemaining = projects ? 1 / churnRate : 0;
+  const projectedRemaining = projects ? s.current_mrr * expectedMonthsRemaining : 0;
 
   return {
     slug: s.slug,
@@ -130,6 +140,7 @@ function computeLtv(s: CustomerSummary): CustomerLtv {
     expected_months_remaining: Math.round(expectedMonthsRemaining * 10) / 10,
     churn_rate_segment: churnRate,
     segment: `${s.vertical || "unknown"}-${bucket}`,
+    projection_tbd: projectionTbd,
   };
 }
 
@@ -155,15 +166,18 @@ export async function computeAllLtv(): Promise<{
   };
 }
 
-export async function writeLtvReport(): Promise<string> {
+export async function writeLtvReport(
+  precomputed?: Awaited<ReturnType<typeof computeAllLtv>>
+): Promise<string> {
   await fs.mkdir(METRICS_DIR, { recursive: true });
   const month = new Date().toISOString().slice(0, 7);
   const reportPath = path.join(METRICS_DIR, `ltv-${month}.md`);
 
-  const data = await computeAllLtv();
+  const data = precomputed ?? (await computeAllLtv());
   const sorted = [...data.customers].sort(
     (a, b) => b.total_projected - a.total_projected
   );
+  const tbdCount = data.customers.filter((c) => c.projection_tbd).length;
 
   const lines: string[] = [];
   lines.push(`# Customer LTV — ${month}`);
@@ -173,15 +187,27 @@ export async function writeLtvReport(): Promise<string> {
   lines.push(`- Total realized: $${data.total_realized.toLocaleString()}`);
   lines.push(`- Total projected: $${data.total_projected.toLocaleString()}`);
   lines.push(`- Avg LTV: $${data.avg_ltv.toLocaleString()}`);
+  if (tbdCount > 0) {
+    lines.push(
+      `- Projections TBD: ${tbdCount} customer${tbdCount === 1 ? "" : "s"} under 30 days tenure — realized only, no projection (spec: show TBD rather than guess)`
+    );
+  }
   lines.push("");
   lines.push(`## Top customers by LTV`);
   lines.push("");
-  lines.push("| Rank | Slug | Realized | Projected remaining | Total | MRR | Tenure | Segment |");
-  lines.push("|------|------|---------:|---------------------:|------:|----:|--------|---------|");
+  lines.push("| Rank | Slug | Realized | Projected remaining | Total | MRR | Tenure | Segment | Churn assumption |");
+  lines.push("|------|------|---------:|---------------------:|------:|----:|--------|---------|------------------|");
   for (let i = 0; i < Math.min(20, sorted.length); i++) {
-    const c = sorted[i]!;
+    const c = sorted[i];
+    if (!c) break;
+    const projected = c.projection_tbd
+      ? "TBD"
+      : `$${c.projected_remaining.toLocaleString()}`;
+    const total = c.projection_tbd
+      ? `$${c.realized.toLocaleString()} (TBD)`
+      : `$${c.total_projected.toLocaleString()}`;
     lines.push(
-      `| ${i + 1} | ${c.slug} | $${c.realized.toLocaleString()} | $${c.projected_remaining.toLocaleString()} | $${c.total_projected.toLocaleString()} | $${c.current_mrr.toLocaleString()} | ${c.tenure_months}mo | ${c.segment} |`
+      `| ${i + 1} | ${c.slug} | $${c.realized.toLocaleString()} | ${projected} | ${total} | $${c.current_mrr.toLocaleString()} | ${c.tenure_months}mo | ${c.segment} | ${(c.churn_rate_segment * 100).toFixed(1)}%/mo |`
     );
   }
   lines.push("");
@@ -200,25 +226,79 @@ export async function writeLtvReport(): Promise<string> {
     }
   }
   lines.push("");
+  lines.push(`## Assumptions (spec rule 2: always show the assumption)`);
+  lines.push("");
+  lines.push(
+    `Churn rates are conservative defaults by tenure bucket — not yet derived from actual cancellation history (known gap vs spec):`
+  );
+  for (const [bucket, rate] of Object.entries(DEFAULT_CHURN_BY_TENURE)) {
+    lines.push(`- ${bucket}: ${(rate * 100).toFixed(1)}%/mo → ~${(1 / rate).toFixed(1)} expected months remaining`);
+  }
+  lines.push(
+    `- Projected figures are directional only — weight realized over projected (spec rule 1).`
+  );
+  lines.push("");
   lines.push(`_Generated: ${new Date().toISOString()}_`);
 
   await fs.writeFile(reportPath, lines.join("\n"), "utf8");
   return reportPath;
 }
 
-export async function run(_ctx: SkillInvocationContext): Promise<SkillOutcome> {
-  const reportPath = await writeLtvReport();
-  const data = await computeAllLtv();
-  return {
-    ok: true,
-    skill: "customer-ltv-calculator",
-    path: "hand-coded",
-    result: {
-      customers: data.customers.length,
-      total_realized: data.total_realized,
-      total_projected: data.total_projected,
-      avg_ltv: data.avg_ltv,
-    },
-    artifacts: [reportPath],
-  };
+export async function run(ctx: SkillInvocationContext): Promise<SkillOutcome> {
+  // Growth hook (CLAUDE.md rule 6): feeds growth-watcher + skill-coverage-auditor.
+  await logSkillInvocation(
+    "customer-ltv-calculator",
+    ctx.context,
+    ctx.customer_slug
+  );
+
+  try {
+    const data = await computeAllLtv();
+    const reportPath = await writeLtvReport(data);
+
+    // Single-customer mode (spec input: customer_slug) — /ltv {slug} via Telegram.
+    const single = ctx.customer_slug
+      ? data.customers.find((c) => c.slug === ctx.customer_slug)
+      : undefined;
+
+    // Audit trail (CLAUDE.md rule 5): report generation is consequential —
+    // it drives acquisition-spend decisions downstream.
+    await auditLog({
+      action: "ltv_report_generated",
+      actor: "automated:customer-ltv-calculator",
+      customer_slug: ctx.customer_slug,
+      details: {
+        report_path: reportPath,
+        customers: data.customers.length,
+        total_realized: data.total_realized,
+        total_projected: data.total_projected,
+        avg_ltv: data.avg_ltv,
+      },
+      skill_invoked: "customer-ltv-calculator",
+      actor_source: ctx.caller ?? "scheduled",
+    });
+
+    return {
+      ok: true,
+      skill: "customer-ltv-calculator",
+      path: "hand-coded",
+      result: {
+        customers: data.customers.length,
+        total_realized: data.total_realized,
+        total_projected: data.total_projected,
+        avg_ltv: data.avg_ltv,
+        ...(ctx.customer_slug
+          ? { customer: single ?? null, customer_found: Boolean(single) }
+          : {}),
+      },
+      artifacts: [reportPath],
+    };
+  } catch (err) {
+    return {
+      ok: false,
+      skill: "customer-ltv-calculator",
+      path: "hand-coded",
+      error: err instanceof Error ? err.message : String(err),
+    };
+  }
 }

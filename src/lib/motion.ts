@@ -67,7 +67,7 @@ export const planetPulse = (alive: boolean) =>
   alive
     ? {
         scale: [1, 1.12, 1],
-        transition: { duration: 2, repeat: Infinity, ease: "easeInOut" },
+        transition: { duration: 2, repeat: Infinity, ease: "easeInOut" as const },
       }
     : { scale: 1, opacity: 0.45 };
 
