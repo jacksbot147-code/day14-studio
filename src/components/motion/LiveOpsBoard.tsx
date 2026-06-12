@@ -128,6 +128,14 @@ export function LiveOpsBoard({
   );
   const standby = (snap?.overall ?? "critical") === "critical";
 
+  // Prod fallback: on Vercel /api/jarvis has no local fleet files and returns
+  // empty data. A permanently-dim "establishing uplink" panel on the public
+  // homepage is worse than no panel — render nothing until real data exists.
+  // (Future: mini pushes snapshots to Supabase and this comes alive on prod.)
+  if (snap && snap.agents.length === 0 && snap.feed.length === 0) {
+    return null;
+  }
+
   return (
     <div className={className}>
       <div

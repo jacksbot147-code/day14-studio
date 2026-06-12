@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-12T05:24:11.084Z",
+  "generated_at": "2026-06-12T15:29:05.439Z",
   "tenants": [
     {
       "slug": "day14",
@@ -38,6 +38,26 @@
       "orders": 0,
       "streak": 0,
       "recent_audit": [
+        {
+          "ts": "2026-06-12T15:00:04.764Z",
+          "tenant": "hot-flash-co",
+          "actor": "marketing-engine",
+          "action": "fatal_error",
+          "error": "PRINTIFY_API_KEY missing"
+        },
+        {
+          "ts": "2026-06-12T13:00:05.810Z",
+          "tenant": "hot-flash-co",
+          "actor": "daily-engine",
+          "action": "fatal_error",
+          "error": "PRINTIFY_API_KEY missing"
+        },
+        {
+          "ts": "2026-06-12T13:00:05.806Z",
+          "tenant": "hot-flash-co",
+          "actor": "daily-engine",
+          "action": "run_started"
+        },
         {
           "ts": "2026-06-11T15:00:04.109Z",
           "tenant": "hot-flash-co",
@@ -229,28 +249,6 @@
           "tenant": "hot-flash-co",
           "actor": "daily-engine",
           "action": "run_started"
-        },
-        {
-          "ts": "2026-06-07T10:03:07.901Z",
-          "tenant": "hot-flash-co",
-          "actor": "brand-site-builder",
-          "action": "site_generated",
-          "pages": 10
-        },
-        {
-          "ts": "2026-06-06T18:07:19.164Z",
-          "tenant": "hot-flash-co",
-          "actor": "social-orchestrator",
-          "action": "queue_built",
-          "count": 0,
-          "date": "2026-06-06"
-        },
-        {
-          "ts": "2026-06-06T15:00:05.369Z",
-          "tenant": "hot-flash-co",
-          "actor": "marketing-engine",
-          "action": "fatal_error",
-          "error": "PRINTIFY_API_KEY missing"
         }
       ],
       "content_counts": {
@@ -1054,7 +1052,7 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-12T05:23:20.733Z"
+      "lastBeat": "2026-06-12T15:28:22.051Z"
     },
     {
       "name": "auto-restart-watchdog-cycle",
@@ -1062,7 +1060,7 @@
       "status": "healthy",
       "ageMin": 3,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-12T05:21:18.318Z"
+      "lastBeat": "2026-06-12T15:26:18.732Z"
     },
     {
       "name": "customer-success",
@@ -1070,7 +1068,7 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-12T05:23:20.638Z"
+      "lastBeat": "2026-06-12T15:28:21.940Z"
     },
     {
       "name": "events-poller",
@@ -1078,7 +1076,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-12T05:23:54.749Z"
+      "lastBeat": "2026-06-12T15:28:56.066Z"
     },
     {
       "name": "expansion-prompter",
@@ -1086,13 +1084,13 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-12T05:23:20.619Z"
+      "lastBeat": "2026-06-12T15:28:21.888Z"
     },
     {
       "name": "gmail-cs-triage",
       "kind": "daemon",
       "status": "error",
-      "ageMin": 1845,
+      "ageMin": 2450,
       "cadenceMin": 30,
       "lastBeat": "2026-06-10T22:39:26.000Z"
     },
@@ -1102,7 +1100,7 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-12T05:23:20.762Z"
+      "lastBeat": "2026-06-12T15:28:22.124Z"
     },
     {
       "name": "growth-watcher",
@@ -1110,7 +1108,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-12T05:23:42.929Z"
+      "lastBeat": "2026-06-12T15:28:44.247Z"
     },
     {
       "name": "hot-flash-co-orders",
@@ -1118,13 +1116,13 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-12T05:23:20.680Z"
+      "lastBeat": "2026-06-12T15:28:21.940Z"
     },
     {
       "name": "lawn-care-gm-kennum-lawn-care",
       "kind": "oneshot",
       "status": "error",
-      "ageMin": 1839,
+      "ageMin": 2444,
       "cadenceMin": 30,
       "lastBeat": "2026-06-10T22:44:58.475Z"
     },
@@ -1134,7 +1132,7 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-12T05:23:20.693Z"
+      "lastBeat": "2026-06-12T15:28:21.950Z"
     },
     {
       "name": "outbox-deadletter",
@@ -1142,15 +1140,15 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-12T05:23:20.679Z"
+      "lastBeat": "2026-06-12T15:28:21.946Z"
     },
     {
       "name": "outbox-deadletter-cycle",
       "kind": "daemon",
       "status": "stale",
-      "ageMin": 13,
+      "ageMin": 18,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-12T05:11:17.956Z"
+      "lastBeat": "2026-06-12T15:11:18.119Z"
     },
     {
       "name": "proactive-monitor",
@@ -1158,13 +1156,13 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-12T05:23:20.837Z"
+      "lastBeat": "2026-06-12T15:28:22.072Z"
     },
     {
       "name": "realty-scout-day14-realty",
       "kind": "oneshot",
       "status": "error",
-      "ageMin": 2068,
+      "ageMin": 2673,
       "cadenceMin": 60,
       "lastBeat": "2026-06-10T18:56:30.393Z"
     },
@@ -1174,7 +1172,7 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-12T05:23:20.802Z"
+      "lastBeat": "2026-06-12T15:28:22.073Z"
     },
     {
       "name": "skill-multiplier",
@@ -1182,13 +1180,13 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-12T05:23:20.874Z"
+      "lastBeat": "2026-06-12T15:28:22.073Z"
     },
     {
       "name": "stripe-cs-loop",
       "kind": "daemon",
       "status": "error",
-      "ageMin": 1859,
+      "ageMin": 2464,
       "cadenceMin": 60,
       "lastBeat": "2026-06-10T22:24:54.000Z"
     },
@@ -1198,21 +1196,21 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-12T05:23:20.874Z"
+      "lastBeat": "2026-06-12T15:28:22.072Z"
     },
     {
       "name": "telegram-poller",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-12T05:23:34.309Z"
+      "lastBeat": "2026-06-12T15:28:35.596Z"
     },
     {
       "name": "vercel-deploy-monitor",
       "kind": "daemon",
       "status": "error",
-      "ageMin": 1880,
+      "ageMin": 2485,
       "cadenceMin": 60,
       "lastBeat": "2026-06-10T22:04:17.000Z"
     },
@@ -1222,7 +1220,7 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-06-12T05:23:20.874Z"
+      "lastBeat": "2026-06-12T15:28:22.073Z"
     }
   ],
   "skill_counts": {
@@ -1294,6 +1292,15 @@
       "suggested_archetype": "info-product",
       "rationale": "Lemon8's growth and emphasis on visual aesthetics create a clear demand for tailored content creation solutions. Many creators are looking for shortcuts and best practices to master the platform's unique style and engagement mechanisms. An info-product offering curated templates and a strategic guide can quickly address this pain point, enabling creators to professionalize their presence and accel",
       "pitched": true,
+      "status": "open"
+    },
+    {
+      "id": "multigenerational-care-orchestrator",
+      "niche": "Integrated care & well-being orchestrator for working sandwich generation caregivers.",
+      "total_score": 89,
+      "suggested_archetype": "saas",
+      "rationale": "The 'sandwich generation' is a large, stressed demographic whose needs for integrated care management are underserved by fragmented apps and resources. A SaaS platform offering intelligent task orchestration across multiple dependents, proactive burnout prevention, and streamlined family communication provides a compelling value proposition by significantly reducing the caregiver's 'mental load' a",
+      "pitched": false,
       "status": "open"
     },
     {
@@ -1392,6 +1399,15 @@
       "total_score": 88,
       "suggested_archetype": "info-product",
       "rationale": "Divorce often leaves individuals with a shared home or a new, empty space that carries emotional baggage. There's a strong desire to reclaim identity and create a fresh start through their environment, but often with limited funds and overwhelming emotional stress. A digital guide can provide a structured, empathetic, and budget-conscious path to achieve this, making it highly appealing to a solo ",
+      "pitched": true,
+      "status": "open"
+    },
+    {
+      "id": "second-act-self-design-divorce",
+      "niche": "Guided identity & lifestyle rebuilding for divorced women 40+.",
+      "total_score": 88,
+      "suggested_archetype": "course",
+      "rationale": "The 'identity gap' and the need for self-reconstruction are deep psychological needs for divorced women over 40. While many coaches and support groups exist, a scalable, structured digital course combined with a supportive community can provide a clear pathway for women to intentionally design their new life. This moves beyond coping mechanisms to proactive self-discovery and empowerment, offering",
       "pitched": true,
       "status": "open"
     },
@@ -1554,6 +1570,15 @@
       "total_score": 87,
       "suggested_archetype": "info-product",
       "rationale": "Content creators build substantial digital assets and intellectual property that are not adequately covered by standard estate planning. There's a clear market gap for tailored, actionable, and affordable resources that specifically address the unique challenges of monetized digital assets, varying platform policies, and brand continuity. A solo founder can create comprehensive digital guides and ",
+      "pitched": false,
+      "status": "open"
+    },
+    {
+      "id": "digital-legacy-sentimental-manager",
+      "niche": "Digital legacy & sentimental item management for seniors aging in place and their adult children.",
+      "total_score": 87,
+      "suggested_archetype": "saas",
+      "rationale": "There's a clear emotional and logistical pain point around decluttering sentimental items for seniors, especially when they are not necessarily moving but aiming to 'age in place.' Existing solutions are often full-service move managers or generic inventory apps. A dedicated SaaS platform that guides the process of digital preservation (photos, stories, audio notes), offers empathetic decluttering",
       "pitched": false,
       "status": "open"
     },
@@ -1815,6 +1840,15 @@
       "total_score": 85,
       "suggested_archetype": "physical-product",
       "rationale": "The substantial growth in flat-back earrings highlights a widespread unmet need for comfortable piercing solutions. By offering both modern, sensitive-skin-friendly jewelry and comprehensive, gentle aftercare products, we can create a trusted brand that solves common pain points (discomfort, irritation, removal for sleep) for a growing demographic of piercing enthusiasts and parents.",
+      "pitched": true,
+      "status": "open"
+    },
+    {
+      "id": "dopamine-decor-guides",
+      "niche": "Curated guides & resources for joyful, mood-boosting home decor inspired by TikTok's dopamine decor trend.",
+      "total_score": 85,
+      "suggested_archetype": "info-product",
+      "rationale": "Many people want to embrace this aesthetic but struggle with cohesion, sourcing affordable items, or finding inspiration tailored to their specific mood goals. An info-product can provide accessible, actionable guidance for creating joyful spaces, which is easily scalable for a solo founder. The trend emphasizes emotional impact over aesthetic neutrality, allowing for a unique 'mood-first' approac",
       "pitched": true,
       "status": "open"
     },
@@ -2206,6 +2240,15 @@
       "status": "open"
     },
     {
+      "id": "functional-fragrance-guides",
+      "niche": "Digital guides and curated resources for using functional fragrances to enhance mood, focus, and well-being.",
+      "total_score": 83,
+      "suggested_archetype": "info-product",
+      "rationale": "The market needs education on *how* to effectively use functional fragrances, what blends work for what moods, and ethical sourcing. An info-product offers a low-overhead entry point for a solo founder to capitalize on this emerging trend, providing valuable knowledge that complements existing product offerings.",
+      "pitched": true,
+      "status": "open"
+    },
+    {
       "id": "niche-grant-writing-ai",
       "niche": "AI-powered grant writing assistance for specialized non-profits & academic researchers",
       "total_score": 83,
@@ -2395,6 +2438,15 @@
       "status": "open"
     },
     {
+      "id": "academic-scicomm-kits",
+      "niche": "Visual storytelling kits for academic and educational content creators",
+      "total_score": 82,
+      "suggested_archetype": "info-product",
+      "rationale": "There's a clear demand for academics to communicate their work beyond traditional journals, but they often lack the tools and design expertise to create engaging visual content for public consumption. This opportunity focuses on providing highly aesthetic, niche-specific templates that simplify this process, allowing solo founders to leverage their design and communication skills to serve a growin",
+      "pitched": true,
+      "status": "open"
+    },
+    {
       "id": "ai-microskill-learning-paths",
       "niche": "AI-curated learning paths for niche professional micro-skills",
       "total_score": 82,
@@ -2473,6 +2525,15 @@
       "suggested_archetype": "physical-product",
       "rationale": "The consistent stream of pet food recalls has created a significant void in consumer trust. Pet owners view their animals as family and are highly motivated to find safe, reliable food. A brand built on extreme transparency and verifiable safety directly addresses this unmet demand, offering a premium alternative to compromised mass-market options.",
       "pitched": false,
+      "status": "open"
+    },
+    {
+      "id": "sustainable-brand-transparency-kits",
+      "niche": "Aesthetic transparency communication kits for sustainable micro-brands",
+      "total_score": 82,
+      "suggested_archetype": "info-product",
+      "rationale": "While large companies have resources for sustainability reporting, micro-brands struggle to translate their ethical practices into compelling, consumer-facing narratives. This opportunity provides easy-to-use, aesthetic templates and guides for transparent communication (e.g., 'our journey' infographics, ethical ingredient breakdowns), empowering small brands to build trust and leverage their valu",
+      "pitched": true,
       "status": "open"
     },
     {
@@ -2692,6 +2753,15 @@
       "status": "open"
     },
     {
+      "id": "ttrpg-adventure-productization-kits",
+      "niche": "Professional productization kits for TTRPG adventure and asset creators",
+      "total_score": 81,
+      "suggested_archetype": "info-product",
+      "rationale": "Many TTRPG creators are highly skilled at world-building and game design but lack the 'product design' and marketing expertise to effectively package their creations for sale. This opportunity provides templates, guides, and workflow tools to transform raw assets into professional, aesthetically cohesive digital products (e.g., adventure modules with integrated maps, character sheets, and lore boo",
+      "pitched": true,
+      "status": "open"
+    },
+    {
       "id": "ttrpg-aesthetic-assets",
       "niche": "Hyper-aesthetic curated asset packs for niche TTRPG campaign settings",
       "total_score": 81,
@@ -2904,6 +2974,15 @@
       "total_score": 79,
       "suggested_archetype": "info-product",
       "rationale": "There's clear demand from small businesses and creators to efficiently repurpose content, with AI acting as a key enabler. The existing gap is not just general AI content generation, but structured, niche-specific workflows and templates that guide users through the *strategic adaptation* process for multiple platforms, ensuring brand consistency and adherence to platform best practices. This spec",
+      "pitched": true,
+      "status": "open"
+    },
+    {
+      "id": "at-home-sound-sanctuary-kits",
+      "niche": "Accessible guides and curated tools for personal at-home sound healing and meditation practices.",
+      "total_score": 79,
+      "suggested_archetype": "physical-product",
+      "rationale": "While digital content for sound healing exists, many users desire a tactile experience. Curated, affordable physical kits (e.g., small singing bowl, tuning fork, chimes) combined with instructional guides offer a complete, low-barrier solution. This can be launched as a physical product with print-on-demand guides or dropshipping, making it solo-founder friendly.",
       "pitched": true,
       "status": "open"
     },
@@ -3423,6 +3502,26 @@
   ],
   "empire_battle_log": [
     {
+      "ts": "2026-06-12T15:00:04.764Z",
+      "tenant": "hot-flash-co",
+      "actor": "marketing-engine",
+      "action": "fatal_error",
+      "error": "PRINTIFY_API_KEY missing"
+    },
+    {
+      "ts": "2026-06-12T13:00:05.810Z",
+      "tenant": "hot-flash-co",
+      "actor": "daily-engine",
+      "action": "fatal_error",
+      "error": "PRINTIFY_API_KEY missing"
+    },
+    {
+      "ts": "2026-06-12T13:00:05.806Z",
+      "tenant": "hot-flash-co",
+      "actor": "daily-engine",
+      "action": "run_started"
+    },
+    {
       "ts": "2026-06-11T15:00:04.109Z",
       "tenant": "hot-flash-co",
       "actor": "marketing-engine",
@@ -3673,29 +3772,6 @@
       "tier_a": 71545,
       "tier_b": 74067,
       "top_deal": "3030 39TH ST SW (96)"
-    },
-    {
-      "ts": "2026-06-10T18:56:17.299Z",
-      "tenant": "day14-realty",
-      "actor": "re-enrichment-agent",
-      "action": "enrichment_skipped_no_key",
-      "pending": 573719
-    },
-    {
-      "ts": "2026-06-10T18:56:16.389Z",
-      "tenant": "day14-realty",
-      "actor": "re-comp-analyst",
-      "action": "comps_computed",
-      "properties": 590693,
-      "comp_arvs": 409432
-    },
-    {
-      "ts": "2026-06-10T18:00:26.040Z",
-      "tenant": "hot-flash-co",
-      "actor": "cross-poster",
-      "action": "variants_generated",
-      "source": "/Users/jcboppington/Documents/businesses/hot-flash-co/tiktok-scripts/2026-06-10/_index.json",
-      "platforms": 9
     }
   ],
   "human_todos": [
@@ -3703,1489 +3779,71 @@
       "id": "todo-1",
       "seq": 1,
       "tenant": "day14",
-      "title": "Get an Anthropic API key — unblocks all agent builds",
-      "detail": "Builds (Kennum and every future business) keep dying on the Gemini 429 quota. The durable fix is the Claude fallback, now wired into the whole bootstrap chain — it just needs a key. Generate one at console.anthropic.com -> Settings -> API Keys (requires enabling API billing). Then paste the key to Claude; Claude will add it to .env.local + Vercel and re-run the Kennum build for you.",
-      "category": "credentials",
+      "title": "Stripe + Vercel go-live (G1)",
+      "detail": "The only revenue blocker. Click-by-click: DAY14-LAUNCH-FINAL-V2 doc in Google Drive. ~65 min from any browser, doable mid-trip.",
+      "category": "revenue",
       "priority": "high",
       "status": "open",
-      "created_at": "2026-05-19T21:00:00.000Z",
+      "created_at": "2026-06-12T05:54:41.904162+00:00",
       "completed_at": null,
-      "source": "claude-setup",
-      "instructions": {
-        "steps": [
-          "Open the Anthropic Console and sign in (or create an account).",
-          "Go to Settings -> Billing and enable API billing / add a payment method — API keys do not work without it.",
-          "Go to Settings -> API Keys and click Create Key; copy the key (starts with sk-ant-).",
-          "Paste the key straight to Claude in chat — do NOT type it into any file yourself.",
-          "Claude adds it as ANTHROPIC_API_KEY in .env.local + Vercel and re-runs the Kennum build."
-        ],
-        "links": [
-          {
-            "label": "Anthropic Console — API Keys",
-            "url": "https://console.anthropic.com/settings/keys"
-          },
-          {
-            "label": "Anthropic Console — Billing",
-            "url": "https://console.anthropic.com/settings/billing"
-          }
-        ]
-      }
+      "source": "claude-cleanup-2026-06-12",
+      "instructions": null
     },
     {
       "id": "todo-2",
       "seq": 2,
       "tenant": "day14",
-      "title": "Add MAILERLITE_API_KEY to .env.local + Vercel",
-      "detail": "Newsletter signup on day14.us and every brand site stays inert until this key is set. Get it from mailerlite.com -> Integrations -> Developers -> API, then paste it to Claude to wire in.",
-      "category": "credentials",
+      "title": "Text Angela the 5 content questions",
+      "detail": "customers/angela-tutoring/00-intake.md has the list. Her answers during the trip = $750 Spark build lands return week.",
+      "category": "revenue",
       "priority": "high",
       "status": "open",
-      "created_at": "2026-05-19T21:00:00.000Z",
+      "created_at": "2026-06-12T05:54:41.904162+00:00",
       "completed_at": null,
-      "source": "claude-setup",
-      "instructions": {
-        "steps": [
-          "Open MailerLite and sign in (a free account is fine to start).",
-          "Go to Integrations -> Developers -> API (Account settings).",
-          "Generate a new API token and copy it.",
-          "Paste the token straight to Claude in chat — do NOT type it into any file yourself.",
-          "Claude adds it as MAILERLITE_API_KEY in .env.local + Vercel so newsletter signup goes live."
-        ],
-        "links": [
-          {
-            "label": "MailerLite — API integrations",
-            "url": "https://dashboard.mailerlite.com/integrations/api"
-          }
-        ]
-      }
+      "source": "claude-cleanup-2026-06-12",
+      "instructions": null
     },
     {
-      "id": "todo-8",
-      "seq": 8,
-      "tenant": "day14-realty",
-      "title": "Feed the real estate intake — drop a county property CSV",
-      "detail": "The real estate segment is built and the agents run, but they have no data yet. Download a property-appraiser data export from a county site and drop the CSV into businesses/day14-realty/intake/. The intake agent ingests + evaluates it on the next scout run.",
-      "category": "data",
+      "id": "todo-4",
+      "seq": 4,
+      "tenant": "day14",
+      "title": "Jun 22: outreach batch 1 (10 sends)",
+      "detail": "On the calendar. Drafts + 20 prospects in founder-ops/PROSPECTS-sw-fl-home-services.md (Splash Jacks framing after night-1 rebuild).",
+      "category": "revenue",
       "priority": "high",
       "status": "open",
-      "created_at": "2026-05-20T20:15:00.000Z",
+      "created_at": "2026-06-12T05:54:41.904162+00:00",
       "completed_at": null,
-      "source": "claude-direct",
-      "instructions": {
-        "steps": [
-          "Open a Florida county property-appraiser site and find its data download / export page.",
-          "Download the property-roll export as a CSV file.",
-          "Move the CSV into ~/Documents/businesses/day14-realty/intake/ on the Mac.",
-          "The intake agent ingests and evaluates it automatically on the next scout run."
-        ],
-        "links": [
-          {
-            "label": "Lee County Property Appraiser",
-            "url": "https://www.leepa.org"
-          },
-          {
-            "label": "Collier County Property Appraiser",
-            "url": "https://www.collierappraiser.com"
-          }
-        ],
-        "code": "open ~/Documents/businesses/day14-realty/intake/"
-      },
-      "reconciler_note": "Looks done — an audit-log entry plainly matches — claude-cowork/phase0_pipeline_unfreeze on 2026-05-25. Review and close."
+      "source": "claude-cleanup-2026-06-12",
+      "instructions": null
     },
     {
-      "id": "todo-15",
-      "seq": 15,
-      "tenant": "alignmd",
-      "title": "Run AlignMD Supabase migration 0011_credentialing.sql",
-      "detail": "Phase 1 credentialing workflow. Adds the credentialing_items table (per-provider packet checklist) plus RLS mirroring 0003/0007. Idempotent and safe to re-run. Until it is applied, the new Credentialing tab shows a clean empty state — the app will not crash.",
-      "category": "database",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-05-22T05:25:43.612Z",
-      "completed_at": null,
-      "source": "overnight-agent",
-      "instructions": {
-        "steps": [
-          "Open the AlignMD Supabase project → SQL Editor.",
-          "Paste the contents of supabase/migrations/0011_credentialing.sql and run it.",
-          "Confirm the credentialing_items table and its RLS policies exist.",
-          "Reload a provider's Credentialing tab — the packet checklist is now editable."
-        ],
-        "code": "cd ~/Documents/alignmd && cat supabase/migrations/0011_credentialing.sql"
-      }
-    },
-    {
-      "id": "todo-16",
-      "seq": 16,
-      "tenant": "alignmd",
-      "title": "Build-check & deploy AlignMD credentialing (Phase 1)",
-      "detail": "Overnight run added the credentialing packet (migration 0011, lib/credentialing.ts, credentialing-actions.ts, credentialing-panel.tsx, and a new Credentialing tab on the provider page). npx tsc --noEmit and npx next lint both pass. The overnight sandbox could not finish npx next build (per-call time limit) or reach Vercel to deploy, so this needs an operator run.",
-      "category": "deploy",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-05-22T05:25:43.615Z",
-      "completed_at": null,
-      "source": "overnight-agent",
-      "instructions": {
-        "steps": [
-          "Run the production build locally and confirm it passes clean.",
-          "Deploy to production once the build succeeds.",
-          "Smoke-test the Credentialing tab on a provider at alignmd.vercel.app."
-        ],
-        "code": "cd ~/Documents/alignmd && npx next build && npx vercel --prod"
-      }
-    },
-    {
-      "id": "todo-18",
-      "seq": 18,
-      "tenant": "alignmd",
-      "title": "Build-check & deploy AlignMD job-feed v2 (block 2)",
-      "detail": "Overnight block 2 built job-feed v2: staff scanned-jobs view (/jobs/scanned) with a Refresh-now trigger, clinician save/interested jobs, and sharper specialty inference. tsc --noEmit and next lint both pass clean; next build could not finish inside the overnight sandbox's 45s per-command limit, so the build gate was not verified and nothing was deployed. Run the build locally, then deploy.",
-      "category": "deploy",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-05-22T06:28:23.720Z",
-      "completed_at": null,
-      "source": "overnight-block-2",
-      "instructions": {
-        "steps": [
-          "Pull the latest changes on the AlignMD repo.",
-          "Run the full build to confirm it passes.",
-          "If the build is clean, deploy to production.",
-          "Apply migration 0012_saved_jobs.sql first (see the related to-do) so the saved-jobs feature works."
-        ],
-        "code": "cd ~/Documents/alignmd && npx next build && npx vercel --prod"
-      }
-    },
-    {
-      "id": "todo-19",
-      "seq": 19,
-      "tenant": "alignmd",
-      "title": "Build-check & deploy AlignMD clinician portal polish (block 3)",
-      "detail": "Overnight block 3 made the clinician portal provider-first: a credentialing-progress widget, a profile-completeness meter with specific nudges, and a matched-jobs preview on the portal home, plus mobile-friendly table wrapping across the portal pages. npx tsc --noEmit and npx next lint both pass clean; npx next build could not finish inside the overnight sandbox's 45s per-command limit, so the build gate was not verified and nothing was deployed. Run the build locally, then deploy. No new migration — the widgets reuse credentialing_items (0011) and external_jobs (0010) and degrade to empty states if those tables are not yet applied.",
-      "category": "deploy",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-05-22T07:42:01.000Z",
-      "completed_at": null,
-      "source": "overnight-block-3",
-      "instructions": {
-        "steps": [
-          "Pull the latest changes on the AlignMD repo.",
-          "Run the full production build to confirm it passes clean.",
-          "If the build is clean, deploy to production.",
-          "Smoke-test the clinician portal home at alignmd.vercel.app — credentialing progress, profile strength, and matched jobs."
-        ],
-        "code": "cd ~/Documents/alignmd && npx next build && npx vercel --prod"
-      }
-    },
-    {
-      "id": "todo-26",
-      "seq": 26,
-      "tenant": "alignmd",
-      "title": "Run AlignMD Supabase migration 0013_clinician_portal.sql",
-      "detail": "Paste the 0013 block of APPLY-MIGRATIONS-0011-0013.sql into Supabase SQL editor and run. Gates the clinician portal polish deploy (block 3).",
-      "category": "migration",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-05-28T12:47:19.725Z",
-      "completed_at": null,
-      "source": "workday-t02-seed"
-    },
-    {
-      "id": "todo-27",
-      "seq": 27,
+      "id": "todo-3",
+      "seq": 3,
       "tenant": "day14",
-      "title": "Toggle Vercel Web Analytics ON for studio project",
-      "detail": "Vercel dashboard → studio project → Analytics tab → enable Web Analytics. The <Analytics /> component is a no-op until this toggle flips. Then run `npm install` so @vercel/analytics resolves and src/types/vercel-analytics.d.ts can be removed.",
-      "category": "settings",
-      "priority": "high",
+      "title": "Post 2 validation posts (Leash + Playbook)",
+      "detail": "Copy-paste ready in founder-ops/VALIDATION-POSTS-leash-playbook.md. Phone-postable from the trip; replies accumulate.",
+      "category": "growth",
+      "priority": "medium",
       "status": "open",
-      "created_at": "2026-05-28T12:47:19.727Z",
+      "created_at": "2026-06-12T05:54:41.904162+00:00",
       "completed_at": null,
-      "source": "workday-t02-seed",
-      "instructions": {
-        "steps": [
-          "Open vercel.com/<team>/studio/analytics",
-          "Click Enable Web Analytics",
-          "cd ~/Documents/studio && npm install",
-          "Optional: rm src/types/vercel-analytics.d.ts once the package resolves"
-        ],
-        "links": [
-          {
-            "label": "Vercel Analytics docs",
-            "url": "https://vercel.com/docs/analytics"
-          }
-        ]
-      }
+      "source": "claude-cleanup-2026-06-12",
+      "instructions": null
     },
     {
-      "id": "todo-43",
-      "seq": 43,
+      "id": "todo-5",
+      "seq": 5,
       "tenant": "day14",
-      "title": "AlignMD migrations 0011–0013",
-      "detail": "paste `~/Documents/alignmd/APPLY-MIGRATIONS-0011-0013.sql` into Supabase before any AlignMD deploy.",
-      "category": "blocked",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-05-28T12:47:19.752Z",
-      "completed_at": null,
-      "source": "morning-report:2026-05-28"
-    },
-    {
-      "id": "todo-44",
-      "seq": 44,
-      "tenant": "day14",
-      "title": "`~/Documents/studio/.env.local` keys",
-      "detail": "needed for the LLM-backed and external-API paths.",
-      "category": "blocked",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-05-28T12:47:19.753Z",
-      "completed_at": null,
-      "source": "morning-report:2026-05-28"
-    },
-    {
-      "id": "todo-45",
-      "seq": 45,
-      "tenant": "day14",
-      "title": "RentCast key",
-      "detail": "same; gates the realty pipeline leaving template mode.",
-      "category": "blocked",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-05-28T12:47:19.755Z",
-      "completed_at": null,
-      "source": "morning-report:2026-05-28"
-    },
-    {
-      "id": "todo-46",
-      "seq": 46,
-      "tenant": "day14",
-      "title": "Telegram poller restart",
-      "detail": "kick the LaunchAgent whenever its env changes.",
-      "category": "blocked",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-05-28T12:47:19.756Z",
-      "completed_at": null,
-      "source": "morning-report:2026-05-28"
-    },
-    {
-      "id": "todo-47",
-      "seq": 47,
-      "tenant": "day14",
-      "title": "Draft sign-offs",
-      "detail": "realty drafters write DRAFT-banner markdown only; attorney review required before any send. Also the parked content drafts (Life Loophole articles, Hot Flash product concepts, CS templates).",
-      "category": "blocked",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-05-28T12:47:19.758Z",
-      "completed_at": null,
-      "source": "morning-report:2026-05-28"
-    },
-    {
-      "id": "todo-48",
-      "seq": 48,
-      "tenant": "day14",
-      "title": "Vercel Analytics dashboard toggle",
-      "detail": "flip **Project → Analytics → Enable Web Analytics** ON. The `<Analytics />` component is a no-op until that toggle flips. Run `npm install` after pulling so `@vercel/analytics` is actually pulled in (the `d.ts` shim then becomes optional cleanup).",
-      "category": "blocked",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-05-28T12:47:19.760Z",
-      "completed_at": null,
-      "source": "morning-report:2026-05-28"
-    },
-    {
-      "id": "todo-49",
-      "seq": 49,
-      "tenant": "day14",
-      "title": "Skip-trace provider pick",
-      "detail": "`re-skip-trace.mjs` is a stub. Choose a provider (BatchSkipTracing, REI Skip, etc.), wire it in, and set `SKIP_TRACE_API_KEY`.",
-      "category": "blocked",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-05-28T12:47:19.761Z",
-      "completed_at": null,
-      "source": "morning-report:2026-05-28"
-    },
-    {
-      "id": "todo-94",
-      "seq": 94,
-      "tenant": "empire",
-      "title": "LAUNCH: merge redesign branch → main and push",
-      "detail": "day14.us production is still serving the OLD main (Jun 6) — the 'One operator. Six businesses' pivot page. The entire new customer site (new hero, $1,500–$24k pricing, intake) lives only on redesign/apple-base44-2026-06-03 as Vercel previews. Merging also ships tonight's security fixes: /dashboard and internal /data JSON (empire-state, ops, inboxes, cs-templates) are currently PUBLIC on prod; new middleware gates them. Agents can't push to remote — operator action.\n\nProposed action: git checkout main && git merge redesign/apple-base44-2026-06-03 && git push origin main",
-      "category": "review",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-06-10T04:40:32.822Z",
-      "completed_at": null,
-      "source": "mcp-server",
-      "instructions": {
-        "steps": [
-          "git checkout main && git merge redesign/apple-base44-2026-06-03 && git push origin main"
-        ]
-      }
-    },
-    {
-      "id": "todo-95",
-      "seq": 95,
-      "tenant": "empire",
-      "title": "Set ADMIN_PASSWORD + service keys in Vercel env (and .env.local)",
-      "detail": ".env.local has only VERCEL_OIDC_TOKEN + GEMINI_API_KEY — every webhook 500s and E2E fails 3/7. ADMIN_PASSWORD is now REQUIRED in prod: the new middleware gates /admin, /dashboard, and internal /data JSON behind it (404/503 without it). After setting local keys, boot-day14.sh also reinstalls the dead telegram-poller and missing events-poller.\n\nProposed action: Vercel → day14-studio → Settings → Environment Variables: add ADMIN_PASSWORD, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, RESEND_API_KEY, ANTHROPIC_API_KEY, TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, SUPABASE_SERVICE_ROLE_KEY. Mirror into ~/Documents/studio/.env.local, then bash scripts/boot-day14.sh",
-      "category": "review",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-06-10T04:40:32.863Z",
-      "completed_at": null,
-      "source": "mcp-server",
-      "instructions": {
-        "steps": [
-          "Vercel → day14-studio → Settings → Environment Variables: add ADMIN_PASSWORD, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, RESEND_API_KEY, ANTHROPIC_API_KEY, TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, SUPABASE_SERVICE_ROLE_KEY. Mirror into ~/Documents/studio/.env.local, then bash scripts/boot-day14.sh"
-        ]
-      }
-    },
-    {
-      "id": "todo-96",
-      "seq": 96,
-      "tenant": "empire",
-      "title": "Make GitHub repo jacksbot147-code/day14-studio private",
-      "detail": "The repo is PUBLIC and contains all internal business state committed under public/data/ (empire-state.json with your todo list and battle log, ops/*.json, inboxes, CS templates) plus drafts/. Middleware now blocks the URLs on day14.us, but anyone can still read it all on GitHub until the repo is private. No customer PII found, but it exposes $0 revenue and internal strategy to prospects.\n\nProposed action: github.com/jacksbot147-code/day14-studio → Settings → Danger Zone → Change visibility → Private. Vercel keeps deploying fine.",
-      "category": "review",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-06-10T04:40:32.885Z",
-      "completed_at": null,
-      "source": "mcp-server",
-      "instructions": {
-        "steps": [
-          "github.com/jacksbot147-code/day14-studio → Settings → Danger Zone → Change visibility → Private. Vercel keeps deploying fine."
-        ]
-      }
-    },
-    {
-      "id": "todo-97",
-      "seq": 97,
-      "tenant": "empire",
-      "title": "Provide a real phone number for the homepage hero (optional)",
-      "detail": "The hero showed placeholder (000) 000-0000 to every visitor. Swapped to hello@day14.us for launch. Same placeholder pattern exists in brands/angela-music/theme.ts ((239) 000-0000, has a TODO for Angela's real number).\n\nProposed action: Reply with the number to display, or leave as hello@day14.us",
-      "category": "review",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-06-10T04:40:32.908Z",
-      "completed_at": null,
-      "source": "mcp-server",
-      "instructions": {
-        "steps": [
-          "Reply with the number to display, or leave as hello@day14.us"
-        ]
-      }
-    },
-    {
-      "id": "todo-98",
-      "seq": 98,
-      "tenant": "empire",
-      "title": "Review overnight outreach prep: 39-prospect SWFL list + 3-touch Spark email sequence drafts",
-      "detail": "Overnight scheduled run (day14-overnight-outreach-prep, 2026-06-10) produced research and drafts only — nothing was sent, no MailerLite campaigns created, no business contacted.\n\nProduced:\n1. content/outreach/prospects-swfl-2026-06-10.md — 39 prospects across Naples/Fort Myers/Cape Coral/Bonita Springs in lawn care (13), pool (7), detailing (7), home services (8), restaurants/food (4). Each has city, vertical, web-presence classification (mostly Facebook-only), and a Spark-fit rationale. Caveats noted in the file: presence classifications need spot-verification before contact, no emails collected yet (most publish phone/FB only), restaurants were the thinnest vertical.\n2. content/outreach/sequences/ — three DRAFT emails: spark-touch-1-intro.md (day 0), spark-touch-2-value-followup.md (day 4-5), spark-touch-3-breakup.md (day 10-12). Plain-spoken voice, cal.com/day14/intro booking link, hello@day14.us reply-to. Touch 2 contains a flagged claim (\"most of my customers...\") to soften until true.\n\nWhy this needs you: outbound to prospects is customer-facing — hard rule 4. Sequence copy, prospect selection, and the contact-method question (email lookup vs FB message) are all yours to call.\n\nProposed action: Review and approve/edit the 3 sequence drafts and the prospect list; decide first-touch channel; then green-light building the send list (email lookup pass on approved prospects)",
-      "category": "review",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-06-10T06:10:33.808Z",
-      "completed_at": null,
-      "source": "mcp-server",
-      "instructions": {
-        "steps": [
-          "Review and approve/edit the 3 sequence drafts and the prospect list; decide first-touch channel; then green-light building the send list (email lookup pass on approved prospects)"
-        ]
-      }
-    },
-    {
-      "id": "todo-99",
-      "seq": 99,
-      "tenant": "empire",
-      "title": "Mac mini arrival kit ready — docs/MINI-ARRIVAL-KIT.md",
-      "detail": "One doc to follow end-to-end tonight, commands inline — committed locally as 8700a15 (no push).\nReconciles all three mini docs (handover wins): rsync from laptop replaces gh clone, bootstrap-day14-os.sh marked skip-unless-fresh, env-keys step (todo-95, 8 key names) added before rsync so verify goes green.\nAll referenced script paths verified present at 29885fe; no missing paths.\n\nProposed action: Open docs/MINI-ARRIVAL-KIT.md and follow Phases 0–6 tonight when the mini arrives.",
-      "category": "review",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-06-10T14:13:22.713Z",
-      "completed_at": null,
-      "source": "mcp-server",
-      "instructions": {
-        "steps": [
-          "Open docs/MINI-ARRIVAL-KIT.md and follow Phases 0–6 tonight when the mini arrives."
-        ]
-      }
-    },
-    {
-      "id": "todo-100",
-      "seq": 100,
-      "tenant": "empire",
-      "title": "todo-95: paste 8 env keys into .env.local before tonight's mini cutover (by 6 PM)",
-      "detail": "All 8 required keys are missing from ~/Documents/studio/.env.local: STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, RESEND_API_KEY, ANTHROPIC_API_KEY, TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, SUPABASE_SERVICE_ROLE_KEY, ADMIN_PASSWORD. The mini inherits .env.local via tonight's rsync, so they must be in place by 6 PM. Per-key instructions (where to get each value, line format) are in docs/env-keys-checklist-2026-06-10.md. They also need to be added to Vercel (day14-studio → Settings → Environment Variables) for prod.\n\nProposed action: Open docs/env-keys-checklist-2026-06-10.md, retrieve each of the 8 key values, and append them to ~/Documents/studio/.env.local by 6 PM today; then add the same keys in Vercel project settings.",
-      "category": "review",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-06-10T18:02:41.892Z",
-      "completed_at": null,
-      "source": "mcp-server",
-      "instructions": {
-        "steps": [
-          "Open docs/env-keys-checklist-2026-06-10.md, retrieve each of the 8 key values, and append them to ~/Documents/studio/.env.local by 6 PM today; then add the same keys in Vercel project settings."
-        ]
-      }
-    },
-    {
-      "id": "todo-101",
-      "seq": 101,
-      "tenant": "empire",
-      "title": "Outreach package blocked on your approval — review 3 sequence drafts, then pick 10 prospects",
-      "detail": "Sequences are still marked NOT APPROVED (todo-98 unanswered), so per the gate I built the prospect tracker and stopped — no MailerLite setup, no expansion plan, nothing sent. Ready now: content/outreach/prospect-tracker.md (39 prospects, all not-contacted, one personalization hook each + pre-send checklist) and the 3 Spark touch drafts in content/outreach/sequences/. Everything downstream (MailerLite drafts, day-2 expansion plan) unblocks the moment you approve.\n\nProposed action: Approve the 3 sequence drafts (add APPROVED to each file or tap todo-98), then pick 10 prospects from prospect-tracker.md to send touch 1 manually.",
-      "category": "review",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-06-10T20:02:29.960Z",
-      "completed_at": null,
-      "source": "mcp-server",
-      "instructions": {
-        "steps": [
-          "Approve the 3 sequence drafts (add APPROVED to each file or tap todo-98), then pick 10 prospects from prospect-tracker.md to send touch 1 manually."
-        ]
-      }
-    },
-    {
-      "id": "todo-102",
-      "seq": 102,
-      "tenant": "empire",
-      "title": "Tonight's run-of-show ready — 2 blockers remaining",
-      "detail": "Final pre-arrival sweep (5:30 PM) re-checked live, full timeline in docs/run-of-show-2026-06-10-evening.md. Top 3: (1) Keys 0/8 in .env.local — paste all 8 BEFORE box open, recipes in docs/env-keys-checklist-2026-06-10.md; (2) redesign branch unmerged AND 5 commits unpushed (arrival kit + scripts exist only on this laptop) — push the branch tonight as insurance, merge stays day-2; (3) 4 of today's prep reports never ran (merge-dryrun, data-hygiene, mini-eve-status, visual-qa) — cutover via rsync is unaffected, but don't trust morning reports.\n\nProposed action: Read docs/run-of-show-2026-06-10-evening.md, paste the 8 env keys into ~/Documents/studio/.env.local, and run: git push origin redesign/apple-base44-2026-06-03",
-      "category": "review",
-      "priority": "high",
-      "status": "open",
-      "created_at": "2026-06-10T21:33:01.110Z",
-      "completed_at": null,
-      "source": "mcp-server",
-      "instructions": {
-        "steps": [
-          "Read docs/run-of-show-2026-06-10-evening.md, paste the 8 env keys into ~/Documents/studio/.env.local, and run: git push origin redesign/apple-base44-2026-06-03"
-        ]
-      }
-    },
-    {
-      "id": "todo-9",
-      "seq": 9,
-      "tenant": "day14-realty",
-      "title": "Add a property-valuation API key (REALESTATE_API_KEY)",
-      "detail": "Optional but recommended. The evaluation layer already scores deals from county data alone; a licensed API (RentCast is cheapest) adds AVM value + rent estimates for sharper flip/rental scores. Generate a key, then paste it to Claude to add as REALESTATE_API_KEY.",
-      "category": "credentials",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-20T20:15:00.000Z",
-      "completed_at": null,
-      "source": "claude-direct",
-      "instructions": {
-        "steps": [
-          "Open RentCast and sign in or create an account (it has the cheapest plan).",
-          "Go to the API section and generate an API key.",
-          "Paste the key straight to Claude in chat — do NOT type it into any file yourself.",
-          "Claude adds it as REALESTATE_API_KEY in .env.local + Vercel; the evaluation layer then adds AVM value + rent estimates."
-        ],
-        "links": [
-          {
-            "label": "RentCast — property data API",
-            "url": "https://www.rentcast.io"
-          },
-          {
-            "label": "RentCast — API dashboard",
-            "url": "https://app.rentcast.io/app/api"
-          }
-        ]
-      }
-    },
-    {
-      "id": "todo-10",
-      "seq": 10,
-      "tenant": "day14-realty",
-      "title": "County records needed: Collier County, FL",
-      "detail": "Day14 needs the public-records property roll for Collier County, FL. Download the CSV from the county property appraiser / open-data portal and drop it into businesses/day14-realty/intake/ named \"collier-county.csv\". The scout ingests, scores, and starts monitoring it automatically.",
-      "category": "realty",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-20T22:07:00.079Z",
-      "completed_at": null,
-      "source": "county-feed-agent",
-      "instructions": {
-        "steps": [
-          "Open the Collier County Property Appraiser site and find its data download / export page (or search \"Collier County FL property appraiser data export\").",
-          "Download the full property-roll export as a CSV.",
-          "Rename the file to exactly \"collier-county.csv\".",
-          "Move it into ~/Documents/businesses/day14-realty/intake/ on the Mac.",
-          "The scout ingests, scores, and starts monitoring it automatically on the next run."
-        ],
-        "links": [
-          {
-            "label": "Collier County Property Appraiser — Downloads",
-            "url": "https://www.collierappraiser.com/index.aspx?page=46"
-          }
-        ],
-        "code": "open ~/Documents/businesses/day14-realty/intake/"
-      },
-      "reconciler_note": "Looks done — the file it names (\"collier-county.csv\") has been ingested — found intake/processed/1779334779322-collier-county.csv. Review and close."
-    },
-    {
-      "id": "todo-12",
-      "seq": 12,
-      "tenant": "day14-realty",
-      "title": "County records needed: Lee County, FL",
-      "detail": "Day14 needs the public-records property roll for Lee County, FL. Download the CSV from the county property appraiser / open-data portal and drop it into businesses/day14-realty/intake/ named \"lee-county.csv\". The scout ingests, scores, and starts monitoring it automatically.",
-      "category": "realty",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-20T22:15:30.404Z",
-      "completed_at": null,
-      "source": "county-feed-agent",
-      "instructions": {
-        "steps": [
-          "Open the Lee County Property Appraiser site and find its data download / export page (or search \"Lee County FL property appraiser data export\").",
-          "Download the full property-roll export as a CSV.",
-          "Rename the file to exactly \"lee-county.csv\".",
-          "Move it into ~/Documents/businesses/day14-realty/intake/ on the Mac.",
-          "The scout ingests, scores, and starts monitoring it automatically on the next run."
-        ],
-        "links": [
-          {
-            "label": "Lee County Property Appraiser — Downloads",
-            "url": "https://www.leepa.org/Download/DownloadMain.aspx"
-          }
-        ],
-        "code": "open ~/Documents/businesses/day14-realty/intake/"
-      },
-      "reconciler_note": "Looks done — the file it names (\"lee-county.csv\") has been ingested — found intake/processed/1779397107448-lee-county.csv. Review and close."
-    },
-    {
-      "id": "todo-13",
-      "seq": 13,
-      "tenant": "alignmd",
-      "title": "Get a free Adzuna API key — AlignMD job scanning",
-      "detail": "AlignMD now scans live healthcare job postings into the clinician portal. The Remotive source works with no key; Adzuna adds broad US healthcare/nursing coverage. Register a free Adzuna developer account, create an app, and paste the App ID + App Key to Claude to add to the alignmd Vercel project as ADZUNA_APP_ID and ADZUNA_APP_KEY.",
-      "category": "credentials",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-22T04:16:54.018Z",
-      "completed_at": null,
-      "source": "claude-direct",
-      "instructions": {
-        "steps": [
-          "Open the Adzuna developer portal and register a free account.",
-          "Create an application to get your App ID and App Key.",
-          "Paste both values straight to Claude in chat — do not type them into any file yourself.",
-          "Claude adds them as ADZUNA_APP_ID and ADZUNA_APP_KEY in the alignmd Vercel project; the job feed then includes Adzuna postings."
-        ],
-        "links": [
-          {
-            "label": "Adzuna API — register",
-            "url": "https://developer.adzuna.com/"
-          }
-        ]
-      }
-    },
-    {
-      "id": "todo-17",
-      "seq": 17,
-      "tenant": "alignmd",
-      "title": "Run AlignMD Supabase migration 0012_saved_jobs.sql",
-      "detail": "Job-feed v2 added the saved_jobs table (clinician 'interested' shortlist). Apply supabase/migrations/0012_saved_jobs.sql in the AlignMD Supabase project. Until it runs, the portal Open-jobs page shows an info banner and the Save toggle is hidden — no crash.",
-      "category": "database",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-22T06:28:23.715Z",
-      "completed_at": null,
-      "source": "overnight-block-2",
-      "instructions": {
-        "steps": [
-          "Open the AlignMD project in the Supabase dashboard.",
-          "Go to the SQL Editor.",
-          "Paste the contents of supabase/migrations/0012_saved_jobs.sql and run it.",
-          "The migration is idempotent — safe to re-run if unsure."
-        ],
-        "code": "cd ~/Documents/alignmd && cat supabase/migrations/0012_saved_jobs.sql"
-      }
-    },
-    {
-      "id": "todo-20",
-      "seq": 20,
-      "tenant": "day14-realty",
-      "title": "County records needed: Sarasota County, FL",
-      "detail": "Day14 needs the public-records property roll for Sarasota County, FL. Search \"Sarasota County FL property appraiser data export\" (or the county GIS / open-data portal), download the CSV, and drop it into businesses/day14-realty/intake/ — name it \"sarasota-county.csv\". The scout ingests, scores, and starts monitoring it automatically.",
-      "category": "realty",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-25T00:51:38.521Z",
-      "completed_at": null,
-      "source": "county-feed-agent"
-    },
-    {
-      "id": "todo-21",
-      "seq": 21,
-      "tenant": "day14-realty",
-      "title": "County records needed: Manatee County, FL",
-      "detail": "Day14 needs the public-records property roll for Manatee County, FL. Search \"Manatee County FL property appraiser data export\" (or the county GIS / open-data portal), download the CSV, and drop it into businesses/day14-realty/intake/ — name it \"manatee-county.csv\". The scout ingests, scores, and starts monitoring it automatically.",
-      "category": "realty",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-25T00:51:38.523Z",
-      "completed_at": null,
-      "source": "county-feed-agent"
-    },
-    {
-      "id": "todo-22",
-      "seq": 22,
-      "tenant": "day14-realty",
-      "title": "County records needed: Hendry County, FL",
-      "detail": "Day14 needs the public-records property roll for Hendry County, FL. Search \"Hendry County FL property appraiser data export\" (or the county GIS / open-data portal), download the CSV, and drop it into businesses/day14-realty/intake/ — name it \"hendry-county.csv\". The scout ingests, scores, and starts monitoring it automatically.",
-      "category": "realty",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-25T20:34:06.402Z",
-      "completed_at": null,
-      "source": "county-feed-agent"
-    },
-    {
-      "id": "todo-23",
-      "seq": 23,
-      "tenant": "day14-realty",
-      "title": "County records needed: Glades County, FL",
-      "detail": "Day14 needs the public-records property roll for Glades County, FL. Search \"Glades County FL property appraiser data export\" (or the county GIS / open-data portal), download the CSV, and drop it into businesses/day14-realty/intake/ — name it \"glades-county.csv\". The scout ingests, scores, and starts monitoring it automatically.",
-      "category": "realty",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-26T16:49:00.888Z",
-      "completed_at": null,
-      "source": "county-feed-agent"
-    },
-    {
-      "id": "todo-24",
-      "seq": 24,
-      "tenant": "day14-realty",
-      "title": "County records needed: DeSoto County, FL",
-      "detail": "Day14 needs the public-records property roll for DeSoto County, FL. Search \"DeSoto County FL property appraiser data export\" (or the county GIS / open-data portal), download the CSV, and drop it into businesses/day14-realty/intake/ — name it \"desoto-county.csv\". The scout ingests, scores, and starts monitoring it automatically.",
-      "category": "realty",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-27T13:07:16.893Z",
-      "completed_at": null,
-      "source": "county-feed-agent"
-    },
-    {
-      "id": "todo-25",
-      "seq": 25,
-      "tenant": "day14-realty",
-      "title": "County records needed: Highlands County, FL",
-      "detail": "Day14 needs the public-records property roll for Highlands County, FL. Search \"Highlands County FL property appraiser data export\" (or the county GIS / open-data portal), download the CSV, and drop it into businesses/day14-realty/intake/ — name it \"highlands-county.csv\". The scout ingests, scores, and starts monitoring it automatically.",
-      "category": "realty",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-28T09:07:17.434Z",
-      "completed_at": null,
-      "source": "county-feed-agent"
-    },
-    {
-      "id": "todo-28",
-      "seq": 28,
-      "tenant": "day14",
-      "title": "Restart Telegram poller LaunchAgent",
-      "detail": "The Telegram poller's env changed (new key paths + bot config). Kick the LaunchAgent so it re-reads .env.local.",
-      "category": "ops",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-28T12:47:19.728Z",
-      "completed_at": null,
-      "source": "workday-t02-seed",
-      "instructions": {
-        "code": "launchctl unload ~/Library/LaunchAgents/com.day14.telegram-poller.plist 2>/dev/null; launchctl load ~/Library/LaunchAgents/com.day14.telegram-poller.plist"
-      }
-    },
-    {
-      "id": "todo-29",
-      "seq": 29,
-      "tenant": "day14-realty",
-      "title": "Pick a skip-trace provider for re-skip-trace.mjs",
-      "detail": "scripts/verticals/real-estate/re-skip-trace.mjs is a stub. Pick a provider (BatchSkipTracing, REI Skip, Skip Genie, etc.), wire it in, and set SKIP_TRACE_API_KEY in .env.local + Vercel. Until then the realty outreach pipeline can't enrich phone numbers.",
-      "category": "decision",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-28T12:47:19.730Z",
-      "completed_at": null,
-      "source": "workday-t02-seed"
-    },
-    {
-      "id": "todo-30",
-      "seq": 30,
-      "tenant": "day14",
-      "title": "Pick a newsletter platform (MailerLite vs ConvertKit vs Beehiiv)",
-      "detail": "Newsletter signup forms are wired and inert. Pick the platform so we can lock in the API key. MailerLite already has a todo for the key; ConvertKit/Beehiiv would replace it.",
-      "category": "decision",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-28T12:47:19.732Z",
-      "completed_at": null,
-      "source": "workday-t02-seed"
-    },
-    {
-      "id": "todo-31",
-      "seq": 31,
-      "tenant": "life-loophole",
-      "title": "Sign off on Life Loophole article draft 1 of 6",
-      "detail": "Drafts live under ~/Documents/studio/content/life-loophole/drafts/. Review and tap the inbox approval card so the draft can publish.",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-28T12:47:19.733Z",
-      "completed_at": null,
-      "source": "workday-t02-seed"
-    },
-    {
-      "id": "todo-32",
-      "seq": 32,
-      "tenant": "life-loophole",
-      "title": "Sign off on Life Loophole article draft 2 of 6",
-      "detail": "See draft 1 of 6 for the review flow.",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-28T12:47:19.735Z",
-      "completed_at": null,
-      "source": "workday-t02-seed"
-    },
-    {
-      "id": "todo-33",
-      "seq": 33,
-      "tenant": "life-loophole",
-      "title": "Sign off on Life Loophole article draft 3 of 6",
-      "detail": "See draft 1 of 6 for the review flow.",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-28T12:47:19.736Z",
-      "completed_at": null,
-      "source": "workday-t02-seed"
-    },
-    {
-      "id": "todo-34",
-      "seq": 34,
-      "tenant": "life-loophole",
-      "title": "Sign off on Life Loophole article draft 4 of 6",
-      "detail": "See draft 1 of 6 for the review flow.",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-28T12:47:19.737Z",
-      "completed_at": null,
-      "source": "workday-t02-seed"
-    },
-    {
-      "id": "todo-35",
-      "seq": 35,
-      "tenant": "life-loophole",
-      "title": "Sign off on Life Loophole article draft 5 of 6",
-      "detail": "See draft 1 of 6 for the review flow.",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-28T12:47:19.739Z",
-      "completed_at": null,
-      "source": "workday-t02-seed"
-    },
-    {
-      "id": "todo-36",
-      "seq": 36,
-      "tenant": "life-loophole",
-      "title": "Sign off on Life Loophole article draft 6 of 6",
-      "detail": "See draft 1 of 6 for the review flow.",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-28T12:47:19.741Z",
-      "completed_at": null,
-      "source": "workday-t02-seed"
-    },
-    {
-      "id": "todo-37",
-      "seq": 37,
-      "tenant": "day14",
-      "title": "Sign off on CS reply template 1 of 6",
-      "detail": "Templates live in ~/Documents/studio/content/cs-templates/. Review and approve via /admin/inbox.",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-28T12:47:19.742Z",
-      "completed_at": null,
-      "source": "workday-t02-seed"
-    },
-    {
-      "id": "todo-38",
-      "seq": 38,
-      "tenant": "day14",
-      "title": "Sign off on CS reply template 2 of 6",
-      "detail": "See template 1 of 6 for the review flow.",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-28T12:47:19.743Z",
-      "completed_at": null,
-      "source": "workday-t02-seed"
-    },
-    {
-      "id": "todo-39",
-      "seq": 39,
-      "tenant": "day14",
-      "title": "Sign off on CS reply template 3 of 6",
-      "detail": "See template 1 of 6 for the review flow.",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-28T12:47:19.745Z",
-      "completed_at": null,
-      "source": "workday-t02-seed"
-    },
-    {
-      "id": "todo-40",
-      "seq": 40,
-      "tenant": "day14",
-      "title": "Sign off on CS reply template 4 of 6",
-      "detail": "See template 1 of 6 for the review flow.",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-28T12:47:19.747Z",
-      "completed_at": null,
-      "source": "workday-t02-seed"
-    },
-    {
-      "id": "todo-41",
-      "seq": 41,
-      "tenant": "day14",
-      "title": "Sign off on CS reply template 5 of 6",
-      "detail": "See template 1 of 6 for the review flow.",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-28T12:47:19.748Z",
-      "completed_at": null,
-      "source": "workday-t02-seed"
-    },
-    {
-      "id": "todo-42",
-      "seq": 42,
-      "tenant": "day14",
-      "title": "Sign off on CS reply template 6 of 6",
-      "detail": "See template 1 of 6 for the review flow.",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-28T12:47:19.750Z",
-      "completed_at": null,
-      "source": "workday-t02-seed"
-    },
-    {
-      "id": "todo-50",
-      "seq": 50,
-      "tenant": "day14-realty",
-      "title": "County records needed: Hardee County, FL",
-      "detail": "Day14 needs the public-records property roll for Hardee County, FL. Search \"Hardee County FL property appraiser data export\" (or the county GIS / open-data portal), download the CSV, and drop it into businesses/day14-realty/intake/ — name it \"hardee-county.csv\". The scout ingests, scores, and starts monitoring it automatically.",
-      "category": "realty",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-29T05:12:18.144Z",
-      "completed_at": null,
-      "source": "county-feed-agent"
-    },
-    {
-      "id": "todo-51",
-      "seq": 51,
-      "tenant": "day14-realty",
-      "title": "County records needed: Hillsborough County, FL",
-      "detail": "Day14 needs the public-records property roll for Hillsborough County, FL. Search \"Hillsborough County FL property appraiser data export\" (or the county GIS / open-data portal), download the CSV, and drop it into businesses/day14-realty/intake/ — name it \"hillsborough-county.csv\". The scout ingests, scores, and starts monitoring it automatically.",
-      "category": "realty",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-30T04:53:11.604Z",
-      "completed_at": null,
-      "source": "county-feed-agent"
-    },
-    {
-      "id": "todo-52",
-      "seq": 52,
-      "tenant": "day14-realty",
-      "title": "County records needed: Pinellas County, FL",
-      "detail": "Day14 needs the public-records property roll for Pinellas County, FL. Search \"Pinellas County FL property appraiser data export\" (or the county GIS / open-data portal), download the CSV, and drop it into businesses/day14-realty/intake/ — name it \"pinellas-county.csv\". The scout ingests, scores, and starts monitoring it automatically.",
-      "category": "realty",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-05-31T01:55:17.612Z",
-      "completed_at": null,
-      "source": "county-feed-agent"
-    },
-    {
-      "id": "todo-53",
-      "seq": 53,
-      "tenant": "alignmd",
-      "title": "Pick a hero image — AlignMD landing",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.771Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-54",
-      "seq": 54,
-      "tenant": "day14-realty",
-      "title": "Pick a hero image — Day14 Realty landing",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.774Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-55",
-      "seq": 55,
-      "tenant": "day14",
-      "title": "Pick a subject line — Newsletter Issue #1 (Shipping vs scoping)",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.775Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-56",
-      "seq": 56,
-      "tenant": "day14",
-      "title": "Pick a subject line — Newsletter Issue #2 (Build-log live)",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.777Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-57",
-      "seq": 57,
-      "tenant": "day14",
-      "title": "Pick a subject line — CS template: deposit-received",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.779Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-58",
-      "seq": 58,
-      "tenant": "day14",
-      "title": "Pick a subject line — CS template: intake-form-link",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.781Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-59",
-      "seq": 59,
-      "tenant": "day14",
-      "title": "Pick a subject line — CS template: preview-ready",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.782Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-60",
-      "seq": 60,
-      "tenant": "day14",
-      "title": "Pick a subject line — CS template: eod-update (good day)",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.784Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-61",
-      "seq": 61,
-      "tenant": "day14",
-      "title": "Pick a subject line — CS template: eod-update (bad day)",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.786Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-62",
-      "seq": 62,
-      "tenant": "day14",
-      "title": "Pick a subject line — CS template: launched",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.787Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-63",
-      "seq": 63,
-      "tenant": "day14",
-      "title": "Pick a hero image — Day14 core landing",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.789Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-64",
-      "seq": 64,
-      "tenant": "day14",
-      "title": "Review OG card — work-with-us",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.790Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-65",
-      "seq": 65,
-      "tenant": "day14",
-      "title": "Pick a body variant — CS template: deposit-received",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.792Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-66",
-      "seq": 66,
-      "tenant": "day14",
-      "title": "Pick a body variant — CS template: eod-update-bad",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.794Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-67",
-      "seq": 67,
-      "tenant": "day14",
-      "title": "Pick a body variant — CS template: eod-update-good",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.795Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-68",
-      "seq": 68,
-      "tenant": "day14",
-      "title": "Pick a body variant — CS template: intake-form-link",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.797Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-69",
-      "seq": 69,
-      "tenant": "day14",
-      "title": "Pick a body variant — CS template: launched",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.799Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-70",
-      "seq": 70,
-      "tenant": "day14",
-      "title": "Pick a body variant — CS template: preview-ready",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.800Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-71",
-      "seq": 71,
-      "tenant": "life-loophole",
-      "title": "Pick a hero image — The HSA is the only triple-tax-advantaged account in the code",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.802Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-72",
-      "seq": 72,
-      "tenant": "life-loophole",
-      "title": "Pick a hero image — The Traditional IRA deduction: a quiet line on Schedule 1 that pays for itself",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.804Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-73",
-      "seq": 73,
-      "tenant": "life-loophole",
-      "title": "Pick a hero image — The Roth IRA trade: no break today, every break later",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.805Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-74",
-      "seq": 74,
-      "tenant": "life-loophole",
-      "title": "Pick a hero image — Workplace 401(k): the only loophole your employer pays you to use",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.807Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-75",
-      "seq": 75,
-      "tenant": "life-loophole",
-      "title": "Pick a hero image — The Child Tax Credit, decoded: who qualifies and what's refundable",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.809Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-76",
-      "seq": 76,
-      "tenant": "life-loophole",
-      "title": "Pick a hero image — Two education credits, one tuition bill: how to pick AOTC vs Lifetime Learning",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.811Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-77",
-      "seq": 77,
-      "tenant": "life-loophole",
-      "title": "Pick a headline — The HSA is the only triple-tax-advantaged account in the code",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.812Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-78",
-      "seq": 78,
-      "tenant": "life-loophole",
-      "title": "Pick a headline — The Traditional IRA deduction: a quiet line on Schedule 1 that pays for itself",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.814Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-79",
-      "seq": 79,
-      "tenant": "life-loophole",
-      "title": "Pick a headline — The Roth IRA trade: no break today, every break later",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.816Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-80",
-      "seq": 80,
-      "tenant": "life-loophole",
-      "title": "Pick a headline — Workplace 401(k): the only loophole your employer pays you to use",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.817Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-81",
-      "seq": 81,
-      "tenant": "life-loophole",
-      "title": "Pick a headline — The Child Tax Credit, decoded: who qualifies and what's refundable",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.819Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-82",
-      "seq": 82,
-      "tenant": "life-loophole",
-      "title": "Pick a headline — Two education credits, one tuition bill: how to pick AOTC vs Lifetime Learning",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.821Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-83",
-      "seq": 83,
-      "tenant": "life-loophole",
-      "title": "Review OG card — The HSA is the only triple-tax-advantaged account in the code",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.823Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-84",
-      "seq": 84,
-      "tenant": "life-loophole",
-      "title": "Review OG card — The Traditional IRA deduction: a quiet line on Schedule 1 that pays for itself",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.825Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-85",
-      "seq": 85,
-      "tenant": "life-loophole",
-      "title": "Review OG card — Workplace 401(k): the only loophole your employer pays you to use",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.826Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-86",
-      "seq": 86,
-      "tenant": "life-loophole",
-      "title": "Review OG card — The Child Tax Credit, decoded: who qualifies and what's refundable",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.828Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-87",
-      "seq": 87,
-      "tenant": "life-loophole",
-      "title": "Review OG card — Two education credits, one tuition bill: how to pick AOTC vs Lifetime Learning",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.830Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-88",
-      "seq": 88,
-      "tenant": "life-loophole",
-      "title": "Pick distribution variants — The HSA is the only triple-tax-advantaged account in the code",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.832Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-89",
-      "seq": 89,
-      "tenant": "life-loophole",
-      "title": "Pick distribution variants — The Traditional IRA deduction: a quiet line on Schedule 1 that pays for itself",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.834Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-90",
-      "seq": 90,
-      "tenant": "life-loophole",
-      "title": "Pick distribution variants — The Roth IRA trade: no break today, every break later",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.835Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-91",
-      "seq": 91,
-      "tenant": "life-loophole",
-      "title": "Pick distribution variants — Workplace 401(k): the only loophole your employer pays you to use",
-      "detail": "",
-      "category": "review",
+      "title": "Review + push overhaul branch on return",
+      "detail": "Nightly agent builds overhaul/trip-2026-06 all trip. Return checklist at bottom of founder-ops/WEBSITE-OVERHAUL-SPEC.md.",
+      "category": "build",
       "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.837Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-92",
-      "seq": 92,
-      "tenant": "life-loophole",
-      "title": "Pick distribution variants — The Child Tax Credit, decoded: who qualifies and what's refundable",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.839Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-93",
-      "seq": 93,
-      "tenant": "life-loophole",
-      "title": "Pick distribution variants — Two education credits, one tuition bill: how to pick AOTC vs Lifetime Learning",
-      "detail": "",
-      "category": "review",
-      "priority": "medium",
-      "status": "open",
-      "created_at": "2026-06-02T09:27:30.841Z",
-      "completed_at": null,
-      "source": "inbox"
-    },
-    {
-      "id": "todo-14",
-      "seq": 14,
-      "tenant": "alignmd",
-      "title": "Get a free USAJOBS API key — AlignMD job scanning (optional)",
-      "detail": "Optional extra source for the AlignMD job feed — federal clinical roles (VA hospitals, etc.). Request a free USAJOBS API key, then paste the key plus your registered email to Claude to add as USAJOBS_API_KEY and USAJOBS_EMAIL in the alignmd Vercel project.",
-      "category": "credentials",
-      "priority": "low",
       "status": "open",
-      "created_at": "2026-05-22T04:16:54.020Z",
+      "created_at": "2026-06-12T05:54:41.904162+00:00",
       "completed_at": null,
-      "source": "claude-direct",
-      "instructions": {
-        "steps": [
-          "Open the USAJOBS developer site and request an API key (free).",
-          "Note the email address you registered with — USAJOBS requires it alongside the key.",
-          "Paste the key and the email straight to Claude in chat — do not type them into any file yourself.",
-          "Claude adds them as USAJOBS_API_KEY and USAJOBS_EMAIL in the alignmd Vercel project."
-        ],
-        "links": [
-          {
-            "label": "USAJOBS API — request a key",
-            "url": "https://developer.usajobs.gov/"
-          }
-        ]
-      }
+      "source": "claude-cleanup-2026-06-12",
+      "instructions": null
     }
   ],
   "bot_username": "day14osbot"
