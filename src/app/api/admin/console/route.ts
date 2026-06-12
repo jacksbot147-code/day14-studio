@@ -117,6 +117,7 @@ export async function GET(req: NextRequest) {
 
   let thread: unknown[] = [];
   let supabaseOk = false;
+  let supabaseError: string | null = null;
   if (supabase()) {
     try {
       const res = await sbFetch(
@@ -125,10 +126,14 @@ export async function GET(req: NextRequest) {
       if (res.ok) {
         thread = await res.json();
         supabaseOk = true;
+      } else {
+        supabaseError = `${res.status}: ${(await res.text().catch(() => "")).slice(0, 300)}`;
       }
-    } catch {
-      /* surfaced via supabaseOk */
+    } catch (err) {
+      supabaseError = err instanceof Error ? err.message : String(err);
     }
+  } else {
+    supabaseError = "env missing";
   }
 
   return NextResponse.json({
@@ -137,6 +142,7 @@ export async function GET(req: NextRequest) {
     vitals,
     register,
     supabase: supabaseOk,
+    supabase_error: supabaseError,
     thread,
   });
 }
