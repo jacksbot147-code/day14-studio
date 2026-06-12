@@ -32,7 +32,7 @@ import { FooterCta } from "@/components/home/footer-cta";
 // Other routes (case studies, about, etc.) keep the layout defaults.
 const TITLE = "Day14 — Sites and apps for small businesses. Live in 14 days.";
 const DESCRIPTION =
-  "I'm Jack. I build sites and apps for small businesses in 14 days, then $149/mo keeps them running on Day14 OS — the same stack I use for six of my own. Now booking 3 builds for July.";
+  "I'm Jack. I build sites and apps for small businesses in days, then a monthly ops fee keeps them running on Day14 OS — the same stack I use for six of my own. Builds from $750. Now booking July.";
 
 export const metadata: Metadata = {
   title: TITLE,

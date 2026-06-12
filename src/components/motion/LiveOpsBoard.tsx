@@ -94,15 +94,28 @@ export function LiveOpsBoard({
   }, []);
 
   // Drip events onto the board one at a time — calm, deliberate.
+  // Dedupe by id (the 12s refetch returns the same events again) and, in
+  // sanitized/homepage mode, never show error-level events — a marketing
+  // page streaming red ERROR cards reads as "broken", not "honest".
+  const seenRef = useRef<Set<string>>(new Set());
   useEffect(() => {
     const drip = setInterval(() => {
-      const next = queueRef.current.shift();
+      let next = queueRef.current.shift();
+      while (next) {
+        const id = `${next.ts}-${hash(next.text)}`;
+        const skip = seenRef.current.has(id) || (sanitized && next.level === "error");
+        if (!skip) break;
+        next = queueRef.current.shift();
+      }
       if (!next) return;
+      const id = `${next.ts}-${hash(next.text)}`;
+      seenRef.current.add(id);
+      if (seenRef.current.size > 200) seenRef.current.clear();
       const { stage, label } = classify(next, sanitized);
       setVisible((v) =>
         [
-          { id: `${next.ts}-${hash(next.text)}`, stage, label, err: next.level === "error" },
-          ...v,
+          { id, stage, label, err: next!.level === "error" },
+          ...v.filter((e) => e.id !== id),
         ].slice(0, MAX_CARDS),
       );
     }, 2600);

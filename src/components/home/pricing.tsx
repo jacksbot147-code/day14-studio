@@ -71,7 +71,7 @@ export function Pricing() {
             <DecryptText text="Pricing · build studio" durationMs={550} triggerOnView />
           </div>
           <h2 className="text-[56px] font-extrabold leading-[0.98] tracking-[-0.04em] text-ink sm:text-[72px] lg:text-[80px]">
-            <DecryptText text="$1,500 to custom." durationMs={700} startAt={250} triggerOnView />
+            <DecryptText text="$750 to custom." durationMs={700} startAt={250} triggerOnView />
           </h2>
           <p className="mx-auto mt-8 max-w-2xl text-[17px] leading-[1.6] text-warm-gray-500 sm:text-[18px]">
             Fixed price, fixed timeline, no SOWs. Pick the size that fits the

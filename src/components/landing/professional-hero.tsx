@@ -114,7 +114,7 @@ export function ProfessionalHero() {
             One operator. Custom sites and apps for local businesses,
             founders, and small teams. Shipped fast. Operated forever on
             Day14 OS — the platform I built to run my own six.{" "}
-            <span className="font-semibold text-ink">From $1,500.</span>
+            <span className="font-semibold text-ink">From $750.</span>
           </motion.p>
 
           {/* CTAs — one primary, one quiet alternative */}
