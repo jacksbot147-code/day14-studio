@@ -29,6 +29,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { DecryptText } from "./decrypt-text";
+import { LiveOpsBoard } from "@/components/motion/LiveOpsBoard";
 
 export function ProfessionalHero() {
   const reduce = useReducedMotion();
@@ -186,6 +187,23 @@ export function ProfessionalHero() {
               durationMs={650}
               startAt={2200}
             />
+          </motion.div>
+
+          {/* LiveOpsBoard — the proof panel (added 2026-06-11). Not a
+              metaphor: the visitor watches Jack's actual businesses run.
+              Dark glass inset on cream = the one deliberate contrast
+              moment in the hero. Lazy by nature (fetches after mount),
+              so it never blocks the headline paint. */}
+          <motion.div
+            initial={reduce ? false : { opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            className="mx-auto mt-14 max-w-2xl text-left"
+          >
+            <LiveOpsBoard />
+            <p className="mt-3 text-center font-mono text-[10px] uppercase tracking-[0.2em] text-warm-gray-400">
+              Live — my own six businesses, running on Day14 OS right now
+            </p>
           </motion.div>
         </div>
       </div>

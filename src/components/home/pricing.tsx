@@ -1,12 +1,17 @@
 import { cn } from "@/lib/cn";
 import { DecryptText } from "@/components/landing/decrypt-text";
 import { PathCrumb } from "@/components/landing/path-crumb";
+import { SERVICE_TIERS } from "@/lib/pricing";
 
 /* -------------------------------------------------------------------------- */
-/* Pricing teaser                                                              */
+/* Pricing — services shelf                                                    */
+/*                                                                            */
+/* Prices come from src/lib/pricing.ts (THE single source of truth — set     */
+/* 2026-06-11). No price may be hard-coded in this file except the Custom    */
+/* catch-all tier, which has no number by design.                            */
 /* -------------------------------------------------------------------------- */
 
-type OsTier = {
+type Card = {
   name: string;
   price: string;
   cadence: string;
@@ -16,59 +21,28 @@ type OsTier = {
   popular?: boolean;
 };
 
-// Productized build-studio pricing — 4 tiers spanning $1.5k (single-page
-// local site) to custom enterprise platforms. Every tier comes with a
-// bundled ops window on Day14 OS; the monthly ops fee after the bundle
-// scales with build complexity ($49 / $149 / $299 / scoped).
-const OS_TIERS: OsTier[] = [
-  {
-    name: "Spark",
-    price: "$1,500",
-    cadence: "one-time",
-    timeline: "Shipped in 5 days",
-    bestFor:
-      "Local businesses, solo professionals, side projects — anyone who needs a single beautiful page with lead capture, not a 10-page agency build.",
-    includes: [
-      "Single-page custom site (services, about, contact)",
-      "Lead-capture form wired to your email",
-      "Hosted on Day14 OS — fast, cheap, never goes down",
-      "3 months of ops bundled ($49/mo after)",
-    ],
-  },
-  {
-    name: "Studio",
-    price: "$9,000",
-    cadence: "one-time",
-    timeline: "Shipped in 14 days",
-    bestFor:
-      "Founders who need a real multi-page marketing site that loads fast, ranks, and doesn't look like every other Webflow template.",
-    includes: [
-      "Multi-page marketing site (up to 6 pages + blog)",
-      "Custom design, lead capture, content scheduling",
-      "Hosted on Day14 OS with 6 scheduled-agent slots",
-      "6 months of ops bundled ($149/mo after)",
-    ],
-  },
-  {
-    name: "Platform",
-    price: "$24,000",
-    cadence: "one-time",
-    timeline: "Shipped in 4 weeks",
-    bestFor:
-      "Operators launching a real software business — site, customer portal, admin app, billing, the works. Same stack I run my six on.",
-    includes: [
-      "Marketing site + customer portal + admin app",
-      "Billing + onboarding flows wired live",
-      "Hosted on Day14 OS with 24 scheduled-agent slots",
-      "12 months of ops bundled ($299/mo after)",
-    ],
-    popular: true,
-  },
+const TIMELINES: Record<string, string> = {
+  spark: "Live in 7 days",
+  local: "Live in 14 days",
+  portal: "Live in 3 weeks",
+  platform: "Quoted in 48 hours",
+};
+
+const CARDS: Card[] = [
+  ...SERVICE_TIERS.map((t) => ({
+    name: t.name,
+    price: t.setup === null ? t.setupLabel : `$${t.setup.toLocaleString()}`,
+    cadence: t.setup === null ? "" : `one-time · then ${t.monthlyLabel}`,
+    timeline: TIMELINES[t.slug] ?? "",
+    bestFor: t.bestFor,
+    includes: t.features,
+    popular: t.featured,
+  })),
   {
     name: "Custom",
     price: "Talk to us",
     cadence: "intro call",
-    timeline: "6-12 weeks",
+    timeline: "6–12 weeks",
     bestFor:
       "Multi-tenant platforms, marketplaces, anything bespoke. Full Day14 OS — agents, evidence verifier, work-log, the lot.",
     includes: [
@@ -81,10 +55,8 @@ const OS_TIERS: OsTier[] = [
 ];
 
 export function Pricing() {
-  // Apple-style soft cards on cream. All three tiers live on the same
-  // paper-cream surface (no dark-inverted Portfolio) so the row reads as
-  // one harmonious shelf. Portfolio gets an ember 2px border + a
-  // "Recommended" pill in the top-right; the other two stay quiet.
+  // Apple-style soft cards on cream. One harmonious shelf; the featured
+  // tier gets an ember 2px border + pill, the rest stay quiet.
   const cardShadow =
     "0 24px 60px -20px rgba(239, 108, 51, 0.10), 0 8px 24px -8px rgba(15, 23, 42, 0.06)";
 
@@ -102,12 +74,14 @@ export function Pricing() {
             <DecryptText text="$1,500 to custom." durationMs={700} startAt={250} triggerOnView />
           </h2>
           <p className="mx-auto mt-8 max-w-2xl text-[17px] leading-[1.6] text-warm-gray-500 sm:text-[18px]">
-            Fixed price, fixed timeline, no SOWs. Pick the size that fits the job &mdash; your build lives on Day14 OS, the same stack that runs all six of my own.
+            Fixed price, fixed timeline, no SOWs. Pick the size that fits the
+            job &mdash; your build lives on Day14 OS, the same stack that runs
+            all six of my own.
           </p>
         </div>
 
-        <div className="mt-20 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {OS_TIERS.map((tier) => (
+        <div className="mt-20 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          {CARDS.map((tier) => (
             <article
               key={tier.name}
               className={cn(
@@ -122,7 +96,7 @@ export function Pricing() {
             >
               {tier.popular ? (
                 <span className="absolute -top-3 right-6 inline-flex items-center rounded-full bg-ember-500 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-white shadow-[0_4px_12px_-2px_rgba(239,108,51,0.4)]">
-                  Most operators pick this
+                  Most owners pick this
                 </span>
               ) : null}
 
@@ -134,13 +108,15 @@ export function Pricing() {
               </p>
 
               <div className="mt-7 flex items-baseline gap-2 tnum">
-                <span className="text-[48px] font-extrabold leading-none tracking-[-0.035em] text-ink">
+                <span className="text-[40px] font-extrabold leading-none tracking-[-0.035em] text-ink sm:text-[44px]">
                   {tier.price}
                 </span>
-                <span className="text-sm font-medium text-warm-gray-400">
-                  {tier.cadence}
-                </span>
               </div>
+              {tier.cadence ? (
+                <p className="mt-1.5 text-sm font-medium text-warm-gray-400">
+                  {tier.cadence}
+                </p>
+              ) : null}
 
               <div className="my-7 h-px w-full bg-warm-gray-100" />
 
@@ -150,8 +126,19 @@ export function Pricing() {
 
               <ul className="mt-6 flex flex-col gap-2.5">
                 {tier.includes.map((line) => (
-                  <li key={line} className="flex items-start gap-2.5 text-[13.5px] leading-[1.45] text-ink">
-                    <svg viewBox="0 0 16 16" className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-ember-500" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <li
+                    key={line}
+                    className="flex items-start gap-2.5 text-[13.5px] leading-[1.45] text-ink"
+                  >
+                    <svg
+                      viewBox="0 0 16 16"
+                      className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-ember-500"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
                       <polyline points="3 8 6.5 12 13 4" />
                     </svg>
                     <span>{line}</span>
@@ -170,7 +157,7 @@ export function Pricing() {
         </div>
 
         <p className="mt-12 text-center font-mono text-[11px] uppercase tracking-[0.22em] text-warm-gray-400">
-          Fixed price · No SOWs · Now booking 3 builds for July
+          Fixed price · No SOWs · Every build includes 3 months of ops
         </p>
       </div>
     </section>
