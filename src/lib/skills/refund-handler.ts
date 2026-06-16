@@ -66,10 +66,31 @@ function classifyRefund(
   req: RefundRequest
 ): RefundDecision {
   const days = req.override_window ? 0 : daysSinceSignup(customer.signup_date);
-  const amount = req.refund_amount ?? customer.last_charge_amount ?? 0;
 
-  if (days <= 7) {
+  // Hard rule 2: never refund beyond what was charged. Clamp the requested
+  // amount to the last charge (falling back to total_paid), and never let a
+  // negative/NaN amount through.
+  const requested = req.refund_amount ?? customer.last_charge_amount ?? 0;
+  const cap = customer.last_charge_amount ?? customer.total_paid ?? requested;
+  const safeRequested = Number.isFinite(requested) ? Math.max(0, requested) : 0;
+  const safeCap = Number.isFinite(cap) ? Math.max(0, cap) : safeRequested;
+  const amount = Math.min(safeRequested, safeCap);
+  const clamped = amount < safeRequested;
+
+  // Unknown / unparseable signup date: don't silently decline. Escalate to
+  // Jack (relationships > policy) so a real date can be confirmed.
+  if (!Number.isFinite(days) && !req.override_window) {
     return {
+      action: "queue_for_tap",
+      reason: "signup date unknown — Jack tap to confirm window before refunding",
+      amount_cents: amount,
+      window: "outside",
+    };
+  }
+
+  let decision: RefundDecision;
+  if (days <= 7) {
+    decision = {
       action: amount < 50000 ? "auto_issue" : "queue_for_tap",
       reason:
         amount < 50000
@@ -78,21 +99,39 @@ function classifyRefund(
       amount_cents: amount,
       window: "7d",
     };
-  }
-  if (days <= 30) {
-    return {
+  } else if (days <= 30) {
+    decision = {
       action: "queue_for_tap",
       reason: "7-30d window — Jack tap to negotiate 50% vs full",
       amount_cents: amount,
       window: "30d",
     };
+  } else {
+    decision = {
+      action: "decline_with_credit",
+      reason: "outside 30-day window; offer credit instead",
+      amount_cents: 0,
+      window: "outside",
+    };
   }
-  return {
-    action: "decline_with_credit",
-    reason: "outside 30-day window; offer credit instead",
-    amount_cents: 0,
-    window: "outside",
-  };
+
+  // Surface the clamp so the approval card and dossier both reflect that the
+  // requested amount exceeded the last charge (hard rule 2).
+  if (clamped) {
+    decision.reason += ` — requested $${(safeRequested / 100).toFixed(
+      2
+    )} clamped to last charge $${(amount / 100).toFixed(2)}`;
+  }
+  return decision;
+}
+
+// Spec hard rules 6/7: a 7-30d refund is a P2 card; a >$500 refund inside the
+// 7-day guarantee is the one genuinely urgent (P1) case. Everything else
+// (credit offers, unknown-date escalations) is P2.
+function cardUrgency(decision: RefundDecision): "P1" | "P2" {
+  return decision.window === "7d" && decision.action === "queue_for_tap"
+    ? "P1"
+    : "P2";
 }
 
 async function queueRefundApprovalCard(
@@ -101,23 +140,27 @@ async function queueRefundApprovalCard(
   decision: RefundDecision
 ): Promise<string> {
   await fs.mkdir(TG_OUTBOX, { recursive: true });
-  const filename = `${Date.now()}-refund-approval-${customer.slug}.json`;
+  const isCredit = decision.action === "decline_with_credit";
+  const kind = isCredit ? "credit-offer" : "refund-approval";
+  const filename = `${Date.now()}-${kind}-${customer.slug}.json`;
   const filepath = path.join(TG_OUTBOX, filename);
 
   const dollars = (decision.amount_cents / 100).toFixed(2);
-  const text = `💸 *Refund request* — ${customer.slug}\n\nAmount: $${dollars}\nWindow: ${decision.window}\nReason: "${req.reason}"\n\nDecision: ${decision.reason}\n\nApprove?`;
+  const text = isCredit
+    ? `🧾 *Refund declined — credit offer* — ${customer.slug}\n\nWindow: ${decision.window}\nReason: "${req.reason}"\n\nDecision: ${decision.reason}\n\nOffer credit toward a redesign instead?`
+    : `💸 *Refund request* — ${customer.slug}\n\nAmount: $${dollars}\nWindow: ${decision.window}\nReason: "${req.reason}"\n\nDecision: ${decision.reason}\n\nApprove?`;
 
   await fs.writeFile(
     filepath,
     JSON.stringify(
       {
         text,
-        urgency: "P1",
+        urgency: cardUrgency(decision),
         queued_at: new Date().toISOString(),
         sent_at: null,
         chat_id: process.env.TELEGRAM_CHAT_ID || null,
         tap_required: true,
-        action: "issue_refund",
+        action: isCredit ? "offer_credit" : "issue_refund",
         payload: {
           customer_slug: customer.slug,
           amount_cents: decision.amount_cents,
@@ -161,8 +204,20 @@ export async function processRefund(req: RefundRequest): Promise<{
   decision: RefundDecision | null;
   artifacts: string[];
   jack_tap_required: boolean;
+  next_actions?: string[];
   error?: string;
 }> {
+  // Hard rule 1: never refund without a reason captured (even one word).
+  if (!req.reason || !req.reason.trim()) {
+    return {
+      ok: false,
+      decision: null,
+      artifacts: [],
+      jack_tap_required: false,
+      error: "refund reason required (hard rule 1): no refund without a captured reason",
+    };
+  }
+
   const customer = await loadCustomer(req.customer_slug);
   if (!customer) {
     return {
@@ -176,6 +231,7 @@ export async function processRefund(req: RefundRequest): Promise<{
 
   const decision = classifyRefund(customer, req);
   const artifacts: string[] = [];
+  const next_actions: string[] = [];
   let status = "pending";
 
   if (decision.action === "auto_issue") {
@@ -191,7 +247,14 @@ export async function processRefund(req: RefundRequest): Promise<{
     const cardFile = await queueRefundApprovalCard(customer, req, decision);
     artifacts.push(path.join(TG_OUTBOX, cardFile));
   } else {
-    status = "declined per policy; credit offer queued";
+    // Spec rule 7: 30d+ still surfaces a Jack-tap card (the credit offer) and
+    // schedules a win-back 30 days out. The status now reflects a card that is
+    // actually queued, not a phantom one.
+    const cardFile = await queueRefundApprovalCard(customer, req, decision);
+    artifacts.push(path.join(TG_OUTBOX, cardFile));
+    status = "declined per policy; credit-offer card queued for Jack";
+    const winBack = new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10);
+    next_actions.push(`trigger win-back-campaign-trigger for ${customer.slug} on ${winBack}`);
   }
 
   const dossierPath = await writeRefundDossierEntry(customer, req, decision, status);
@@ -211,11 +274,13 @@ export async function processRefund(req: RefundRequest): Promise<{
     actor_source: "skill-runner",
   });
 
+  // Every action here lands a Jack-tap card; only an error path returns false.
   return {
     ok: true,
     decision,
     artifacts,
-    jack_tap_required: decision.action !== "decline_with_credit",
+    jack_tap_required: true,
+    next_actions: next_actions.length ? next_actions : undefined,
   };
 }
 
@@ -242,6 +307,7 @@ export async function run(ctx: SkillInvocationContext): Promise<SkillOutcome> {
     result: result.decision,
     artifacts: result.artifacts,
     jack_tap_required: result.jack_tap_required,
+    next_actions: result.next_actions,
     error: result.error,
   };
 }
