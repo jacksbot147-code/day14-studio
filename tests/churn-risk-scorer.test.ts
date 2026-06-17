@@ -180,4 +180,123 @@ describe("churn risk scoring", () => {
     expect(risks[0]!.slug).toBe("high-ltv");
     expect(risks[0]!.ltv_at_risk).toBeGreaterThan(risks[1]!.ltv_at_risk);
   });
+
+  // Spec failure mode: "New customer (<7d): insufficient data → baseline 20."
+  test("new customer (<7d) with no signals gets baseline 20 / green", async () => {
+    const dir = path.join(
+      TMP_HOME,
+      "Documents/businesses/_shared/customers/fresh"
+    );
+    await fs.mkdir(dir, { recursive: true });
+    await fs.writeFile(
+      path.join(dir, "01-brand.json"),
+      JSON.stringify({
+        signup_date: new Date(Date.now() - 3 * 86400000).toISOString(),
+        total_paid: 497,
+        monthly_amount: 497,
+        status: "active",
+      }),
+      "utf8"
+    );
+    await writeRegister([]);
+    const mod = await freshImport();
+    const risks = await mod.computeChurnRisks();
+    expect(risks[0]!.score).toBe(20);
+    expect(risks[0]!.bucket).toBe("green");
+    expect(risks[0]!.signals.some((s: string) => s.includes("new customer"))).toBe(
+      true
+    );
+  });
+
+  // The baseline must NOT mask a real first-week danger signal.
+  test("new customer (<7d) with a cancel signal keeps the real score", async () => {
+    const dir = path.join(
+      TMP_HOME,
+      "Documents/businesses/_shared/customers/fresh-angry"
+    );
+    await fs.mkdir(dir, { recursive: true });
+    await fs.writeFile(
+      path.join(dir, "01-brand.json"),
+      JSON.stringify({
+        signup_date: new Date(Date.now() - 2 * 86400000).toISOString(),
+        total_paid: 497,
+        monthly_amount: 497,
+        status: "active",
+      }),
+      "utf8"
+    );
+    await writeRegister([
+      {
+        timestamp: new Date().toISOString(),
+        action_phrase: "customer asked to cancel already",
+        context: "fresh-angry",
+        customer_slug: "fresh-angry",
+        is_ad_hoc: true,
+      },
+    ]);
+    const mod = await freshImport();
+    const risks = await mod.computeChurnRisks();
+    expect(risks[0]!.score).toBeGreaterThanOrEqual(30);
+    expect(risks[0]!.signals.some((s: string) => s.includes("cancel"))).toBe(true);
+  });
+
+  // Spec failure mode: "cap at 80 unless 3+ signals present." With fewer
+  // than 3 signals a customer can never land in the red bucket.
+  test("fewer than 3 signals cannot reach red (capped at 80)", async () => {
+    await makeCustomer("two-signal");
+    await writeRegister([
+      {
+        timestamp: new Date().toISOString(),
+        action_phrase: "customer wants to cancel",
+        context: "two-signal",
+        customer_slug: "two-signal",
+      },
+      {
+        timestamp: new Date().toISOString(),
+        action_phrase: "payment failed",
+        context: "two-signal",
+        customer_slug: "two-signal",
+        invoked_skill: "failed-payment-retry",
+      },
+    ]);
+    const mod = await freshImport();
+    const risks = await mod.computeChurnRisks();
+    expect(risks[0]!.signals.length).toBeLessThan(3);
+    expect(risks[0]!.score).toBeLessThanOrEqual(80);
+    expect(risks[0]!.bucket).not.toBe("red");
+  });
+
+  // run(): single compute, audit entry, report artifact, single-customer mode.
+  test("run() writes report + audit entry and supports single-customer mode", async () => {
+    await fs.mkdir(
+      path.join(TMP_HOME, "Documents/businesses/_shared/audit"),
+      { recursive: true }
+    );
+    await makeCustomer("solo");
+    await writeRegister([
+      {
+        timestamp: new Date().toISOString(),
+        action_phrase: "customer wants to cancel",
+        context: "solo",
+        customer_slug: "solo",
+      },
+    ]);
+    const mod = await freshImport();
+    const outcome = await mod.run({
+      context: "solo",
+      customer_slug: "solo",
+      caller: "telegram",
+    });
+    expect(outcome.ok).toBe(true);
+    expect(outcome.artifacts && outcome.artifacts.length).toBeGreaterThan(0);
+    const result = outcome.result as {
+      customer_found: boolean;
+      customers_scored: number;
+    };
+    expect(result.customer_found).toBe(true);
+    const auditFiles = await fs.readdir(
+      path.join(TMP_HOME, "Documents/businesses/_shared/audit")
+    );
+    expect(auditFiles.some((f) => f.startsWith("audit-"))).toBe(true);
+  });
 });

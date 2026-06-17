@@ -20,6 +20,7 @@ import { homedir } from "node:os";
 import type { SkillInvocationContext } from "../skill-runtime";
 import type { SkillOutcome } from "../skill-runner";
 import { computeAllLtv } from "./customer-ltv-calculator";
+import { auditLog } from "./audit-log-generator";
 
 const SHARED = path.join(homedir(), "Documents/businesses/_shared");
 const METRICS_DIR = path.join(SHARED, "metrics");
@@ -64,9 +65,25 @@ function daysSince(iso: string): number {
   return (Date.now() - new Date(iso).getTime()) / (1000 * 60 * 60 * 24);
 }
 
+/** Best-effort read of a customer's signup_date from their dossier brand file.
+ *  Returns undefined if the file is missing or malformed — callers treat an
+ *  unknown signup date as "not a new customer" (no baseline applied). */
+async function readSignupDate(slug: string): Promise<string | undefined> {
+  const brandPath = path.join(CUSTOMERS, slug, "01-brand.json");
+  if (!existsSync(brandPath)) return undefined;
+  try {
+    const raw = await fs.readFile(brandPath, "utf8");
+    const brand = JSON.parse(raw) as { signup_date?: unknown };
+    return typeof brand.signup_date === "string" ? brand.signup_date : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 async function scoreCustomer(
   slug: string,
-  entries: WorkEntry[]
+  entries: WorkEntry[],
+  signupDateIso?: string
 ): Promise<ChurnRisk> {
   const signals: string[] = [];
   let score = 0;
@@ -141,6 +158,25 @@ async function scoreCustomer(
 
   score = Math.min(score, 100);
 
+  // Spec failure mode: "New customer (<7d) → insufficient data → assign
+  // baseline 20." Only when there are no real risk signals yet — a genuine
+  // cancel/payment-fail signal in the first week is real and must survive.
+  const newCustomer =
+    signupDateIso !== undefined &&
+    Number.isFinite(daysSince(signupDateIso)) &&
+    daysSince(signupDateIso) < 7;
+  if (newCustomer && signals.length === 0) {
+    score = 20;
+    signals.push("new customer (<7d) — baseline, insufficient history");
+  }
+
+  // Spec failure mode: "Score 100 from single signal → cap at 80 unless 3+
+  // signals present." A single noisy signal shouldn't trip a red-bucket
+  // personal-call recommendation.
+  if (signals.length < 3) {
+    score = Math.min(score, 80);
+  }
+
   const bucket: ChurnRisk["bucket"] =
     score >= 81 ? "red" : score >= 61 ? "orange" : score >= 31 ? "yellow" : "green";
 
@@ -179,7 +215,8 @@ export async function computeChurnRisks(): Promise<ChurnRisk[]> {
 
   const risks: ChurnRisk[] = [];
   for (const slug of customerSlugs) {
-    const risk = await scoreCustomer(slug, entries);
+    const signupDate = await readSignupDate(slug);
+    const risk = await scoreCustomer(slug, entries, signupDate);
     risk.ltv_at_risk = ltvMap.get(slug) ?? 0;
     risks.push(risk);
   }
@@ -189,12 +226,12 @@ export async function computeChurnRisks(): Promise<ChurnRisk[]> {
   return risks;
 }
 
-export async function writeChurnReport(): Promise<string> {
+export async function writeChurnReport(precomputed?: ChurnRisk[]): Promise<string> {
   await fs.mkdir(METRICS_DIR, { recursive: true });
   const date = new Date().toISOString().slice(0, 10);
   const reportPath = path.join(METRICS_DIR, `churn-risk-${date}.md`);
 
-  const risks = await computeChurnRisks();
+  const risks = precomputed ?? (await computeChurnRisks());
   const red = risks.filter((r) => r.bucket === "red");
   const orange = risks.filter((r) => r.bucket === "orange");
   const yellow = risks.filter((r) => r.bucket === "yellow");
@@ -234,24 +271,73 @@ export async function writeChurnReport(): Promise<string> {
   return reportPath;
 }
 
-export async function run(_ctx: SkillInvocationContext): Promise<SkillOutcome> {
-  const reportPath = await writeChurnReport();
-  const risks = await computeChurnRisks();
-  const red = risks.filter((r) => r.bucket === "red").length;
-  return {
-    ok: true,
-    skill: "churn-risk-scorer",
-    path: "hand-coded",
-    result: {
-      customers_scored: risks.length,
-      red,
-      orange: risks.filter((r) => r.bucket === "orange").length,
-      yellow: risks.filter((r) => r.bucket === "yellow").length,
-      green: risks.filter((r) => r.bucket === "green").length,
-    },
-    artifacts: [reportPath],
-    jack_tap_required: red > 0,
-    next_actions:
-      red > 0 ? [`Personal outreach to ${red} red-bucket customers`] : [],
-  };
+export async function run(ctx: SkillInvocationContext): Promise<SkillOutcome> {
+  // Growth-hook note: logSkillInvocation is fired centrally in
+  // skill-runtime.ts (runSkill → line ~132), so it is intentionally NOT
+  // re-called here to avoid double-logging. Verified, not added.
+  try {
+    // Compute once; reuse for both report and outcome (was computed twice).
+    const risks = await computeChurnRisks();
+    const reportPath = await writeChurnReport(risks);
+
+    const red = risks.filter((r) => r.bucket === "red");
+    const orange = risks.filter((r) => r.bucket === "orange");
+    const ltvAtRisk = red
+      .concat(orange)
+      .reduce((s, r) => s + r.ltv_at_risk, 0);
+
+    // Single-customer mode (spec input: customer_slug) — /risk {slug} via Telegram.
+    const single = ctx.customer_slug
+      ? risks.find((r) => r.slug === ctx.customer_slug)
+      : undefined;
+
+    // Audit trail (CLAUDE.md rule 5): the report gates Jack-tap personal
+    // outreach to at-risk customers — a consequential, money-adjacent action.
+    await auditLog({
+      action: "churn_risk_report_generated",
+      actor: "automated:churn-risk-scorer",
+      customer_slug: ctx.customer_slug,
+      details: {
+        report_path: reportPath,
+        customers_scored: risks.length,
+        red: red.length,
+        orange: orange.length,
+        ltv_at_risk: ltvAtRisk,
+      },
+      skill_invoked: "churn-risk-scorer",
+      actor_source: ctx.caller ?? "scheduled",
+    });
+
+    return {
+      ok: true,
+      skill: "churn-risk-scorer",
+      path: "hand-coded",
+      result: {
+        customers_scored: risks.length,
+        red: red.length,
+        orange: orange.length,
+        yellow: risks.filter((r) => r.bucket === "yellow").length,
+        green: risks.filter((r) => r.bucket === "green").length,
+        ltv_at_risk: ltvAtRisk,
+        ...(ctx.customer_slug
+          ? { customer: single ?? null, customer_found: Boolean(single) }
+          : {}),
+      },
+      artifacts: [reportPath],
+      // Hard rule 4: never email red customers en masse. Surface a Jack-tap
+      // for one-by-one personal outreach instead of any automated send.
+      jack_tap_required: red.length > 0,
+      next_actions:
+        red.length > 0
+          ? [`Personal 1:1 outreach to ${red.length} red-bucket customer(s) — no mass email`]
+          : [],
+    };
+  } catch (err) {
+    return {
+      ok: false,
+      skill: "churn-risk-scorer",
+      path: "hand-coded",
+      error: err instanceof Error ? err.message : String(err),
+    };
+  }
 }
