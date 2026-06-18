@@ -414,7 +414,7 @@ function schedulePoll() {
 async function main() {
   await ensureDirs();
   const env = await loadEnv();
-  SUPABASE_URL = env.NEXT_PUBLIC_SUPABASE_URL;
+  SUPABASE_URL = env.NEXT_PUBLIC_SUPABASE_URL || env.SUPABASE_URL;
   SUPABASE_KEY = env.SUPABASE_SERVICE_ROLE_KEY;
   process.env.TELEGRAM_CHAT_ID = env.TELEGRAM_CHAT_ID; // populate for handlers
 

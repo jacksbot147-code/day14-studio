@@ -46,8 +46,11 @@ async function sha256Hex(input: string): Promise<string> {
 export async function middleware(req: NextRequest) {
   const url = req.nextUrl;
 
-  // Local dev: no gate.
-  if (LOCAL_HOSTS.has(url.hostname)) return NextResponse.next();
+  // Local dev: no gate. Read the real Host header — Next dev rewrites
+  // nextUrl.hostname to "localhost" for every request, which would
+  // otherwise bypass the gate for LAN/remote visitors too.
+  const realHost = (req.headers.get("host") ?? url.hostname).split(":")[0] ?? "";
+  if (LOCAL_HOSTS.has(realHost)) return NextResponse.next();
 
   // Login page is public
   if (url.pathname === "/admin/login") return NextResponse.next();

@@ -16,12 +16,18 @@ export async function POST(req: NextRequest) {
   const submitted = String(form.get("password") || "");
   const next = String(form.get("next") || "/admin");
 
+  // Build redirects from the REAL Host header — Next dev rewrites req.url
+  // to localhost, which strands LAN visitors on a dead localhost page.
+  const host = req.headers.get("host") ?? new URL(req.url).host;
+  const proto = req.headers.get("x-forwarded-proto") ?? "http";
+  const base = `${proto}://${host}`;
+
   if (submitted !== password) {
-    return NextResponse.redirect(new URL(`/admin/login?error=1&next=${encodeURIComponent(next)}`, req.url), 303);
+    return NextResponse.redirect(new URL(`/admin/login?error=1&next=${encodeURIComponent(next)}`, base), 303);
   }
 
   const sessionToken = await sha256Hex(password + ":day14-admin");
-  const res = NextResponse.redirect(new URL(next, req.url), 303);
+  const res = NextResponse.redirect(new URL(next, base), 303);
   res.cookies.set("admin-session", sessionToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
