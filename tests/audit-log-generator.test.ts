@@ -116,4 +116,133 @@ describe("searchAudit", () => {
     const alpha = await mod.searchAudit({ customer_slug: "alpha" });
     expect(alpha.length).toBe(2);
   });
+
+  test("filters by since (timestamp lower bound)", async () => {
+    const mod = await freshImport();
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-03-01T00:00:00Z"));
+    await mod.auditLog({ action: "old", actor: "j" });
+    vi.setSystemTime(new Date("2026-03-20T00:00:00Z"));
+    await mod.auditLog({ action: "new", actor: "j" });
+    vi.useRealTimers();
+
+    const recent = await mod.searchAudit({ since: "2026-03-10T00:00:00Z" });
+    expect(recent.length).toBe(1);
+    expect((recent[0] as any).action).toBe("new");
+  });
+});
+
+describe("concurrency — serialized appends keep the chain intact", () => {
+  test("25 parallel auditLog calls do not fork the chain", async () => {
+    const mod = await freshImport();
+
+    // Fire all appends without awaiting between them — this is the exact
+    // interleave that, without the append lock, makes two entries share a
+    // prev_hash and silently breaks chain verification.
+    const N = 25;
+    const results = await Promise.all(
+      Array.from({ length: N }, (_, i) =>
+        mod.auditLog({ action: `act${i}`, actor: "concurrent" })
+      )
+    );
+
+    // Every call succeeded and produced a distinct hash.
+    expect(results.every((r) => r.ok)).toBe(true);
+    const hashes = new Set(results.map((r) => r.hash));
+    expect(hashes.size).toBe(N);
+
+    // The on-disk chain verifies end to end.
+    const month = new Date().toISOString().slice(0, 7);
+    const v = await mod.verifyChain(month);
+    expect(v.ok).toBe(true);
+    expect(v.entries).toBe(N);
+  });
+});
+
+describe("verifyAllChains + integrity report", () => {
+  test("verifies every month and sums entries", async () => {
+    const mod = await freshImport();
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-01-15T00:00:00Z"));
+    await mod.auditLog({ action: "jan1", actor: "j" });
+    await mod.auditLog({ action: "jan2", actor: "j" });
+    vi.setSystemTime(new Date("2026-02-10T00:00:00Z"));
+    await mod.auditLog({ action: "feb1", actor: "j", customer_slug: "acme" });
+    vi.useRealTimers();
+
+    const report = await mod.verifyAllChains();
+    expect(report.ok).toBe(true);
+    expect(report.total_entries).toBe(3);
+    expect(report.months.length).toBe(2);
+    expect(report.months.every((m: any) => m.ok)).toBe(true);
+    expect(report.last_entry?.action).toBe("feb1");
+
+    const text = mod.formatIntegrityReport(report);
+    expect(text).toContain("Audit log integrity");
+    expect(text).toContain("hash chain intact");
+    expect(text).toContain("Entries: 3 total");
+  });
+
+  test("flags a broken month as P0 (not ok)", async () => {
+    const mod = await freshImport();
+    await mod.auditLog({ action: "a", actor: "j" });
+    await mod.auditLog({ action: "b", actor: "j" });
+
+    const month = new Date().toISOString().slice(0, 7);
+    const filePath = path.join(
+      TMP_HOME,
+      `Documents/businesses/_shared/audit/audit-${month}.jsonl`
+    );
+    let text = await fs.readFile(filePath, "utf8");
+    text = text.replace('"action":"b"', '"action":"HACKED"');
+    await fs.writeFile(filePath, text, "utf8");
+
+    const report = await mod.verifyAllChains();
+    expect(report.ok).toBe(false);
+    expect(mod.formatIntegrityReport(report)).toContain("P0");
+  });
+});
+
+describe("run() modes", () => {
+  test("log mode appends when action + actor present", async () => {
+    const mod = await freshImport();
+    const out = await mod.run({
+      context: "test",
+      inputs: { action: "refund_issued", actor: "jack@day14" },
+    });
+    expect(out.ok).toBe(true);
+    expect((out.result as any).hash).toMatch(/^[0-9a-f]{64}$/);
+  });
+
+  test("verify mode (bare /audit) returns an integrity report", async () => {
+    const mod = await freshImport();
+    await mod.auditLog({ action: "x", actor: "j" });
+    const out = await mod.run({ context: "test", inputs: {} });
+    expect(out.ok).toBe(true);
+    expect((out.result as any).mode).toBe("verify");
+    expect((out.result as any).text).toContain("Audit log integrity");
+  });
+
+  test("search mode returns matching entries", async () => {
+    const mod = await freshImport();
+    await mod.auditLog({ action: "refund_issued", actor: "j" });
+    await mod.auditLog({ action: "dns_change", actor: "j" });
+    const out = await mod.run({
+      context: "test",
+      inputs: { action: "refund_issued" },
+    });
+    expect(out.ok).toBe(true);
+    expect((out.result as any).mode).toBe("search");
+    expect((out.result as any).count).toBe(1);
+  });
+
+  test("log mode rejects missing required fields", async () => {
+    const mod = await freshImport();
+    const out = await mod.run({
+      context: "test",
+      inputs: { mode: "log", actor: "j" },
+    });
+    expect(out.ok).toBe(false);
+    expect(out.error).toContain("missing required fields");
+  });
 });
