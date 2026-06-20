@@ -55,9 +55,14 @@ async function loadCustomer(slug: string): Promise<CustomerSnapshot | null> {
 function pausesIn12Months(history: CustomerSnapshot["pause_history"]): number {
   if (!history) return 0;
   const yearAgo = Date.now() - 365 * 86400000;
-  return history.filter(
-    (p) => new Date(p.paused_at).getTime() > yearAgo
-  ).length;
+  return history.filter((p) => {
+    const t = new Date(p?.paused_at ?? "").getTime();
+    // An unparseable paused_at is still a pause that happened — count it
+    // toward the policy floor instead of silently dropping it. Erring toward
+    // blocking an extra pause is the safe side of spec hard rule 5.
+    if (!Number.isFinite(t)) return true;
+    return t > yearAgo;
+  }).length;
 }
 
 async function writeStatusUpdate(
@@ -91,7 +96,8 @@ async function queuePauseConfirmationCard(
   const filename = `${Date.now()}-pause-confirm-${customer.slug}.json`;
   const filepath = path.join(TG_OUTBOX, filename);
 
-  const text = `⏸ *Pause subscription* — ${customer.slug}\n\nReason: "${req.reason}"\nPause until: ${pauseUntil.toISOString().slice(0, 10)}\nMRR deferred: $${customerMrr(customer)}\n\nConfirm? Site stays UP during pause.`;
+  const resumeDate = pauseUntil.toISOString().slice(0, 10);
+  const text = `⏸ *Pause subscription* — ${customer.slug}\n\nReason: "${req.reason}"\nPause until: ${resumeDate}\nAuto-resumes (never auto-cancels) on ${resumeDate} — billing restarts then.\nMRR deferred: $${customerMrr(customer)}\n\nConfirm? Site stays UP during pause.`;
 
   await fs.writeFile(
     filepath,
@@ -117,6 +123,47 @@ async function queuePauseConfirmationCard(
   return filename;
 }
 
+/**
+ * Spec failure mode: a customer pausing a 3rd time in 12 months converts to
+ * cancel + win-back rather than another pause. Queue a real Jack-tap card so
+ * the conversion actually happens (previously this path queued nothing).
+ */
+async function queueCancelWinbackCard(
+  customer: CustomerSnapshot,
+  req: PauseRequest,
+  recentPauses: number
+): Promise<string> {
+  await fs.mkdir(TG_OUTBOX, { recursive: true });
+  const filename = `${Date.now()}-pause-to-cancel-${customer.slug}.json`;
+  const filepath = path.join(TG_OUTBOX, filename);
+
+  const text = `🛑 *Pause limit hit* — ${customer.slug}\n\n${recentPauses} pauses in the last 12 months; spec floor is 2. Per policy this converts to *cancel + win-back* rather than a ${recentPauses + 1}th pause.\n\nReason given: "${req.reason}"\nMRR at stake: $${customerMrr(customer)}\n\nApprove cancel-with-win-back?`;
+
+  await fs.writeFile(
+    filepath,
+    JSON.stringify(
+      {
+        text,
+        urgency: "P2",
+        queued_at: new Date().toISOString(),
+        sent_at: null,
+        chat_id: process.env.TELEGRAM_CHAT_ID || null,
+        tap_required: true,
+        action: "convert_pause_to_cancel_winback",
+        payload: {
+          customer_slug: customer.slug,
+          stripe_subscription_id: customer.stripe_subscription_id,
+          recent_pauses_12mo: recentPauses,
+          reason: req.reason,
+        },
+      },
+      null,
+      2
+    )
+  );
+  return filename;
+}
+
 export async function processPause(req: PauseRequest): Promise<{
   ok: boolean;
   pause_until?: Date;
@@ -124,6 +171,7 @@ export async function processPause(req: PauseRequest): Promise<{
   jack_tap_required: boolean;
   error?: string;
   warning?: string;
+  next_actions?: string[];
 }> {
   const customer = await loadCustomer(req.customer_slug);
   if (!customer) {
@@ -146,20 +194,69 @@ export async function processPause(req: PauseRequest): Promise<{
 
   const recentPauses = pausesIn12Months(customer.pause_history);
   if (recentPauses >= 2) {
+    // Spec failure mode: "Customer pauses 3rd time in 12 months → convert to
+    // cancel + offer win-back." Queue a real Jack-tap card, schedule the
+    // win-back, and audit-log the policy decision (CLAUDE.md rule 5).
+    let cardArtifact: string[] = [];
+    try {
+      const cardFile = await queueCancelWinbackCard(customer, req, recentPauses);
+      cardArtifact = [path.join(TG_OUTBOX, cardFile)];
+    } catch (err) {
+      return {
+        ok: false,
+        artifacts: [],
+        jack_tap_required: true,
+        error: `pause-limit conversion failed to queue: ${(err as Error).message}`,
+        warning: "policy floor breached",
+      };
+    }
+    await auditLog({
+      action: "pause_blocked_converted_to_cancel",
+      actor: "automated:subscription-pause-handler",
+      customer_slug: customer.slug,
+      details: {
+        reason: req.reason,
+        recent_pauses_12mo: recentPauses,
+        mrr_at_stake: customerMrr(customer),
+      },
+      skill_invoked: "subscription-pause-handler",
+      actor_source: "skill-runner",
+    });
+    const winBack = new Date(Date.now() + 30 * 86400000)
+      .toISOString()
+      .slice(0, 10);
     return {
       ok: false,
-      artifacts: [],
+      artifacts: cardArtifact,
       jack_tap_required: true,
-      error: `3rd pause in 12 months — convert to cancel-with-winback instead`,
+      error: `pause #${recentPauses + 1} in 12 months — converting to cancel-with-win-back per policy`,
       warning: "policy floor breached",
+      next_actions: [
+        `trigger win-back-campaign-trigger for ${customer.slug} on ${winBack}`,
+      ],
     };
   }
 
-  const duration = Math.min(Math.max(req.pause_duration_days ?? 30, 1), 30);
+  // Guard non-finite inputs (NaN/Infinity) — otherwise a bad duration yields
+  // an Invalid Date that flows straight into the status file and Jack-tap card.
+  const requested = req.pause_duration_days;
+  const safeRequested = Number.isFinite(requested) ? (requested as number) : 30;
+  const duration = Math.min(Math.max(safeRequested, 1), 30);
   const pauseUntil = new Date(Date.now() + duration * 86400000);
 
-  const statusPath = await writeStatusUpdate(customer, pauseUntil);
-  const cardFile = await queuePauseConfirmationCard(customer, pauseUntil, req);
+  let statusPath: string;
+  let cardFile: string;
+  try {
+    statusPath = await writeStatusUpdate(customer, pauseUntil);
+    cardFile = await queuePauseConfirmationCard(customer, pauseUntil, req);
+  } catch (err) {
+    return {
+      ok: false,
+      artifacts: [],
+      jack_tap_required: false,
+      error: `pause side-effects failed: ${(err as Error).message}`,
+    };
+  }
 
   await auditLog({
     action: "pause_requested",
@@ -205,6 +302,7 @@ export async function run(ctx: SkillInvocationContext): Promise<SkillOutcome> {
     result: { pause_until: result.pause_until },
     artifacts: result.artifacts,
     jack_tap_required: result.jack_tap_required,
+    next_actions: result.next_actions,
     error: result.error || result.warning,
   };
 }
