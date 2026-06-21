@@ -1,8 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE, PITCH, CASE_STUDIES } from "@/lib/site";
+import { SERVICE_TIERS } from "@/lib/pricing";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+
+// Full-stack build price comes from pricing.ts — the Platform tier floor.
+// Guard the lookup instead of asserting non-null: these pages are statically
+// generated, so a `!` here would hard-fail the whole site build if the
+// "platform" slug is ever renamed. Degrade to a neutral label instead.
+const FULL_STACK_PRICE =
+  SERVICE_TIERS.find((t) => t.slug === "platform")?.setupLabel ?? "at a fixed price";
 
 export const metadata: Metadata = {
   title: "About",
@@ -42,7 +50,7 @@ function Hero() {
 
       <div className="mt-9 flex flex-wrap gap-3">
         <a href={SITE.bookingUrl} className="btn-ember">
-          Book a 15-min intro call
+          Book a 30-min intro call
         </a>
         <Link href="/#case-studies" className="btn-ghost">
           See the work
@@ -83,7 +91,7 @@ function TheModel() {
           <p>
             The result is a productized agency that ships the full stack
             (marketing site + customer portal + billing + admin + AI chatbot
-            + SMS) in 14 days for $5k–$10k — same scope an agency would charge
+            + SMS) {FULL_STACK_PRICE} — same scope an agency would charge
             $50k+ and take 6 months for.
           </p>
           <p className="text-ink-500">
@@ -127,7 +135,7 @@ function TheProof() {
                 {cs.name}
               </h3>
               <p className="mt-1 text-xs text-ink-400">{cs.industry}</p>
-              <p className="mt-3 text-sm text-ink-500">{cs.summary.split(".")[0]}.</p>
+              <p className="mt-3 text-sm text-ink-500">{cs.summary.split(".").at(0) ?? cs.summary}.</p>
             </Link>
           ))}
         </div>
@@ -196,7 +204,7 @@ function FinalCta() {
               href={SITE.bookingUrl}
               className="btn-ember w-full justify-center text-base"
             >
-              Book a 15-min intro call
+              Book a 30-min intro call
             </a>
             <a
               href={`mailto:${SITE.email}`}
