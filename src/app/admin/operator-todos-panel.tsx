@@ -11,6 +11,16 @@
  *
  * Rows with no instructions still render (title + detail + meta) and simply
  * have nothing to expand — fully backward-compatible with legacy todos.
+ *
+ * MARK DONE — the local write path.
+ *   The "Mark done" button POSTs to /api/admin/approvals
+ *   ({ kind:"todo", id, action:"approve" }), which flips the to-do to
+ *   status:"done" + stamps completed_at in operator-todos.json and mirrors the
+ *   empire-state.json snapshot — the exact same convention the Telegram
+ *   "done N" command used, now driven straight from the dashboard. The row is
+ *   removed optimistically on success. If the write path is unavailable (the
+ *   hosted Vercel copy is view-only and returns 503), the button degrades to
+ *   the original Telegram fallback so the operator always has a way through.
  */
 
 import { useState } from "react";
@@ -37,8 +47,38 @@ function CopyButton({ text }: { text: string }) {
   );
 }
 
-function TodoRow({ todo, botUser }: { todo: HumanTodo; botUser: string | null }) {
+/** Telegram fallback affordance — only shown if the local write path fails. */
+function TelegramFallback({ seq, botUser }: { seq: number; botUser: string | null }) {
+  if (botUser) {
+    return (
+      <a
+        href={`https://t.me/${botUser}?text=${encodeURIComponent(`done ${seq}`)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        mark done in Telegram
+      </a>
+    );
+  }
+  return (
+    <span>
+      Telegram: <code>done {seq}</code>
+    </span>
+  );
+}
+
+function TodoRow({
+  todo,
+  botUser,
+  onDone,
+}: {
+  todo: HumanTodo;
+  botUser: string | null;
+  onDone: (id: string) => void;
+}) {
   const [open, setOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const ins = todo.instructions;
   const hasInstructions = !!(
     ins &&
@@ -46,6 +86,31 @@ function TodoRow({ todo, botUser }: { todo: HumanTodo; botUser: string | null })
       (ins.links && ins.links.length) ||
       (ins.code && ins.code.trim()))
   );
+
+  async function markDone() {
+    if (saving) return;
+    setSaving(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/admin/approvals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ kind: "todo", id: todo.id, action: "approve" }),
+      });
+      if (res.ok) {
+        onDone(todo.id); // optimistic — drop the row, it's persisted
+        return;
+      }
+      const data = (await res.json().catch(() => null)) as
+        | { error?: string; message?: string }
+        | null;
+      setError(data?.error || data?.message || "Couldn’t mark this done here.");
+    } catch {
+      setError("Couldn’t reach the dashboard.");
+    } finally {
+      setSaving(false);
+    }
+  }
 
   return (
     <div className={`todo-row ${todo.priority === "high" ? "pri-high" : ""}`}>
@@ -120,20 +185,20 @@ function TodoRow({ todo, botUser }: { todo: HumanTodo; botUser: string | null })
         </div>
       </div>
       <div className="todo-action">
-        {botUser ? (
-          <a
-            className="todo-done-btn"
-            href={`https://t.me/${botUser}?text=${encodeURIComponent(`done ${todo.seq}`)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Mark done
-          </a>
-        ) : (
+        <button
+          type="button"
+          className="todo-done-btn"
+          onClick={markDone}
+          disabled={saving}
+          aria-busy={saving}
+        >
+          {saving ? "Marking…" : "Mark done"}
+        </button>
+        {error ? (
           <span className="todo-done-hint">
-            Telegram: <code>done {todo.seq}</code>
+            {error} <TelegramFallback seq={todo.seq} botUser={botUser} />
           </span>
-        )}
+        ) : null}
       </div>
     </div>
   );
@@ -146,14 +211,20 @@ export function OperatorTodosPanel({
   todos: HumanTodo[];
   botUser: string | null;
 }) {
+  const [items, setItems] = useState<HumanTodo[]>(todos);
+  const removeTodo = (id: string) =>
+    setItems((cur) => cur.filter((t) => t.id !== id));
+
   return (
-    <div className={`todo-panel ${todos.length > 0 ? "has-items" : ""}`}>
-      {todos.length === 0 ? (
+    <div className={`todo-panel ${items.length > 0 ? "has-items" : ""}`}>
+      {items.length === 0 ? (
         <div className="todo-empty">
           Nothing needs you right now — the agents have it covered.
         </div>
       ) : (
-        todos.map((t) => <TodoRow key={t.id} todo={t} botUser={botUser} />)
+        items.map((t) => (
+          <TodoRow key={t.id} todo={t} botUser={botUser} onDone={removeTodo} />
+        ))
       )}
     </div>
   );
