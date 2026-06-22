@@ -30,7 +30,12 @@ export default function VerticalPage({ params }: { params: Params }) {
   if (!v) notFound();
 
   const exemplar = CASE_STUDIES.find((cs) => cs.slug === v.exemplarSlug);
-  const matchingSkus = SKUS.filter((s) => v.recommendedSkus.includes(s.id));
+  // Guard a renamed SkuId in site.ts: if no recommended SKU resolves, degrade
+  // to the full SKU list rather than rendering an orphan "the natural fit
+  // is ." sentence and an empty pricing grid. Byte-identical today (every
+  // vertical resolves >=2 SKUs) — a soft fallback instead of a broken section.
+  const recommendedSkus = SKUS.filter((s) => v.recommendedSkus.includes(s.id));
+  const matchingSkus = recommendedSkus.length > 0 ? recommendedSkus : SKUS;
 
   const accentText =
     v.accent === "ember"
