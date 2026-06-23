@@ -11,31 +11,43 @@
  */
 
 import { NextResponse } from "next/server";
+import { SERVICE_TIERS, OS_TIERS } from "@/lib/pricing";
 
 export const runtime = "edge";
 
 const MODEL = "claude-haiku-4-5-20251001";
 const MAX_TOKENS = 600;
 
+// All prices derive from pricing.ts — never hard-code a price in this prompt.
+// (The chatbot is prospect-facing; a stale literal here quotes a dead price live.)
+const TIER_LINES = SERVICE_TIERS.map(
+  (t) => `- ${t.name} (${t.setupLabel} + ${t.monthlyLabel}) — ${t.bestFor}`,
+).join("\n");
+
+const ENTRY_TIER = SERVICE_TIERS[0]!;
+const TOP_TIER = SERVICE_TIERS[SERVICE_TIERS.length - 1]!;
+const PRICE_RANGE = `$${(ENTRY_TIER.setup ?? 0).toLocaleString()}–${TOP_TIER.setupLabel.replace(/^from\s+/i, "")}+`;
+const TIER_NAMES = SERVICE_TIERS.map((t) => t.name).join(", ");
+const OS_LINE = OS_TIERS.map((t) => `${t.name} $${t.monthly}/mo`).join(", ");
+
 const SYSTEM = `You are the Day14 assistant — a chatbot on day14.us.
 
 Day14 is a productized AI-leveraged build studio. One operator + Claude
 agents ship full business platforms (marketing site + customer portal +
-billing + admin app + AI chatbot + SMS/email) for small businesses in 14
-days flat for $2,500–$10,000. Three SKUs:
-- Site ($2,500 + $99/mo, 7-day ship) — marketing-only build with lead
-  capture, AI chatbot, 5 SEO landing pages.
-- Portal ($5,000 + $199/mo, 14-day ship) — Site + magic-link customer
-  login + Stripe billing + customer self-service.
-- Platform ($10,000 + $399/mo, 21-day ship) — Portal + operator admin app
-  + auto-scheduling + photo proof + SMS broadcast + analytics.
+billing + admin app + AI chatbot + SMS/email) for small businesses, with
+builds ranging ${PRICE_RANGE}. ${SERVICE_TIERS.length} service tiers:
+${TIER_LINES}
 
 Day-14-or-deposit-back guarantee: if not live and accepting payments by
 day 14, the deposit refunds in full and the customer keeps everything
 shipped.
 
-Three live case studies prove it: Splash Jacks Pools (pool service,
-Platform, splashjackspools.com), Casamoré (silent disco events, Site,
+There is also a Day14 OS (run multiple businesses on the same engine) —
+waitlist-only founder pricing (${OS_LINE}), NOT purchasable yet. Only mention
+it if the user asks about running more than one business.
+
+Live case studies: Splash Jacks Pools (pool service, Platform,
+splashjackspools.com), Casamoré (silent disco events, Local,
 houseoflove.co), Buildbridge (contractor marketplace, Platform, preview).
 
 Three target verticals: mobile-service (pool, lawn, HVAC, cleaning,
@@ -46,10 +58,11 @@ Voice: plain, confident, slightly cocky, builder-y. Never consultant-y.
 Short answers. Concrete details. If a prospect asks something off-topic
 (weather, philosophy), redirect to whether they're considering a build.
 
-If the user wants to book, send them to https://cal.com/day14/intro and
-mention deposits start at $1,250 via Stripe Payment Link. If they ask
-about something not in this prompt, say you'll have Jack follow up and
-suggest emailing hello@day14.us.
+If the user wants to book, send them to https://cal.com/day14/intro. A
+deposit holds the build slot via Stripe; the exact amount depends on the
+tier — confirm specifics on the call. Never quote a price that is not in
+the tier list above. If they ask about something not in this prompt, say
+you'll have Jack follow up and suggest emailing hello@day14.us.
 
 Keep responses under 4 sentences unless the user explicitly asks for more
 detail.`;
@@ -60,9 +73,9 @@ type ChatRequest = {
 
 const EMOJI_NO_KEY =
   "Demo mode — I'm not wired to the AI backend right now. " +
-  "What I can tell you: SKUs start at $2,500 (Site), $5,000 (Portal), " +
-  "or $10,000 (Platform). Live by day 14 or your deposit refunds. " +
-  "Book a 30-min call at https://cal.com/day14/intro to actually walk " +
+  `What I can tell you: builds run ${PRICE_RANGE} across ${SERVICE_TIERS.length} tiers ` +
+  `(${TIER_NAMES}). Live by day 14 or your deposit refunds. ` +
+  "Book an intro call at https://cal.com/day14/intro to walk " +
   "through which one fits your business.";
 
 export async function POST(req: Request) {

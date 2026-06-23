@@ -1,10 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE, PITCH, FAQ } from "@/lib/site";
+import { SERVICE_TIERS } from "@/lib/pricing";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { CountUp } from "@/components/motion/count-up";
 import { cn } from "@/lib/cn";
+
+// Day14's own numbers come from pricing.ts (SERVICE_TIERS). Competitor prices
+// below are public third-party plans and are intentionally left as-is.
+const T = Object.fromEntries(SERVICE_TIERS.map((t) => [t.slug, t]));
+const PORTAL = T.portal!;
+const LOCAL = T.local!;
+const PLATFORM = T.platform!;
+const PLATFORM_FLOOR = Number(
+  PLATFORM.setup ?? PLATFORM.setupLabel.replace(/[^0-9]/g, ""),
+);
 
 export const metadata: Metadata = {
   title: "Day14 vs Jobber, Housecall Pro, GoHighLevel, Squarespace",
@@ -152,8 +163,8 @@ const COMPETITORS: Competitor[] = [
   {
     name: "Day14 Portal",
     short: "Day14",
-    monthly: "$199/mo",
-    upfront: "$5,000",
+    monthly: `$${PORTAL.monthly}/mo`,
+    upfront: `$${PORTAL.setup!.toLocaleString()}`,
     shipTime: "14 days",
     ownsCode: "yes",
     branding: "yes",
@@ -433,10 +444,10 @@ const MATH_ROWS: MathRow[] = [
   },
   {
     label: "Day14 Portal",
-    formula: "$5,000 upfront + $199/mo × 60 mo",
-    monthlyTotal: 11940,
-    upfront: 5000,
-    total: 16940,
+    formula: `$${PORTAL.setup!.toLocaleString()} upfront + $${PORTAL.monthly}/mo × 60 mo`,
+    monthlyTotal: PORTAL.monthly * 60,
+    upfront: PORTAL.setup!,
+    total: PORTAL.setup! + PORTAL.monthly * 60,
     ownAtEnd: true,
     note: "Cancel and you keep the repo, the domain, and the customers.",
     highlight: true,
@@ -444,7 +455,7 @@ const MATH_ROWS: MathRow[] = [
 ];
 
 function FiveYearMath() {
-  const delta = 16940 - 10140;
+  const delta = MATH_ROWS[1]!.total - MATH_ROWS[0]!.total;
   return (
     <section className="border-y border-ink-100 bg-paper-50/60 py-20 sm:py-24">
       <div className="container-page">
@@ -537,8 +548,9 @@ function FiveYearMath() {
         </div>
 
         <p className="mx-auto mt-6 max-w-3xl text-center font-mono text-xs uppercase tracking-widest text-ink-400">
-          Day14 Portal is the comparable SKU. Site ($2,500 + $99/mo) and
-          Platform ($10,000 + $399/mo) flank it.
+          Day14 Portal is the comparable SKU.{" "}
+          Local ({`$${LOCAL.setup!.toLocaleString()} + $${LOCAL.monthly}/mo`}) and{" "}
+          Platform ({`from $${PLATFORM_FLOOR.toLocaleString()} + $${PLATFORM.monthly}/mo`}) flank it.
         </p>
       </div>
     </section>

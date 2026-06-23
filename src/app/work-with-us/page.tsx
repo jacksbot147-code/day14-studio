@@ -1,11 +1,31 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE } from "@/lib/site";
+import { SERVICE_TIERS } from "@/lib/pricing";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
+// Every price on this page is derived from pricing.ts (SERVICE_TIERS) — the
+// single source of truth. No price is hard-coded.
+const T = Object.fromEntries(SERVICE_TIERS.map((t) => [t.slug, t]));
+const SPARK_PRICE = `$${T.spark!.setup!.toLocaleString()}`;
+const LOCAL_PRICE = `$${T.local!.setup!.toLocaleString()}`;
+const PORTAL_PRICE = `$${T.portal!.setup!.toLocaleString()}`;
+const PLATFORM_PRICE = T.platform!.setupLabel; // "from $9,000"
+const PLATFORM_FLOOR = `$${Number(
+  T.platform!.setup ?? T.platform!.setupLabel.replace(/[^0-9]/g, ""),
+).toLocaleString()}`;
+const OPS_MIN = Math.min(...SERVICE_TIERS.map((t) => t.monthly));
+const OPS_MAX = Math.max(...SERVICE_TIERS.map((t) => t.monthly));
+const TIMELINE_BY_SLUG: Record<string, string> = {
+  spark: "7 days",
+  local: "14 days",
+  portal: "3 weeks",
+  platform: "4 weeks",
+};
+
 const TITLE = `Hire Day14 — Sites and apps shipped in days, not months`;
-const DESCRIPTION = `I build custom websites and apps for local businesses, founders, and small teams. From $1,500 single-page sites to $24k+ multi-tenant platforms. Hosted on Day14 OS forever. Fixed price, no SOWs, shipped in days.`;
+const DESCRIPTION = `I build custom websites and apps for local businesses, founders, and small teams. From ${SPARK_PRICE} single-page sites to ${PLATFORM_FLOOR}+ platforms. Hosted on Day14 OS forever. Fixed price, no SOWs, shipped in days.`;
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -62,7 +82,7 @@ function Hero() {
         <br className="hidden sm:block" /> Ship it in days.
       </h1>
       <p className="mt-7 max-w-2xl text-lg text-ink-500 sm:text-xl">
-        I&rsquo;m Jack. I build custom websites and apps in days, not months &mdash; from $1,500 single-page sites for local businesses up to $24k+ multi-tenant platforms. Every build runs on Day14 OS, the platform I built to run my own six businesses.
+        I&rsquo;m Jack. I build custom websites and apps in days, not months &mdash; from {SPARK_PRICE} single-page sites for local businesses up to {PLATFORM_FLOOR}+ platforms. Every build runs on Day14 OS, the platform I built to run my own six businesses.
       </p>
 
       <div className="mt-9 flex flex-wrap gap-3">
@@ -84,12 +104,12 @@ function WhatWeBuild() {
     {
       label: "Sites",
       title: "Beautiful, fast, conversion-ready.",
-      body: "Single-page sites for local businesses and solo professionals (Spark, $1,500, 5 days). Multi-page marketing sites for founders launching a brand (Studio, $9,000, 14 days). Custom design every time, no Webflow templates with my markup on top.",
+      body: `Single-page sites for local businesses and solo professionals (Spark, ${SPARK_PRICE}, 7 days). Multi-page sites with online quoting and scheduling for service businesses (Local, ${LOCAL_PRICE}, 14 days). Custom design every time, no Webflow templates with my markup on top.`,
     },
     {
       label: "Apps",
       title: "Customer portals, admin, billing.",
-      body: "Full software platforms with marketing site + customer portal + admin app + billing wired live (Platform, $24,000, 4 weeks). Same stack I run my six businesses on. Built so you can actually operate it, not so it looks good in a screenshot.",
+      body: `Customer-portal builds (Portal, ${PORTAL_PRICE}) and full software platforms with marketing site + customer portal + admin app + billing wired live (Platform, ${PLATFORM_PRICE}, 4 weeks). Same stack I run my six businesses on. Built so you can actually operate it, not so it looks good in a screenshot.`,
     },
     {
       label: "Custom",
@@ -143,7 +163,7 @@ function WhoItsFor() {
   ];
   const notFits = [
     "Teams who want a Figma file, six weeks of discovery, and an agency-style change-order process.",
-    "Anyone shopping for a SaaS subscription. We build code you own, not seats you rent. (Day14 OS hosting is $49&ndash;$299/mo after launch &mdash; that's optional, not a subscription.)",
+    `Anyone shopping for a SaaS subscription. We build code you own, not seats you rent. (Day14 OS hosting is $${OPS_MIN}&ndash;$${OPS_MAX}/mo after launch &mdash; that's optional, not a subscription.)`,
     "Stealth-mode ideas that won't talk to a real customer for six months. We ship things that go live and get used.",
   ];
 
@@ -222,7 +242,7 @@ function HowWeShip() {
       n: "03",
       label: "Launch + Live",
       title: "Site or app ships at your domain.",
-      body: "Hosted on Day14 OS. Scheduled agents handle the boring stuff (deploys, content drafts, briefings) so the thing runs without you. $49&ndash;$299/mo after the bundled ops window, depending on tier.",
+      body: `Hosted on Day14 OS. Scheduled agents handle the boring stuff (deploys, content drafts, briefings) so the thing runs without you. $${OPS_MIN}&ndash;$${OPS_MAX}/mo after the bundled ops window, depending on tier.`,
     },
   ];
 
@@ -262,9 +282,12 @@ function HowWeShip() {
 
 function PricingRecap() {
   const tiers = [
-    { name: "Spark", price: "$1,500", timeline: "5 days", body: "Single-page custom site with lead capture. For local businesses, tutors, solo professionals." },
-    { name: "Studio", price: "$9,000", timeline: "14 days", body: "Multi-page marketing site with custom design + blog. For founders launching a brand." },
-    { name: "Platform", price: "$24,000", timeline: "4 weeks", body: "Site + customer portal + admin + billing. For operators launching a real software business." },
+    ...SERVICE_TIERS.map((t) => ({
+      name: t.name,
+      price: t.setup === null ? t.setupLabel : `$${t.setup.toLocaleString()}`,
+      timeline: TIMELINE_BY_SLUG[t.slug] ?? "",
+      body: t.tagline,
+    })),
     { name: "Custom", price: "Talk to us", timeline: "6–12 weeks", body: "Multi-tenant, marketplaces, anything bespoke. Quote back in 48 hours." },
   ];
 
@@ -274,10 +297,10 @@ function PricingRecap() {
         <div>
           <div className="eyebrow mb-4">Pricing</div>
           <h2 className="text-3xl font-extrabold tracking-tightest text-ink sm:text-4xl">
-            $1,500 to scoped.
+            {SPARK_PRICE} to scoped.
           </h2>
           <p className="mt-5 text-ink-500">
-            Fixed price, fixed timeline, no SOWs. The four tiers below cover the
+            Fixed price, fixed timeline, no SOWs. The tiers below cover the
             shape of most builds. Custom is for everything else.
           </p>
           <p className="mt-3 text-sm text-ink-500">
@@ -308,7 +331,7 @@ function PricingRecap() {
           ))}
 
           <div className="rounded-lg border border-ink-100 bg-paper-50 p-5 text-sm text-ink-500">
-            All tiers include 3&ndash;12 months of Day14 OS hosting bundled. After the bundled window, ongoing ops is $49&ndash;$299/mo flat &mdash; depending on tier complexity. No retainer, no surprise invoices.
+            All tiers include 3&ndash;12 months of Day14 OS hosting bundled. After the bundled window, ongoing ops is {`$${OPS_MIN}`}&ndash;{`$${OPS_MAX}`}/mo flat &mdash; depending on tier complexity. No retainer, no surprise invoices.
           </div>
         </div>
       </div>

@@ -31,7 +31,7 @@ const FAQS = [
   },
   {
     q: "Do you only do service businesses?",
-    a: "No. We have shipped service-business platforms, brand-heavy event sites, two-sided marketplaces, and autonomous POD stores. Anything that fits in Site / Portal / Platform we will quote on the call.",
+    a: "No. We have shipped service-business platforms, brand-heavy event sites, two-sided marketplaces, and autonomous POD stores. Anything that fits in Spark / Local / Portal / Platform we will quote on the call.",
   },
   {
     q: "What about hosting and infrastructure costs?",

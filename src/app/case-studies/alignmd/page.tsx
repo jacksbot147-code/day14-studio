@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE } from "@/lib/site";
+import { SERVICE_TIERS } from "@/lib/pricing";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+
+// Platform price comes from pricing.ts — the single source of truth.
+const PLATFORM = SERVICE_TIERS.find((t) => t.slug === "platform")!;
 
 const CASE = {
   name: "AlignMD",
@@ -245,7 +249,7 @@ function NextCta() {
               Want a platform like AlignMD?
             </h2>
             <p className="mt-4 max-w-xl text-paper-200">
-              Platform tier is $24,000, shipped in 4 weeks. Same stack, same agents, your brand. 15-minute intro call to figure out if the fit is real.
+              Platform tier is {PLATFORM.setupLabel}, shipped in 4 weeks. Same stack, same agents, your brand. 15-minute intro call to figure out if the fit is real.
             </p>
           </div>
           <div>

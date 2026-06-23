@@ -1,6 +1,16 @@
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { SERVICE_TIERS } from "@/lib/pricing";
+
+// Public price range, derived from pricing.ts (Spark floor → Platform floor).
+const PLATFORM_FLOOR = Number(
+  SERVICE_TIERS.find((t) => t.slug === "platform")!.setupLabel.replace(/[^0-9]/g, ""),
+);
+const MIN_SETUP = Math.min(
+  ...SERVICE_TIERS.map((t) => t.setup).filter((n): n is number => n !== null),
+);
+const PRICE_RANGE = `$${MIN_SETUP.toLocaleString()}–$${PLATFORM_FLOOR.toLocaleString()}+`;
 
 export const metadata = {
   title: "Press kit — Day14",
@@ -12,7 +22,7 @@ const STATS = [
   { stat: "1", label: "Operator" },
   { stat: "20+", label: "AI agents in production" },
   { stat: "14 days", label: "Average ship time" },
-  { stat: "$2.5k–$10k", label: "Fixed-price SKUs" },
+  { stat: PRICE_RANGE, label: "Fixed-price builds" },
   { stat: "Florida", label: "Headquarters" },
   { stat: "2026", label: "Founded" },
 ];
@@ -60,7 +70,7 @@ export default function PressPage() {
           <span className="eyebrow lg:pt-2">One-liner</span>
           <p className="border-l-2 border-ember-300 pl-6 text-lg leading-relaxed text-ink sm:text-xl">
             A one-operator build studio shipping real business platforms in 14 days,
-            productized at $2,500–$10,000, using its own AI agent stack to do it.
+            productized at {PRICE_RANGE}, using its own AI agent stack to do it.
           </p>
         </section>
 

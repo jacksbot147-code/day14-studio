@@ -1,10 +1,17 @@
 /**
  * Day14 — shared site content.
  *
- * Single source of truth for marketing copy. Edit copy here, not inside
+ * Single source of truth for marketing COPY. Edit copy here, not inside
  * the page components, so the homepage / case studies / OG images all
  * stay in sync.
+ *
+ * PRICES ARE NOT DEFINED HERE. Every price below is derived from
+ * src/lib/pricing.ts (SERVICE_TIERS) — the single source of truth. The
+ * legacy `SKUS` array that hard-coded its own $2,500 / $5,000 / $10,000
+ * numbers was retired in the 2026-06 pricing-integrity sweep.
  */
+
+import { SERVICE_TIERS } from "./pricing";
 
 export const SITE = {
   brand: "Day14",
@@ -24,8 +31,26 @@ export const STATS = {
   avgShipDays: 9,
   guaranteeDays: 14,
   liveBuilds: 3,
-  startingPriceUsd: 2500,
+  // Derived from pricing.ts — the lowest build setup (Spark). Never hard-code.
+  startingPriceUsd: Math.min(
+    ...SERVICE_TIERS.map((t) => t.setup).filter(
+      (n): n is number => n !== null,
+    ),
+  ),
 } as const;
+
+/**
+ * Booking-capacity month. Centralized here so it's changed in ONE place
+ * instead of the four hero/CTA components that surface it (page.tsx,
+ * waitlist.tsx, video-hero.tsx, professional-hero.tsx).
+ */
+export const BOOKING_MONTH = "July";
+
+/**
+ * Starting-price label ("$750"), derived from pricing.ts. Used by global
+ * components (footer, hero) so the entry price is never hard-coded.
+ */
+export const STARTING_PRICE_LABEL = `$${STATS.startingPriceUsd.toLocaleString()}`;
 
 export const PITCH = {
   oneLiner:
@@ -38,13 +63,16 @@ export const PITCH = {
     "Built by an operator, not an agency. One builder who runs his own businesses and ships software for others who run theirs.",
 } as const;
 
-export type SkuId = "site" | "portal" | "platform";
+export type SkuId = (typeof SERVICE_TIERS)[number]["slug"]; // "spark" | "local" | "portal" | "platform"
 
 export type Sku = {
   id: SkuId;
   name: string;
   blurb: string;
+  /** One-time setup in USD. For "from"-priced tiers this is the floor. */
   oneTime: number;
+  /** True when the tier is quoted "from" a floor (no fixed setup). */
+  fromPrice: boolean;
   monthly: number;
   shipsIn: string;
   bestFor: string;
@@ -52,64 +80,30 @@ export type Sku = {
   popular?: boolean;
 };
 
-export const SKUS: Sku[] = [
-  {
-    id: "site",
-    name: "Site",
-    blurb: "Marketing-only build. Real digital presence, no online ordering.",
-    oneTime: 2500,
-    monthly: 99,
-    shipsIn: "7 days",
-    bestFor:
-      "Businesses that need a real website but don't take online bookings or payments yet — brand-heavy services, event companies, local shops.",
-    features: [
-      "Custom-designed homepage, services, pricing, about, contact, FAQ",
-      "5 SEO landing pages for your service area or product lines",
-      "Lead capture → your email + a simple dashboard",
-      "AI chatbot trained on your services, pricing, and brand voice",
-      "Mobile-optimized, PWA-ready, dynamic OG images",
-      "Custom domain, SSL, hosting, MailerLite or Resend wired",
-    ],
-  },
-  {
-    id: "portal",
-    name: "Portal",
-    blurb: "Everything in Site, plus a customer portal with billing.",
-    oneTime: 5000,
-    monthly: 199,
-    shipsIn: "14 days",
-    popular: true,
-    bestFor:
-      "Service businesses with recurring customers — cleaners, groomers, salons, gyms, trainers, lawn care, pool service, dog walking.",
-    features: [
-      "Magic-link customer login (no passwords)",
-      "Customer dashboard: account, history, invoices, messages",
-      "Self-service: reschedule, pause, request quote, leave notes",
-      "Stripe billing — customers pay through the portal",
-      "Email + SMS notifications (included in monthly)",
-      "Everything in Site",
-    ],
-  },
-  {
-    id: "platform",
-    name: "Platform",
-    blurb: "Everything in Portal, plus the full operator admin app.",
-    oneTime: 10000,
-    monthly: 399,
-    shipsIn: "21 days",
-    bestFor:
-      "Service businesses and marketplaces ready to fully run on Day14 — the whole back office.",
-    features: [
-      "Customer + lead + visit/job CRUD with global search",
-      "Auto-scheduling, day-of-week routing, role-based admin",
-      "Photo proof with GPS + timestamp watermarking",
-      "Quotes, invoicing, PDF receipts, Stripe milestone escrow (marketplaces)",
-      "Daily admin digest, broadcast SMS, CSV exports",
-      "'Needs attention' widgets, analytics dashboards",
-      "Everything in Portal",
-    ],
-  },
-];
+/**
+ * SKUS are DERIVED from pricing.ts (SERVICE_TIERS) — the single source of
+ * truth. Prices are never written here. Only SKU-presentation copy that
+ * isn't a price (ship window) is layered on top.
+ */
+const SHIPS_IN: Record<SkuId, string> = {
+  spark: "7 days",
+  local: "14 days",
+  portal: "3 weeks",
+  platform: "4 weeks",
+};
+
+export const SKUS: Sku[] = SERVICE_TIERS.map((t) => ({
+  id: t.slug,
+  name: t.name,
+  blurb: t.tagline,
+  oneTime: t.setup ?? Number(t.setupLabel.replace(/[^0-9]/g, "")),
+  fromPrice: t.setup === null,
+  monthly: t.monthly,
+  shipsIn: SHIPS_IN[t.slug],
+  bestFor: t.bestFor,
+  features: t.features,
+  popular: t.featured,
+}));
 
 export const TIMELINE = [
   {
@@ -151,7 +145,7 @@ export const FAQ: Array<{ q: string; a: string }> = [
   },
   {
     q: "Do you only do service businesses?",
-    a: "No. We've shipped service-business platforms (Splash Jacks Pools), brand-heavy event sites (Casamoré), and two-sided marketplaces (Buildbridge). Anything that fits in Site / Portal / Platform we'll quote on the call. If it doesn't fit, we'll tell you on the call instead of dragging it out.",
+    a: "No. We've shipped service-business platforms (Splash Jacks Pools), brand-heavy event sites (Casamoré), and two-sided marketplaces (Buildbridge). Anything that fits in Spark / Local / Portal / Platform we'll quote on the call. If it doesn't fit, we'll tell you on the call instead of dragging it out.",
   },
   {
     q: "Do I own the code?",
@@ -308,7 +302,7 @@ export const VERTICALS: Vertical[] = [
       "Pop-up dinners",
       "Specialty food retailers",
     ],
-    recommendedSkus: ["site", "portal"],
+    recommendedSkus: ["local", "portal"],
     painPoints: [
       "Toast charges $69/mo + 2.5% — and you don't own the customer relationship",
       "Online ordering plugins look generic and don't match the brand",
@@ -336,7 +330,7 @@ export type CaseStudy = {
   name: string;
   industry: string;
   location: string;
-  sku: "Site" | "Portal" | "Platform";
+  sku: "Spark" | "Local" | "Portal" | "Platform";
   timeline: string;
   /** Public URL — null if not yet linkable (e.g. SSO-gated previews). */
   url: string | null;
@@ -363,12 +357,12 @@ export const CASE_STUDIES: CaseStudy[] = [
     name: "Casamoré",
     industry: "Events · Brand-heavy B2C",
     location: "Southwest Florida",
-    sku: "Site",
-    timeline: "Site tier — fast brand-led launch",
+    sku: "Local",
+    timeline: "Local tier — fast brand-led launch",
     url: "https://houseoflove.co",
     state: "Live",
     summary:
-      "Silent disco events brand with a full visual identity, 18 marketing pages, 19 on-brand blog essays, poster series, merch mockups, zine, and a MailerLite-powered membership funnel. This is the Site tier exemplar — for customers who need a brand more than a back office.",
+      "Silent disco events brand with a full visual identity, 18 marketing pages, 19 on-brand blog essays, poster series, merch mockups, zine, and a MailerLite-powered membership funnel. This is the Local tier exemplar — for customers who need a brand more than a back office.",
   },
   {
     slug: "buildbridge",

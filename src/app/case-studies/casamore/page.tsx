@@ -1,15 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE } from "@/lib/site";
+import { SERVICE_TIERS } from "@/lib/pricing";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+
+// Tier price comes from pricing.ts (Local tier). The retired "Site" tier this
+// build was originally sold under maps to Local in the current 5-tier model.
+const LOCAL = SERVICE_TIERS.find((t) => t.slug === "local")!;
 
 const CASE = {
   name: "Casamoré",
   industry: "Silent disco events · brand-heavy B2C",
   location: "Southwest Florida",
-  sku: "Site",
-  timeline: "Site tier — brand-led launch",
+  sku: "Local",
+  timeline: "Local tier — brand-led launch",
   url: "https://houseoflove.co",
   customerType:
     "B2C — events attendees, membership funnel, walk-up and ticketed audiences",
@@ -17,7 +22,7 @@ const CASE = {
 
 export const metadata: Metadata = {
   title: `${CASE.name} — case study`,
-  description: `How we built ${CASE.name} as a brand-first Day14 Site — full visual identity, 18 marketing pages, blog essay library, membership funnel, and merch presence.`,
+  description: `How we built ${CASE.name} as a brand-first Day14 Local build — full visual identity, 18 marketing pages, blog essay library, membership funnel, and merch presence.`,
 };
 
 export default function CaseStudyPage() {
@@ -66,7 +71,7 @@ function Header() {
         A complete event-business launch — visual identity, 18 marketing pages,
         a content library of 19 on-brand essays, a poster series, merch mockups,
         a printable zine, and a MailerLite-powered membership funnel. This is
-        Day14&rsquo;s Site tier exemplar — for a customer who needs a brand more
+        Day14&rsquo;s Local tier exemplar — for a customer who needs a brand more
         than a back office.
       </p>
 
@@ -305,7 +310,7 @@ function ResultsAndProof() {
         <dl className="grid grid-cols-2 gap-4">
           <Result label="Pages shipped" value="18" />
           <Result label="On-brand essays" value="19" />
-          <Result label="Time to live" value="Site tier" />
+          <Result label="Time to live" value="Local tier" />
           <Result label="Ongoing dev needed" value="zero" />
         </dl>
       </div>
@@ -336,9 +341,9 @@ function NextCta() {
               Need a brand more than a back office?
             </h2>
             <p className="mt-4 max-w-xl text-paper-200">
-              Site tier is $2,500 + $99/mo. Visual system, 5+ pages, blog
+              Local tier is {`$${LOCAL.setup!.toLocaleString()} + $${LOCAL.monthly}/mo`}. Visual system, 5+ pages, blog
               engine, lead capture, AI chatbot, MailerLite or Resend wired. Out
-              in 7 days.
+              in 14 days.
             </p>
           </div>
           <div>

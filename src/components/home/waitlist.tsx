@@ -1,4 +1,4 @@
-import { SITE } from "@/lib/site";
+import { SITE, BOOKING_MONTH } from "@/lib/site";
 import { DecryptText } from "@/components/landing/decrypt-text";
 import { PathCrumb } from "@/components/landing/path-crumb";
 import { WaitlistForm } from "@/components/WaitlistForm";
@@ -27,7 +27,7 @@ export function Waitlist() {
           </div>
           <div className="eyebrow mb-6 justify-center text-ember-600">
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-ember-500 mr-2 align-middle" />
-            <DecryptText text="Now booking · July" durationMs={500} triggerOnView />
+            <DecryptText text={`Now booking · ${BOOKING_MONTH}`} durationMs={500} triggerOnView />
           </div>
           <h2 className="text-[40px] font-extrabold leading-[1.02] tracking-[-0.035em] text-ink sm:text-[56px] lg:text-[64px]">
             <DecryptText text="Tell me what you want built." durationMs={750} startAt={250} triggerOnView />

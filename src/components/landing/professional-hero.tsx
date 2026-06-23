@@ -30,6 +30,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { DecryptText } from "./decrypt-text";
 import { LiveOpsBoard } from "@/components/motion/LiveOpsBoard";
+import { BOOKING_MONTH, STARTING_PRICE_LABEL } from "@/lib/site";
 
 export function ProfessionalHero() {
   const reduce = useReducedMotion();
@@ -66,7 +67,7 @@ export function ProfessionalHero() {
               }}
             />
             <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-warm-gray-500">
-              <DecryptText text="Day14 · now booking July" durationMs={500} startAt={120} />
+              <DecryptText text={`Day14 · now booking ${BOOKING_MONTH}`} durationMs={500} startAt={120} />
             </span>
           </motion.div>
 
@@ -114,7 +115,7 @@ export function ProfessionalHero() {
             One operator. Custom sites and apps for local businesses,
             founders, and small teams. Shipped fast. Operated forever on
             Day14 OS — the platform I built to run my own six.{" "}
-            <span className="font-semibold text-ink">From $750.</span>
+            <span className="font-semibold text-ink">From {STARTING_PRICE_LABEL}.</span>
           </motion.p>
 
           {/* CTAs — one primary, one quiet alternative */}

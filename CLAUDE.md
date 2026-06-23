@@ -2,6 +2,39 @@
 
 Future Claude (or any agent) joining this codebase: read this first.
 
+> **Business & operating context (read before acting):** `docs/agent-context/AGENT-CONTEXT.md`
+> — the compiled Day14 agent knowledge base (who Jack is and how he wants you to
+> work, the businesses, people, glossary, role guides, and ops playbooks). It is
+> generated from the Obsidian vault at `~/Claude/Projects/DAY14/Obsidian-Vault/`
+> via `npm run context:compile`; edit the vault, not the compiled file.
+>
+> **Prime directives (never violate):** (1) no irreversible action without Jack's
+> explicit approval — never push, move money, or send customer messages; commit
+> locally only; (2) verify before asserting; (3) never fabricate prices/customers/
+> facts — prices come only from `src/lib/pricing.ts`; (4) code moves via git
+> push/pull, never rsync; (5) judge fleet health by heartbeat mtime only.
+>
+> **🧭 Positioning north-star (set 2026-06-23):** The OS is the FACTORY, not the
+> product. Publicly Day14 sells operator-built software for local service
+> businesses (Spark/Local/Portal — Platform is "talk to us"). The automate-and-own
+> equity play (alignmd) is run privately off that proof, NOT marketed to cold
+> traffic. Every public page answers one question: "would a Naples pool owner know
+> in 10s what you sell and that you're one of them?" Keep the OS-waitlist tiers and
+> à-la-carte services OFF the main funnel. Full rationale:
+> `~/Claude/Projects/DAY14/POINT-2-POSITIONING-2026-06-23.md`.
+>
+> **🛑 SELL-FIRST FREEZE (active until a stranger can pay + 1 third-party software
+> dollar arrives):** Build ONLY what helps a customer find/pay/be-served in the
+> next 30 days, or fixes a P0 durability/survival risk. NO new skills, pollers,
+> dashboards, or "engines." Pause the recursive growth meta-layer. Before building
+> anything ask: "does a named customer or live sale pull this?" If no, backlog it
+> and walk away. Weekly Sunday Kill Review: delete one unused agent/skill/feature.
+> Rationale: `~/Claude/Projects/DAY14/POINT-3-INFRA-FREEZE-2026-06-23.md`.
+>
+> **💲 Pricing guard:** run `npm run check:prices` before any pricing/marketing-page
+> change — it fails on retired prices or hard-coded `$X + $Y/mo` tiers outside
+> `pricing.ts`.
+
 ## What this is
 
 Day14 OS is the operating system that runs Jack Boppington's productized

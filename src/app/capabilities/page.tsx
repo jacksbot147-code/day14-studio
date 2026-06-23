@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE } from "@/lib/site";
+import { SERVICE_TIERS } from "@/lib/pricing";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
@@ -34,50 +35,25 @@ export const metadata: Metadata = {
   },
 };
 
+// Build tiers are DERIVED from pricing.ts (SERVICE_TIERS) — the single source
+// of truth. Only the ship cadence (not a price) is layered on per tier; the
+// Custom catch-all has no number by design.
+const TIER_CADENCE: Record<string, string> = {
+  spark: "7 days",
+  local: "14 days",
+  portal: "3 weeks",
+  platform: "4 weeks",
+};
+
 const TIERS = [
-  {
-    name: "Spark",
-    price: "$1,500",
-    cadence: "5 days",
-    ops: "$49/mo after",
-    bestFor: "Local businesses, solo professionals, side projects",
-    includes: [
-      "One custom-designed page (services, about, contact in one scroll)",
-      "Lead capture form wired to your email",
-      "Mobile responsive, SEO basics, analytics",
-      "Click-to-call on every screen",
-      "3 months of ops bundled",
-    ],
-  },
-  {
-    name: "Studio",
-    price: "$9,000",
-    cadence: "14 days",
-    ops: "$149/mo after",
-    bestFor: "Founders launching a brand",
-    includes: [
-      "Up to 6 pages + blog",
-      "Custom design + illustration / photography direction",
-      "Lead capture + content scheduling",
-      "A/B framework wired in",
-      "6 months of ops bundled",
-      "Design system handoff in Figma",
-    ],
-  },
-  {
-    name: "Platform",
-    price: "$24,000",
-    cadence: "4 weeks",
-    ops: "$299/mo after",
-    bestFor: "Operators launching a SaaS",
-    includes: [
-      "Marketing site + customer portal + admin app",
-      "Stripe billing + onboarding flows wired live",
-      "Multi-environment deploys (staging + prod)",
-      "Full team handoff including admin training",
-      "12 months of ops bundled",
-    ],
-  },
+  ...SERVICE_TIERS.map((t) => ({
+    name: t.name,
+    price: t.setup === null ? t.setupLabel : `$${t.setup.toLocaleString()}`,
+    cadence: TIER_CADENCE[t.slug] ?? "",
+    ops: `$${t.monthly}/mo after`,
+    bestFor: t.bestFor,
+    includes: t.features,
+  })),
   {
     name: "Custom",
     price: "Quoted in 48h",
@@ -296,7 +272,7 @@ function Tiers() {
       <div className="mb-12">
         <div className="eyebrow mb-5">What I build</div>
         <h2 className="text-3xl font-extrabold tracking-tightest text-ink sm:text-[2.75rem] sm:leading-[1.03]">
-          Four tiers. Fixed price each.
+          Five tiers. Fixed price each.
         </h2>
         <p className="mt-5 max-w-2xl text-ink-500">
           Pick the size that fits the job. Every tier comes with a bundled ops window on Day14 OS; the monthly ops fee after the bundle scales with build complexity.

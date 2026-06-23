@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE } from "@/lib/site";
+import { SERVICE_TIERS } from "@/lib/pricing";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+
+// Platform price comes from pricing.ts — the single source of truth.
+const PLATFORM = SERVICE_TIERS.find((t) => t.slug === "platform")!;
 
 const CASE = {
   name: "Buildbridge",
@@ -358,8 +362,8 @@ function NextCta() {
               Running a marketplace, or want to?
             </h2>
             <p className="mt-4 max-w-xl text-paper-200">
-              Platform tier is $10,000 + $399/mo. Two-sided flows, escrow,
-              native mobile, region-specific integrations. Out in 21 days. Or
+              Platform tier is {`${PLATFORM.setupLabel} + $${PLATFORM.monthly}/mo`}. Two-sided flows, escrow,
+              native mobile, region-specific integrations. Out in 4 weeks. Or
               the deposit refunds.
             </p>
           </div>

@@ -1,10 +1,21 @@
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { SERVICE_TIERS } from "@/lib/pricing";
 
 export const metadata = {
   title: "Refund Policy — Day14",
   description: "Launch by Day 14 or your deposit refunds in full. The full policy.",
+};
+
+// Per-tier guarantee windows. Prices come from pricing.ts (SERVICE_TIERS).
+const GUARANTEE: Record<string, string> = {
+  spark: "Shipped within 7 days or your deposit refunds.",
+  local: "Live within 14 days or your deposit refunds.",
+  portal:
+    "Live and Stripe-accepting payments within 3 weeks or your deposit refunds.",
+  platform:
+    "Live within 4 weeks or your deposit refunds. We allow more time because the operator admin app has more surface area.",
 };
 
 export default function RefundsPage() {
@@ -25,9 +36,14 @@ export default function RefundsPage() {
 
       <h2 style={{ fontSize: 22, marginTop: 40, marginBottom: 12 }}>Per-SKU specifics</h2>
       <ul style={{ paddingLeft: 24 }}>
-        <li><strong>Site ($2,500):</strong> Shipped within 7 days or deposit refunds. We've never missed.</li>
-        <li><strong>Portal ($5,000):</strong> Live + Stripe-accepting payments within 14 days or deposit refunds.</li>
-        <li><strong>Platform ($10,000):</strong> Live within 21 days or deposit refunds. We extend by 7 days because the operator admin app has more surface area.</li>
+        {SERVICE_TIERS.map((t) => (
+          <li key={t.slug}>
+            <strong>
+              {t.name} ({t.setup === null ? t.setupLabel : `$${t.setup.toLocaleString()}`}):
+            </strong>{" "}
+            {GUARANTEE[t.slug]}
+          </li>
+        ))}
       </ul>
 
       <h2 style={{ fontSize: 22, marginTop: 40, marginBottom: 12 }}>Monthly hosting</h2>

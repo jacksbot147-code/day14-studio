@@ -33,6 +33,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { SERVICE_TIERS } from "@/lib/pricing";
 
 // ---------- the terminal session script ----------
 
@@ -40,6 +41,24 @@ type Line =
   | { kind: "command"; text: string }
   | { kind: "output"; text: string; tint?: "default" | "muted" | "ember" | "green" | "rule" }
   | { kind: "blank" };
+
+// Pricing rows are built from pricing.ts (SERVICE_TIERS) — the single source
+// of truth. Only the ship-window + one-word descriptor (not prices) live here.
+const TIER_TERMINAL_META: Record<string, { timeline: string; desc: string }> = {
+  spark: { timeline: "7 days", desc: "local one-pager" },
+  local: { timeline: "14 days", desc: "service site" },
+  portal: { timeline: "3 weeks", desc: "customer portal" },
+  platform: { timeline: "48h quote", desc: "full stack" },
+};
+
+const PRICING_ROWS: Line[] = SERVICE_TIERS.map((t) => {
+  const price = t.setup === null ? t.setupLabel : `$${t.setup.toLocaleString()}`;
+  const meta = TIER_TERMINAL_META[t.slug] ?? { timeline: "", desc: "" };
+  const text = `${t.slug.padEnd(10)} ${price.padEnd(13)} ${meta.timeline.padEnd(11)} ${meta.desc}`;
+  return t.featured
+    ? { kind: "output", text, tint: "ember" }
+    : { kind: "output", text };
+});
 
 const SESSION: Line[] = [
   { kind: "command", text: "whoami" },
@@ -49,10 +68,8 @@ const SESSION: Line[] = [
   { kind: "blank" },
   { kind: "command", text: "cat ./pricing.txt" },
   { kind: "output", text: "────────────────────────────────────────────", tint: "rule" },
-  { kind: "output", text: "spark      $1,500     5 days    local site" },
-  { kind: "output", text: "studio     $9,000     14 days   marketing site" },
-  { kind: "output", text: "platform   $24,000    4 weeks   full stack", tint: "ember" },
-  { kind: "output", text: "custom     scoped     6–12 wk   bespoke" },
+  ...PRICING_ROWS,
+  { kind: "output", text: `${"custom".padEnd(10)} ${"scoped".padEnd(13)} ${"6–12 wk".padEnd(11)} bespoke` },
   { kind: "output", text: "────────────────────────────────────────────", tint: "rule" },
   { kind: "blank" },
   { kind: "command", text: "ls ./clients" },

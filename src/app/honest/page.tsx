@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE } from "@/lib/site";
+import { SERVICE_TIERS } from "@/lib/pricing";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+
+// Prices come from pricing.ts (SERVICE_TIERS) — the single source of truth.
+const T = Object.fromEntries(SERVICE_TIERS.map((t) => [t.slug, t]));
+const SPARK_PRICE = `$${T.spark!.setup!.toLocaleString()}`; // $750
+const LOCAL_PRICE = `$${T.local!.setup!.toLocaleString()}`; // $1,500
+const PLATFORM_PRICE = T.platform!.setupLabel; // "from $9,000"
 
 /**
  * /honest — public objections + rebuttals. Every reason someone might NOT
@@ -51,17 +58,17 @@ const OBJECTIONS = [
   },
   {
     n: "03",
-    headline: "$1,500 is suspiciously cheap.",
+    headline: `${SPARK_PRICE} is suspiciously cheap.`,
     voice: "Real studios charge $15k+ for a custom site. Either you're skipping something or you'll quit halfway.",
     rebuttal:
-      "Spark at $1,500 is for a single-page site with lead capture, 5 days, no custom design from scratch — I pull from a small library of patterns I've battle-tested across the six businesses I run. It's not a 5-page agency build. It's a one-page sniper. If you need a 5-page custom build, that's Studio at $9,000. If you need a real platform with portal + admin + billing, that's $24,000. The $1,500 tier exists because some buyers genuinely need a one-pager and the agency tax on that is silly. It doesn't represent the actual cost of bigger work.",
+      `Spark at ${SPARK_PRICE} is for a single-page site with lead capture, 5 days, no custom design from scratch — I pull from a small library of patterns I've battle-tested across the six businesses I run. It's not a 5-page agency build. It's a one-page sniper. If you need a multi-page build with online quoting and scheduling, that's Local at ${LOCAL_PRICE}. If you need a real platform with portal + admin + billing, that's Platform, ${PLATFORM_PRICE}. The ${SPARK_PRICE} tier exists because some buyers genuinely need a one-pager and the agency tax on that is silly. It doesn't represent the actual cost of bigger work.`,
   },
   {
     n: "04",
-    headline: "$1,500 isn't a serious vendor signal.",
+    headline: `${SPARK_PRICE} isn't a serious vendor signal.`,
     voice: "Procurement won't approve anything under $25k. You're below our threshold.",
     rebuttal:
-      "If your procurement floor is $25k, look at Platform ($24k) or Custom (quoted in 48h). I've done two $60-90k engagements this year — names available on the intro call. The public price list doesn't mean Day14 only ships cheap work; it means Day14 doesn't hide pricing from solo buyers. If you need a vendor packet — W-9, COI, mutual NDA, MSA on your paper, reference CTOs — say the word. I respond to procurement asks within 24 hours.",
+      `If your procurement floor is $25k, look at Platform (${PLATFORM_PRICE}) or Custom (quoted in 48h). I've done two $60-90k engagements this year — names available on the intro call. The public price list doesn't mean Day14 only ships cheap work; it means Day14 doesn't hide pricing from solo buyers. If you need a vendor packet — W-9, COI, mutual NDA, MSA on your paper, reference CTOs — say the word. I respond to procurement asks within 24 hours.`,
   },
   {
     n: "05",

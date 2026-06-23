@@ -2,7 +2,7 @@
 
 /**
  * ScramblePrice — sibling to ScrambleNumber for hover-triggered digit
- * scrambling on string prices like "$1,500", "$9,000", "$24,000".
+ * scrambling on string prices like "$750", "$1,500", "from $9,000".
  *
  * On hover (or focus): each digit position cycles through random digits for
  * ~350ms, then resolves back to the real value. Non-digit characters ($,

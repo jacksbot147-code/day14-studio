@@ -173,9 +173,11 @@ export default function VerticalPage({ params }: { params: Params }) {
 
                   <div className="mt-6 flex items-baseline gap-1.5 tnum">
                     <span className="text-4xl font-extrabold tracking-tightest text-ink">
-                      ${sku.oneTime.toLocaleString()}
+                      {sku.fromPrice ? "from " : ""}${sku.oneTime.toLocaleString()}
                     </span>
-                    <span className="text-sm font-medium text-ink-400">one-time</span>
+                    <span className="text-sm font-medium text-ink-400">
+                      {sku.fromPrice ? "to start" : "one-time"}
+                    </span>
                   </div>
                   <div className="mt-1 font-mono text-xs text-ink-400 tnum">
                     + ${sku.monthly}/mo hosting + maintenance

@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { SITE } from "@/lib/site";
+import { OS_TIERS } from "@/lib/pricing";
 import { DecryptText } from "@/components/landing/decrypt-text";
 import { PathCrumb } from "@/components/landing/path-crumb";
+
+// Price comes from pricing.ts — the featured OS tenant tier (Portfolio).
+const OS_PRICE = OS_TIERS.find((t) => t.featured)?.monthly ?? OS_TIERS[0]?.monthly ?? 0;
 
 /* -------------------------------------------------------------------------- */
 /* Footer CTA — legacy 14-day SKU link preserved                               */
@@ -24,7 +28,7 @@ export function FooterCta() {
           </div>
           <h2 className="text-[32px] font-extrabold leading-[1.05] tracking-[-0.035em] text-ink sm:text-[40px] lg:text-[44px]">
             <DecryptText
-              text="Don't need me to build it? Host on the OS for $299/mo."
+              text={`Don't need me to build it? Host on the OS for $${OS_PRICE}/mo.`}
               durationMs={900}
               startAt={250}
               triggerOnView

@@ -43,6 +43,11 @@ import {
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { TypeIn, TypeInKeyframes } from "./type-in";
+import { SERVICE_TIERS } from "@/lib/pricing";
+import { BOOKING_MONTH } from "@/lib/site";
+
+// Entry build price comes from pricing.ts — the lowest tier (Spark) setup.
+const ENTRY_SETUP = SERVICE_TIERS[0]?.setup ?? 0;
 
 // ---------- vignettes (each = one frame of the looping "demo reel") ----
 
@@ -265,7 +270,7 @@ export function VideoHero({ cta }: { cta?: ReactNode }) {
             style={{ position: "relative", zIndex: 1 }}
           >
             <TypeIn
-              text="Whether you need a single page for a local business or a multi-tenant platform, we ship it in days — from $1,500 — and host it on Day14 OS, the operating system that runs our own six businesses. Fast to ship, cheap to run, designed to outlive your team. Now booking July."
+              text={`Whether you need a single page for a local business or a multi-tenant platform, we ship it in days — from $${ENTRY_SETUP.toLocaleString()} — and host it on Day14 OS, the operating system that runs our own six businesses. Fast to ship, cheap to run, designed to outlive your team. Now booking ${BOOKING_MONTH}.`}
               startAt={1850}
               cps={320}
             />

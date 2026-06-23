@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SITE } from "@/lib/site";
+import { SITE, STARTING_PRICE_LABEL } from "@/lib/site";
 import { NewsletterSignup } from "./NewsletterSignup";
 
 export function SiteFooter() {
@@ -15,7 +15,7 @@ export function SiteFooter() {
               <span>{SITE.brand}</span>
             </Link>
             <p className="max-w-xs text-sm text-ink-500">
-              The build studio that runs on its own OS. Custom sites and apps from {SITE.location}, shipped in days &mdash; from $750.
+              The build studio that runs on its own OS. Custom sites and apps from {SITE.location}, shipped in days &mdash; from {STARTING_PRICE_LABEL}.
             </p>
             <div className="pt-2 max-w-xs">
               <div className="eyebrow mb-2">One email a week</div>
@@ -81,7 +81,7 @@ export function SiteFooter() {
 
         <div className="mt-6 flex flex-col items-start justify-between gap-3 text-xs font-mono text-ink-400 md:flex-row md:items-center">
           <div>© {new Date().getFullYear()} {SITE.brand} · {SITE.domain}</div>
-          <div>Built in days. Operated forever. From $750.</div>
+          <div>Built in days. Operated forever. From {STARTING_PRICE_LABEL}.</div>
         </div>
       </div>
     </footer>

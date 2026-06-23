@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { SERVICE_TIERS } from "@/lib/pricing";
 
 /**
  * ScopeCalculator — the interactive sliders/toggles + live result panel
@@ -16,7 +17,7 @@ type Feature = {
   cost: number;
   days: number;
   // Hint about which tier this feature usually triggers
-  triggers?: "studio" | "platform" | "custom";
+  triggers?: "local" | "portal" | "platform" | "custom";
 };
 
 const FEATURES: Feature[] = [
@@ -36,24 +37,48 @@ const FEATURES: Feature[] = [
   { id: "ecom", label: "E-commerce (≤ 100 SKUs)", description: "Stripe-powered store, inventory, checkout.", cost: 3500, days: 4, triggers: "platform" },
 ];
 
-const TIERS = [
-  { name: "Spark", basePrice: 1500, baseDays: 5, maxPages: 1, ops: 49 },
-  { name: "Studio", basePrice: 9000, baseDays: 14, maxPages: 6, ops: 149 },
-  { name: "Platform", basePrice: 24000, baseDays: 28, maxPages: 20, ops: 299 },
-  { name: "Custom", basePrice: 0, baseDays: 0, maxPages: Infinity, ops: 0 },
+// Tier base prices + ops fees are DERIVED from pricing.ts (SERVICE_TIERS) —
+// the single source of truth. Only the calculator-specific scoping fields
+// (baseDays, maxPages) and the add-on costs further down are local estimates;
+// no tier PRICE is hard-coded. Platform has no fixed setup ("from $9,000"), so
+// its calculator base uses that published floor.
+type CalcTier = {
+  slug: string;
+  name: string;
+  basePrice: number;
+  baseDays: number;
+  maxPages: number;
+  ops: number;
+};
+
+const TIER_BY_SLUG = Object.fromEntries(SERVICE_TIERS.map((t) => [t.slug, t]));
+const basePriceOf = (slug: string): number => {
+  const t = TIER_BY_SLUG[slug]!;
+  return t.setup ?? Number(t.setupLabel.replace(/[^0-9]/g, ""));
+};
+const opsOf = (slug: string): number => TIER_BY_SLUG[slug]!.monthly;
+
+const TIERS: CalcTier[] = [
+  { slug: "spark", name: TIER_BY_SLUG.spark!.name, basePrice: basePriceOf("spark"), baseDays: 5, maxPages: 1, ops: opsOf("spark") },
+  { slug: "local", name: TIER_BY_SLUG.local!.name, basePrice: basePriceOf("local"), baseDays: 14, maxPages: 6, ops: opsOf("local") },
+  { slug: "portal", name: TIER_BY_SLUG.portal!.name, basePrice: basePriceOf("portal"), baseDays: 18, maxPages: 8, ops: opsOf("portal") },
+  { slug: "platform", name: TIER_BY_SLUG.platform!.name, basePrice: basePriceOf("platform"), baseDays: 28, maxPages: 20, ops: opsOf("platform") },
+  { slug: "custom", name: "Custom", basePrice: 0, baseDays: 0, maxPages: Infinity, ops: 0 },
 ];
 
-function pickTier(pages: number, features: string[]): typeof TIERS[number] {
-  if (features.includes("multitenant")) return TIERS[3]!;
+function pickTier(pages: number, features: string[]): CalcTier {
+  if (features.includes("multitenant")) return TIERS[4]!; // Custom
   if (
-    features.includes("portal") ||
     features.includes("admin") ||
     features.includes("billing") ||
     features.includes("mobile") ||
     features.includes("ecom") ||
-    pages > 6
+    pages > 8
   ) {
-    return TIERS[2]!;
+    return TIERS[3]!; // Platform
+  }
+  if (features.includes("portal") || pages > 6) {
+    return TIERS[2]!; // Portal
   }
   if (
     pages > 1 ||
@@ -64,9 +89,9 @@ function pickTier(pages: number, features: string[]): typeof TIERS[number] {
     features.includes("i18n") ||
     features.includes("analytics")
   ) {
-    return TIERS[1]!;
+    return TIERS[1]!; // Local
   }
-  return TIERS[0]!;
+  return TIERS[0]!; // Spark
 }
 
 function formatPrice(cents: number): string {

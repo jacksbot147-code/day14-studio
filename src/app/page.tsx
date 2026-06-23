@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { SITE } from "@/lib/site";
+import { SITE, BOOKING_MONTH } from "@/lib/site";
+import { SERVICE_TIERS } from "@/lib/pricing";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { BuildReveal } from "@/components/landing/build-reveal";
@@ -31,8 +32,9 @@ import { FooterCta } from "@/components/home/footer-cta";
 // Page-level metadata overrides the layout defaults for the home route.
 // Other routes (case studies, about, etc.) keep the layout defaults.
 const TITLE = "Day14 — Sites and apps for small businesses. Live in 14 days.";
+const ENTRY_SETUP = SERVICE_TIERS[0]?.setup ?? 0; // Spark — from pricing.ts
 const DESCRIPTION =
-  "I'm Jack. I build sites and apps for small businesses in days, then a monthly ops fee keeps them running on Day14 OS — the same stack I use for six of my own. Builds from $750. Now booking July.";
+  `I'm Jack. I build sites and apps for small businesses in days, then a monthly ops fee keeps them running on Day14 OS — the same stack I use for six of my own. Builds from $${ENTRY_SETUP.toLocaleString()}. Now booking ${BOOKING_MONTH}.`;
 
 export const metadata: Metadata = {
   title: TITLE,
