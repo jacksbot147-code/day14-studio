@@ -32,6 +32,23 @@ function BuildStatusPill({ status }: { status: BuildStatus }) {
   );
 }
 
+/**
+ * Host of a build URL, defensively. Build data in `builds.ts` is hand-entered,
+ * so a scheme-less or malformed string (e.g. "splashjackspools.com" without the
+ * "https://") would make `new URL()` throw — crashing the static render of this
+ * route and `generateStaticParams` at build time. Fall back to the raw string
+ * with any scheme stripped, so a data typo degrades to a slightly-off label
+ * instead of a build failure. Today every URL is a valid absolute https one, so
+ * this is byte-identical — it only changes the failure mode.
+ */
+function hostOf(url: string): string {
+  try {
+    return new URL(url).host;
+  } catch {
+    return url.replace(/^[a-z]+:\/\//i, "");
+  }
+}
+
 type Params = { slug: string };
 
 export function generateStaticParams(): Params[] {
@@ -120,7 +137,7 @@ function Header({ build }: { build: Build }) {
             rel="noopener noreferrer"
             className="btn-primary"
           >
-            Open {new URL(build.productionUrl).host} ↗
+            Open {hostOf(build.productionUrl)} ↗
           </a>
         ) : null}
         {build.previewUrl && !build.productionUrl ? (
@@ -211,7 +228,7 @@ function Timeline({ build }: { build: Build }) {
 function NowShowing({ build }: { build: Build }) {
   const url = build.productionUrl ?? build.previewUrl;
   if (!url) return null;
-  const host = new URL(url).host;
+  const host = hostOf(url);
   const label = build.status === "shipped" ? "● Live" : "● Preview";
 
   return (
