@@ -1,0 +1,211 @@
+/* ============================================================================
+ * Day14 — Cinematic design system (foundation)
+ * Ported from the LOCKED prototype: cinematic-homepage-prototype-v5.html
+ *
+ * This file is the single source of truth for the dark "cinematic" look + motion.
+ * It is intentionally self-contained and DOES NOT touch the existing light
+ * (paper/ink/ember) marketing theme. Cinematic pages opt in by wrapping their
+ * tree in `.cinematic` (which flips the surface to the dark palette and aliases
+ * the prototype's bare token names so locked prototype CSS drops in unchanged).
+ *
+ * Layers, in order:
+ *   1. :root            — namespaced (--cin-*) tokens every page can read
+ *   2. .cinematic        — dark surface + bare-name aliases for the prototype
+ *   3. .reveal           — the scroll-entrance primitive (paired with <Reveal/>)
+ *   4. guards            — prefers-reduced-motion AND prefers-reduced-data
+ *
+ * Added in task 1/8 (Foundation & design system). Page sections come later.
+ * ========================================================================== */
+
+:root {
+  /* --- Palette (prototype v5) ------------------------------------------- */
+  --cin-bg: #050507;
+  --cin-ink: #f3f4f8;
+  --cin-mut: #9698a4;
+  --cin-faint: #62646f;
+  --cin-accent: #56b3ff;
+  --cin-cyan: #39e6d4;
+  --cin-line: rgba(255, 255, 255, 0.09);
+
+  /* Atmosphere accents used by orbs / glows in later sections. */
+  --cin-blue: #1f4fff;
+  --cin-teal: #10b5c9;
+  --cin-violet: #5b3bd6;
+
+  /* --- Motion ----------------------------------------------------------- */
+  /* The signature expo-out curve. Matches src/lib/motion.ts EASE.out. */
+  --cin-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --cin-dur-fast: 0.35s;
+  --cin-dur-base: 0.6s;
+  --cin-dur-reveal: 1.1s;
+  /* Per-step stagger applied via .reveal.d1/.d2/.d3 and --reveal-delay. */
+  --cin-stagger: 0.1s;
+
+  /* --- Type families ---------------------------------------------------- */
+  /* Inter (body/display 300-600), JetBrains Mono (labels), Newsreader (italic
+   * editorial accents). The --font-* CSS vars are injected by next/font in
+   * layout.tsx, each with a metric-matched system fallback baked in. */
+  --cin-font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+  --cin-font-mono: var(--font-mono), ui-monospace, "SF Mono", Menlo, monospace;
+  --cin-font-serif: var(--font-newsreader), Georgia, "Times New Roman", serif;
+
+  /* --- Fluid type scale (clamps lifted from the prototype) -------------- */
+  --cin-fs-hero: clamp(40px, 7.2vw, 104px); /* hero h1            */
+  --cin-fs-statement: clamp(32px, 5.2vw, 72px); /* big statement line */
+  --cin-fs-h2: clamp(30px, 4.4vw, 58px); /* section heading    */
+  --cin-fs-h3: clamp(24px, 3.2vw, 40px); /* feature heading    */
+  --cin-fs-quote: clamp(28px, 4.8vw, 60px); /* editorial quote    */
+  --cin-fs-stat: clamp(30px, 4.4vw, 54px); /* big stat number    */
+  --cin-fs-body: clamp(16px, 1.7vw, 20px); /* lead paragraph     */
+  --cin-fs-label: 12px; /* uppercase kicker   */
+
+  --cin-weight-light: 300;
+  --cin-weight-regular: 400;
+  --cin-weight-medium: 500;
+  --cin-weight-semibold: 600;
+
+  /* Tracking + leading the prototype leans on. */
+  --cin-tracking-tightest: -0.04em;
+  --cin-tracking-tight: -0.03em;
+  --cin-tracking-label: 0.22em;
+  --cin-leading-tight: 1.04;
+  --cin-leading-body: 1.6;
+
+  /* --- Spacing rhythm --------------------------------------------------- */
+  --cin-gutter: 7vw; /* horizontal page padding   */
+  --cin-space-section: 15vh; /* vertical section padding  */
+  --cin-space-block: 2.5rem; /* gap inside a section      */
+  --cin-radius: 16px; /* card / panel corner       */
+  --cin-radius-sm: 12px;
+  --cin-radius-pill: 100px;
+}
+
+/* ----------------------------------------------------------------------------
+ * .cinematic — opt-in dark surface.
+ * Wrap a cinematic page/section in this class. It flips the background + text
+ * to the dark palette and ALIASES the prototype's bare token names to the
+ * namespaced ones, so CSS copied verbatim from the locked prototype (which
+ * references --bg, --accent, --ease, …) works without edits — and the light
+ * theme outside this subtree is never affected.
+ * ------------------------------------------------------------------------- */
+.cinematic {
+  --bg: var(--cin-bg);
+  --ink: var(--cin-ink);
+  --mut: var(--cin-mut);
+  --faint: var(--cin-faint);
+  --accent: var(--cin-accent);
+  --cyan: var(--cin-cyan);
+  --line: var(--cin-line);
+  --ease: var(--cin-ease);
+
+  background: var(--cin-bg);
+  color: var(--cin-ink);
+  font-family: var(--cin-font-sans);
+  font-weight: var(--cin-weight-light);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.cinematic ::selection {
+  background: var(--cin-accent);
+  color: #000;
+}
+.cinematic ::-moz-selection {
+  background: var(--cin-accent);
+  color: #000;
+}
+
+/* Editorial italic helper — Newsreader, accent-tinted. */
+.cinematic .cin-em,
+.cinematic em.cin {
+  font-family: var(--cin-font-serif);
+  font-style: italic;
+  color: var(--cin-accent);
+}
+
+/* Monospace label helper. */
+.cinematic .cin-mono {
+  font-family: var(--cin-font-mono);
+}
+
+/* ----------------------------------------------------------------------------
+ * .reveal — scroll-entrance primitive.
+ * Paired with the <Reveal /> client component, which observes the element and
+ * adds `.in` when it enters the viewport. Stagger is expressed either through
+ * the static .d1/.d2/.d3 delay steps (matching the prototype) or a dynamic
+ * --reveal-delay custom property set by <Reveal stagger>.
+ * ------------------------------------------------------------------------- */
+.cinematic .reveal,
+.reveal.cinematic-reveal {
+  opacity: 0;
+  transform: translateY(48px);
+  transition:
+    opacity var(--cin-dur-reveal) var(--cin-ease),
+    transform var(--cin-dur-reveal) var(--cin-ease);
+  transition-delay: var(--reveal-delay, 0s);
+  will-change: opacity, transform;
+}
+.cinematic .reveal.in,
+.reveal.cinematic-reveal.in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Static stagger steps — direct port of the prototype's .d1/.d2/.d3. */
+.cinematic .reveal.d1 {
+  transition-delay: calc(var(--cin-stagger) * 1);
+}
+.cinematic .reveal.d2 {
+  transition-delay: calc(var(--cin-stagger) * 2);
+}
+.cinematic .reveal.d3 {
+  transition-delay: calc(var(--cin-stagger) * 3);
+}
+
+/* ----------------------------------------------------------------------------
+ * GLOBAL GUARDS
+ * ------------------------------------------------------------------------- */
+
+/* prefers-reduced-motion — kill all cinematic animation/transition and show
+ * revealed content immediately. Mirrors the prototype's reduced-motion block. */
+@media (prefers-reduced-motion: reduce) {
+  .cinematic *,
+  .cinematic *::before,
+  .cinematic *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .cinematic .reveal,
+  .reveal.cinematic-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* prefers-reduced-data — drop the expensive, purely-decorative atmosphere
+ * (particle canvas, blurred orbs, grain, vignette, cursor glow, backdrop
+ * blur). Content + reveals stay; only the GPU/bandwidth-heavy layers go.
+ * Later section tasks attach these helper classes to their effect layers. */
+@media (prefers-reduced-data: reduce) {
+  .cinematic .cin-flow,
+  .cinematic .cin-field,
+  .cinematic .cin-orb,
+  .cinematic .cin-grain,
+  .cinematic .cin-vignette,
+  .cinematic .cin-cursor {
+    display: none !important;
+  }
+  .cinematic * {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  /* Solid fallback so any element that relied on the orb wash stays legible. */
+  .cinematic {
+    background: var(--cin-bg);
+  }
+}

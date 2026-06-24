@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Cinematic design system (dark theme, opt-in via `.cinematic`).
+ * Self-contained; does not affect the light paper/ink/ember theme below. */
+@import "./cinematic.css";
+
 /* Day14 — design system
  *
  * A sharp, line-driven visual layer for a productized build studio.
