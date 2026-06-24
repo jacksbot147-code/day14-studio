@@ -1,8 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { track } from "@/lib/analytics";
 
 const DRAFT_KEY = "day14-intake-draft-v1";
+
+// Simple, permissive email shape check — the real validation is server-side;
+// this just catches obvious typos before a round-trip.
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 interface FormState {
   email: string;
@@ -86,8 +91,26 @@ export function IntakeForm({
     setState((prev) => ({ ...prev, [key]: value }));
   }
 
+  function validate(): string | null {
+    if (!state.email.trim() || !state.owner_name.trim() || !state.company_name.trim()) {
+      return "Add your email, name, and business name — those three are required.";
+    }
+    if (!EMAIL_RE.test(state.email.trim())) {
+      return "That email doesn't look right. Double-check it and try again.";
+    }
+    return null;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    const problem = validate();
+    if (problem) {
+      setStatus("error");
+      setErrorMessage(problem);
+      return;
+    }
+
     setStatus("submitting");
     setErrorMessage("");
 
@@ -109,6 +132,7 @@ export function IntakeForm({
       }
 
       setStatus("success");
+      track("intake_submitted", { sku: sku ?? "none" });
       try {
         localStorage.removeItem(DRAFT_KEY);
       } catch {
@@ -122,7 +146,11 @@ export function IntakeForm({
 
   if (status === "success") {
     return (
-      <div className="rounded-lg border border-shipped-200 bg-shipped-50 p-8">
+      <div
+        role="status"
+        aria-live="polite"
+        className="rounded-lg border border-shipped-200 bg-shipped-50 p-8"
+      >
         <div className="font-mono text-xs uppercase tracking-[0.18em] text-shipped-600">
           ● Intake received
         </div>
@@ -142,7 +170,12 @@ export function IntakeForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-5 max-w-3xl">
+    <form
+      onSubmit={handleSubmit}
+      noValidate
+      aria-busy={status === "submitting"}
+      className="grid gap-5 max-w-3xl"
+    >
       <Section title="You + the business" required>
         <Field
           label="Your email"
@@ -255,8 +288,12 @@ export function IntakeForm({
       </Section>
 
       {status === "error" && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800">
-          Couldn&rsquo;t submit: {errorMessage}. Try again in a moment, or
+        <div
+          role="alert"
+          aria-live="assertive"
+          className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800"
+        >
+          {errorMessage || "Something went wrong."} Try again in a moment, or
           email hello@day14.us.
         </div>
       )}

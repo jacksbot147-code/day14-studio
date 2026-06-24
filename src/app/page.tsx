@@ -15,6 +15,7 @@ import { HowItWorks } from "@/components/home/how-it-works";
 import { Pricing } from "@/components/home/pricing";
 import { Waitlist } from "@/components/home/waitlist";
 import { FooterCta } from "@/components/home/footer-cta";
+import { StructuredData } from "@/components/seo/structured-data";
 
 /**
  * Home page — Day14 OS pivot day, May 29 2026.
@@ -39,6 +40,7 @@ const DESCRIPTION =
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
+  alternates: { canonical: "/" },
   openGraph: {
     title: TITLE,
     description: DESCRIPTION,
@@ -55,6 +57,9 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
+      {/* LocalBusiness + Organization + WebSite JSON-LD. Prices in the
+          OfferCatalog are read from pricing.ts (no literals here). */}
+      <StructuredData />
       {/* No load curtain — the hero text spawns itself in place via
           TypeIn (line-by-line type with a cursor walking down the lines)
           starting at 120ms after page mount. */}
