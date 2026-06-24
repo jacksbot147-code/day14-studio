@@ -52,7 +52,7 @@ export function Pricing() {
 
   return (
     <section id="pricing" className="cin-pricing">
-      <Reveal as="h3" className="cin-price-h">
+      <Reveal as="h2" className="cin-price-h">
         Start where it makes sense.
       </Reveal>
       <Reveal as="p" className="cin-price-sub" delayStep={1}>

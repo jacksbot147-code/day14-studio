@@ -22,7 +22,10 @@
   --cin-bg: #050507;
   --cin-ink: #f3f4f8;
   --cin-mut: #9698a4;
-  --cin-faint: #62646f;
+  /* Bumped from the prototype's #62646f (~3.6:1 on --cin-bg, fails WCAG AA for
+   * normal text) to ~4.8:1 so the kickers, field labels, hints, footer and
+   * caption text that use --cin-faint clear AA. (QA task 8/8, 2026-06-24.) */
+  --cin-faint: #767883;
   --cin-accent: #56b3ff;
   --cin-cyan: #39e6d4;
   --cin-line: rgba(255, 255, 255, 0.09);
@@ -625,6 +628,13 @@
 }
 .cinematic .cin-q-input:focus {
   border-color: var(--cin-accent);
+}
+/* iOS Safari zooms the page when a focused input's font-size is < 16px.
+ * Bump to 16px on small screens to suppress that jump. (QA task 8/8.) */
+@media (max-width: 520px) {
+  .cinematic .cin-q-input {
+    font-size: 16px;
+  }
 }
 .cinematic .cin-q-go {
   border: 0;

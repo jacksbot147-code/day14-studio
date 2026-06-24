@@ -104,7 +104,7 @@ export function Proof() {
 
   return (
     <section className="cin-section cin-proof" id="work">
-      <Reveal as="h3" className="cin-proof-h">
+      <Reveal as="h2" className="cin-proof-h">
         Same engine. Wildly different businesses.
       </Reveal>
       <Reveal as="p" delayStep={1} className="cin-proof-sub">
