@@ -187,6 +187,185 @@
   }
 }
 
+/* ============================================================================
+ * SECTIONS — task 3/8 (Capabilities + marquee + statement)
+ * Ported 1:1 from the locked prototype, namespaced under `.cin-*` so the
+ * classes never collide with the light theme. All live inside `.cinematic`.
+ * ========================================================================== */
+
+/* Shared section rhythm (prototype: `section{padding:15vh 7vw}`). */
+.cinematic .cin-section {
+  position: relative;
+  padding: var(--cin-space-section) var(--cin-gutter);
+}
+
+/* Uppercase kicker label (prototype `.kicker`). */
+.cinematic .cin-kicker {
+  font-size: var(--cin-fs-label);
+  letter-spacing: var(--cin-tracking-label);
+  text-transform: uppercase;
+  color: var(--cin-faint);
+  margin-bottom: 22px;
+}
+
+/* Section heading (prototype `.h2`). */
+.cinematic .cin-h2 {
+  font-size: var(--cin-fs-h2);
+  font-weight: var(--cin-weight-light);
+  letter-spacing: var(--cin-tracking-tight);
+  line-height: var(--cin-leading-tight);
+  margin: 0;
+}
+
+/* --- Statement section (prototype `.statement`) ----------------------- */
+.cinematic .cin-statement {
+  max-width: 18ch;
+  margin: 0 auto;
+  text-align: center;
+  font-size: var(--cin-fs-statement);
+  font-weight: var(--cin-weight-light);
+  letter-spacing: var(--cin-tracking-tight);
+  line-height: 1.04;
+}
+.cinematic .cin-statement .cin-em {
+  /* `.cin-em` already sets Newsreader italic + accent; nothing extra needed. */
+  font-style: italic;
+}
+
+/* --- Capabilities heading block (prototype `.cap-head`) --------------- */
+.cinematic .cin-cap-head {
+  text-align: center;
+  margin-bottom: 9vh;
+}
+.cinematic .cin-cap-head > * {
+  /* Reveal wrappers are block; keep the centered measure tidy. */
+  margin-left: auto;
+  margin-right: auto;
+}
+.cinematic .cin-cap-head p {
+  color: var(--cin-mut);
+  max-width: 52ch;
+  margin: 18px auto 0;
+  line-height: 1.7;
+}
+
+/* --- Capabilities grid (prototype `.caps` / `.cap`) ------------------- */
+.cinematic .cin-caps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.cinematic .cin-cap {
+  border: 1px solid var(--cin-line);
+  border-radius: 14px;
+  padding: 26px 22px;
+  background: rgba(255, 255, 255, 0.02);
+  transition:
+    transform var(--cin-dur-base) var(--cin-ease),
+    border-color var(--cin-dur-base) var(--cin-ease),
+    background var(--cin-dur-base) var(--cin-ease);
+}
+/* Hover AND keyboard-focus lift (prototype only had :hover). */
+.cinematic .cin-cap:hover,
+.cinematic .cin-cap:focus-within {
+  transform: translateY(-6px);
+  border-color: rgba(86, 179, 255, 0.4);
+  background: rgba(86, 179, 255, 0.04);
+}
+
+.cinematic .cin-cap-icon {
+  display: inline-flex;
+  color: var(--cin-accent);
+}
+.cinematic .cin-cap-icon svg {
+  width: 24px;
+  height: 24px;
+}
+.cinematic .cin-cap-title {
+  font-size: 16px;
+  font-weight: var(--cin-weight-medium);
+  letter-spacing: -0.01em;
+  margin: 16px 0 8px;
+}
+.cinematic .cin-cap-desc {
+  font-size: 13px;
+  color: var(--cin-mut);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Responsive: 4 → 2 → 1 columns (prototype breakpoints 900px / 520px). */
+@media (max-width: 900px) {
+  .cinematic .cin-caps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 520px) {
+  .cinematic .cin-caps {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Capability marquee (prototype `.marquee` / `.track`) ------------- */
+.cinematic .cin-marquee {
+  overflow: hidden;
+  padding: 18px 0;
+  white-space: nowrap;
+  border-top: 1px solid var(--cin-line);
+  border-bottom: 1px solid var(--cin-line);
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 12%,
+    #000 88%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 12%,
+    #000 88%,
+    transparent
+  );
+}
+.cinematic .cin-marquee-track {
+  display: inline-block;
+  animation: cin-marquee-scroll 28s linear infinite;
+}
+.cinematic .cin-marquee-row {
+  display: inline-block;
+}
+.cinematic .cin-marquee-item {
+  font-size: 14px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cin-mut);
+  margin: 0 30px;
+}
+.cinematic .cin-marquee-sep {
+  color: var(--cin-accent);
+  margin-left: 30px;
+}
+@keyframes cin-marquee-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+/* Reduced-motion: stop the scroll outright (the global guard only collapses
+ * the duration, which would jitter an infinite loop). Strip stays put, masked
+ * and fully legible. */
+@media (prefers-reduced-motion: reduce) {
+  .cinematic .cin-marquee-track {
+    animation: none;
+    transform: none;
+  }
+}
+
 /* prefers-reduced-data — drop the expensive, purely-decorative atmosphere
  * (particle canvas, blurred orbs, grain, vignette, cursor glow, backdrop
  * blur). Content + reveals stay; only the GPU/bandwidth-heavy layers go.
