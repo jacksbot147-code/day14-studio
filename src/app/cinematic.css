@@ -1071,3 +1071,317 @@
   border-radius: 100px;
   padding: 4px 12px;
 }
+
+/* ============================================================================
+ * Task 6/8 — Pricing + conversion + CTAs
+ * Ported 1:1 from the locked prototype's #pricing / #book / footer + nav .btn.
+ * Buttons (.cin-btn*) are defined here because earlier tasks hadn't needed them
+ * yet; the hero/nav reuse these same classes.
+ * ========================================================================== */
+
+/* --- Buttons (prototype .btn / .btn.solid / .btn.glow) ------------------- */
+.cinematic .cin-btn {
+  position: relative;
+  display: inline-block;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  color: var(--cin-ink);
+  background: transparent;
+  padding: 11px 20px;
+  border-radius: 100px;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background var(--cin-dur-fast) var(--cin-ease),
+    color var(--cin-dur-fast) var(--cin-ease),
+    border-color var(--cin-dur-fast) var(--cin-ease),
+    box-shadow var(--cin-dur-fast) var(--cin-ease),
+    transform var(--cin-dur-fast) var(--cin-ease);
+}
+.cinematic .cin-btn:hover {
+  background: var(--cin-ink);
+  color: #000;
+  border-color: var(--cin-ink);
+}
+.cinematic .cin-btn:focus-visible {
+  outline: 2px solid var(--cin-accent);
+  outline-offset: 3px;
+}
+.cinematic .cin-btn-solid {
+  background: var(--cin-ink);
+  color: #000;
+}
+.cinematic .cin-btn-glow {
+  border-color: rgba(86, 179, 255, 0.5);
+}
+.cinematic .cin-btn-glow:hover {
+  background: var(--cin-accent);
+  color: #001;
+  border-color: var(--cin-accent);
+  box-shadow: 0 0 38px -6px var(--cin-accent);
+}
+
+/* --- Pricing section (prototype #pricing) -------------------------------- */
+.cinematic .cin-pricing {
+  padding: 15vh 7vw;
+  position: relative;
+}
+.cinematic .cin-price-h {
+  text-align: center;
+  font-size: clamp(28px, 4.2vw, 56px);
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  margin: 0 0 1.6vh;
+}
+.cinematic .cin-price-sub {
+  text-align: center;
+  color: var(--cin-mut);
+  margin: 0 0 7vh;
+}
+.cinematic .cin-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  max-width: 1000px;
+  margin: 0 auto;
+  align-items: start;
+}
+.cinematic .cin-card {
+  position: relative;
+  border: 1px solid var(--cin-line);
+  border-radius: 18px;
+  padding: 34px 30px;
+  background: rgba(255, 255, 255, 0.02);
+  transition:
+    transform 0.5s var(--cin-ease),
+    border-color 0.5s var(--cin-ease);
+  overflow: hidden;
+}
+.cinematic .cin-card:hover {
+  transform: translateY(-7px);
+}
+.cinematic .cin-card-feat {
+  border-color: rgba(86, 179, 255, 0.55);
+}
+.cinematic .cin-card-feat::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    80% 50% at 50% 0,
+    rgba(86, 179, 255, 0.14),
+    transparent
+  );
+  pointer-events: none;
+}
+.cinematic .cin-badge {
+  display: block;
+  font-family: var(--cin-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cin-accent);
+  margin-bottom: 16px;
+  min-height: 14px;
+}
+.cinematic .cin-nm {
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+.cinematic .cin-pr {
+  font-size: 34px;
+  font-weight: 300;
+  margin: 14px 0 4px;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.cinematic .cin-pr small {
+  font-size: 15px;
+  color: var(--cin-mut);
+}
+.cinematic .cin-scramble {
+  display: inline-block;
+}
+.cinematic .cin-mo {
+  color: var(--cin-mut);
+  font-size: 14px;
+  margin-bottom: 22px;
+}
+.cinematic .cin-card ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  margin: 0;
+  padding: 0;
+}
+.cinematic .cin-card li {
+  color: var(--cin-mut);
+  font-size: 14px;
+  padding-left: 22px;
+  position: relative;
+  line-height: 1.5;
+}
+.cinematic .cin-card li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 7px;
+  width: 10px;
+  height: 6px;
+  border-left: 1.5px solid var(--cin-cyan);
+  border-bottom: 1.5px solid var(--cin-cyan);
+  transform: rotate(-45deg);
+}
+.cinematic .cin-platform {
+  text-align: center;
+  margin-top: 26px;
+  color: var(--cin-mut);
+  font-size: 15px;
+}
+.cinematic .cin-platform a {
+  color: var(--cin-ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--cin-accent);
+  padding-bottom: 2px;
+}
+@media (max-width: 860px) {
+  .cinematic .cin-cards {
+    grid-template-columns: 1fr;
+    max-width: 420px;
+  }
+}
+
+/* --- Closing CTA (prototype #book.close) --------------------------------- */
+.cinematic .cin-close {
+  min-height: 80vh;
+  padding: 15vh 7vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.cinematic .cin-close h2 {
+  font-size: clamp(36px, 6.6vw, 96px);
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  max-width: 13ch;
+  margin: 0;
+}
+.cinematic .cin-close-cta {
+  margin-top: 38px;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.cinematic .cin-sig {
+  margin-top: 28px;
+  color: var(--cin-faint);
+  font-size: 14px;
+}
+
+/* --- Sticky scroll-triggered CTA ----------------------------------------- */
+.cinematic .cin-sticky-cta {
+  position: fixed;
+  right: clamp(16px, 4vw, 32px);
+  bottom: clamp(16px, 4vw, 28px);
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 8px 8px;
+  border-radius: 100px;
+  background: rgba(5, 5, 7, 0.72);
+  border: 1px solid var(--cin-line);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 18px 50px -20px rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  transform: translateY(18px) scale(0.96);
+  pointer-events: none;
+  transition:
+    opacity 0.5s var(--cin-ease),
+    transform 0.5s var(--cin-ease);
+}
+.cinematic .cin-sticky-cta.cin-sticky-in {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+.cinematic .cin-sticky-x {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 100px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--cin-mut);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color var(--cin-dur-fast) var(--cin-ease),
+    background var(--cin-dur-fast) var(--cin-ease);
+}
+.cinematic .cin-sticky-x:hover {
+  color: var(--cin-ink);
+  background: rgba(255, 255, 255, 0.06);
+}
+.cinematic .cin-sticky-x:focus-visible {
+  outline: 2px solid var(--cin-accent);
+  outline-offset: 2px;
+}
+
+/* --- Footer (prototype <footer>) ----------------------------------------- */
+.cinematic .cin-footer {
+  padding: 48px 7vw;
+  border-top: 1px solid var(--cin-line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--cin-faint);
+  font-size: 13px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.cinematic .cin-foot-brand {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  font-size: 18px;
+  color: var(--cin-ink);
+}
+.cinematic .cin-foot-brand b {
+  display: inline-flex;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: var(--cin-ink);
+  color: #000;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 9px;
+}
+
+/* Reduced-motion: no slide/scale on the sticky bar (visibility still toggles),
+ * and the price scramble component already renders the final value statically. */
+@media (prefers-reduced-motion: reduce) {
+  .cinematic .cin-sticky-cta {
+    transition: opacity 0.001s linear;
+    transform: none;
+  }
+  .cinematic .cin-sticky-cta.cin-sticky-in {
+    transform: none;
+  }
+}
