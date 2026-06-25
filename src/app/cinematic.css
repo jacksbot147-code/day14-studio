@@ -2142,3 +2142,272 @@
     transform: none;
   }
 }
+
+/* ============================================================================
+ * Shared content-page shell (.cin-page) + long-form prose (.cin-prose)
+ * Added in the cinematic rebuild (block 1/10). Paired with the <CinematicPage/>
+ * wrapper. Standalone pages (about, legal, guides, …) put their body inside
+ * <main class="cin-page"> and wrap copy in <div class="cin-prose">. Reuses the
+ * existing tokens, the .cin-btn buttons, and the .cin-detail-faq accordion.
+ * ========================================================================== */
+
+/* The page column: a centered, readable measure with section rhythm that
+ * mirrors the .cin-detail template (so standalone pages sit on the same grid). */
+.cinematic .cin-page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 14vh var(--cin-gutter) 8vh;
+}
+
+/* Optional page hero rendered by <CinematicPage hero={…} />. */
+.cinematic .cin-page-hero {
+  margin-bottom: 9vh;
+}
+.cinematic .cin-page-h1 {
+  font-size: clamp(34px, 5.4vw, 68px);
+  font-weight: var(--cin-weight-light);
+  letter-spacing: var(--cin-tracking-tight);
+  line-height: 1.04;
+  margin: 14px 0 0;
+  max-width: 18ch;
+}
+.cinematic .cin-page-lede {
+  margin-top: 24px;
+  font-size: var(--cin-fs-body);
+  color: var(--cin-mut);
+  line-height: var(--cin-leading-body);
+  max-width: 52ch;
+}
+
+/* ---------------------------------------------------------------------------
+ * .cin-prose — long-form body copy for the dark theme.
+ * Constrains to a ~70ch measure, sets a heading scale off the --cin tokens, and
+ * styles paragraphs, lists, links, blockquotes, code, and tables. Headings use
+ * margin-top to create section rhythm; the first child never adds top margin.
+ * ------------------------------------------------------------------------- */
+.cinematic .cin-prose {
+  max-width: 70ch;
+  color: var(--cin-mut);
+  font-size: 17px;
+  line-height: 1.8;
+}
+.cinematic .cin-prose > :first-child {
+  margin-top: 0;
+}
+.cinematic .cin-prose > :last-child {
+  margin-bottom: 0;
+}
+
+/* Headings — scaled down from the section-level tokens for in-body rhythm. */
+.cinematic .cin-prose h2 {
+  font-size: clamp(24px, 3.2vw, 38px);
+  font-weight: var(--cin-weight-light);
+  letter-spacing: var(--cin-tracking-tight);
+  line-height: 1.12;
+  color: var(--cin-ink);
+  margin: 2.4em 0 0.7em;
+}
+.cinematic .cin-prose h3 {
+  font-size: clamp(20px, 2.4vw, 26px);
+  font-weight: var(--cin-weight-regular);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--cin-ink);
+  margin: 2em 0 0.6em;
+}
+.cinematic .cin-prose h4 {
+  font-size: 18px;
+  font-weight: var(--cin-weight-medium);
+  color: var(--cin-ink);
+  margin: 1.8em 0 0.5em;
+}
+
+/* An uppercase mono eyebrow usable inside prose (matches .cin-kicker). */
+.cinematic .cin-prose .cin-prose-kicker {
+  font-family: var(--cin-font-mono);
+  font-size: var(--cin-fs-label);
+  letter-spacing: var(--cin-tracking-label);
+  text-transform: uppercase;
+  color: var(--cin-faint);
+  margin: 0 0 14px;
+}
+
+.cinematic .cin-prose p {
+  margin: 0 0 1.3em;
+}
+
+/* Links — accent underline that fills in on hover. */
+.cinematic .cin-prose a {
+  color: var(--cin-ink);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(86, 179, 255, 0.5);
+  transition:
+    color var(--cin-dur-fast) var(--cin-ease),
+    border-color var(--cin-dur-fast) var(--cin-ease);
+}
+.cinematic .cin-prose a:hover {
+  color: var(--cin-accent);
+  border-bottom-color: var(--cin-accent);
+}
+.cinematic .cin-prose a:focus-visible {
+  outline: 2px solid var(--cin-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.cinematic .cin-prose strong {
+  color: var(--cin-ink);
+  font-weight: var(--cin-weight-semibold);
+}
+.cinematic .cin-prose em {
+  font-family: var(--cin-font-serif);
+  font-style: italic;
+}
+
+/* Lists. */
+.cinematic .cin-prose ul,
+.cinematic .cin-prose ol {
+  margin: 0 0 1.3em;
+  padding-left: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cinematic .cin-prose li {
+  position: relative;
+  padding-left: 26px;
+  line-height: 1.7;
+}
+.cinematic .cin-prose ul > li::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 11px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cin-accent);
+  opacity: 0.85;
+}
+.cinematic .cin-prose ol {
+  counter-reset: cin-prose-ol;
+}
+.cinematic .cin-prose ol > li {
+  counter-increment: cin-prose-ol;
+}
+.cinematic .cin-prose ol > li::before {
+  content: counter(cin-prose-ol, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-family: var(--cin-font-mono);
+  font-size: 13px;
+  color: var(--cin-accent);
+}
+.cinematic .cin-prose li > ul,
+.cinematic .cin-prose li > ol {
+  margin: 10px 0 0;
+}
+
+/* Blockquote — editorial serif, accent rule. */
+.cinematic .cin-prose blockquote {
+  margin: 1.8em 0;
+  padding: 4px 0 4px 24px;
+  border-left: 2px solid var(--cin-accent);
+  font-family: var(--cin-font-serif);
+  font-style: italic;
+  font-size: clamp(19px, 2.2vw, 24px);
+  line-height: 1.5;
+  color: var(--cin-ink);
+}
+.cinematic .cin-prose blockquote p {
+  margin: 0;
+}
+
+/* Horizontal rule — a faint section divider. */
+.cinematic .cin-prose hr {
+  border: 0;
+  height: 1px;
+  background: var(--cin-line);
+  margin: 3em 0;
+}
+
+/* Inline + block code. */
+.cinematic .cin-prose code {
+  font-family: var(--cin-font-mono);
+  font-size: 0.88em;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--cin-line);
+  border-radius: 6px;
+  padding: 1px 6px;
+}
+.cinematic .cin-prose pre {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--cin-line);
+  border-radius: var(--cin-radius-sm);
+  padding: 18px 20px;
+  overflow-x: auto;
+  margin: 0 0 1.3em;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.cinematic .cin-prose pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+}
+
+/* Tables. */
+.cinematic .cin-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 1.6em;
+  font-size: 15px;
+}
+.cinematic .cin-prose th,
+.cinematic .cin-prose td {
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--cin-line);
+  vertical-align: top;
+}
+.cinematic .cin-prose th {
+  font-family: var(--cin-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cin-faint);
+  font-weight: var(--cin-weight-regular);
+}
+.cinematic .cin-prose td {
+  color: var(--cin-mut);
+}
+.cinematic .cin-prose tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Images / figures sit on the dark surface with a subtle frame. */
+.cinematic .cin-prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--cin-radius-sm);
+  border: 1px solid var(--cin-line);
+}
+.cinematic .cin-prose figure {
+  margin: 1.8em 0;
+}
+.cinematic .cin-prose figcaption {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--cin-faint);
+  text-align: center;
+}
+
+/* An FAQ accordion can be dropped straight into prose using the existing
+ * .cin-detail-faq pattern — no new styles needed, this just gives the group
+ * sensible top spacing when it follows body copy. */
+.cinematic .cin-prose .cin-detail-faq:first-of-type {
+  margin-top: 0.4em;
+}
