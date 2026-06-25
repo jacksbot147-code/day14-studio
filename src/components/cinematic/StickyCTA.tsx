@@ -82,6 +82,7 @@ export function StickyCTA() {
         rel="noopener noreferrer"
         tabIndex={visible ? 0 : -1}
         data-mag
+        data-cta="book_sticky"
       >
         Book a 15-min look
       </a>

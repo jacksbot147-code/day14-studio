@@ -117,11 +117,16 @@ export function Capabilities() {
             delayStep={(i % 4) as 0 | 1 | 2 | 3}
             className="cin-cap"
           >
-            <span className="cin-cap-icon">
-              <Icon />
-            </span>
-            <h3 className="cin-cap-title">{title}</h3>
-            <p className="cin-cap-desc">{description}</p>
+            <a href={`/platform/${id}`} className="cin-cap-link">
+              <span className="cin-cap-icon">
+                <Icon />
+              </span>
+              <h3 className="cin-cap-title">{title}</h3>
+              <p className="cin-cap-desc">{description}</p>
+              <span className="cin-cap-more" aria-hidden="true">
+                How it works →
+              </span>
+            </a>
           </Reveal>
         ))}
       </ul>

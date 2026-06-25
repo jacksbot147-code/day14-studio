@@ -47,7 +47,12 @@ function bySlug(slug: ServiceTier["slug"]): ServiceTier {
   return tier;
 }
 
-export function Pricing() {
+/**
+ * `links` is a { slug -> Stripe Payment Link URL } map (resolved server-side in
+ * CinematicHome via getPaymentLinks). When a tier has a link, its card shows a
+ * real "Get started" checkout button; otherwise it falls back to booking a call.
+ */
+export function Pricing({ links = {} }: { links?: Record<string, string> }) {
   const cards = CARD_SLUGS.map(bySlug);
 
   return (
@@ -82,6 +87,25 @@ export function Pricing() {
                 <li key={f}>{f}</li>
               ))}
             </ul>
+            {links[tier.slug] ? (
+              <a
+                className="cin-card-cta"
+                href={links[tier.slug]}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-cta={`buy_${tier.slug}`}
+              >
+                Get started →
+              </a>
+            ) : (
+              <a
+                className="cin-card-cta cin-card-cta-ghost"
+                href="#book"
+                data-cta={`book_${tier.slug}`}
+              >
+                Book a 15-min look →
+              </a>
+            )}
           </Reveal>
         ))}
       </div>

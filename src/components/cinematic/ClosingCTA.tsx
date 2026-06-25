@@ -36,6 +36,7 @@ export function ClosingCTA() {
           target="_blank"
           rel="noopener noreferrer"
           data-mag
+          data-cta="book_close"
         >
           Book 15 minutes
         </a>
