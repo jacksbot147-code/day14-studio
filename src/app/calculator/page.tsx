@@ -1,5 +1,7 @@
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
+import { CanvasField } from "@/components/cinematic/CanvasField";
+import { Nav } from "@/components/cinematic/Nav";
+import { SiteFooter } from "@/components/cinematic/SiteFooter";
+import { Reveal } from "@/components/cinematic/Reveal";
 import { ScopeCalculator } from "./scope-calculator";
 
 /**
@@ -7,27 +9,39 @@ import { ScopeCalculator } from "./scope-calculator";
  * recommendation, real price, real launch date. Eliminates the "let's
  * hop on a call to scope" friction. The calculator IS the scope call.
  *
- * The page shell is server-rendered; the interactive calculator lives
- * in ./scope-calculator.tsx (client). No backend.
+ * Re-themed onto the cinematic shell (block 9/10) so the chrome matches every
+ * other route. The interactive calculator lives in ./scope-calculator.tsx
+ * (client) and is unchanged here; it reads its prices from pricing.ts.
  */
 
 export default function CalculatorPage() {
   return (
-    <>
-      <SiteHeader />
-      <main className="container-page pt-14 pb-20 sm:pt-20">
-        <div className="eyebrow mb-6">Scope calculator</div>
-        <h1 className="max-w-3xl text-[40px] font-extrabold leading-[1.05] tracking-tightest text-ink sm:text-[60px]">
-          A real price.
-          <br className="hidden sm:block" /> A real launch date. Right now.
-        </h1>
-        <p className="mt-7 max-w-2xl text-lg text-ink-500 sm:text-xl">
-          Slide and toggle to describe what you want built. The price and launch date update live. No &ldquo;contact us for pricing.&rdquo; No sales call required to find out if I&rsquo;m in your budget. Real numbers; you can book the intro call already knowing the quote.
-        </p>
+    <div className="cinematic" id="top">
+      <CanvasField />
+      <Nav linkBase="/" />
 
-        <ScopeCalculator />
+      <main className="cin-detail">
+        <header className="cin-detail-hero">
+          <Reveal as="div" className="cin-kicker">
+            Scope calculator
+          </Reveal>
+          <Reveal as="h1" delayStep={1} className="cin-detail-h1">
+            A real price. A real launch date. Right now.
+          </Reveal>
+          <Reveal as="p" delayStep={2} className="cin-detail-lede">
+            Slide and toggle to describe what you want built. The price and
+            launch date update live. No &ldquo;contact us for pricing.&rdquo; No
+            sales call required to find out if I&rsquo;m in your budget. Real
+            numbers; you can book the intro call already knowing the quote.
+          </Reveal>
+        </header>
+
+        <section className="cin-detail-block">
+          <ScopeCalculator />
+        </section>
       </main>
+
       <SiteFooter />
-    </>
+    </div>
   );
 }

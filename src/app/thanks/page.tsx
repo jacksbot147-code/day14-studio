@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { SITE } from "@/lib/site";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
+import { CanvasField } from "@/components/cinematic/CanvasField";
+import { Nav } from "@/components/cinematic/Nav";
+import { SiteFooter } from "@/components/cinematic/SiteFooter";
+import { Reveal } from "@/components/cinematic/Reveal";
 
 /**
  * /thanks — confirmation landing page for Stripe Payment Links.
@@ -12,6 +13,10 @@ import { SiteFooter } from "@/components/site-footer";
  * receipt, tells the customer what happens next, and links to the
  * intake form so they can fill it in immediately (rather than waiting
  * for an email).
+ *
+ * Re-themed onto the cinematic shell (block 9/10) so the chrome matches every
+ * other route. The "what happens next" steps reuse the .cin-detail-steps
+ * pattern from /platform/[slug].
  *
  * Optional query params (Stripe appends these on redirect; we render
  * them gracefully if present, defensive if absent):
@@ -43,6 +48,27 @@ const SKU_TIMELINE: Record<Sku, string> = {
   platform: "21 days",
 };
 
+const STEPS: Array<{ title: string; body: string; cta: string; href: (sku?: Sku) => string }> = [
+  {
+    title: "Fill out the intake form",
+    body: "One page, ~25 min. Business name, services, pricing, brand colors, logo, 5 photos. That's the whole input.",
+    cta: "Open intake form",
+    href: (sku) => (sku ? `/intake?sku=${sku}` : "/intake"),
+  },
+  {
+    title: "Check your inbox tomorrow",
+    body: "Preview URL on a *.vercel.app subdomain by EOD tomorrow. You can watch the build progress on a public build-log.",
+    cta: "See an example build-log",
+    href: () => "/builds/splash-jacks-pools",
+  },
+  {
+    title: "Daily updates, no meetings",
+    body: "One-paragraph operator update every weekday. Reply with feedback any time. We launch on day 14 or your deposit refunds.",
+    cta: "About the build process",
+    href: () => "/about",
+  },
+];
+
 export default function ThanksPage({
   searchParams,
 }: {
@@ -54,107 +80,75 @@ export default function ThanksPage({
   const timeline = sku ? SKU_TIMELINE[sku] : "14 days";
 
   return (
-    <>
-      <SiteHeader />
-      <main>
-        <section className="container-page pt-20 pb-16">
-          <div className="font-mono text-xs uppercase tracking-[0.18em] text-shipped-600">
+    <div className="cinematic" id="top">
+      <CanvasField />
+      <Nav linkBase="/" />
+
+      <main className="cin-detail">
+        <header className="cin-detail-hero">
+          <Reveal as="div" className="cin-kicker">
             ● Deposit confirmed
-          </div>
-
-          <h1 className="mt-5 max-w-3xl text-[44px] font-extrabold leading-[1.05] tracking-tightest text-ink sm:text-[64px]">
+          </Reveal>
+          <Reveal as="h1" delayStep={1} className="cin-detail-h1">
             Build starts now.
-          </h1>
+          </Reveal>
+          <Reveal as="p" delayStep={2} className="cin-detail-lede">
+            Thanks for the deposit. Your {skuLabel} tier build kicks off today —
+            preview URL in your inbox within 24 hours, live by day{" "}
+            {timeline.replace(/[^0-9]/g, "")} or your deposit refunds in full.
+          </Reveal>
+        </header>
 
-          <p className="mt-7 max-w-2xl text-lg text-ink-500 sm:text-xl">
-            Thanks for the deposit. Your {skuLabel} tier build kicks off
-            today — preview URL in your inbox within 24 hours, live by day{" "}
-            <span className="tnum">{timeline.replace(/[^0-9]/g, "")}</span> or
-            your deposit refunds in full.
-          </p>
+        <section className="cin-detail-block">
+          <Reveal as="h2" className="cin-detail-h2">
+            What happens next
+          </Reveal>
+          <ol className="cin-detail-steps" role="list">
+            {STEPS.map((s, i) => (
+              <Reveal
+                as="li"
+                key={s.title}
+                delayStep={Math.min(i, 3) as 0 | 1 | 2 | 3}
+              >
+                <span className="cin-detail-step-n">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div>
+                  <h3>{s.title}</h3>
+                  <p>{s.body}</p>
+                  <a href={s.href(sku)} className="cin-cap-link">
+                    {s.cta} →
+                  </a>
+                </div>
+              </Reveal>
+            ))}
+          </ol>
+        </section>
 
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
-            <Step
-              n={1}
-              title="Fill out the intake form"
-              body="One page, ~25 min. Business name, services, pricing, brand colors, logo, 5 photos. That's the whole input."
-              cta="Open intake form"
-              href={sku ? `/intake?sku=${sku}` : "/intake"}
-            />
-            <Step
-              n={2}
-              title="Check your inbox tomorrow"
-              body={`Preview URL on a *.vercel.app subdomain by EOD tomorrow. You can watch the build progress on a public build-log.`}
-              cta="See an example build-log"
-              href="/builds/splash-jacks-pools"
-            />
-            <Step
-              n={3}
-              title="Daily updates, no meetings"
-              body="One-paragraph operator update every weekday. Reply with feedback any time. We launch on day 14 or your deposit refunds."
-              cta="About the build process"
-              href="/about"
-            />
-          </div>
-
-          <div className="mt-14 rounded-lg border border-ink-100 bg-paper-50 p-6 text-sm text-ink-500 sm:p-8">
-            <div className="eyebrow mb-3">Questions before you sit down with the intake form?</div>
-            <p className="text-ink-700">
-              Email{" "}
-              <a className="font-semibold underline" href={`mailto:${SITE.email}`}>
-                {SITE.email}
-              </a>{" "}
-              or book a follow-up call at{" "}
-              <a className="font-semibold underline" href={SITE.bookingUrl}>
-                {SITE.bookingUrl.replace(/^https?:\/\//, "")}
-              </a>
-              .
-            </p>
-          </div>
-
-          <div className="mt-10 flex flex-wrap gap-3">
-            <Link href="/" className="btn-ghost">
+        <section className="cin-detail-block">
+          <Reveal as="div" className="cin-kicker">
+            Questions before you sit down with the intake form?
+          </Reveal>
+          <Reveal as="p" delayStep={1} className="cin-detail-body">
+            Email <a href={`mailto:${SITE.email}`}>{SITE.email}</a> or book a
+            follow-up call at{" "}
+            <a href={SITE.bookingUrl}>
+              {SITE.bookingUrl.replace(/^https?:\/\//, "")}
+            </a>
+            .
+          </Reveal>
+          <Reveal as="div" delayStep={2} className="cin-hcta">
+            <a href="/" className="cin-btn">
               ← Back to homepage
-            </Link>
-            <Link href="/about" className="btn-ghost">
+            </a>
+            <a href="/about" className="cin-btn">
               About the operator
-            </Link>
-          </div>
+            </a>
+          </Reveal>
         </section>
       </main>
-      <SiteFooter />
-    </>
-  );
-}
 
-function Step({
-  n,
-  title,
-  body,
-  cta,
-  href,
-}: {
-  n: number;
-  title: string;
-  body: string;
-  cta: string;
-  href: string;
-}) {
-  return (
-    <div className="card">
-      <div className="flex items-baseline gap-3">
-        <span className="font-mono text-xs uppercase tracking-widest text-ember-600 tnum">
-          {String(n).padStart(2, "0")}
-        </span>
-        <h2 className="text-lg font-bold tracking-tightest text-ink">{title}</h2>
-      </div>
-      <p className="mt-3 text-sm text-ink-500">{body}</p>
-      <Link
-        href={href}
-        className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-ink hover:text-ember-600"
-      >
-        {cta} →
-      </Link>
+      <SiteFooter />
     </div>
   );
 }

@@ -1,22 +1,41 @@
-import Link from "next/link";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
+import { CanvasField } from "@/components/cinematic/CanvasField";
+import { Nav } from "@/components/cinematic/Nav";
+import { SiteFooter } from "@/components/cinematic/SiteFooter";
+import { Reveal } from "@/components/cinematic/Reveal";
 
 export const metadata = { title: "Subscribed — Day14", robots: { index: false } };
 
+/**
+ * /newsletter/thanks — subscribe confirmation. Re-themed onto the cinematic
+ * shell (block 9/10) so the chrome matches every other route.
+ */
 export default function ThanksPage() {
   return (
-    <>
-    <SiteHeader />
-    <main style={{ maxWidth: 640, margin: "0 auto", padding: "120px 32px", textAlign: "center" }}>
-      <div style={{ fontSize: 48, marginBottom: 16 }}>✉️</div>
-      <h1 style={{ fontSize: 36, letterSpacing: "-0.02em", marginBottom: 16 }}>Check your inbox</h1>
-      <p style={{ fontSize: 17, color: "#7A6F8F", lineHeight: 1.6, marginBottom: 32 }}>
-        Confirmation email's on its way. Click the link to lock it in. First issue lands next Tuesday.
-      </p>
-      <Link href="/" style={{ display: "inline-block", padding: "12px 24px", background: "#2F2A33", color: "white", borderRadius: 8, textDecoration: "none", fontSize: 14 }}>← Back to Day14</Link>
-    </main>
-    <SiteFooter />
-    </>
+    <div className="cinematic" id="top">
+      <CanvasField />
+      <Nav linkBase="/" />
+
+      <main className="cin-detail">
+        <header className="cin-detail-hero">
+          <Reveal as="div" className="cin-kicker">
+            ✉️ Almost there
+          </Reveal>
+          <Reveal as="h1" delayStep={1} className="cin-detail-h1">
+            Check your inbox
+          </Reveal>
+          <Reveal as="p" delayStep={2} className="cin-detail-lede">
+            Confirmation email&rsquo;s on its way. Click the link to lock it in.
+            First issue lands next Tuesday.
+          </Reveal>
+          <Reveal as="div" delayStep={3} className="cin-hcta cin-detail-cta">
+            <a href="/" className="cin-btn cin-btn-solid">
+              ← Back to Day14
+            </a>
+          </Reveal>
+        </header>
+      </main>
+
+      <SiteFooter />
+    </div>
   );
 }

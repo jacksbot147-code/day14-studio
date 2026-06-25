@@ -1,273 +1,235 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+
 import { SITE } from "@/lib/site";
 import { SERVICE_TIERS } from "@/lib/pricing";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
+import { CanvasField } from "@/components/cinematic/CanvasField";
+import { Nav } from "@/components/cinematic/Nav";
+import { SiteFooter } from "@/components/cinematic/SiteFooter";
+import { Reveal } from "@/components/cinematic/Reveal";
+import { ClosingCTA } from "@/components/cinematic/ClosingCTA";
+
+/**
+ * /case-studies/alignmd — the healthcare-staffing proof, cinematic skin.
+ *
+ * Re-themed into the cinematic system (block 6/10). Same shared shell + detail
+ * primitives as /about and the other case studies; problem → build → result
+ * narrative mirroring the homepage proof framing. AlignMD is genuinely live —
+ * it's the second of the two live proof tiles on the homepage (`#work`).
+ * Content preserved from the prior surface; only the skin changes.
+ *
+ * PRICING INTEGRITY: the Platform price label is read from pricing.ts
+ * (setupLabel), never hard-coded, and the `$X + $Y/mo` tier shape is avoided —
+ * so check:prices stays clean.
+ */
 
 // Platform price comes from pricing.ts — the single source of truth.
-const PLATFORM = SERVICE_TIERS.find((t) => t.slug === "platform")!;
+const PLATFORM_SETUP =
+  SERVICE_TIERS.find((t) => t.slug === "platform")?.setupLabel ??
+  "at a fixed price";
 
 const CASE = {
   name: "AlignMD",
-  industry: "B2B SaaS · Healthcare staffing",
-  location: "United States",
-  sku: "Platform",
-  timeline: "Platform tier — full clinical-staffing platform on Day14 OS",
-  customerType:
-    "Two-sided: clinicians submitting credentials + hospital operations teams reviewing dossiers",
+  industry: "healthcare staffing",
+  url: "https://alignmd.vercel.app",
 } as const;
 
 export const metadata: Metadata = {
   title: `${CASE.name} — case study`,
-  description: `How we built ${CASE.name} as a Day14 Platform — credential-aware intake, AI dossier generation, multi-state license verification, and an operator admin that turned a 40-minute clinician onboarding into a 4-minute one.`,
+  description: `How Day14 built ${CASE.name} as a Platform — credential-aware intake, AI dossier generation, multi-state license verification, and an operator admin that turned a 40-minute clinician onboarding into a 4-minute one.`,
   alternates: { canonical: "/case-studies/alignmd" },
   openGraph: {
     title: `${CASE.name} — case study`,
-    description: `Credential-aware staffing, end to end. Built on Day14 OS.`,
+    description: "Credential-aware staffing, end to end. Built on Day14 OS.",
     url: `https://${SITE.domain}/case-studies/alignmd`,
     siteName: SITE.brand,
     type: "article",
   },
 };
 
+const SURFACES: Array<{ tag: string; name: string; body: string }> = [
+  {
+    tag: "Clinician portal",
+    name: "Magic-link, mobile-first intake",
+    body: "Clinicians sign in with a magic link, upload credentials (drag, drop, or a photo of a paper doc), and watch a progress bar of what's parsed vs. what still needs them. Mobile-first, because that's where credential photos get taken.",
+  },
+  {
+    tag: "Operator admin",
+    name: "Dossier queue, one-click approve",
+    body: "The ops team sees a queue of completed dossiers ranked by review priority — license urgency, geo demand, contract value. One screen: approve or kick back. The same admin shell runs every other tenant.",
+  },
+  {
+    tag: "Scheduled agents",
+    name: "Lookups, assembly, nightly QA",
+    body: "Agents run on cron: credential-parse fires on a new doc, a license-status agent verifies against state boards nightly, and an evidence verifier flags any dossier where parsed data doesn't match the source PDF.",
+  },
+  {
+    tag: "Billing + ops",
+    name: "Stripe Connect placement fees",
+    body: "Hospitals pay placement fees through Stripe Connect; clinicians get paid on the same rails when a placement closes. Wired live before launch — no “billing comes in phase 2.”",
+  },
+];
+
+const STATS: Array<{ v: string; l: string }> = [
+  { v: "10x", l: "Faster onboarding (40 min → 4 min)" },
+  { v: "4 wk", l: "Platform build, kickoff to launch" },
+  { v: "1", l: "Operator, same admin as five tenants" },
+  { v: "24/7", l: "Agent license-status coverage" },
+];
+
 export default function CaseStudyPage() {
   return (
-    <>
-      <SiteHeader />
+    <div className="cinematic" id="top">
+      <CanvasField />
+      <Nav linkBase="/" />
+
       <main>
-        <Header />
-        <ProblemAndSolution />
-        <WhatShipped />
-        <ResultsByNumbers />
-        <SharedStack />
-        <NextCta />
-      </main>
-      <SiteFooter />
-    </>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-
-function Header() {
-  return (
-    <section className="container-page pt-14 pb-12 sm:pt-20">
-      <Link
-        href="/#case-studies"
-        className="inline-flex items-center gap-1 font-mono text-xs uppercase tracking-widest text-ink-400 transition hover:text-ink"
-      >
-        ← All case studies
-      </Link>
-
-      <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-xs uppercase tracking-[0.18em] text-ink-400">
-        <span className="inline-flex items-center gap-2">
-          <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: "#3b82f6" }} />
-          <span>{CASE.industry}</span>
-        </span>
-        <span aria-hidden>·</span>
-        <span>{CASE.sku} tier</span>
-        <span aria-hidden>·</span>
-        <span className="inline-flex items-center gap-1.5">
-          <span className="inline-block h-1.5 w-1.5 rounded-full bg-shipped-500" />
-          Live
-        </span>
-      </div>
-
-      <h1 className="mt-6 max-w-4xl text-[40px] font-extrabold leading-[1.05] tracking-tightest text-ink sm:text-[60px]">
-        Credential-aware staffing, end to end.
-      </h1>
-      <p className="mt-6 max-w-3xl text-lg text-ink-500 sm:text-xl">
-        AlignMD is a B2B SaaS for healthcare staffing &mdash; clinicians submit credentials once, hospitals see a fully-formed dossier in minutes. We built it on Day14 OS, the same multi-tenant platform that runs five other businesses we operate ourselves.
-      </p>
-    </section>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-
-function ProblemAndSolution() {
-  return (
-    <section className="container-page py-16">
-      <div className="rule mb-12" />
-      <div className="grid gap-12 md:grid-cols-2">
-        <div>
-          <div className="eyebrow eyebrow-rule mb-5">The problem</div>
-          <h2 className="text-2xl font-extrabold tracking-tightest text-ink sm:text-3xl">
-            Clinician intake takes 40 minutes per candidate.
-          </h2>
-          <p className="mt-5 text-ink-500">
-            Healthcare staffing is gated by credentials &mdash; medical license, board certifications, malpractice history, hospital privileges, state-specific verifications. A typical clinician submits 8&ndash;12 documents across 3&ndash;5 forms, and an operations coordinator stitches them into a dossier by hand. The average end-to-end cycle: 40 minutes per clinician, with rework on every fourth file.
-          </p>
-        </div>
-        <div>
-          <div className="eyebrow eyebrow-rule mb-5">The solution</div>
-          <h2 className="text-2xl font-extrabold tracking-tightest text-ink sm:text-3xl">
-            Credential-aware intake plus dossier generation.
-          </h2>
-          <p className="mt-5 text-ink-500">
-            We built AlignMD as a Day14 Platform tier &mdash; clinician portal, operator admin, billing, and a scheduled-agent fleet that parses uploaded credentials, runs license-status lookups, and auto-assembles the dossier in the operator&rsquo;s queue. The coordinator&rsquo;s job changes from data entry to review-and-approve.
-          </p>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-
-function WhatShipped() {
-  const surfaces = [
-    {
-      label: "Clinician portal",
-      title: "Magic-link auth, mobile-first intake.",
-      body: "Clinicians sign in with a magic link, upload credentials (drag, drop, photo of paper docs are all fine), see a progress bar of what&rsquo;s parsed vs. what still needs them. Whole intake is mobile-first because that&rsquo;s where credential photos get taken.",
-    },
-    {
-      label: "Operator admin",
-      title: "Dossier queue, one-click approve.",
-      body: "Operations team sees a queue of completed dossiers ranked by review priority (license urgency, geo demand, contract value). One screen, approve or kick back. Every other tenant we run uses the same admin shell &mdash; same shortcuts, same inbox model.",
-    },
-    {
-      label: "Scheduled agents",
-      title: "License lookups, dossier assembly, nightly QA.",
-      body: "Agents run on cron: credential-parse fires when a new doc lands, license-status agent verifies against state boards nightly, evidence verifier flags any dossier where the parsed data doesn&rsquo;t match the source PDF. Operator only sees what needs a human.",
-    },
-    {
-      label: "Billing + ops",
-      title: "Stripe Connect for placement fees.",
-      body: "Hospitals pay placement fees through Stripe Connect; clinicians get paid via the same rails when a placement closes. All wired live before launch &mdash; no &ldquo;billing comes in phase 2.&rdquo;",
-    },
-  ];
-
-  return (
-    <section className="border-y border-ink-100 bg-paper-50/60 py-20">
-      <div className="container-page">
-        <div className="max-w-2xl">
-          <div className="eyebrow mb-4">What shipped</div>
-          <h2 className="text-3xl font-extrabold tracking-tightest text-ink sm:text-4xl">
-            Four surfaces. One operating system.
-          </h2>
-          <p className="mt-5 text-ink-500">
-            Every surface below sits on Day14 OS &mdash; multi-tenant routing,
-            magic-link auth, the same evidence-verified deploy pipeline we use
-            on every other build. AlignMD looks like its own product because
-            the brand and the workflow are bespoke; under the hood it&rsquo;s
-            the same hardened core.
-          </p>
-        </div>
-
-        <div className="mt-12 grid gap-6 md:grid-cols-2">
-          {surfaces.map((s) => (
-            <div key={s.label} className="card-pop">
-              <div className="font-mono text-xs uppercase tracking-widest text-ember-600">
-                {s.label}
-              </div>
-              <h3 className="mt-2 text-xl font-bold tracking-tightest text-ink">
-                {s.title}
-              </h3>
-              <p className="mt-3 text-ink-700" dangerouslySetInnerHTML={{ __html: s.body }} />
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-
-function ResultsByNumbers() {
-  const stats = [
-    { value: "10x", label: "Faster clinician onboarding (40 min → 4 min)" },
-    { value: "4 wk", label: "Platform-tier build from kickoff to launch" },
-    { value: "1", label: "Operator running the platform, same admin as five other tenants" },
-    { value: "24/7", label: "Scheduled-agent coverage of license-status verification" },
-  ];
-
-  return (
-    <section className="container-page py-20">
-      <div className="max-w-2xl">
-        <div className="eyebrow eyebrow-rule mb-5">By the numbers</div>
-        <h2 className="text-3xl font-extrabold tracking-tightest text-ink sm:text-[2.75rem] sm:leading-[1.03]">
-          What the operator measures.
-        </h2>
-      </div>
-
-      <div className="mt-12 grid grid-cols-2 border-l border-t border-ink-100 md:grid-cols-4">
-        {stats.map((s) => (
-          <div key={s.label} className="border-b border-r border-ink-100 px-4 py-5">
-            <div className="text-3xl font-extrabold tracking-tightest text-ink tnum sm:text-4xl">
-              {s.value}
-            </div>
-            <div className="mt-2 font-mono text-[10px] uppercase tracking-[0.18em] text-ink-400">
-              {s.label}
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-
-function SharedStack() {
-  return (
-    <section className="container-page pb-20">
-      <div className="rounded-lg border border-ink-100 bg-paper-50 p-8 sm:p-10">
-        <div className="grid items-start gap-8 md:grid-cols-[1fr_2fr]">
-          <div>
-            <div className="eyebrow mb-3">Why it works</div>
-            <h3 className="text-2xl font-bold tracking-tightest text-ink">
-              The OS is the moat.
-            </h3>
-          </div>
-          <div className="text-ink-700">
-            <p>
-              The reason AlignMD shipped in four weeks (not the four months a typical agency quotes) is that the multi-tenant infrastructure was already built &mdash; we use it to run six businesses ourselves. Auth, billing, admin shell, scheduled agents, deploy pipeline, evidence verifier &mdash; all of it sits in the same code stack that runs day14.us, lifeloophole.com, and three others.
-            </p>
-            <p className="mt-4">
-              When you hire {SITE.brand} to build, you don&rsquo;t get a Webflow template with our markup on top. You get the same platform we trust with our own revenue.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-
-function NextCta() {
-  return (
-    <section className="container-page pb-24">
-      <div className="overflow-hidden rounded-xl bg-ink p-10 text-paper sm:p-14">
-        <div className="grid items-center gap-8 md:grid-cols-[1.4fr_1fr]">
-          <div>
-            <h2 className="text-3xl font-extrabold tracking-tightest sm:text-4xl">
-              Want a platform like AlignMD?
-            </h2>
-            <p className="mt-4 max-w-xl text-paper-200">
-              Platform tier is {PLATFORM.setupLabel}, shipped in 4 weeks. Same stack, same agents, your brand. 15-minute intro call to figure out if the fit is real.
-            </p>
-          </div>
-          <div>
+        {/* Hero */}
+        <header className="cin-detail">
+          <Reveal as="div" className="cin-detail-crumb">
+            <a href="/#work">← All work</a>
+          </Reveal>
+          <Reveal as="div" className="cin-kicker">
+            {CASE.industry} · live
+          </Reveal>
+          <Reveal as="h1" delayStep={1} className="cin-page-h1">
+            Credential-aware staffing, end to end.
+          </Reveal>
+          <Reveal as="p" delayStep={2} className="cin-page-lede">
+            AlignMD is a B2B platform for healthcare staffing — clinicians submit
+            credentials once, hospitals see a fully-formed dossier in minutes. It
+            runs on Day14 OS, the same multi-tenant platform behind five other
+            businesses the operator runs himself.
+          </Reveal>
+          <Reveal as="div" delayStep={3} className="cin-hcta cin-detail-cta">
+            <a
+              href={CASE.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cin-btn cin-btn-solid"
+              data-cta="open_alignmd_live"
+            >
+              Open the live platform ↗
+            </a>
             <a
               href={SITE.bookingUrl}
-              className="btn-ember w-full justify-center text-base"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cin-btn"
+              data-cta="book_alignmd_hero"
             >
-              Book a 15-min intro call
+              Get one built like this
             </a>
-            <Link
-              href="/work-with-us"
-              className="mt-3 inline-flex w-full items-center justify-center rounded border border-paper-200/40 px-5 py-3 text-sm font-semibold text-paper transition hover:bg-paper/10"
-            >
-              See all 4 tiers
-            </Link>
-          </div>
+          </Reveal>
+        </header>
+
+        <div className="cin-detail">
+          {/* Problem */}
+          <section className="cin-detail-block">
+            <Reveal as="div" className="cin-kicker">
+              The problem
+            </Reveal>
+            <Reveal as="h2" delayStep={1} className="cin-detail-h2">
+              Clinician intake takes 40 minutes per candidate.
+            </Reveal>
+            <Reveal as="p" delayStep={2} className="cin-detail-body">
+              Healthcare staffing is gated by credentials — medical license,
+              board certifications, malpractice history, hospital privileges,
+              state-specific verifications. A typical clinician submits 8&ndash;12
+              documents across 3&ndash;5 forms, and a coordinator stitches them
+              into a dossier by hand. The average end-to-end cycle is 40 minutes
+              per clinician, with rework on every fourth file.
+            </Reveal>
+          </section>
+
+          {/* The build */}
+          <section className="cin-detail-block">
+            <Reveal as="div" className="cin-kicker">
+              The build
+            </Reveal>
+            <Reveal as="h2" delayStep={1} className="cin-detail-h2">
+              Four surfaces. One operating system.
+            </Reveal>
+            <Reveal as="p" delayStep={2} className="cin-detail-body">
+              Every surface sits on Day14 OS — multi-tenant routing, magic-link
+              auth, the same evidence-verified deploy pipeline used on every
+              other build. AlignMD looks like its own product because the brand
+              and workflow are bespoke; under the hood it&rsquo;s the same
+              hardened core.
+            </Reveal>
+            <div className="cin-detail-cases">
+              {SURFACES.map((s, i) => (
+                <Reveal
+                  key={s.name}
+                  className="cin-detail-case"
+                  delayStep={Math.min(i, 3) as 0 | 1 | 2 | 3}
+                >
+                  <div className="cin-detail-case-v">{s.tag}</div>
+                  <h3
+                    style={{
+                      fontWeight: 400,
+                      fontSize: "18px",
+                      margin: "0 0 6px",
+                      letterSpacing: "-0.01em",
+                    }}
+                  >
+                    {s.name}
+                  </h3>
+                  <p>{s.body}</p>
+                </Reveal>
+              ))}
+            </div>
+          </section>
+
+          {/* Why it works */}
+          <section className="cin-detail-block">
+            <Reveal as="h2" className="cin-detail-h2">
+              The OS is the moat.
+            </Reveal>
+            <Reveal as="p" delayStep={1} className="cin-detail-body">
+              The reason AlignMD shipped in four weeks — not the four months an
+              agency quotes — is that the multi-tenant infrastructure was already
+              built. Auth, billing, admin shell, scheduled agents, deploy
+              pipeline, evidence verifier all sit in the same code stack that
+              runs the operator&rsquo;s own revenue. When you hire {SITE.brand} to
+              build, you get the same platform we trust with ours — not a template
+              with our markup on top.
+            </Reveal>
+          </section>
+
+          {/* Same engine line */}
+          <section className="cin-detail-block cin-detail-outcome">
+            <Reveal as="p">
+              Same engine as a pool route. Wildly different business.
+            </Reveal>
+          </section>
+
+          {/* Results */}
+          <section className="cin-detail-block">
+            <Reveal as="div" className="cin-kicker">
+              By the numbers
+            </Reveal>
+            <Reveal as="h2" delayStep={1} className="cin-detail-h2">
+              What the operator measures.
+            </Reveal>
+            <div className="cin-stats">
+              {STATS.map((s) => (
+                <div key={s.l} className="cin-stat">
+                  <div className="cin-stat-v">{s.v}</div>
+                  <div className="cin-stat-l">{s.l}</div>
+                </div>
+              ))}
+            </div>
+            <Reveal as="p" delayStep={1} className="cin-detail-body">
+              Platform tier starts {PLATFORM_SETUP}. Same stack, same agents,
+              your brand — shipped in four weeks.
+            </Reveal>
+          </section>
         </div>
-      </div>
-    </section>
+
+        <ClosingCTA />
+      </main>
+
+      <SiteFooter />
+    </div>
   );
 }

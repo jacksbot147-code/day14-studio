@@ -1,11 +1,30 @@
-import Link from "next/link";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
-import { SERVICE_TIERS } from "@/lib/pricing";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "Refund Policy — Day14",
-  description: "Launch by Day 14 or your deposit refunds in full. The full policy.",
+import { SITE } from "@/lib/site";
+import { SERVICE_TIERS } from "@/lib/pricing";
+import { CinematicPage } from "@/components/cinematic/CinematicPage";
+import { Reveal } from "@/components/cinematic/Reveal";
+
+/**
+ * /refunds — the launch-by-day-14-or-deposit-back policy, in the cinematic skin.
+ *
+ * Re-themed into the cinematic system (block 8/10 of the rebuild — legal + info).
+ * Uses the shared <CinematicPage> shell (CanvasField backdrop + fixed Nav +
+ * SiteFooter) with a hero, then renders the policy as clean long-form `.cin-prose`
+ * for legible legal reading. The key promise sits in a `.cin-prose` blockquote
+ * (editorial serif, accent rail); the close is a small `.cin-btn` CTA row.
+ *
+ * PRICING INTEGRITY: per-SKU figures are read live from src/lib/pricing.ts
+ * (SERVICE_TIERS) — never hard-coded — so `check:prices` stays clean. The
+ * "$200/hr" change rate is a service term, not a Day14 tier price, and is not
+ * tier-shaped. Content is preserved from the prior surface; only the skin changes.
+ */
+
+export const metadata: Metadata = {
+  title: "Refund Policy",
+  description:
+    "Launch by Day 14 or your deposit refunds in full. The full policy.",
+  alternates: { canonical: "/refunds" },
 };
 
 // Per-tier guarantee windows. Prices come from pricing.ts (SERVICE_TIERS).
@@ -20,53 +39,97 @@ const GUARANTEE: Record<string, string> = {
 
 export default function RefundsPage() {
   return (
-    <>
-    <SiteHeader />
-    <main style={{ maxWidth: 720, margin: "0 auto", padding: "80px 32px", fontFamily: "-apple-system, BlinkMacSystemFont, system-ui, sans-serif", color: "#2F2A33", lineHeight: 1.7 }}>
-      <h1 style={{ fontSize: 40, letterSpacing: "-0.02em", marginBottom: 8 }}>Refund Policy</h1>
-      <p style={{ color: "#7A6F8F", fontSize: 16, marginBottom: 40 }}>Short version: we carry the timeline risk so you don't.</p>
-
-      <div style={{ background: "#FAF8F4", border: "1px solid #E5DDD0", borderRadius: 12, padding: 24, marginBottom: 40 }}>
-        <h2 style={{ fontSize: 20, marginBottom: 12, letterSpacing: "-0.01em" }}>The day-14 guarantee</h2>
-        <p style={{ marginBottom: 12 }}>If your Portal-tier project isn't live and able to accept real customer payments by the end of day 14, your deposit refunds in full and you keep everything we've shipped — the repo, the preview deployment, the work in progress.</p>
-        <p style={{ marginBottom: 0, fontSize: 14, color: "#666" }}>
-          "Day 14" means 14 calendar days from the day we receive your signed order form and 50% deposit. The clock pauses only if you take longer than 48 hours to respond to a blocker we've flagged.
+    <CinematicPage
+      hero={{
+        eyebrow: "Refund policy",
+        title: "We carry the timeline risk, so you don’t.",
+        lede: "Launch by Day 14 or your deposit refunds in full — and you keep everything we’ve shipped. The full policy, below.",
+      }}
+    >
+      <Reveal as="div" className="cin-prose">
+        <h2>The day-14 guarantee</h2>
+        <blockquote>
+          If your Portal-tier project isn&rsquo;t live and able to accept real
+          customer payments by the end of day 14, your deposit refunds in full
+          and you keep everything we&rsquo;ve shipped &mdash; the repo, the
+          preview deployment, the work in progress.
+        </blockquote>
+        <p>
+          &ldquo;Day 14&rdquo; means 14 calendar days from the day we receive
+          your signed order form and 50% deposit. The clock pauses only if you
+          take longer than 48 hours to respond to a blocker we&rsquo;ve flagged.
         </p>
-      </div>
 
-      <h2 style={{ fontSize: 22, marginTop: 40, marginBottom: 12 }}>Per-SKU specifics</h2>
-      <ul style={{ paddingLeft: 24 }}>
-        {SERVICE_TIERS.map((t) => (
-          <li key={t.slug}>
-            <strong>
-              {t.name} ({t.setup === null ? t.setupLabel : `$${t.setup.toLocaleString()}`}):
-            </strong>{" "}
-            {GUARANTEE[t.slug]}
+        <h2>Per-SKU specifics</h2>
+        <ul>
+          {SERVICE_TIERS.map((t) => (
+            <li key={t.slug}>
+              <strong>
+                {t.name} (
+                {t.setup === null
+                  ? t.setupLabel
+                  : `$${t.setup.toLocaleString()}`}
+                ):
+              </strong>{" "}
+              {GUARANTEE[t.slug]}
+            </li>
+          ))}
+        </ul>
+
+        <h2>Monthly hosting</h2>
+        <p>
+          Cancel anytime with 30 days notice. No long-term contract, no
+          early-termination fee. When you cancel, the final invoice is prorated
+          and we deliver a migration runbook within 7 days.
+        </p>
+
+        <h2>What&rsquo;s not refundable</h2>
+        <ul>
+          <li>
+            Change requests already completed at your written authorization
+            ($200/hr work).
           </li>
-        ))}
-      </ul>
+          <li>
+            The final 50% balance after launch (because the deliverable is live
+            in production).
+          </li>
+          <li>
+            Third-party costs we passed through (domain registration, paid API
+            tiers, etc.) &mdash; those refund per the third party&rsquo;s policy.
+          </li>
+        </ul>
 
-      <h2 style={{ fontSize: 22, marginTop: 40, marginBottom: 12 }}>Monthly hosting</h2>
-      <p>Cancel anytime with 30 days notice. No long-term contract, no early-termination fee. When you cancel, the final invoice is prorated and we deliver a migration runbook within 7 days.</p>
+        <h2>How to request a refund</h2>
+        <p>
+          Email <a href={`mailto:${SITE.email}`}>{SITE.email}</a> with your
+          order form ID. We refund via the original payment method within 7
+          business days.
+        </p>
+      </Reveal>
 
-      <h2 style={{ fontSize: 22, marginTop: 40, marginBottom: 12 }}>What's not refundable</h2>
-      <ul style={{ paddingLeft: 24 }}>
-        <li>Change requests already completed at your written authorization ($200/hr work).</li>
-        <li>The final 50% balance after launch (because the deliverable is live in production).</li>
-        <li>Third-party costs we passed through (domain registration, paid API tiers, etc.) — those refund per the third party's policy.</li>
-      </ul>
-
-      <h2 style={{ fontSize: 22, marginTop: 40, marginBottom: 12 }}>How to request a refund</h2>
-      <p>Email <a href="mailto:hello@day14.us">hello@day14.us</a> with your order form ID. We refund via the original payment method within 7 business days.</p>
-
-      <div style={{ marginTop: 40, padding: 32, background: "white", border: "1px solid #E5DDD0", borderRadius: 12, textAlign: "center" }}>
-        <h3 style={{ fontSize: 18, marginBottom: 12 }}>Questions about the guarantee?</h3>
-        <p style={{ fontSize: 14, color: "#666", marginBottom: 20 }}>Easier to talk through on the call. We'll walk through the exact timeline for your build.</p>
-        <a href="https://cal.com/day14/intro" style={{ display: "inline-block", padding: "12px 24px", background: "#2F2A33", color: "white", borderRadius: 8, textDecoration: "none", fontSize: 14 }}>Book intro call</a>
-        <Link href="/terms" style={{ marginLeft: 12, display: "inline-block", padding: "12px 24px", background: "white", border: "1px solid #E5DDD0", color: "#2F2A33", borderRadius: 8, textDecoration: "none", fontSize: 14 }}>Read full terms</Link>
-      </div>
-    </main>
-    <SiteFooter />
-    </>
+      <Reveal as="div" delayStep={1} className="cin-prose" style={{ marginTop: "3em" }}>
+        <hr />
+        <p className="cin-prose-kicker">Questions about the guarantee?</p>
+        <p>
+          Easier to talk through on the call. We&rsquo;ll walk you through the
+          exact timeline for your build.
+        </p>
+        <div
+          style={{ display: "flex", gap: 14, flexWrap: "wrap", marginTop: 28 }}
+        >
+          <a
+            className="cin-btn cin-btn-solid"
+            href={SITE.bookingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Book intro call
+          </a>
+          <a className="cin-btn" href="/terms">
+            Read full terms
+          </a>
+        </div>
+      </Reveal>
+    </CinematicPage>
   );
 }

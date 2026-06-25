@@ -1,5 +1,7 @@
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
+import { CanvasField } from "@/components/cinematic/CanvasField";
+import { Nav } from "@/components/cinematic/Nav";
+import { SiteFooter } from "@/components/cinematic/SiteFooter";
+import { Reveal } from "@/components/cinematic/Reveal";
 import { CalInline } from "@/components/cal-inline";
 import { SITE } from "@/lib/site";
 
@@ -13,48 +15,38 @@ export const metadata = {
 // bookingUrl so there's one source of truth.
 const CAL_LINK = SITE.bookingUrl.replace(/^https?:\/\/(app\.)?cal\.com\//, "");
 
+/**
+ * /book — the Cal.com booking page. Re-themed onto the cinematic shell
+ * (block 9/10) so the chrome matches every other route. The embedded scheduler
+ * lives in <CalInline> (client) and is unchanged.
+ */
 export default function BookPage() {
   return (
-    <>
-      <SiteHeader />
-      <main style={{ maxWidth: 880, margin: "0 auto", padding: "64px 24px 96px" }}>
-        <p
-          style={{
-            fontFamily: "var(--font-mono, monospace)",
-            fontSize: 12,
-            textTransform: "uppercase",
-            letterSpacing: "0.18em",
-            color: "var(--accent, #ef6c33)",
-            marginBottom: 12,
-          }}
-        >
-          15-minute intro call
-        </p>
-        <h1
-          style={{
-            fontSize: "clamp(2rem,4.4vw,3.25rem)",
-            fontWeight: 800,
-            letterSpacing: "-0.035em",
-            lineHeight: 1.04,
-            margin: "0 0 16px",
-          }}
-        >
-          Let&rsquo;s scope your build.
-        </h1>
-        <p style={{ fontSize: 18, lineHeight: 1.55, color: "#5b5b57", maxWidth: 620, marginBottom: 8 }}>
-          No prep needed. Bring your business and a rough idea of what you want shipped — we&rsquo;ll
-          figure out the right tier and timeline live. Prefer email?{" "}
-          <a href={`mailto:${SITE.email}`} style={{ color: "var(--accent, #ef6c33)", fontWeight: 600 }}>
-            {SITE.email}
-          </a>
-          .
-        </p>
+    <div className="cinematic" id="top">
+      <CanvasField />
+      <Nav linkBase="/" />
 
-        <div style={{ marginTop: 36 }}>
+      <main className="cin-detail">
+        <header className="cin-detail-hero">
+          <Reveal as="div" className="cin-kicker">
+            15-minute intro call
+          </Reveal>
+          <Reveal as="h1" delayStep={1} className="cin-detail-h1">
+            Let&rsquo;s scope your build.
+          </Reveal>
+          <Reveal as="p" delayStep={2} className="cin-detail-lede">
+            No prep needed. Bring your business and a rough idea of what you want
+            shipped — we&rsquo;ll figure out the right tier and timeline live.
+            Prefer email? <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+          </Reveal>
+        </header>
+
+        <section className="cin-detail-block">
           <CalInline calLink={CAL_LINK} />
-        </div>
+        </section>
       </main>
+
       <SiteFooter />
-    </>
+    </div>
   );
 }

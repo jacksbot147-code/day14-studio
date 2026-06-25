@@ -1,7 +1,25 @@
 import type { Metadata } from "next";
+
 import { SITE } from "@/lib/site";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
+import { CanvasField } from "@/components/cinematic/CanvasField";
+import { Nav } from "@/components/cinematic/Nav";
+import { SiteFooter } from "@/components/cinematic/SiteFooter";
+import { Reveal } from "@/components/cinematic/Reveal";
+import { ClosingCTA } from "@/components/cinematic/ClosingCTA";
+
+/**
+ * /process — the 14-day build, beat by beat, in the cinematic skin.
+ *
+ * Re-themed into the cinematic system (block 4/10 of the rebuild). Composed
+ * directly from the shared shell (CanvasField + Nav + SiteFooter + ClosingCTA),
+ * matching the `/about` + `/work-with-us` pattern (the closing booking CTA sits
+ * before the footer). The fourteen beats render as two `.cin-detail-steps`
+ * lists (one per week) where the step number is the day; the deliverables and
+ * client-inputs render as long-form `.cin-prose` / `.cin-detail-features`. All
+ * content is preserved from the prior surface — only the skin changes.
+ *
+ * No prices appear on this page, so `check:prices` is trivially clean.
+ */
 
 const TITLE = `${SITE.brand} — how we ship in 14 days, beat by beat`;
 const DESCRIPTION = `The 14-day build process, publicly documented. Every day, every deliverable, every milestone.`;
@@ -24,55 +42,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ProcessPage() {
-  return (
-    <>
-      <SiteHeader />
-      <main>
-        <Hero />
-        <Timeline />
-        <WhatYouReceive />
-        <WhatWeNeed />
-        <FinalCta />
-      </main>
-      <SiteFooter />
-    </>
-  );
-}
-
 /* -------------------------------------------------------------------------- */
 
-function Hero() {
-  return (
-    <section className="container-page pt-14 pb-12 sm:pt-20">
-      <div className="eyebrow mb-6">How we ship</div>
-      <h1 className="max-w-4xl text-[40px] font-extrabold leading-[1.05] tracking-tightest text-ink sm:text-[60px]">
-        14 days, beat by beat.
-      </h1>
-      <p className="mt-7 max-w-2xl text-lg text-ink-500 sm:text-xl">
-        The work isn&rsquo;t a mystery. Here&rsquo;s exactly what happens between
-        deposit and launch.
-      </p>
-
-      <div className="mt-9 flex flex-wrap gap-3">
-        <a href={SITE.bookingUrl} className="btn-ember">
-          Book a 15-min intro call
-        </a>
-        <a href="#timeline" className="btn-ghost">
-          See the 14 beats
-        </a>
-      </div>
-    </section>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-
-type Beat = {
-  day: number;
-  title: string;
-  body: string;
-};
+type Beat = { day: number; title: string; body: string };
 
 const WEEK_ONE: Beat[] = [
   {
@@ -108,7 +80,7 @@ const WEEK_ONE: Beat[] = [
   {
     day: 7,
     title: "Client review #1 (mid-build Loom)",
-    body: "A mid-build Loom walks you through what&rsquo;s shipped so far on staging. 30 minutes of your time to react, flag, and steer before the back half.",
+    body: "A mid-build Loom walks you through what’s shipped so far on staging. 30 minutes of your time to react, flag, and steer before the back half.",
   },
 ];
 
@@ -126,12 +98,12 @@ const WEEK_TWO: Beat[] = [
   {
     day: 10,
     title: "Build polish",
-    body: "Motion, responsive behavior, edge cases, empty states, loading states. The difference between &lsquo;done&rsquo; and &lsquo;feels expensive&rsquo; happens here.",
+    body: "Motion, responsive behavior, edge cases, empty states, loading states. The difference between ‘done’ and ‘feels expensive’ happens here.",
   },
   {
     day: 11,
     title: "Client review #2",
-    body: "The near-final build on staging. A second 30-minute pass to catch anything remaining while there&rsquo;s still room to change it.",
+    body: "The near-final build on staging. A second 30-minute pass to catch anything remaining while there’s still room to change it.",
   },
   {
     day: 12,
@@ -150,29 +122,41 @@ const WEEK_TWO: Beat[] = [
   },
 ];
 
-function Timeline() {
-  return (
-    <section id="timeline" className="container-page py-16 scroll-mt-24">
-      <div className="rule mb-12" />
-      <div className="max-w-2xl">
-        <div className="eyebrow eyebrow-rule mb-5">The timeline</div>
-        <h2 className="text-3xl font-extrabold tracking-tightest text-ink sm:text-[2.75rem] sm:leading-[1.03]">
-          Fourteen beats. One per day.
-        </h2>
-        <p className="mt-5 text-ink-500">
-          Every Day14 build runs the same rhythm. Week one is design and
-          foundation. Week two is build, integrate, and launch. Two scheduled
-          reviews keep you in the loop without slowing the ship.
-        </p>
-      </div>
+/* The ten deliverables that land in the customer's inbox. */
+const RECEIVE: string[] = [
+  "A kickoff Loom on Day 1, so you know the plan before you spend a minute on it.",
+  "A staging URL on Day 3 with three live design directions — not flat mockups.",
+  "A daily one-paragraph progress update, so you never have to ask ‘where are we?’",
+  "Daily Looms through the build — the work narrated as it ships, not summarized after.",
+  "Two scheduled client reviews (Day 7 and Day 11) with mid-build Looms walking the work.",
+  "A full QA pass on a production-grade staging environment before anything goes live.",
+  "Stripe billing, transactional email, and any AI agents wired and tested against real flows.",
+  "A handoff Loom on Day 14 walking through everything you own and how to operate it.",
+  "The repo, the domain, and the data — yours from day one, no lock-in.",
+  "A live, public build that ships at your domain by the end of Day 14.",
+];
 
-      <div className="mt-14 space-y-16">
-        <TimelineWeek label="Week 1" sub="Design + foundation" beats={WEEK_ONE} />
-        <TimelineWeek label="Week 2" sub="Build + integrate + launch" beats={WEEK_TWO} />
-      </div>
-    </section>
-  );
-}
+/* The four light inputs we need from the customer. */
+const NEED: { title: string; body: string }[] = [
+  {
+    title: "The deposit",
+    body: "50% up front on Day 1. It clears the build into the queue and locks your dates. The balance is due at launch.",
+  },
+  {
+    title: "Your brand assets",
+    body: "Logo, colors, and any photography you already have. No logo yet? We’ll point you to designers who can turn one around inside the window.",
+  },
+  {
+    title: "Your content",
+    body: "Services, pricing, and the facts about your business — via the Day 1 questionnaire. The clearer this is, the faster we move.",
+  },
+  {
+    title: "30 minutes for each review",
+    body: "Two scheduled reviews, Day 7 and Day 11. Half an hour each to react to the build and steer it while there’s still room to change course.",
+  },
+];
+
+/* -------------------------------------------------------------------------- */
 
 function TimelineWeek({
   label,
@@ -184,34 +168,37 @@ function TimelineWeek({
   beats: Beat[];
 }) {
   return (
-    <div>
-      <div className="mb-8 flex items-baseline gap-3">
-        <h3 className="text-xl font-bold tracking-tightest text-ink">{label}</h3>
-        <span className="font-mono text-xs uppercase tracking-widest text-ink-400">
+    <div className="cin-detail-block">
+      <Reveal as="h3" className="cin-detail-h2" style={{ fontSize: "clamp(20px, 2.4vw, 28px)" }}>
+        {label}
+        <span
+          style={{
+            fontFamily: "var(--cin-font-mono)",
+            fontSize: "12px",
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: "var(--cin-faint)",
+            marginLeft: "14px",
+          }}
+        >
           {sub}
         </span>
-      </div>
-
-      <ol className="relative space-y-px border-l border-ink-100 pl-0">
-        {beats.map((beat) => (
-          <li key={beat.day} className="relative pl-10 pb-8 last:pb-0 sm:pl-14">
-            <span
-              aria-hidden
-              className="absolute left-0 top-1 grid h-7 w-7 -translate-x-1/2 place-items-center rounded-sm border border-ink-100 bg-paper font-mono text-[12px] font-bold text-ember-600 tnum sm:h-8 sm:w-8 sm:text-[13px]"
-            >
-              {beat.day}
+      </Reveal>
+      <ol className="cin-detail-steps" role="list">
+        {beats.map((beat, i) => (
+          <Reveal
+            as="li"
+            key={beat.day}
+            delayStep={Math.min(i, 3) as 0 | 1 | 2 | 3}
+          >
+            <span className="cin-detail-step-n">
+              Day {String(beat.day).padStart(2, "0")}
             </span>
-            <div className="font-mono text-[11px] uppercase tracking-widest text-ink-400">
-              Day {beat.day}
+            <div>
+              <h3>{beat.title}</h3>
+              <p>{beat.body}</p>
             </div>
-            <h4 className="mt-1.5 text-lg font-bold tracking-tightest text-ink">
-              {beat.title}
-            </h4>
-            <p
-              className="mt-2 text-sm text-ink-700"
-              dangerouslySetInnerHTML={{ __html: beat.body }}
-            />
-          </li>
+          </Reveal>
         ))}
       </ol>
     </div>
@@ -220,136 +207,125 @@ function TimelineWeek({
 
 /* -------------------------------------------------------------------------- */
 
-const RECEIVE: string[] = [
-  "A kickoff Loom on Day 1, so you know the plan before you spend a minute on it.",
-  "A staging URL on Day 3 with three live design directions — not flat mockups.",
-  "A daily one-paragraph progress update, so you never have to ask &lsquo;where are we?&rsquo;",
-  "Daily Looms through the build — the work narrated as it ships, not summarized after.",
-  "Two scheduled client reviews (Day 7 and Day 11) with mid-build Looms walking the work.",
-  "A full QA pass on a production-grade staging environment before anything goes live.",
-  "Stripe billing, transactional email, and any AI agents wired and tested against real flows.",
-  "A handoff Loom on Day 14 walking through everything you own and how to operate it.",
-  "The repo, the domain, and the data — yours from day one, no lock-in.",
-  "A live, public build that ships at your domain by the end of Day 14.",
-];
-
-function WhatYouReceive() {
+export default function ProcessPage() {
   return (
-    <section className="border-y border-ink-100 bg-paper-50/60 py-20">
-      <div className="container-page">
-        <div className="grid gap-12 md:grid-cols-[1fr_2fr]">
-          <div>
-            <div className="eyebrow mb-4">What you receive</div>
-            <h2 className="text-3xl font-extrabold tracking-tightest text-ink sm:text-4xl">
-              Ten things land in your inbox.
-            </h2>
-            <p className="mt-5 text-ink-500">
-              The deliverables are fixed, not a surprise. Every build ships the
-              same set, on the same cadence — that&rsquo;s what the fixed price buys.
-            </p>
-          </div>
+    <div className="cinematic" id="top">
+      <CanvasField />
+      <Nav linkBase="/" />
 
-          <ul className="space-y-3">
-            {RECEIVE.map((item) => (
-              <li
-                key={item}
-                className="flex gap-3 rounded-lg border border-ink-100 bg-paper p-4 text-sm text-ink-700"
-              >
-                <span
-                  aria-hidden
-                  className="mt-2 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-ember-500"
-                />
-                <span dangerouslySetInnerHTML={{ __html: item }} />
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-
-const NEED: { title: string; body: string }[] = [
-  {
-    title: "The deposit",
-    body: "50% up front on Day 1. It clears the build into the queue and locks your dates. The balance is due at launch.",
-  },
-  {
-    title: "Your brand assets",
-    body: "Logo, colors, and any photography you already have. No logo yet? We&rsquo;ll point you to designers who can turn one around inside the window.",
-  },
-  {
-    title: "Your content",
-    body: "Services, pricing, and the facts about your business — via the Day 1 questionnaire. The clearer this is, the faster we move.",
-  },
-  {
-    title: "30 minutes for each review",
-    body: "Two scheduled reviews, Day 7 and Day 11. Half an hour each to react to the build and steer it while there&rsquo;s still room to change course.",
-  },
-];
-
-function WhatWeNeed() {
-  return (
-    <section className="container-page py-20">
-      <div className="max-w-2xl">
-        <div className="eyebrow eyebrow-rule mb-5">What we need from you</div>
-        <h2 className="text-3xl font-extrabold tracking-tightest text-ink sm:text-4xl">
-          Four things, and they&rsquo;re light.
-        </h2>
-        <p className="mt-5 text-ink-500">
-          The fixed timeline only holds if your side is quick. None of this is
-          heavy — it&rsquo;s the minimum input that lets the build move at pace.
-        </p>
-      </div>
-
-      <div className="mt-12 grid gap-6 sm:grid-cols-2">
-        {NEED.map((n, i) => (
-          <div key={n.title} className="card-pop">
-            <div className="font-mono text-xs font-bold uppercase tracking-widest text-ember-600 tnum">
-              {String(i + 1).padStart(2, "0")}
-            </div>
-            <h3 className="mt-3 text-xl font-bold tracking-tightest text-ink">
-              {n.title}
-            </h3>
-            <p
-              className="mt-3 text-sm text-ink-700"
-              dangerouslySetInnerHTML={{ __html: n.body }}
-            />
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-
-function FinalCta() {
-  return (
-    <section className="container-page pb-24">
-      <div className="overflow-hidden rounded-xl bg-ink p-10 text-paper sm:p-14">
-        <div className="grid items-center gap-8 md:grid-cols-[1.4fr_1fr]">
-          <div>
-            <h2 className="text-3xl font-extrabold tracking-tightest sm:text-4xl">
-              Now you know exactly what you&rsquo;re buying.
-            </h2>
-            <p className="mt-4 max-w-xl text-paper-200">
-              Twenty minutes to scope your build. We come back with a fixed quote,
-              a fixed timeline, and the same fourteen beats you just read.
-            </p>
-          </div>
-          <div>
+      <main>
+        {/* Hero — editorial header in the 760px column. */}
+        <header className="cin-detail">
+          <Reveal as="div" className="cin-kicker">
+            How we ship
+          </Reveal>
+          <Reveal as="h1" delayStep={1} className="cin-page-h1">
+            14 days, beat by beat.
+          </Reveal>
+          <Reveal as="p" delayStep={2} className="cin-page-lede">
+            The work isn&rsquo;t a mystery. Here&rsquo;s exactly what happens
+            between deposit and launch — fourteen beats, one per day.
+          </Reveal>
+          <Reveal as="div" delayStep={3} className="cin-hcta cin-detail-cta">
             <a
               href={SITE.bookingUrl}
-              className="btn-ember w-full justify-center text-base"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cin-btn cin-btn-solid"
+              data-cta="book_process_hero"
             >
               Book a 15-min intro call
             </a>
-          </div>
+            <a href="#timeline" className="cin-btn" data-cta="timeline_process_hero">
+              See the 14 beats
+            </a>
+          </Reveal>
+        </header>
+
+        {/* The timeline + the two supporting sections, in the readable column. */}
+        <div className="cin-detail">
+          <section id="timeline" className="cin-detail-block" style={{ scrollMarginTop: "120px" }}>
+            <Reveal as="h2" className="cin-detail-h2">
+              Fourteen beats. One per day.
+            </Reveal>
+            <Reveal as="p" delayStep={1} className="cin-detail-body">
+              Every Day14 build runs the same rhythm. Week one is design and
+              foundation. Week two is build, integrate, and launch. Two scheduled
+              reviews keep you in the loop without slowing the ship.
+            </Reveal>
+          </section>
+
+          <TimelineWeek
+            label="Week 1"
+            sub="Design + foundation"
+            beats={WEEK_ONE}
+          />
+          <TimelineWeek
+            label="Week 2"
+            sub="Build + integrate + launch"
+            beats={WEEK_TWO}
+          />
+
+          {/* What you receive. */}
+          <section className="cin-detail-block">
+            <Reveal as="h2" className="cin-detail-h2">
+              Ten things land in your inbox.
+            </Reveal>
+            <Reveal as="p" delayStep={1} className="cin-detail-body">
+              The deliverables are fixed, not a surprise. Every build ships the
+              same set, on the same cadence — that&rsquo;s what the fixed price
+              buys.
+            </Reveal>
+            <ul className="cin-detail-features" role="list">
+              {RECEIVE.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </section>
+
+          {/* What we need from you. */}
+          <section className="cin-detail-block">
+            <Reveal as="h2" className="cin-detail-h2">
+              Four things from you, and they&rsquo;re light.
+            </Reveal>
+            <Reveal as="p" delayStep={1} className="cin-detail-body">
+              The fixed timeline only holds if your side is quick. None of this
+              is heavy — it&rsquo;s the minimum input that lets the build move at
+              pace.
+            </Reveal>
+            <ol className="cin-detail-steps" role="list">
+              {NEED.map((n, i) => (
+                <Reveal
+                  as="li"
+                  key={n.title}
+                  delayStep={Math.min(i, 3) as 0 | 1 | 2 | 3}
+                >
+                  <span className="cin-detail-step-n">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <h3>{n.title}</h3>
+                    <p>{n.body}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </ol>
+          </section>
+
+          {/* The payoff line. */}
+          <section className="cin-detail-block cin-detail-outcome">
+            <Reveal as="p">
+              Now you know exactly what you&rsquo;re buying — the same fourteen
+              beats, every build.
+            </Reveal>
+          </section>
         </div>
-      </div>
-    </section>
+
+        {/* Closing CTA — book (Cal.com) + email fallback. */}
+        <ClosingCTA />
+      </main>
+
+      <SiteFooter />
+    </div>
   );
 }

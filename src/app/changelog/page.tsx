@@ -2,17 +2,22 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import fs from "node:fs/promises";
 import path from "node:path";
+
 import { SITE } from "@/lib/site";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
+import { CinematicPage } from "@/components/cinematic/CinematicPage";
+import { Reveal } from "@/components/cinematic/Reveal";
 
 /**
- * /changelog — public ship log. Reads public/data/changelog.json + groups
- * by date. Compounds the transparency story: every visitor can see what
- * actually shipped, when, across every tenant. No agency does this.
+ * /changelog — public ship log, in the cinematic skin.
+ *
+ * Re-themed into the cinematic system (block 8/10 of the rebuild — legal + info).
+ * Light-touch: the shared <CinematicPage> shell + `.cin-prose` long-form. Reads
+ * public/data/changelog.json and groups by date — the data-loading logic is
+ * preserved verbatim; only the skin changes. Tenant dots keep their data-driven
+ * colors; kind labels render as mono eyebrows. No prices appear here.
  */
 
-const TITLE = "Day14 Changelog — what shipped, when, on which tenant";
+const TITLE = "Changelog";
 const DESCRIPTION =
   "Public ship log across every business running on Day14 OS. Updated when meaningful things ship. Transparency is the moat.";
 
@@ -49,17 +54,6 @@ type Changelog = {
   kinds: Record<string, { label: string; color: string }>;
 };
 
-const KIND_STYLES: Record<string, string> = {
-  ember: "text-ember-600 bg-ember-50 border-ember-200",
-  amber: "text-amber-600 bg-amber-50 border-amber-200",
-  blue: "text-blue-600 bg-blue-50 border-blue-200",
-  gray: "text-warm-gray-500 bg-warm-gray-50 border-warm-gray-200",
-  purple: "text-purple-600 bg-purple-50 border-purple-200",
-  rose: "text-rose-600 bg-rose-50 border-rose-200",
-  teal: "text-teal-600 bg-teal-50 border-teal-200",
-  green: "text-shipped-600 bg-shipped-50 border-shipped-200",
-};
-
 async function loadChangelog(): Promise<Changelog | null> {
   try {
     const p = path.join(process.cwd(), "public", "data", "changelog.json");
@@ -72,7 +66,12 @@ async function loadChangelog(): Promise<Changelog | null> {
 
 function formatDateGroup(iso: string): string {
   const d = new Date(iso);
-  return d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+  return d.toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
 }
 
 function relativeAge(iso: string): string {
@@ -89,7 +88,6 @@ function relativeAge(iso: string): string {
 export default async function ChangelogPage() {
   const log = await loadChangelog();
 
-  // Group entries by date
   const grouped: Record<string, Entry[]> = {};
   if (log) {
     for (const e of log.entries) {
@@ -100,103 +98,81 @@ export default async function ChangelogPage() {
   const totalEntries = log?.entries.length ?? 0;
 
   return (
-    <>
-      <SiteHeader />
-      <main className="container-page pt-14 pb-20 sm:pt-20">
-        <div className="eyebrow mb-6">Changelog</div>
-        <h1 className="max-w-3xl text-[40px] font-extrabold leading-[1.05] tracking-tightest text-ink sm:text-[60px]">
-          What shipped.
-          <br className="hidden sm:block" /> When. Which tenant.
-        </h1>
-        <p className="mt-7 max-w-2xl text-lg text-ink-500 sm:text-xl">
-          Every meaningful change across every business running on Day14 OS. Updated when meaningful things ship. Most agencies hide their work; this is the opposite.
+    <CinematicPage
+      hero={{
+        eyebrow: "Changelog",
+        title: "What shipped. When. Which tenant.",
+        lede: "Every meaningful change across every business running on Day14 OS. Updated when meaningful things ship. Most agencies hide their work; this is the opposite.",
+      }}
+    >
+      <Reveal as="div" className="cin-prose">
+        <p className="cin-prose-kicker">
+          {totalEntries} shipped
+          {log?.generated_at ? ` · last updated ${relativeAge(log.generated_at)}` : ""}{" "}
+          · honest about what&rsquo;s done, honest about what&rsquo;s not
         </p>
 
-        <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 font-mono text-[11px] uppercase tracking-[0.18em] text-warm-gray-500">
-          <span>{totalEntries} shipped</span>
-          {log?.generated_at ? (
-            <span>· Last updated {relativeAge(log.generated_at)}</span>
-          ) : null}
-          <span>· Honest about what's done, honest about what's not</span>
-        </div>
-
         {!log ? (
-          <div className="mt-16 rounded-2xl border border-warm-gray-100 bg-paper-cream p-7">
-            <p className="text-ink-500">Changelog data not available right now. Try again in a minute.</p>
-          </div>
+          <p>Changelog data not available right now. Try again in a minute.</p>
         ) : (
-          <div className="mt-16 space-y-14">
-            {dates.map((date) => (
-              <section key={date}>
-                <header className="mb-6 flex items-baseline gap-4 border-b border-warm-gray-100 pb-3">
-                  <h2 className="text-xl font-extrabold tracking-tightest text-ink">{formatDateGroup(date)}</h2>
-                  <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-warm-gray-400">
-                    {relativeAge(date)}
-                  </span>
-                </header>
-                <ul className="space-y-4">
-                  {grouped[date]!.map((e, i) => {
-                    const tenantMeta = log.tenants[e.tenant];
-                    const kindMeta = log.kinds[e.kind];
-                    const kindClass = kindMeta ? KIND_STYLES[kindMeta.color] ?? KIND_STYLES.gray : KIND_STYLES.gray;
-                    return (
-                      <li
-                        key={`${date}-${i}`}
-                        className="flex flex-col gap-3 rounded-xl border border-warm-gray-100 bg-white p-5 sm:flex-row sm:items-start sm:gap-5"
+          dates.map((date) => (
+            <section key={date}>
+              <h2>
+                {formatDateGroup(date)}{" "}
+                <span style={{ fontSize: "0.5em", opacity: 0.6 }}>
+                  {relativeAge(date)}
+                </span>
+              </h2>
+              <ul>
+                {grouped[date]!.map((e, i) => {
+                  const tenantMeta = log.tenants[e.tenant];
+                  const kindMeta = log.kinds[e.kind];
+                  return (
+                    <li key={`${date}-${i}`}>
+                      <strong
+                        style={{
+                          color: tenantMeta?.color ?? undefined,
+                        }}
                       >
-                        <div className="flex shrink-0 items-center gap-2">
-                          <span
-                            aria-hidden
-                            className="inline-block h-2 w-2 rounded-full"
-                            style={{ backgroundColor: tenantMeta?.color ?? "#94a3b8" }}
-                          />
-                          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-ink">
-                            {tenantMeta?.label ?? e.tenant}
-                          </span>
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-[15px] leading-[1.55] text-ink">{e.summary}</p>
-                          {e.evidence ? (
-                            <p className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-warm-gray-400">
-                              evidence: {e.evidence}
-                            </p>
-                          ) : null}
-                        </div>
-                        <span
-                          className={
-                            "self-start rounded-full border px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] " +
-                            kindClass
-                          }
-                        >
-                          {kindMeta?.label ?? e.kind}
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </section>
-            ))}
-          </div>
+                        {tenantMeta?.label ?? e.tenant}
+                      </strong>{" "}
+                      <span style={{ opacity: 0.55, fontSize: "0.82em" }}>
+                        [{kindMeta?.label ?? e.kind}]
+                      </span>{" "}
+                      — {e.summary}
+                      {e.evidence ? (
+                        <>
+                          {" "}
+                          <code>{e.evidence}</code>
+                        </>
+                      ) : null}
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          ))
         )}
 
-        <div className="mt-20 rounded-2xl border border-warm-gray-100 bg-paper-cream p-7">
-          <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-warm-gray-500">
-            Why this exists
-          </div>
-          <p className="mt-3 max-w-3xl text-[14px] leading-[1.6] text-ink-500">
-            Every web agency hides what they're working on. Day14 publishes it. If you're considering hiring me, you should be able to see the work I'm doing for the businesses I already operate &mdash; not just polished after-the-fact case studies. The changelog is the work itself.
-          </p>
-          <div className="mt-5 flex flex-wrap gap-3">
-            <Link href="/#book" className="btn-ember">
-              Book a 15-min intro call
-            </Link>
-            <Link href="/capabilities" className="btn-ghost">
-              See full scope
-            </Link>
-          </div>
+        <hr />
+
+        <p className="cin-prose-kicker">Why this exists</p>
+        <p>
+          Every web agency hides what they&rsquo;re working on. Day14 publishes
+          it. If you&rsquo;re considering hiring me, you should be able to see
+          the work I&rsquo;m doing for the businesses I already operate — not
+          just polished after-the-fact case studies. The changelog is the work
+          itself.
+        </p>
+        <div style={{ display: "flex", gap: 14, flexWrap: "wrap", marginTop: 28 }}>
+          <a className="cin-btn cin-btn-solid" href={SITE.bookingUrl} target="_blank" rel="noopener noreferrer">
+            Book a 15-min intro call
+          </a>
+          <Link className="cin-btn" href="/capabilities">
+            See full scope
+          </Link>
         </div>
-      </main>
-      <SiteFooter />
-    </>
+      </Reveal>
+    </CinematicPage>
   );
 }

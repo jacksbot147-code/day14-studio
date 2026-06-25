@@ -1,13 +1,42 @@
 import Link from "next/link";
-import { NewsletterSignup } from "@/components/NewsletterSignup";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
-import { loadEmpireSnapshot, describeAction, relativeAge } from "@/lib/empire-snapshot";
+
+import { SITE } from "@/lib/site";
+import {
+  loadEmpireSnapshot,
+  describeAction,
+  relativeAge,
+} from "@/lib/empire-snapshot";
+import { CanvasField } from "@/components/cinematic/CanvasField";
+import { Nav } from "@/components/cinematic/Nav";
+import { SiteFooter } from "@/components/cinematic/SiteFooter";
+import { Reveal } from "@/components/cinematic/Reveal";
+import { ClosingCTA } from "@/components/cinematic/ClosingCTA";
+
+/**
+ * /stack — "the stack we sell is the one we run," in the cinematic skin.
+ *
+ * Re-themed into the cinematic system (started in block 4/10 after /about +
+ * /process finished early). Composed directly from the shared shell
+ * (CanvasField + Nav + SiteFooter + ClosingCTA), matching the /about pattern.
+ * The live empire snapshot (loadEmpireSnapshot) is preserved and rendered with
+ * the existing `.cin-stats` figures + a mono activity feed; the agents/engines/
+ * proof render as `.cin-detail-cases`. Content is preserved from the prior
+ * surface; only the skin changes.
+ *
+ * No prices appear on this page, so `check:prices` is trivially clean. The page
+ * stays `force-dynamic` because the live panel reads a fresh snapshot per request.
+ *
+ * NOTE (deferred polish for the dedicated /stack block): the live feed uses a
+ * few inline styles rather than new CSS classes (infra freeze). The newsletter
+ * capture from the legacy page is dropped in favor of the standard ClosingCTA;
+ * re-add a cinematic newsletter block when one exists.
+ */
 
 export const metadata = {
   title: "The Day14 Stack — how a one-operator studio ships in 14 days",
   description:
-    "Inside the Day14 OS: 20+ AI agents running customer operations, content production, financial reporting, and self-improvement. Same stack we sell to customers.",
+    "Inside the Day14 OS: 20+ AI agents running customer operations, content production, financial reporting, and self-improvement. The same stack we sell to customers.",
+  alternates: { canonical: "/stack" },
   openGraph: {
     title: "The Day14 Stack",
     description: "How a one-operator studio ships in 14 days.",
@@ -16,7 +45,7 @@ export const metadata = {
 
 export const dynamic = "force-dynamic";
 
-const AGENTS = [
+const AGENTS: { name: string; role: string }[] = [
   { name: "CFO", role: "Daily P&L, cash flow, pricing recommendations." },
   { name: "Head of Product", role: "Sales-driven roadmap, kill list, cross-pollination." },
   { name: "Customer Success", role: "Post-purchase drafts, NPS, win-back." },
@@ -29,7 +58,7 @@ const AGENTS = [
   { name: "Investor Relations", role: "Monthly investor-style update with wins and asks." },
 ];
 
-const ENGINES = [
+const ENGINES: { name: string; desc: string }[] = [
   {
     name: "Opportunity scanner",
     desc: "Continuous Gemini-grounded scan for underserved niches, scored 0–100.",
@@ -56,7 +85,7 @@ const ENGINES = [
   },
 ];
 
-const PROOF = [
+const PROOF: { href: string; title: string; desc: string }[] = [
   {
     href: "/case-studies/hot-flash-co",
     title: "Hot Flash Co",
@@ -79,74 +108,100 @@ export default async function StackPage() {
   const hasLiveData = snap.runs_24h > 0 || snap.agent_count_total > 0;
 
   return (
-    <>
-      <SiteHeader />
-      <main className="container-page py-20 sm:py-28">
-        <section className="mb-24 max-w-3xl">
-          <span className="eyebrow eyebrow-rule mb-4">The Stack</span>
-          <h1 className="mb-5">
-            The stack we ship to clients is the one{" "}
-            <span className="marker">we run ourselves</span>.
-          </h1>
-          <p className="text-lg leading-relaxed text-ink-500 sm:text-xl">
-            Day14 is a one-operator studio. We ship real products in 14 days because{" "}
-            <strong className="font-semibold text-ink">20+ AI agents</strong> handle
-            everything that is not judgment: marketing, sales, customer success, financial
-            reporting, compliance, devops. We sell you the same stack.
-          </p>
-        </section>
+    <div className="cinematic" id="top">
+      <CanvasField />
+      <Nav linkBase="/" />
 
+      <main>
+        {/* Hero. */}
+        <header className="cin-detail">
+          <Reveal as="div" className="cin-kicker">
+            The Stack
+          </Reveal>
+          <Reveal as="h1" delayStep={1} className="cin-page-h1">
+            The stack we ship to clients is the one we run ourselves.
+          </Reveal>
+          <Reveal as="p" delayStep={2} className="cin-page-lede">
+            Day14 is a one-operator studio. We ship real products in 14 days
+            because 20+ AI agents handle everything that isn&rsquo;t judgment —
+            marketing, sales, customer success, financial reporting, compliance,
+            devops. We sell you the same stack.
+          </Reveal>
+        </header>
+
+        {/* Live system activity — preserved from the empire snapshot. */}
         {hasLiveData ? (
-          <section
-            className="mb-24 border border-ink-100 bg-ink text-paper"
-            aria-label="Live system activity"
-          >
-            <div className="grid grid-cols-1 gap-px bg-ink-700 sm:grid-cols-3">
-              <div className="bg-ink p-6">
-                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-paper-300/80">
-                  <span className="relative mr-2 inline-block h-1.5 w-1.5 align-middle">
-                    <span className="absolute inset-0 rounded-full bg-shipped-400" />
-                    <span className="absolute -inset-1 animate-ping rounded-full bg-shipped-400/40" />
-                  </span>
-                  Live · last 24 hours
-                </div>
-                <div className="mt-3 text-4xl font-extrabold tracking-tightest text-paper tnum">
-                  {snap.runs_24h.toLocaleString()}
-                </div>
-                <div className="mt-1 text-sm text-paper-200">agent runs across the empire</div>
+          <section className="cin-detail" aria-label="Live system activity">
+            <Reveal as="div" className="cin-status">
+              <span
+                aria-hidden
+                style={{
+                  display: "inline-block",
+                  width: "8px",
+                  height: "8px",
+                  borderRadius: "50%",
+                  background: "var(--cin-accent)",
+                }}
+              />
+              Live · last 24 hours
+            </Reveal>
+            <div
+              className="cin-stats"
+              style={{ gridTemplateColumns: "repeat(3, 1fr)", margin: "0 auto" }}
+            >
+              <div className="cin-stat">
+                <div className="cin-stat-v">{snap.runs_24h.toLocaleString()}</div>
+                <div className="cin-stat-l">agent runs across the empire</div>
               </div>
-              <div className="bg-ink p-6">
-                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-paper-300/80">
-                  Workforce
-                </div>
-                <div className="mt-3 text-4xl font-extrabold tracking-tightest text-paper tnum">
+              <div className="cin-stat">
+                <div className="cin-stat-v">
                   {snap.agent_count_healthy}
-                  <span className="text-paper-300/70">/{snap.agent_count_total}</span>
+                  <span style={{ color: "var(--cin-faint)" }}>
+                    /{snap.agent_count_total}
+                  </span>
                 </div>
-                <div className="mt-1 text-sm text-paper-200">agents reporting healthy</div>
+                <div className="cin-stat-l">agents reporting healthy</div>
               </div>
-              <div className="bg-ink p-6">
-                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-paper-300/80">
-                  Tenants
-                </div>
-                <div className="mt-3 text-4xl font-extrabold tracking-tightest text-paper tnum">
-                  {snap.tenant_count}
-                </div>
-                <div className="mt-1 text-sm text-paper-200">businesses on the stack</div>
+              <div className="cin-stat">
+                <div className="cin-stat-v">{snap.tenant_count}</div>
+                <div className="cin-stat-l">businesses on the stack</div>
               </div>
             </div>
+
             {snap.recent.length > 0 ? (
-              <ul className="divide-y divide-ink-700 border-t border-ink-700">
+              <ul
+                role="list"
+                style={{
+                  listStyle: "none",
+                  margin: "5vh 0 0",
+                  padding: "0",
+                  borderTop: "1px solid var(--cin-line)",
+                }}
+              >
                 {snap.recent.slice(0, 6).map((e, i) => (
                   <li
                     key={`${e.ts}-${i}`}
-                    className="grid grid-cols-[90px_140px_1fr] items-baseline gap-4 px-6 py-3 font-mono text-xs"
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "90px 140px 1fr",
+                      gap: "16px",
+                      alignItems: "baseline",
+                      padding: "12px 0",
+                      borderBottom: "1px solid var(--cin-line)",
+                      fontFamily: "var(--cin-font-mono)",
+                      fontSize: "12px",
+                    }}
                   >
-                    <span className="text-paper-300/70">{relativeAge(e.ts)}</span>
-                    <span className="text-ember-300">{e.actor}</span>
-                    <span className="text-paper-200/85">
+                    <span style={{ color: "var(--cin-faint)" }}>
+                      {relativeAge(e.ts)}
+                    </span>
+                    <span style={{ color: "var(--cin-accent)" }}>{e.actor}</span>
+                    <span style={{ color: "var(--cin-mut)" }}>
                       {describeAction(e)}
-                      <span className="text-paper-300/60"> · {e.tenant}</span>
+                      <span style={{ color: "var(--cin-faint)" }}>
+                        {" "}
+                        · {e.tenant}
+                      </span>
                     </span>
                   </li>
                 ))}
@@ -155,105 +210,126 @@ export default async function StackPage() {
           </section>
         ) : null}
 
-        <section className="mb-24">
-          <div className="mb-10 max-w-2xl">
-            <span className="eyebrow mb-3">The C-suite, hired</span>
-            <h2 className="mb-3">Ten roles a real company would hire for.</h2>
-            <p className="text-base leading-relaxed text-ink-500">
+        {/* The C-suite, hired. */}
+        <div className="cin-detail">
+          <section className="cin-detail-block">
+            <Reveal as="div" className="cin-kicker">
+              The C-suite, hired
+            </Reveal>
+            <Reveal as="h2" delayStep={1} className="cin-detail-h2">
+              Ten roles a real company would hire for.
+            </Reveal>
+            <Reveal as="p" delayStep={2} className="cin-detail-body">
               Each one runs on schedule, writes reports, and pings Telegram when
               something needs your attention.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 gap-px overflow-hidden border border-ink-100 bg-ink-100 sm:grid-cols-2 lg:grid-cols-5">
-            {AGENTS.map((a) => (
-              <div
-                key={a.name}
-                className="group relative bg-paper-50 p-5 transition-colors duration-150 hover:bg-paper-100"
-              >
-                <span className="absolute left-0 top-0 h-px w-0 bg-ember-500 transition-[width] duration-200 ease-out group-hover:w-full" />
-                <h3 className="mb-1.5 text-base font-bold leading-snug tracking-tighter">
-                  {a.name}
-                </h3>
-                <p className="text-sm leading-relaxed text-ink-500">{a.role}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+            </Reveal>
+            <div className="cin-detail-cases">
+              {AGENTS.map((a, i) => (
+                <Reveal
+                  key={a.name}
+                  className="cin-detail-case"
+                  delayStep={Math.min(i, 3) as 0 | 1 | 2 | 3}
+                >
+                  <div className="cin-detail-case-v">{a.name}</div>
+                  <p>{a.role}</p>
+                </Reveal>
+              ))}
+            </div>
+          </section>
 
-        <section className="mb-24">
-          <div className="mb-10 max-w-2xl">
-            <span className="eyebrow mb-3">Autonomous loops</span>
-            <h2 className="mb-3">Six engines that run between approvals.</h2>
-            <p className="text-base leading-relaxed text-ink-500">
-              The system finds opportunities, drafts pitches, builds businesses, ships
-              content, and improves itself.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {ENGINES.map((e) => (
-              <div key={e.name} className="card-pop">
-                <h3 className="mb-2 text-lg font-bold leading-snug tracking-tighter">
-                  {e.name}
-                </h3>
-                <p className="text-sm leading-relaxed text-ink-500">{e.desc}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+          {/* Autonomous loops. */}
+          <section className="cin-detail-block">
+            <Reveal as="div" className="cin-kicker">
+              Autonomous loops
+            </Reveal>
+            <Reveal as="h2" delayStep={1} className="cin-detail-h2">
+              Six engines that run between approvals.
+            </Reveal>
+            <Reveal as="p" delayStep={2} className="cin-detail-body">
+              The system finds opportunities, drafts pitches, builds businesses,
+              ships content, and improves itself.
+            </Reveal>
+            <div className="cin-detail-cases">
+              {ENGINES.map((e, i) => (
+                <Reveal
+                  key={e.name}
+                  className="cin-detail-case"
+                  delayStep={Math.min(i, 3) as 0 | 1 | 2 | 3}
+                >
+                  <div className="cin-detail-case-v">{e.name}</div>
+                  <p>{e.desc}</p>
+                </Reveal>
+              ))}
+            </div>
+          </section>
 
-        <section className="mb-24 border border-ink-100 bg-paper-50 p-8 sm:p-12">
-          <div className="mb-8 max-w-2xl">
-            <span className="eyebrow mb-3">Live proof</span>
-            <h2 className="mb-3">The stack runs our own businesses too.</h2>
-            <p className="text-base leading-relaxed text-ink-500">
-              Hot Flash Co is a perimenopause-humor POD store we built as a stress-test.
-              Full autopilot, idea to first product in under a day.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 gap-px overflow-hidden border border-ink-100 bg-ink-100 sm:grid-cols-3">
-            {PROOF.map((p) => (
-              <Link
-                key={p.href}
-                href={p.href}
-                className="group block bg-paper p-5 transition-colors duration-150 hover:bg-paper-100"
-              >
-                <div className="mb-1 flex items-center gap-2 text-sm font-semibold text-ink">
-                  {p.title}
-                  <span className="text-ember-500 transition-transform duration-150 group-hover:translate-x-0.5">
-                    →
-                  </span>
-                </div>
-                <div className="text-xs leading-relaxed text-ink-500">{p.desc}</div>
-              </Link>
-            ))}
-          </div>
-        </section>
+          {/* Live proof. */}
+          <section className="cin-detail-block">
+            <Reveal as="div" className="cin-kicker">
+              Live proof
+            </Reveal>
+            <Reveal as="h2" delayStep={1} className="cin-detail-h2">
+              The stack runs our own businesses too.
+            </Reveal>
+            <Reveal as="p" delayStep={2} className="cin-detail-body">
+              Hot Flash Co is a perimenopause-humor POD store we built as a
+              stress-test — full autopilot, idea to first product in under a day.
+            </Reveal>
+            <div className="cin-detail-cases">
+              {PROOF.map((p, i) => (
+                <Reveal
+                  key={p.href}
+                  className="cin-detail-case"
+                  delayStep={Math.min(i, 3) as 0 | 1 | 2 | 3}
+                >
+                  <Link
+                    href={p.href}
+                    style={{
+                      display: "block",
+                      textDecoration: "none",
+                      color: "inherit",
+                    }}
+                  >
+                    <div className="cin-detail-case-v">{p.title} →</div>
+                    <p>{p.desc}</p>
+                  </Link>
+                </Reveal>
+              ))}
+            </div>
+          </section>
 
-        <section className="border-t border-ink-100 pt-16">
-          <div className="mx-auto max-w-2xl text-center">
-            <span className="eyebrow mb-3">Run it in your business</span>
-            <h2 className="mb-4">The Platform SKU includes the agent stack.</h2>
-            <p className="mb-8 text-base leading-relaxed text-ink-500">
-              Tuned to your operations, deployed on your domain, owned by you.
-            </p>
-            <div className="mb-12 flex flex-wrap justify-center gap-3">
-              <Link href="/#pricing" className="btn-primary">
+          {/* Run it in your business. */}
+          <section className="cin-detail-block cin-detail-outcome">
+            <Reveal as="p">
+              The Platform SKU includes the agent stack — tuned to your
+              operations, deployed on your domain, owned by you.
+            </Reveal>
+            <Reveal
+              as="div"
+              delayStep={1}
+              className="cin-hcta cin-detail-cta"
+            >
+              <Link href="/#pricing" className="cin-btn" data-cta="pricing_stack">
                 See pricing
               </Link>
-              <a href="https://cal.com/day14/intro" className="btn-ghost">
-                Book intro call
+              <a
+                href={SITE.bookingUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="cin-btn cin-btn-solid"
+                data-cta="book_stack"
+              >
+                Book a 15-min intro call
               </a>
-            </div>
-            <div className="mx-auto max-w-md border-t border-ink-100 pt-8">
-              <p className="mb-3 text-xs uppercase tracking-[0.18em] text-ink-400">
-                Or get the weekly build log
-              </p>
-              <NewsletterSignup source="stack-page" buttonText="Subscribe →" />
-            </div>
-          </div>
-        </section>
+            </Reveal>
+          </section>
+        </div>
+
+        {/* Closing CTA. */}
+        <ClosingCTA />
       </main>
+
       <SiteFooter />
-    </>
+    </div>
   );
 }

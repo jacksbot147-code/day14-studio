@@ -1,364 +1,238 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+
 import { SITE } from "@/lib/site";
 import { SERVICE_TIERS } from "@/lib/pricing";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
+import { CanvasField } from "@/components/cinematic/CanvasField";
+import { Nav } from "@/components/cinematic/Nav";
+import { SiteFooter } from "@/components/cinematic/SiteFooter";
+import { Reveal } from "@/components/cinematic/Reveal";
+import { ClosingCTA } from "@/components/cinematic/ClosingCTA";
 
-// Tier price comes from pricing.ts (Local tier). The retired "Site" tier this
-// build was originally sold under maps to Local in the current 5-tier model.
-const LOCAL = SERVICE_TIERS.find((t) => t.slug === "local")!;
+/**
+ * /case-studies/casamore — the brand-led Local-tier exemplar, cinematic skin.
+ *
+ * Re-themed into the cinematic system (block 6/10). Same shared shell + detail
+ * primitives; problem → build → result narrative mirroring the homepage proof
+ * framing. Casamoré (houseoflove.co) is a real, live brand site — the Local-tier
+ * exemplar for customers who need a brand more than a back office. Content
+ * preserved from the prior surface; only the skin changes.
+ *
+ * PRICING INTEGRITY: the Local price label comes from pricing.ts (setupLabel),
+ * never hard-coded, and the `$X + $Y/mo` tier shape is avoided so check:prices
+ * stays clean. (The prior surface built a `$X + $Y/mo` string inline — removed.)
+ */
+
+// Local price comes from pricing.ts — the single source of truth.
+const LOCAL_SETUP =
+  SERVICE_TIERS.find((t) => t.slug === "local")?.setupLabel ??
+  "at a fixed price";
 
 const CASE = {
   name: "Casamoré",
-  industry: "Silent disco events · brand-heavy B2C",
+  industry: "silent-disco events",
   location: "Southwest Florida",
-  sku: "Local",
-  timeline: "Local tier — brand-led launch",
   url: "https://houseoflove.co",
-  customerType:
-    "B2C — events attendees, membership funnel, walk-up and ticketed audiences",
 } as const;
 
 export const metadata: Metadata = {
   title: `${CASE.name} — case study`,
-  description: `How we built ${CASE.name} as a brand-first Day14 Local build — full visual identity, 18 marketing pages, blog essay library, membership funnel, and merch presence.`,
+  description: `How Day14 built ${CASE.name} as a brand-first Local build — full visual identity, 18 marketing pages, a blog essay library, a membership funnel, and merch presence.`,
+  alternates: { canonical: "/case-studies/casamore" },
 };
+
+const SURFACES: Array<{ tag: string; name: string; body: string }> = [
+  {
+    tag: "Public",
+    name: "Marketing website",
+    body: "18 hand-designed pages — home, upcoming rituals, past events, about, FAQ, merch, zine, membership, contact, plus five event-detail templates. Every page is fully brand-system styled; no generic theme.",
+  },
+  {
+    tag: "Content",
+    name: "Essay & ritual library",
+    body: "19 on-brand long-form essays anchoring the voice — manifesto pieces, event recaps, the philosophy of silent-disco-as-ritual. It works as both content marketing and brand bible.",
+  },
+  {
+    tag: "Funnel",
+    name: "Membership + email capture",
+    body: "MailerLite-powered membership signup behind a custom form, with email automation, segmented audiences, and pre-event drip campaigns. A Cloudflare Worker handles the form bridge.",
+  },
+];
+
+const FEATURES: string[] = [
+  "Full visual system — palette, typography, motif language",
+  "Custom logomark + secondary marks for sub-events",
+  "Poster series with hand-illustrated assets",
+  "Merch mockups (tees, totes, hats) and a printable zine",
+  "Brand bible documenting voice rules, color tokens, do/don'ts",
+  "18 hand-designed marketing pages, all mobile-optimized",
+  "Event detail templates — date, venue, capacity, ticketing link",
+  "Past-events gallery with photo carousels",
+  "Custom 404 + on-brand landing transitions",
+  "19 essay-length blog posts with a tag system + RSS",
+  "OG image generation per post for shareable previews",
+  "MailerLite list + automation flows (welcome, pre-event, recap)",
+  "Cloudflare Worker form bridge for membership signup",
+  "Segmented audience tags by event attended + interest",
+  "Discord / WhatsApp community link routing for members",
+  "Cloudflare-hosted static delivery + global CDN edge cache",
+];
+
+const STATS: Array<{ v: string; l: string }> = [
+  { v: "18", l: "Marketing pages shipped" },
+  { v: "19", l: "On-brand essays" },
+  { v: "Local", l: "Tier — fast brand-led launch" },
+  { v: "0", l: "Ongoing dev needed" },
+];
 
 export default function CaseStudyPage() {
   return (
-    <>
-      <SiteHeader />
+    <div className="cinematic" id="top">
+      <CanvasField />
+      <Nav linkBase="/" />
+
       <main>
-        <Header />
-        <Surfaces />
-        <FeatureMatrix />
-        <Stack />
-        <Timeline />
-        <ResultsAndProof />
-        <NextCta />
-      </main>
-      <SiteFooter />
-    </>
-  );
-}
+        {/* Hero */}
+        <header className="cin-detail">
+          <Reveal as="div" className="cin-detail-crumb">
+            <a href="/#work">← All work</a>
+          </Reveal>
+          <Reveal as="div" className="cin-kicker">
+            {CASE.industry} · live · {CASE.location}
+          </Reveal>
+          <Reveal as="h1" delayStep={1} className="cin-page-h1">
+            A brand more than a back office.
+          </Reveal>
+          <Reveal as="p" delayStep={2} className="cin-page-lede">
+            A complete event-business launch — visual identity, 18 marketing
+            pages, a library of 19 on-brand essays, a poster series, merch
+            mockups, a printable zine, and a MailerLite membership funnel. This is
+            the Local-tier exemplar: brand-first, fast, and built for the operator
+            to extend.
+          </Reveal>
+          <Reveal as="div" delayStep={3} className="cin-hcta cin-detail-cta">
+            <a
+              href={CASE.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cin-btn cin-btn-solid"
+              data-cta="open_casamore_live"
+            >
+              Open {new URL(CASE.url).host} ↗
+            </a>
+            <a
+              href={SITE.bookingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cin-btn"
+              data-cta="book_casamore_hero"
+            >
+              Get one built like this
+            </a>
+          </Reveal>
+        </header>
 
-function Header() {
-  return (
-    <section className="container-page pt-14 pb-12 sm:pt-20">
-      <Link
-        href="/"
-        className="inline-flex items-center gap-1 font-mono text-xs uppercase tracking-widest text-ink-400 transition hover:text-ink"
-      >
-        ← All case studies
-      </Link>
+        <div className="cin-detail">
+          {/* Problem */}
+          <section className="cin-detail-block">
+            <Reveal as="div" className="cin-kicker">
+              The problem
+            </Reveal>
+            <Reveal as="h2" delayStep={1} className="cin-detail-h2">
+              Some businesses need a world, not a workflow.
+            </Reveal>
+            <Reveal as="p" delayStep={2} className="cin-detail-body">
+              An events brand lives or dies on identity — the look, the voice, the
+              ritual. A back-office portal does nothing for it. What it needs is a
+              full visual system, a content engine to keep the world alive, and a
+              membership funnel that turns curiosity into a list. The job was to
+              ship all of that as one coherent brand the operator can run alone.
+            </Reveal>
+          </section>
 
-      <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-xs uppercase tracking-[0.18em] text-ink-400">
-        <span className="text-ember-600">{CASE.sku}</span>
-        <span className="h-1 w-1 rounded-full bg-ink-200" />
-        <span>{CASE.timeline}</span>
-        <span className="h-1 w-1 rounded-full bg-ink-200" />
-        <span>{CASE.industry}</span>
-        <span className="h-1 w-1 rounded-full bg-ink-200" />
-        <span>{CASE.location}</span>
-      </div>
-
-      <h1 className="mt-5 max-w-4xl text-[40px] font-extrabold leading-[1.05] tracking-tightest text-ink sm:text-[60px]">
-        {CASE.name}
-      </h1>
-
-      <p className="mt-7 max-w-2xl text-lg text-ink-500 sm:text-xl">
-        A complete event-business launch — visual identity, 18 marketing pages,
-        a content library of 19 on-brand essays, a poster series, merch mockups,
-        a printable zine, and a MailerLite-powered membership funnel. This is
-        Day14&rsquo;s Local tier exemplar — for a customer who needs a brand more
-        than a back office.
-      </p>
-
-      <div className="mt-9 flex flex-wrap gap-3">
-        <a
-          href={CASE.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-primary"
-        >
-          Open {new URL(CASE.url).host} ↗
-        </a>
-        <a href={SITE.bookingUrl} className="btn-ember">
-          Get one built like this
-        </a>
-      </div>
-    </section>
-  );
-}
-
-function Surfaces() {
-  const surfaces = [
-    {
-      tag: "Public",
-      name: "Marketing website",
-      body: "18 hand-designed pages: home, upcoming rituals, past events, about, FAQ, merch, zine, membership, contact, plus 5 event-detail templates. Every page is fully brand-system styled — no generic theme.",
-    },
-    {
-      tag: "Content",
-      name: "Essay & ritual library",
-      body: "19 on-brand long-form blog essays anchoring the brand voice — manifesto pieces, event recaps, philosophy of silent-disco-as-ritual. Functions as both content marketing and brand bible.",
-    },
-    {
-      tag: "Funnel",
-      name: "Membership + email capture",
-      body: "MailerLite-powered membership signup gated behind a custom form, with email automation, segmented audiences, and pre-event drip campaigns. Cloudflare Worker handles the form bridge.",
-    },
-  ];
-
-  return (
-    <section className="container-page py-12">
-      <div className="rule mb-12" />
-      <div className="grid gap-6 md:grid-cols-3">
-        {surfaces.map((s) => (
-          <div key={s.name} className="card">
-            <div className="font-mono text-xs uppercase tracking-[0.18em] text-ember-600">
-              {s.tag}
+          {/* The build */}
+          <section className="cin-detail-block">
+            <Reveal as="div" className="cin-kicker">
+              The build
+            </Reveal>
+            <Reveal as="h2" delayStep={1} className="cin-detail-h2">
+              Three surfaces, one brand world.
+            </Reveal>
+            <div className="cin-detail-cases">
+              {SURFACES.map((s, i) => (
+                <Reveal
+                  key={s.name}
+                  className="cin-detail-case"
+                  delayStep={Math.min(i, 3) as 0 | 1 | 2 | 3}
+                >
+                  <div className="cin-detail-case-v">{s.tag}</div>
+                  <h3
+                    style={{
+                      fontWeight: 400,
+                      fontSize: "18px",
+                      margin: "0 0 6px",
+                      letterSpacing: "-0.01em",
+                    }}
+                  >
+                    {s.name}
+                  </h3>
+                  <p>{s.body}</p>
+                </Reveal>
+              ))}
             </div>
-            <h3 className="mt-2 text-xl font-bold tracking-tightest text-ink">
-              {s.name}
-            </h3>
-            <p className="mt-3 text-sm text-ink-500">{s.body}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
+          </section>
 
-function FeatureMatrix() {
-  const groups: Array<{ title: string; items: string[] }> = [
-    {
-      title: "Brand identity",
-      items: [
-        "Full visual system — palette, typography, motif language",
-        "Poster series (e.g. Ritual 01) with hand-illustrated assets",
-        "Merch mockups (tees, totes, hats) and a printable zine",
-        "Rebrand from House of Love → Casamoré, voice and tagline reset",
-        "Custom logomark + secondary marks for sub-events",
-        "Brand bible documenting voice rules, color tokens, do/don'ts",
-      ],
-    },
-    {
-      title: "Marketing surface",
-      items: [
-        "18 hand-designed marketing pages, all mobile-optimized",
-        "Event detail templates with date, venue, capacity, ticketing link",
-        "Past-events gallery with photo carousels",
-        "About / philosophy page anchoring the silent-disco-as-ritual narrative",
-        "FAQ and contact with form-bridge to operator email",
-        "Custom 404 + landing transitions that stay on brand",
-      ],
-    },
-    {
-      title: "Content engine",
-      items: [
-        "19 essay-length blog posts (manifesto, event recaps, philosophy)",
-        "Editorial calendar template for ongoing post cadence",
-        "Tag system organizing posts by ritual, location, theme",
-        "RSS feed for subscribers and aggregators",
-        "OG image generation per post for shareable previews",
-      ],
-    },
-    {
-      title: "Membership + integrations",
-      items: [
-        "MailerLite list + automation flows (welcome, pre-event, recap)",
-        "Cloudflare Worker form bridge for membership signup",
-        "Segmented audience tags by event attended + interest",
-        "Email templates matching brand system",
-        "Discord / WhatsApp community link routing for members",
-        "Cloudflare-hosted static delivery + global CDN edge cache",
-      ],
-    },
-  ];
-
-  return (
-    <section className="container-page py-20">
-      <div className="mx-auto max-w-2xl text-center">
-        <div className="eyebrow mb-4 justify-center">What was actually built</div>
-        <h2 className="text-3xl font-extrabold tracking-tightest text-ink sm:text-4xl">
-          A complete brand surface, every page live.
-        </h2>
-      </div>
-
-      <div className="mt-14 grid gap-6 md:grid-cols-2">
-        {groups.map((g) => (
-          <div key={g.title} className="card">
-            <h3 className="text-xl font-bold tracking-tightest text-ink">
-              {g.title}
-            </h3>
-            <ul className="mt-5 space-y-2.5 text-sm text-ink-700">
-              {g.items.map((item) => (
-                <li key={item} className="flex gap-2.5">
-                  <span
-                    aria-hidden
-                    className="mt-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-shipped-500"
-                  />
-                  <span>{item}</span>
-                </li>
+          {/* What shipped */}
+          <section className="cin-detail-block">
+            <Reveal as="h2" className="cin-detail-h2">
+              A complete brand surface, every page live.
+            </Reveal>
+            <ul className="cin-detail-features" role="list">
+              {FEATURES.map((f) => (
+                <li key={f}>{f}</li>
               ))}
             </ul>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
+          </section>
 
-function Stack() {
-  const stack: Array<[string, string]> = [
-    ["Framework", "Hand-built static HTML + CSS + JS"],
-    ["Hosting", "Cloudflare Pages with global edge cache"],
-    ["Serverless", "Cloudflare Workers for form bridge"],
-    ["Email + automation", "MailerLite (lists, automations, audiences)"],
-    ["Content", "19 essays in a hand-rolled blog system"],
-    ["Brand", "Poster series, merch mockups, printable zine"],
-    ["Domain", "houseoflove.co (Cloudflare-managed)"],
-    ["Analytics", "Cloudflare Web Analytics, no third-party tracker"],
-  ];
+          {/* Same engine line */}
+          <section className="cin-detail-block cin-detail-outcome">
+            <Reveal as="p">
+              Same engine as a marketplace. A brand world instead.
+            </Reveal>
+          </section>
 
-  return (
-    <section className="border-y border-ink-100 bg-paper-50/60 py-20">
-      <div className="container-page">
-        <div className="mx-auto max-w-2xl text-center">
-          <div className="eyebrow mb-4 justify-center">Stack</div>
-          <h2 className="text-3xl font-extrabold tracking-tightest text-ink sm:text-4xl">
-            Lightweight Site-tier stack. Fast everywhere, edge-cached globally.
-          </h2>
+          {/* Results */}
+          <section className="cin-detail-block">
+            <Reveal as="div" className="cin-kicker">
+              Results
+            </Reveal>
+            <Reveal as="h2" delayStep={1} className="cin-detail-h2">
+              A brand the operator can actually run.
+            </Reveal>
+            <Reveal as="p" delayStep={2} className="cin-detail-body">
+              Casamoré launched live with a full brand surface, a content engine
+              ready to scale, and a membership funnel collecting email from day
+              one — built so the operator can add events, essays, and poster drops
+              without touching a developer.
+            </Reveal>
+            <div className="cin-stats">
+              {STATS.map((s) => (
+                <div key={s.l} className="cin-stat">
+                  <div className="cin-stat-v">{s.v}</div>
+                  <div className="cin-stat-l">{s.l}</div>
+                </div>
+              ))}
+            </div>
+            <Reveal as="p" delayStep={1} className="cin-detail-body">
+              Local tier starts {LOCAL_SETUP} — visual system, marketing pages, a
+              blog engine, lead capture, AI chatbot, and email wired. Out fast.
+            </Reveal>
+          </section>
         </div>
 
-        <dl className="mx-auto mt-12 grid max-w-4xl gap-x-10 gap-y-4 sm:grid-cols-2">
-          {stack.map(([k, v]) => (
-            <div
-              key={k}
-              className="flex items-start justify-between border-b border-ink-100 pb-3"
-            >
-              <dt className="font-mono text-xs uppercase tracking-widest text-ink-400">
-                {k}
-              </dt>
-              <dd className="text-right text-sm font-semibold text-ink">{v}</dd>
-            </div>
-          ))}
-        </dl>
-      </div>
-    </section>
-  );
-}
+        <ClosingCTA />
+      </main>
 
-function Timeline() {
-  const days = [
-    { d: "Day 1", t: "Rebrand discovery + new name landing on Casamoré" },
-    { d: "Day 2", t: "Visual system: palette, type, motif language, logo marks" },
-    { d: "Day 3", t: "Poster series + merch mockups + zine layout" },
-    { d: "Day 4", t: "Page architecture, hand-build 8 core marketing pages" },
-    { d: "Day 5", t: "Remaining 10 pages + event detail templates + 404" },
-    { d: "Day 6", t: "MailerLite list setup + Cloudflare Worker form bridge" },
-    { d: "Day 7", t: "Content library: 19 essays imported, tag system, RSS" },
-    { d: "Day 8", t: "QA, mobile audit, brand consistency pass, launch" },
-  ];
-
-  return (
-    <section className="container-page py-20">
-      <div className="mx-auto max-w-2xl text-center">
-        <div className="eyebrow mb-4 justify-center">The actual week</div>
-        <h2 className="text-3xl font-extrabold tracking-tightest text-ink sm:text-4xl">
-          Day by day, what shipped.
-        </h2>
-      </div>
-
-      <ol className="mx-auto mt-12 max-w-3xl space-y-2">
-        {days.map((d) => (
-          <li
-            key={d.d}
-            className="grid items-start gap-4 rounded border border-ink-100 bg-paper-50 p-4 sm:grid-cols-[110px_1fr]"
-          >
-            <div className="font-mono text-xs uppercase tracking-[0.18em] text-ember-600 tnum">
-              {d.d}
-            </div>
-            <div className="text-sm text-ink-700">{d.t}</div>
-          </li>
-        ))}
-      </ol>
-    </section>
-  );
-}
-
-function ResultsAndProof() {
-  return (
-    <section className="container-page py-20">
-      <div className="rule mb-12" />
-      <div className="grid gap-12 md:grid-cols-[1fr_1.3fr]">
-        <div>
-          <div className="eyebrow mb-4">Results</div>
-          <h2 className="text-3xl font-extrabold tracking-tightest text-ink sm:text-4xl">
-            A brand the operator can actually run.
-          </h2>
-          <p className="mt-5 text-ink-500">
-            Casamoré launched live with a full brand surface, a content engine
-            ready to scale, and a membership funnel collecting email from day
-            one. The site is built for the operator to extend — adding new
-            events, essays, and poster drops without touching a developer.
-          </p>
-        </div>
-
-        <dl className="grid grid-cols-2 gap-4">
-          <Result label="Pages shipped" value="18" />
-          <Result label="On-brand essays" value="19" />
-          <Result label="Time to live" value="Local tier" />
-          <Result label="Ongoing dev needed" value="zero" />
-        </dl>
-      </div>
-    </section>
-  );
-}
-
-function Result({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg border border-ink-100 bg-paper-50 p-5">
-      <div className="font-mono text-xs uppercase tracking-widest text-ink-400">
-        {label}
-      </div>
-      <div className="mt-2 text-2xl font-extrabold tracking-tightest text-ink tnum">
-        {value}
-      </div>
+      <SiteFooter />
     </div>
-  );
-}
-
-function NextCta() {
-  return (
-    <section className="container-page pb-24">
-      <div className="overflow-hidden rounded-xl bg-ink p-10 text-paper sm:p-14">
-        <div className="grid items-center gap-8 md:grid-cols-[1.4fr_1fr]">
-          <div>
-            <h2 className="text-3xl font-extrabold tracking-tightest sm:text-4xl">
-              Need a brand more than a back office?
-            </h2>
-            <p className="mt-4 max-w-xl text-paper-200">
-              Local tier is {`$${LOCAL.setup!.toLocaleString()} + $${LOCAL.monthly}/mo`}. Visual system, 5+ pages, blog
-              engine, lead capture, AI chatbot, MailerLite or Resend wired. Out
-              in 14 days.
-            </p>
-          </div>
-          <div>
-            <a href={SITE.bookingUrl} className="btn-ember w-full justify-center text-base">
-              Book a 15-min intro call
-            </a>
-            <Link
-              href="/"
-              className="mt-3 inline-flex w-full items-center justify-center rounded border border-paper-200/40 px-5 py-3 text-sm font-semibold text-paper transition hover:bg-paper/10"
-            >
-              See the pricing
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
   );
 }

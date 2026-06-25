@@ -1,9 +1,31 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+
 import { SITE } from "@/lib/site";
 import { SERVICE_TIERS } from "@/lib/pricing";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
+import { CanvasField } from "@/components/cinematic/CanvasField";
+import { Nav } from "@/components/cinematic/Nav";
+import { SiteFooter } from "@/components/cinematic/SiteFooter";
+import { Reveal } from "@/components/cinematic/Reveal";
+import { ClosingCTA } from "@/components/cinematic/ClosingCTA";
+
+/**
+ * /honest — public objections + rebuttals, in the cinematic skin.
+ *
+ * Re-themed into the cinematic system (block 7/10 of the rebuild). Composed
+ * directly from the shared shell (CanvasField backdrop + fixed Nav + ClosingCTA
+ * + SiteFooter), matching /about and /compare — the booking CTA must sit before
+ * the footer, which CinematicPage gives no slot for.
+ *
+ * Every objection is a `.cin-detail-block`: a mono kicker number, the headline
+ * as `.cin-detail-h2`, the buyer's voice as a `.cin-prose` blockquote (editorial
+ * serif, accent rail), and the rebuttal as `.cin-prose` body. The candid,
+ * first-person voice is preserved verbatim — confess first, engineer second.
+ *
+ * PRICING INTEGRITY: tier prices (Spark setup, Local setup, Platform label) are
+ * read live from src/lib/pricing.ts — never hard-coded — so `check:prices` stays
+ * clean. The "$15k+", "$25k", "$50k", "$60-90k" figures are agency-comparison /
+ * procurement prose, not Day14 SKUs, and are not tier-shaped.
+ */
 
 // Prices come from pricing.ts (SERVICE_TIERS) — the single source of truth.
 const T = Object.fromEntries(SERVICE_TIERS.map((t) => [t.slug, t]));
@@ -11,15 +33,7 @@ const SPARK_PRICE = `$${T.spark!.setup!.toLocaleString()}`; // $750
 const LOCAL_PRICE = `$${T.local!.setup!.toLocaleString()}`; // $1,500
 const PLATFORM_PRICE = T.platform!.setupLabel; // "from $9,000"
 
-/**
- * /honest — public objections + rebuttals. Every reason someone might NOT
- * hire Day14, in their own voice, plus the rebuttal. Compounds trust by
- * pre-empting the bounce. Praveen-tier procurement signal.
- *
- * Voice-aligned: I, not we. Confess first, engineer second.
- */
-
-const TITLE = "Day14 — every reason not to hire me, and what I'd say back";
+const TITLE = "Every reason not to hire me, and what I'd say back";
 const DESCRIPTION =
   "Honest objections about Day14 from real persona audits, with the rebuttal. Better to know on this page than discover at week 4. Praveen-tier transparency.";
 
@@ -116,57 +130,74 @@ const OBJECTIONS = [
 
 export default function HonestPage() {
   return (
-    <>
-      <SiteHeader />
-      <main className="container-page pt-14 pb-20 sm:pt-20">
-        <div className="eyebrow mb-6">Honest objections</div>
-        <h1 className="max-w-4xl text-[40px] font-extrabold leading-[1.05] tracking-tightest text-ink sm:text-[60px]">
-          Every reason not to hire me.
-          <br className="hidden sm:block" /> And what I&rsquo;d say back.
-        </h1>
-        <p className="mt-7 max-w-2xl text-lg text-ink-500 sm:text-xl">
-          Most agencies hide the objections until they&rsquo;re on the intro call. I&rsquo;d rather you bounce here than at week 4. If anything below is a deal-breaker, you just saved both of us a meeting.
-        </p>
+    <div className="cinematic" id="top">
+      <CanvasField />
+      <Nav linkBase="/" />
 
-        <div className="mt-16 space-y-16">
-          {OBJECTIONS.map((o) => (
-            <article key={o.n} className="grid gap-8 border-t border-warm-gray-100 pt-10 lg:grid-cols-[80px_1fr] lg:gap-12">
-              <div className="font-mono text-[14px] font-bold uppercase tracking-[0.22em] text-ember-600 tnum">
-                {o.n}
-              </div>
-              <div>
-                <h2 className="text-[28px] font-extrabold leading-[1.1] tracking-tightest text-ink sm:text-[32px]">
-                  {o.headline}
-                </h2>
-                <blockquote className="mt-5 border-l-2 border-warm-gray-200 pl-5 text-[16px] italic leading-[1.6] text-warm-gray-500">
-                  &ldquo;{o.voice}&rdquo;
-                </blockquote>
-                <p className="mt-6 text-[16px] leading-[1.65] text-ink-500">
-                  {o.rebuttal}
-                </p>
-              </div>
-            </article>
+      <main>
+        {/* Hero — editorial header in the 760px column. */}
+        <header className="cin-detail">
+          <Reveal as="div" className="cin-kicker">
+            Honest objections
+          </Reveal>
+          <Reveal as="h1" delayStep={1} className="cin-page-h1">
+            Every reason not to hire me. And what I&rsquo;d say back.
+          </Reveal>
+          <Reveal as="p" delayStep={2} className="cin-page-lede">
+            Most agencies hide the objections until they&rsquo;re on the intro
+            call. I&rsquo;d rather you bounce here than at week 4. If anything
+            below is a deal-breaker, you just saved both of us a meeting.
+          </Reveal>
+        </header>
+
+        {/* The objections — confess first, engineer second. */}
+        <div className="cin-detail">
+          {OBJECTIONS.map((o, i) => (
+            <section key={o.n} className="cin-detail-block">
+              <Reveal as="div" className="cin-kicker">
+                Objection {o.n} / {OBJECTIONS.length}
+              </Reveal>
+              <Reveal
+                as="h2"
+                delayStep={1}
+                className="cin-detail-h2"
+                style={{ marginBottom: "18px" }}
+              >
+                {o.headline}
+              </Reveal>
+              <Reveal
+                as="div"
+                delayStep={2}
+                className="cin-prose"
+              >
+                <blockquote>{o.voice}</blockquote>
+                <p>{o.rebuttal}</p>
+              </Reveal>
+            </section>
           ))}
+
+          {/* Why this page exists. */}
+          <section className="cin-detail-block">
+            <Reveal as="div" className="cin-kicker">
+              Why this page exists
+            </Reveal>
+            <Reveal as="div" delayStep={1} className="cin-prose">
+              <p>
+                I&rsquo;d rather lose a deal in 2 minutes on this page than 2
+                weeks into a project where we shouldn&rsquo;t have signed. Every
+                objection above is real — pulled from a 5-persona audit of the
+                site itself. If yours isn&rsquo;t here and you want to surface it,
+                the intro call is 15 minutes, free, no pressure.
+              </p>
+            </Reveal>
+          </section>
         </div>
 
-        <div className="mt-24 rounded-2xl border border-warm-gray-100 bg-paper-cream p-8">
-          <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-warm-gray-500">
-            Why this page exists
-          </div>
-          <p className="mt-3 max-w-3xl text-[15px] leading-[1.65] text-ink-500">
-            I&rsquo;d rather lose a deal in 2 minutes on this page than 2 weeks into a project where we shouldn&rsquo;t have signed. Every objection above is real &mdash; pulled from a 5-persona audit of the site itself. If yours isn&rsquo;t here and you want to surface it, the intro call is 15 minutes, free, no pressure.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/#book" className="btn-ember">
-              Book a 15-min intro call
-            </Link>
-            <Link href="/capabilities" className="btn-ghost">
-              See full scope
-            </Link>
-          </div>
-        </div>
+        {/* Closing CTA — book (Cal.com) + email fallback. */}
+        <ClosingCTA />
       </main>
+
       <SiteFooter />
-    </>
+    </div>
   );
 }

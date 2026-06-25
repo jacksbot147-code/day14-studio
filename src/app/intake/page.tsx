@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { SITE } from "@/lib/site";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
+import { CanvasField } from "@/components/cinematic/CanvasField";
+import { Nav } from "@/components/cinematic/Nav";
+import { SiteFooter } from "@/components/cinematic/SiteFooter";
+import { Reveal } from "@/components/cinematic/Reveal";
 import { IntakeForm } from "./intake-form";
 
 /**
@@ -11,6 +13,8 @@ import { IntakeForm } from "./intake-form";
  * fields the intake-parser expects, POSTs to /api/intake on submit,
  * shows confirmation on success.
  *
+ * Re-themed onto the cinematic shell (block 9/10) so the chrome matches every
+ * other route. The form lives in ./intake-form.tsx (client) and is unchanged.
  * Reachable from /thanks?sku=... or directly via day14.us/intake.
  */
 
@@ -30,36 +34,34 @@ export default function IntakePage({
   const email = searchParams?.email;
 
   return (
-    <>
-      <SiteHeader />
-      <main>
-        <section className="container-page pt-16 pb-12">
-          <div className="font-mono text-xs uppercase tracking-[0.18em] text-ember-600">
+    <div className="cinematic" id="top">
+      <CanvasField />
+      <Nav linkBase="/" />
+
+      <main className="cin-detail">
+        <header className="cin-detail-hero">
+          <Reveal as="div" className="cin-kicker">
             Intake · {sku ? `${sku.toUpperCase()} tier` : "Day14"}
-          </div>
-
-          <h1 className="mt-5 max-w-3xl text-[44px] font-extrabold leading-[1.05] tracking-tightest text-ink sm:text-[64px]">
+          </Reveal>
+          <Reveal as="h1" delayStep={1} className="cin-detail-h1">
             Tell us about your business.
-          </h1>
+          </Reveal>
+          <Reveal as="p" delayStep={2} className="cin-detail-lede">
+            One page. Save partway if you need to come back — your browser holds
+            the draft. We start building the moment this lands.
+          </Reveal>
+          <Reveal as="p" delayStep={3} className="cin-detail-body">
+            Required fields are marked. Everything else helps — none of it blocks
+            the build.
+          </Reveal>
+        </header>
 
-          <p className="mt-6 max-w-2xl text-lg text-ink-500 sm:text-xl">
-            One page. Save partway if you need to come back — your browser
-            holds the draft. We start building the moment this lands.
-          </p>
-
-          <div className="mt-3 max-w-2xl text-sm text-ink-400">
-            Required fields are marked.{" "}
-            <span className="text-ink-500">
-              Everything else helps — none of it blocks the build.
-            </span>
-          </div>
-        </section>
-
-        <section className="container-page pb-24">
+        <section className="cin-detail-block">
           <IntakeForm sku={sku} prefilledEmail={email} />
         </section>
       </main>
+
       <SiteFooter />
-    </>
+    </div>
   );
 }
