@@ -87,6 +87,12 @@ export interface TapResult {
   message: string;
 }
 
+/** Per-tenant white-label identity for the deck (name + accent color). */
+export interface TenantBrand {
+  name: string;
+  accent: string;
+}
+
 /**
  * The storage boundary. A file-backed adapter implements this today; a Supabase
  * adapter implements the same shape when customers need hosted isolation —

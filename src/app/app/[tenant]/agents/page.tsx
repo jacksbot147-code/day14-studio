@@ -10,7 +10,7 @@
  */
 
 import { notFound } from "next/navigation";
-import { getDeck, isKnownTenant } from "@/lib/agent-deck";
+import { getDeck, getTenantBrand, isKnownTenant } from "@/lib/agent-deck";
 import { DeckView } from "@/app/dashboard/agents/deck-view";
 
 export const dynamic = "force-dynamic";
@@ -19,11 +19,12 @@ export const revalidate = 0;
 export default async function TenantDeckPage({ params }: { params: { tenant: string } }) {
   const slug = params.tenant;
   if (!/^[a-z0-9][a-z0-9-]*$/i.test(slug) || !(await isKnownTenant(slug))) notFound();
-  const state = await getDeck(slug);
+  const [state, brand] = await Promise.all([getDeck(slug), getTenantBrand(slug)]);
   return (
     <DeckView
       state={state}
-      scopeLabel={slug}
+      brand={brand}
+      audience="owner"
       endpoint={`/api/app/${slug}/agents/approve`}
       backHref="/dashboard/agents"
       backLabel="God-view"

@@ -30,6 +30,39 @@ export async function isKnownTenant(slug: string): Promise<boolean> {
   }
 }
 
+/** All known tenants (slug + display name) for the god-view tenant switcher. */
+export async function listTenants(): Promise<Array<{ slug: string; name: string }>> {
+  try {
+    const raw = await fs.readFile(path.join(homedir(), "Documents/businesses/_shared/tenants.json"), "utf8");
+    const d = JSON.parse(raw) as { tenants?: Array<{ slug?: string; display_name?: string; name?: string }> };
+    return (Array.isArray(d.tenants) ? d.tenants : [])
+      .filter((t): t is { slug: string; display_name?: string; name?: string } => typeof t.slug === "string")
+      .map((t) => ({ slug: t.slug, name: t.display_name || t.name || t.slug }));
+  } catch {
+    return [];
+  }
+}
+
+const DEFAULT_ACCENT = "#56b3ff";
+
+/** Per-tenant white-label brand (display name + accent) so the deck wears the
+ *  customer's identity, not Day14's. Sourced from tenants.json today. */
+export async function getTenantBrand(slug: string | null): Promise<import("./types").TenantBrand> {
+  if (!slug) return { name: "Day14", accent: DEFAULT_ACCENT };
+  try {
+    const raw = await fs.readFile(path.join(homedir(), "Documents/businesses/_shared/tenants.json"), "utf8");
+    const d = JSON.parse(raw) as { tenants?: Array<{ slug?: string; display_name?: string; name?: string; primary_color?: string }> };
+    const t = Array.isArray(d.tenants) ? d.tenants.find((x) => x.slug === slug) : undefined;
+    const name = t?.display_name || t?.name || slug;
+    let accent = DEFAULT_ACCENT;
+    const raw6 = (t?.primary_color || "").replace(/^#/, "");
+    if (/^[0-9a-f]{6}$/i.test(raw6)) accent = `#${raw6}`;
+    return { name, accent };
+  } catch {
+    return { name: slug, accent: DEFAULT_ACCENT };
+  }
+}
+
 let repo: DeckRepository | null = null;
 
 function getRepository(): DeckRepository {
