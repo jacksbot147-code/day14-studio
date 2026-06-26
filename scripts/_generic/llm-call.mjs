@@ -13,6 +13,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
+import { loadAgentPreamble } from "./agent-context.mjs";
 
 const HOME = homedir();
 const ENV_FILE = path.join(HOME, "Documents/studio/.env.local");
@@ -50,6 +51,11 @@ export async function llmCall({
   model,
 }) {
   const env = await loadEnv();
+  // Inject the compiled Day14 agent preamble (identity + prime directives +
+  // role directory) so every agent prompt carries full context. ~300 tokens;
+  // disable globally with DAY14_AGENT_CONTEXT=0.
+  const _preamble = loadAgentPreamble();
+  if (_preamble) systemPrompt = [_preamble, systemPrompt].filter(Boolean).join("\n\n");
   const hasA = !!env.ANTHROPIC_API_KEY;
   const hasG = !!env.GEMINI_API_KEY;
   const anthropicFirst = preferAnthropic || PREFER === "anthropic";

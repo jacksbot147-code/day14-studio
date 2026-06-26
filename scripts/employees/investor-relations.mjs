@@ -24,6 +24,7 @@ import path from "node:path";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
 import { llmCall } from "../_generic/llm-call.mjs";
+import { journal } from "../_generic/agent-journal.mjs";
 
 const HOME = homedir();
 const BIZ = path.join(HOME, "Documents/businesses");
@@ -156,6 +157,7 @@ mom_growth_pct: ${momGrowth !== null ? momGrowth.toFixed(1) : "null"}
     );
   }
   console.log(`✓ monthly update → ${reportPath}`);
+  await journal("investor-relations", `monthly investor update ${yyyymm} written ($${(totalRevenue/100).toFixed(2)}, ${totalOrders} orders)`);
 }
 
 main().catch((err) => { console.error("FATAL:", err.message); process.exit(1); });

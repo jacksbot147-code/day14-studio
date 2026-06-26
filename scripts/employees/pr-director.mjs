@@ -18,6 +18,7 @@ import path from "node:path";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
 import { llmCall } from "../_generic/llm-call.mjs";
+import { journal } from "../_generic/agent-journal.mjs";
 
 const HOME = homedir();
 const BIZ = path.join(HOME, "Documents/businesses");
@@ -142,6 +143,7 @@ async function main() {
     );
   }
   console.log(`✓ ${summaries.length} tenant PR reports`);
+  await journal("pr-director", `${summaries.length} tenant PR reports written`);
 }
 
 main().catch((err) => { console.error("FATAL:", err.message); process.exit(1); });

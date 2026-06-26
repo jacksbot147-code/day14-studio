@@ -49,6 +49,8 @@ const FULL_CONTEXT_NOTES = [
   "Day14 — Business Scope & Pivot Points",
   "Day14 OS — System Map",
   "Agent Roster",
+  "Agent Journal & Handoffs",
+  "Handoffs & Open Questions",
   "Glossary & Conventions",
   "People & Contacts",
   "Businesses — Overview",

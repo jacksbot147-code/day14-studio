@@ -19,6 +19,7 @@ import path from "node:path";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
 import { llmCall } from "../_generic/llm-call.mjs";
+import { journal } from "../_generic/agent-journal.mjs";
 
 const HOME = homedir();
 const BIZ = path.join(HOME, "Documents/businesses");
@@ -162,6 +163,7 @@ ${deepReviews.map((r) => `### ${r.tenant} — ${r.risk_level.toUpperCase()}\n\nF
     );
   }
   console.log(`✓ compliance report → ${reportPath} (${highRisk} high-risk items)`);
+  await journal("compliance-officer", `compliance report written (${highRisk} high-risk items across ${tenants.length} tenants)`);
 }
 
 main().catch((err) => { console.error("FATAL:", err.message); process.exit(1); });

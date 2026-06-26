@@ -19,6 +19,7 @@ import path from "node:path";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
 import { llmCall } from "../_generic/llm-call.mjs";
+import { journal } from "../_generic/agent-journal.mjs";
 
 const HOME = homedir();
 const BIZ = path.join(HOME, "Documents/businesses");
@@ -177,6 +178,7 @@ total_units_sold: ${productsWithSales.reduce((s, p) => s + p.units, 0)}
     );
   }
   console.log(`✓ product strategy → ${reportPath}`);
+  await journal("product-strategist", `product strategy written (${winners.length} winners, ${oldNoSales.length} stalled)`);
 }
 
 main().catch((err) => { console.error("FATAL:", err.message); process.exit(1); });

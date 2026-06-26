@@ -80,6 +80,8 @@ export async function alertTelegram(text, urgency = "P3") {
  * Wrap a script's main entrypoint. Auto-audits start/end/error, heartbeats,
  * captures duration. On fatal error: alerts via Telegram + exits 1.
  */
+import { journal } from "./agent-journal.mjs";
+
 export async function tryRun(name, fn, opts = {}) {
   const startTs = Date.now();
   const tenant = opts.tenant || "_shared";
@@ -92,6 +94,7 @@ export async function tryRun(name, fn, opts = {}) {
     const durationMs = Date.now() - startTs;
     await audit({ actor: name, action: "run_completed", tenant, duration_ms: durationMs });
     await heartbeat(name);
+    await journal(name, `run completed in ${(durationMs / 1000).toFixed(1)}s`, { tenant });
     return result;
   } catch (err) {
     const durationMs = Date.now() - startTs;
@@ -100,6 +103,7 @@ export async function tryRun(name, fn, opts = {}) {
     if (opts.alertOnError !== false) {
       await alertTelegram(`🚨 *${name} crashed*\n\nError: \`${message.slice(0, 400)}\`\n\nDuration: ${(durationMs / 1000).toFixed(1)}s`, "P1");
     }
+    await journal(name, `run FAILED: ${message.slice(0, 200)}`, { tenant, error: true });
     console.error(`FATAL [${name}]:`, message);
     process.exit(1);
   }

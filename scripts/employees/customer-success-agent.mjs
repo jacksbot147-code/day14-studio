@@ -21,6 +21,7 @@ import path from "node:path";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
 import { llmCall } from "../_generic/llm-call.mjs";
+import { journal } from "../_generic/agent-journal.mjs";
 
 const HOME = homedir();
 const BIZ = path.join(HOME, "Documents/businesses");
@@ -157,6 +158,7 @@ async function cycle() {
     );
   }
   await log(`cycle: ${postPurchase} post-purchase, ${nps} NPS drafted`);
+  if (postPurchase + nps > 0) await journal("customer-success-agent", `${postPurchase} post-purchase, ${nps} NPS drafts written`);
 }
 
 async function main() {

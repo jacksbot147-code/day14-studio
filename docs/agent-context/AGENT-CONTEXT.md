@@ -1,6 +1,6 @@
 # Day14 Agent Context (compiled)
 
-> Auto-generated from the Obsidian vault by scripts/compile-agent-context.mjs on 2026-06-25.
+> Auto-generated from the Obsidian vault by scripts/compile-agent-context.mjs on 2026-06-26.
 > Do NOT edit by hand — edit the vault notes and re-run `npm run context:compile`.
 > Source: ~/mnt/DAY14/Obsidian-Vault
 
@@ -58,7 +58,14 @@ Your teammates and how the team is meant to coordinate: [[Agent Roster]] · [[Ag
 
 ## 7. Full map
 
-Everything in the vault, grouped, is in [[Day14 Vault — Index]].
+Everything in the vault, grouped, is in [[Day14 Vault — Index]] — start there to reach any note, including the agent-system blueprints ([[Agent Org & Orchestration]], [[Agent Orchestration — Build Spec]]) and the plug-and-play `Templates/` scaffolds.
+
+## 8. What changed most recently (read before acting on stale assumptions)
+
+- [[Changelog — 2026-06-26]] — what was built overnight (multi-tenant Command Deck, deck backend, LLM migration). All code is uncommitted; commit/deploy happen on the mini.
+- [[Day14 — Expansion Roadmap]] — the prioritized, freeze-aware build order for what comes next.
+- [[Jack — Confirm These (expansion blockers)]] — the open questions only Jack can answer; don't invent answers to these.
+- `_sweeps/` — overnight-pass reports (findings, not governance): [[_sweeps/MORNING-BRIEF-2026-06-26]] is the latest digest; [[_sweeps/overnight-log]] is the running log; [[_sweeps/vault-health-2026-06-26]] is the link/orphan audit. All indexed in [[Day14 Vault — Index]].
 
 ---
 
@@ -288,6 +295,49 @@ All call **Gemini directly** (no Anthropic fallback), all read `tenants.json`, a
 
 ## Related
 [[Agent Org & Orchestration]] · [[Agent Oversight (Command Deck)]] · [[Day14 OS — System Map]] · [[Role — Dev & Build Agent]]
+
+
+---
+
+# Agent Journal & Handoffs
+
+The vault → agents path is the compiled context (read-only). This is the **return path**: agents write back when they finish a job or need to tell a future job something. Notes live in the vault, so Obsidian shows them *and* the next `npm run context:compile` folds them back into everyone's context — closing the loop.
+
+## The three write-backs (helper: `scripts/_generic/agent-journal.mjs`)
+
+1. **Journal** — "what I just did." One line per job, appended to `Agent Journal/<agent>.md`.
+   `await journal("cfo-agent", "Daily P&L written", { tenant: "day14" })`
+   Auto-fires for any agent wrapped in `tryRun` (it journals every completion + failure).
+
+2. **Handoff** — "something a future job / another agent / Jack needs to know." Appended to [[Handoffs & Open Questions]].
+   `await handoff("realty-scout", "County CSV columns changed — parser needs 'APN2'", { tag: "blocker" })`
+
+3. **Append to a note** — add a timestamped line under an existing note's `## Agent log` section (never overwrites curated content).
+   `await appendToNote("Business — alignmd", "Confirmed partner contact: …", { agent: "sales-director" })`
+
+## Rules for agents
+- **Append, never overwrite.** Curated notes are governance; add to the `## Agent log` section, don't rewrite the body.
+- **Journaling never blocks a job** — the helper is best-effort and silent on failure.
+- **Handoffs are for the future** — leave what the next run needs: a blocker, a changed assumption, a half-finished task, a question for Jack.
+- **Resolve, don't delete** — strike through a handoff (`~~…~~`) when it's handled, so the history survives.
+- Still bound by [[Working with Jack]]: no push, no money, no customer send without a Jack tap.
+
+## Where it lives
+- `Agent Journal/<agent>.md` — per-agent run logs (auto-generated).
+- [[Handoffs & Open Questions]] — the shared cross-agent message board.
+- Both are folded into the compiled `AGENT-CONTEXT.md`, so a fresh agent reads recent handoffs as part of its context.
+
+## Related
+[[Agent Org & Orchestration]] · [[Agent Roster]] · [[00 — Agent Boot (START HERE)]]
+
+
+---
+
+# Handoffs & Open Questions
+
+Where any agent (or Jack) leaves a note for future jobs, other agents, or Jack himself. **Append-only**; resolve an item by striking it through (`~~…~~`), don't delete — the history matters. Newest at the bottom. Protocol: [[Agent Journal & Handoffs]].
+
+- **2026-06-26 00:00** system → `seed`: Write-back channel is live. Agents wrapped in `tryRun` auto-journal; use `handoff()` to post here. This loop feeds back into the compiled context on the next `npm run context:compile`.
 
 
 ---

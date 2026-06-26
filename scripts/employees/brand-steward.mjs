@@ -22,6 +22,7 @@ import path from "node:path";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
 import { llmCall } from "../_generic/llm-call.mjs";
+import { journal } from "../_generic/agent-journal.mjs";
 
 const HOME = homedir();
 const BIZ = path.join(HOME, "Documents/businesses");
@@ -176,6 +177,7 @@ async function main() {
     );
   }
   console.log(`✓ scored ${results.length} tenants (${drifts.length} drift alerts)`);
+  await journal("brand-steward", `brand health scored for ${results.length} tenants (${drifts.length} drift alerts)`);
 }
 
 main().catch((err) => { console.error("FATAL:", err.message); process.exit(1); });

@@ -20,6 +20,7 @@ import path from "node:path";
 import { existsSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { homedir } from "node:os";
+import { journal } from "../_generic/agent-journal.mjs";
 
 const HOME = homedir();
 const BIZ = path.join(HOME, "Documents/businesses");
@@ -211,6 +212,7 @@ async function main() {
     );
   }
   console.log(`✓ ${overallStatus} — ${reportPath}`);
+  await journal("devops-sre", `ops report written — ${overallStatus} (${allCriticalCount} critical, ${warning.length} warnings)`);
 }
 
 main().catch((err) => { console.error("FATAL:", err.message); process.exit(1); });

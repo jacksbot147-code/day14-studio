@@ -27,6 +27,7 @@ import path from "node:path";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
 import { llmCall } from "../_generic/llm-call.mjs";
+import { journal } from "../_generic/agent-journal.mjs";
 
 const HOME = homedir();
 const BIZ = path.join(HOME, "Documents/businesses");
@@ -184,6 +185,7 @@ blended_margin_pct: ${blendedMargin.toFixed(1)}
     );
   }
   console.log(`✓ ${reportType} report → ${reportPath}`);
+  await journal("cfo-agent", `${reportType} P&L report written (net $${(netProfit/100).toFixed(2)})`);
 }
 
 main().catch((err) => { console.error("FATAL:", err.message); process.exit(1); });
