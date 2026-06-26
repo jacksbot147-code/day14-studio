@@ -29,6 +29,7 @@ export const config = {
   matcher: [
     "/admin/:path*",
     "/dashboard/:path*",
+    "/app/:path*",
     "/data/empire-state.json",
     "/data/ops/:path*",
     "/data/inboxes/:path*",
