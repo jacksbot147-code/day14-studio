@@ -104,11 +104,9 @@ export class FileDeckRepository implements DeckRepository {
     const agents: AgentRow[] = [];
     for (const h of heartbeats) {
       const rowTenant = guessTenant(h.name);
-      if (!inScope(tenant, rowTenant ?? (tenant === null ? null : null))) {
-        // Daemons without a tenant are shared infra: shown in god-view only.
-        if (tenant !== null && !rowTenant) continue;
-        if (tenant !== null && rowTenant !== tenant) continue;
-      }
+      // Shared-infra daemons (no tenant) appear only in the god-view; tenant
+      // daemons appear only in their own tenant's scope.
+      if (!inScope(tenant, rowTenant ?? null)) continue;
       const last = lastActionFor(h.name, battle);
       agents.push({
         name: h.name,
@@ -246,9 +244,11 @@ export class FileDeckRepository implements DeckRepository {
   }
 }
 
-/** Map a daemon name to its owning tenant when the name embeds a known slug. */
+/** Map a daemon name to its owning tenant when the name embeds a known slug.
+ *  Boundary allows the slug to be a prefix (`hot-flash-co-orders`), infix, or
+ *  suffix (`realty-scout-day14-realty`). Slugs mirror tenants.json. */
 function guessTenant(name: string): string | undefined {
-  const m = name.match(/-(kennum-lawn-care|day14-realty|hot-flash-co|life-loophole|alignmd|splash-jacks)\b/);
+  const m = name.match(/(?:^|-)(kennum-lawn-care|day14-realty|hot-flash-co|life-loophole|alignmd)(?:-|$)/);
   return m && m[1] ? m[1] : undefined;
 }
 
@@ -262,21 +262,22 @@ interface TodoStore {
 }
 
 async function handleTodo(tenant: string | null, id: string, decision: "approve" | "deny"): Promise<TapResult> {
-  if (!existsSync(TODOS_FILE)) return { ok: false, message: "operator to-do list unavailable" };
+  if (!existsSync(TODOS_FILE)) return { ok: false, message: "operator to-do list unavailable", code: 503 };
   const store = parseJson<TodoStore>(await readSafe(TODOS_FILE));
-  if (!store || !Array.isArray(store.todos)) return { ok: false, message: "could not read to-do list" };
-  const n = parseInt(String(id).replace(/[^0-9]/g, ""), 10);
-  const todo = store.todos.find((t) => t.id === id) || (Number.isNaN(n) ? undefined : store.todos.find((t) => t.seq === n));
-  if (!todo) return { ok: false, message: `no to-do matching: ${id}` };
+  if (!store || !Array.isArray(store.todos)) return { ok: false, message: "could not read to-do list", code: 500 };
+  // Exact-id match only — the deck always passes the real id; a numeric-seq
+  // fallback could resolve the wrong row in the god-view.
+  const todo = store.todos.find((t) => t.id === id);
+  if (!todo) return { ok: false, message: `no to-do matching: ${id}`, code: 404 };
   // Tenant isolation: a scoped caller may only act on its own tenant's items.
-  if (tenant !== null && (todo.tenant ?? null) !== tenant) return { ok: false, message: "not authorized for this item" };
+  if (tenant !== null && (todo.tenant ?? null) !== tenant) return { ok: false, message: "not authorized for this item", code: 403 };
 
   todo.status = decision === "approve" ? "done" : "dismissed";
   todo.completed_at = new Date().toISOString();
   try {
     await fs.writeFile(TODOS_FILE, JSON.stringify(store, null, 2));
   } catch {
-    return { ok: false, message: "could not save the to-do list" };
+    return { ok: false, message: "could not save the to-do list", code: 500 };
   }
   try {
     const snapPath = path.join(STUDIO, "public/data/empire-state.json");
@@ -294,12 +295,12 @@ async function handleTodo(tenant: string | null, id: string, decision: "approve"
 }
 
 async function handleTap(tenant: string | null, id: string, decision: "approve" | "deny"): Promise<TapResult> {
-  if (!isSafeFile(id)) return { ok: false, message: "invalid tap id" };
+  if (!isSafeFile(id)) return { ok: false, message: "invalid tap id", code: 400 };
   const filePath = path.join(OUTBOX, id);
-  if (!existsSync(filePath)) return { ok: false, message: `no tap file: ${id}` };
+  if (!existsSync(filePath)) return { ok: false, message: `no tap file: ${id}`, code: 404 };
   const data = parseJson<Record<string, unknown>>(await readSafe(filePath));
-  if (!data) return { ok: false, message: "could not read the tap" };
-  if (tenant !== null && (data.tenant ?? null) !== tenant) return { ok: false, message: "not authorized for this item" };
+  if (!data) return { ok: false, message: "could not read the tap", code: 500 };
+  if (tenant !== null && (data.tenant ?? null) !== tenant) return { ok: false, message: "not authorized for this item", code: 403 };
   data.tap_required = false;
   data.resolved_at = new Date().toISOString();
   data.resolved_action = decision;
@@ -307,7 +308,7 @@ async function handleTap(tenant: string | null, id: string, decision: "approve" 
   try {
     await fs.writeFile(filePath, JSON.stringify(data, null, 2));
   } catch {
-    return { ok: false, message: "could not save the tap" };
+    return { ok: false, message: "could not save the tap", code: 500 };
   }
   return { ok: true, message: decision === "approve" ? "Tap approved — decision recorded" : "Tap dismissed" };
 }

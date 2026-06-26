@@ -16,9 +16,9 @@ import { TapActions } from "./agent-actions";
 import { AutoRefresh } from "./auto-refresh";
 
 const C = {
-  bg: "#050507", ink: "#f3f4f8", mut: "#9698a4", faint: "#767883",
+  bg: "#050507", ink: "#f3f4f8", mut: "#9698a4", faint: "#8a8c98",
   line: "rgba(255,255,255,0.09)", panel: "rgba(255,255,255,0.025)",
-  ok: "#3ddc84", bad: "#ff5a5a", warn: "#f5b945", off: "#5b5d68",
+  ok: "#3ddc84", bad: "#ff5a5a", warn: "#f5b945", off: "#7d7f8a",
   sans: "var(--cin-font-sans)", mono: "var(--cin-font-mono)", serif: "var(--cin-font-serif)",
 } as const;
 
@@ -39,7 +39,8 @@ const panel: React.CSSProperties = { background: C.panel, border: `1px solid ${C
 
 function Dot({ t, glow = true }: { t: "ok" | "bad" | "warn" | "off"; glow?: boolean }) {
   const c = t === "ok" ? C.ok : t === "bad" ? C.bad : t === "warn" ? C.warn : C.off;
-  return <span style={{ width: 7, height: 7, borderRadius: 99, background: c, boxShadow: glow ? `0 0 8px ${c}99` : "none", display: "inline-block", flex: "0 0 auto" }} />;
+  const label = t === "ok" ? "healthy" : t === "bad" ? "needs attention" : t === "warn" ? "warning" : "no data";
+  return <span role="img" aria-label={label} title={label} style={{ width: 7, height: 7, borderRadius: 99, background: c, boxShadow: glow ? `0 0 8px ${c}99` : "none", display: "inline-block", flex: "0 0 auto" }} />;
 }
 function Label({ children, color }: { children: React.ReactNode; color?: string }) {
   return <span style={{ fontFamily: C.mono, color: color || C.faint, letterSpacing: "0.22em", fontSize: 11 }} className="uppercase">{children}</span>;
@@ -94,7 +95,7 @@ export function DeckView({ state: d, brand, audience = "operator", endpoint, bac
         downReport: (n: number, names: string) => (n ? `${n} need attention · ${names}` : "everything running"),
         emptyTaps: "Nothing needs you right now.",
         emptyActivity: "No recent activity.",
-        footer: `Live · refreshes every 30s · powered by Day14`,
+        footer: `Live · refreshes automatically every 30s`,
       }
     : {
         kicker: `Day14 · Agent Oversight · ${scopeLabel ?? d.tenant ?? "all tenants"}`,
@@ -118,9 +119,12 @@ export function DeckView({ state: d, brand, audience = "operator", endpoint, bac
   const healthy = daemons.filter((a) => a.status === "healthy");
   const staleEmps = employees.filter((a) => a.status !== "healthy");
   const todoTaps = d.taps.filter((t) => t.kind === "todo");
-  const outboxTaps = d.taps.filter((t) => t.kind === "tap");
-  const topTap = todoTaps[0] ?? null;
-  const restTodos = topTap ? todoTaps.slice(1) : todoTaps;
+  const allOutbox = d.taps.filter((t) => t.kind === "tap");
+  // "The one move" surfaces the most consequential tap — a todo if any,
+  // otherwise the top unsent jack-tap (so an outbox-only tenant still gets one).
+  const topTap = todoTaps[0] ?? allOutbox[0] ?? null;
+  const restTodos = topTap?.kind === "todo" ? todoTaps.slice(1) : todoTaps;
+  const outboxTaps = topTap?.kind === "tap" ? allOutbox.slice(1) : allOutbox;
   const { daemonsHealthy: alive, daemonsTotal: total, tapsAwaiting: tapCount } = d.summary;
   const attention = d.posture === "attention";
   const healthPct = total > 0 ? Math.round((alive / total) * 100) : 0;
@@ -133,13 +137,13 @@ export function DeckView({ state: d, brand, audience = "operator", endpoint, bac
       <main className="relative px-6 md:px-12 py-10 max-w-[1380px] mx-auto" style={{ fontWeight: 300 }}>
 
         <header className="mb-8 flex items-end justify-between flex-wrap gap-5">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 min-w-0">
             <Monogram name={brand.name} accent={accent} />
-            <div>
-              <div className="mb-2 flex items-center gap-2.5">
-                <Label color={accent}>{L.kicker}</Label>
+            <div className="min-w-0">
+              <div className="mb-2 flex items-center gap-2.5 min-w-0">
+                <span className="truncate block max-w-[58vw] md:max-w-none"><Label color={accent}>{L.kicker}</Label></span>
               </div>
-              <h1 style={{ fontFamily: C.sans, letterSpacing: "-0.045em", lineHeight: 1.0 }} className="text-4xl md:text-5xl font-light">
+              <h1 style={{ fontFamily: C.sans, letterSpacing: "-0.045em", lineHeight: 1.0 }} className="text-3xl md:text-5xl font-light">
                 {owner ? brand.name : <>Command <span style={{ fontFamily: C.serif, fontStyle: "italic", fontWeight: 400 }}>Deck</span></>}
               </h1>
             </div>
@@ -189,7 +193,7 @@ export function DeckView({ state: d, brand, audience = "operator", endpoint, bac
                 <div style={{ color: C.ink }} className="text-xl font-normal">{topTap.title}</div>
                 {topTap.detail && <div style={{ color: C.mut }} className="text-sm mt-1.5 max-w-2xl">{topTap.detail}</div>}
               </div>
-              <div className="shrink-0"><TapActions kind="todo" id={topTap.id} endpoint={endpoint} /></div>
+              <div className="shrink-0"><TapActions kind={topTap.kind} id={topTap.id} endpoint={endpoint} /></div>
             </div>
           </div>
         )}

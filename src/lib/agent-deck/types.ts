@@ -85,6 +85,8 @@ export interface DeckState {
 export interface TapResult {
   ok: boolean;
   message: string;
+  /** Suggested HTTP status (403 not-authorized, 400 invalid, 404 missing, 500 save-fail). */
+  code?: number;
 }
 
 /** Per-tenant white-label identity for the deck (name + accent color). */

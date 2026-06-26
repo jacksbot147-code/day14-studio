@@ -17,6 +17,9 @@ export function TapActions({ kind, id, endpoint = "/api/dashboard/agents/approve
   async function act(action: "approve" | "deny") {
     setBusy(true);
     setMsg(null);
+    // Pause the deck's auto-refresh while a write is in flight so a 30s tick
+    // can't re-render the row from stale server state mid-approval.
+    if (typeof window !== "undefined") (window as unknown as { __deckBusy?: number }).__deckBusy = ((window as unknown as { __deckBusy?: number }).__deckBusy ?? 0) + 1;
     try {
       const res = await fetch(endpoint, {
         method: "POST",
@@ -34,6 +37,10 @@ export function TapActions({ kind, id, endpoint = "/api/dashboard/agents/approve
       setMsg("network error");
     } finally {
       setBusy(false);
+      if (typeof window !== "undefined") {
+        const w = window as unknown as { __deckBusy?: number };
+        w.__deckBusy = Math.max(0, (w.__deckBusy ?? 1) - 1);
+      }
     }
   }
 
@@ -44,6 +51,7 @@ export function TapActions({ kind, id, endpoint = "/api/dashboard/agents/approve
       <button
         onClick={() => act("approve")}
         disabled={disabled}
+        aria-busy={disabled}
         style={{ background: "#56b3ff", color: "#050507" }}
         className="rounded-full disabled:opacity-40 px-3.5 py-1 text-[11px] font-semibold uppercase tracking-wider transition-opacity hover:opacity-90"
       >
@@ -52,12 +60,13 @@ export function TapActions({ kind, id, endpoint = "/api/dashboard/agents/approve
       <button
         onClick={() => act("deny")}
         disabled={disabled}
+        aria-busy={disabled}
         style={{ border: "1px solid rgba(255,255,255,0.16)", color: "#9698a4" }}
         className="rounded-full disabled:opacity-40 px-3.5 py-1 text-[11px] font-semibold uppercase tracking-wider transition-colors hover:text-white"
       >
         Deny
       </button>
-      {msg && <span style={{ color: "#767883" }} className="text-[11px]">{msg}</span>}
+      {msg && <span role="status" aria-live="polite" style={{ color: "#8a8c98" }} className="text-[11px]">{msg}</span>}
     </div>
   );
 }

@@ -34,6 +34,12 @@ async function loadEnv() {
 const GEMINI_DEFAULT = "gemini-2.5-flash";
 const ANTHROPIC_DEFAULT = "claude-haiku-4-5-20251001";
 
+// Provider preference. Default Claude-first: Gemini's free tier 503s and burns
+// quota, killing agent runs. Set DAY14_LLM_PREFER=gemini to restore Gemini-first
+// (Claude stays the fallback either way). Per-call preferAnthropic:true always
+// forces Claude-first.
+const PREFER = (process.env.DAY14_LLM_PREFER || "anthropic").toLowerCase();
+
 export async function llmCall({
   prompt,
   systemPrompt,
@@ -44,27 +50,38 @@ export async function llmCall({
   model,
 }) {
   const env = await loadEnv();
+  const hasA = !!env.ANTHROPIC_API_KEY;
+  const hasG = !!env.GEMINI_API_KEY;
+  const anthropicFirst = preferAnthropic || PREFER === "anthropic";
 
-  const tryGemini = !preferAnthropic && env.GEMINI_API_KEY;
-  if (tryGemini) {
+  // Claude-first (default) — reliable, what Day14 runs on. Gemini is the fallback.
+  if (anthropicFirst && hasA) {
+    const r = await callAnthropic({ prompt, systemPrompt, temperature, maxTokens, apiKey: env.ANTHROPIC_API_KEY });
+    if (r.ok) return r;
+    if (hasG) {
+      try {
+        const g = await callGemini({ prompt, systemPrompt, useGrounding, temperature, maxTokens, model, apiKey: env.GEMINI_API_KEY });
+        if (g.ok) return g;
+      } catch {
+        /* fall through to the Anthropic error */
+      }
+    }
+    return r;
+  }
+
+  // Gemini-first (opt-in via DAY14_LLM_PREFER=gemini), Claude as fallback.
+  if (hasG) {
     try {
       const result = await callGemini({ prompt, systemPrompt, useGrounding, temperature, maxTokens, model, apiKey: env.GEMINI_API_KEY });
       if (result.ok) return result;
-      // If error was 429 or quota — fall through to Anthropic
-      const isQuotaError = /429|quota|RATE_LIMIT/i.test(result.error || "");
-      if (!isQuotaError) {
-        // Non-quota error — try Anthropic anyway
-      }
-    } catch (e) {
-      // Network or parse error — try fallback
+    } catch {
+      /* fall through to Anthropic */
     }
   }
-
-  if (!env.ANTHROPIC_API_KEY) {
-    return { ok: false, text: "", error: "Both GEMINI_API_KEY (or quota) and ANTHROPIC_API_KEY unavailable" };
+  if (hasA) {
+    return await callAnthropic({ prompt, systemPrompt, temperature, maxTokens, apiKey: env.ANTHROPIC_API_KEY });
   }
-
-  return await callAnthropic({ prompt, systemPrompt, temperature, maxTokens, apiKey: env.ANTHROPIC_API_KEY });
+  return { ok: false, text: "", error: "no LLM provider available (set ANTHROPIC_API_KEY)" };
 }
 
 async function callGemini({ prompt, systemPrompt, useGrounding, temperature, maxTokens, model, apiKey }) {

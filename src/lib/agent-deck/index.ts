@@ -55,8 +55,9 @@ export async function getTenantBrand(slug: string | null): Promise<import("./typ
     const t = Array.isArray(d.tenants) ? d.tenants.find((x) => x.slug === slug) : undefined;
     const name = t?.display_name || t?.name || slug;
     let accent = DEFAULT_ACCENT;
-    const raw6 = (t?.primary_color || "").replace(/^#/, "");
-    if (/^[0-9a-f]{6}$/i.test(raw6)) accent = `#${raw6}`;
+    let hex = (t?.primary_color || "").replace(/^#/, "");
+    if (/^[0-9a-f]{3}$/i.test(hex)) hex = hex.split("").map((c) => c + c).join(""); // #f53 → #ff5533
+    if (/^[0-9a-f]{6}$/i.test(hex)) accent = `#${hex}`;
     return { name, accent };
   } catch {
     return { name: slug, accent: DEFAULT_ACCENT };

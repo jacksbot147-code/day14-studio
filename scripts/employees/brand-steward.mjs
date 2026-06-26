@@ -21,6 +21,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
+import { llmCall } from "../_generic/llm-call.mjs";
 
 const HOME = homedir();
 const BIZ = path.join(HOME, "Documents/businesses");
@@ -49,10 +50,9 @@ async function loadEnv() {
 }
 
 async function callGemini(prompt, env) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${env.GEMINI_API_KEY}`;
-  const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: prompt }] }], generationConfig: { temperature: 0.2, maxOutputTokens: 2500 } }) });
-  if (!res.ok) throw new Error(`gemini ${res.status}`);
-  return (await res.json())?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+  const r = await llmCall({ prompt, temperature: 0.2, maxTokens: 2500 });
+  if (!r.ok) throw new Error(r.error || "llm error");
+  return r.text || "";
 }
 
 function parseJson(raw) {

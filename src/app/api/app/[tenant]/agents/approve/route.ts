@@ -66,7 +66,7 @@ export async function POST(req: NextRequest, { params }: { params: { tenant: str
 
   try {
     const result = await resolveDeckTap(tenant, kind as (typeof KINDS)[number], id, action as (typeof ACTIONS)[number]);
-    return NextResponse.json(result, { status: result.ok ? 200 : 404 });
+    return NextResponse.json(result, { status: result.ok ? 200 : result.code ?? 404 });
   } catch {
     return NextResponse.json({ ok: false, error: "could not complete the action" }, { status: 500 });
   }
