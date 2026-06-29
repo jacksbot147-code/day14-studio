@@ -2895,3 +2895,295 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+/* ============================================================================
+ * Hero "build it yourself" — builder input + headline morph + assembling
+ * dashboard (.cin-build*, .cin-buildout, .cin-bo-*). Added 2026-06-28.
+ * ========================================================================== */
+.cinematic .cin-hero h1.cin-h1-built .cin-ln > span {
+  animation: cin-slide-up 0.7s var(--cin-ease) forwards;
+}
+.cinematic .cin-hero h1.cin-h1-built .cin-ln:nth-child(1) > span { animation-delay: 0.02s; }
+.cinematic .cin-hero h1.cin-h1-built .cin-ln:nth-child(2) > span { animation-delay: 0.10s; }
+.cinematic .cin-hero h1.cin-h1-built .cin-ln:nth-child(3) > span { animation-delay: 0.18s; }
+
+.cinematic .cin-build {
+  margin-top: 34px;
+  width: 100%;
+  max-width: 680px;
+  opacity: 0;
+  transform: translateY(16px);
+  animation: cin-rise 1s var(--cin-ease) 2.05s forwards;
+}
+.cinematic .cin-build-console {
+  display: flex;
+  align-items: stretch;
+  max-width: 600px;
+  margin: 0 auto;
+  border: 1px solid var(--cin-line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.025);
+  overflow: hidden;
+  backdrop-filter: blur(6px);
+}
+.cinematic .cin-seg {
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: left;
+  padding: 10px 14px;
+  border-right: 1px solid var(--cin-line);
+  transition: background 0.2s var(--cin-ease);
+}
+.cinematic .cin-seg label {
+  display: block;
+  font-family: var(--cin-font-mono);
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cin-faint);
+  margin-bottom: 4px;
+  transition: color 0.2s var(--cin-ease);
+}
+.cinematic .cin-seg input,
+.cinematic .cin-seg select {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--cin-ink);
+  font-family: var(--cin-font-sans);
+  font-weight: 400;
+  font-size: 14px;
+  outline: none;
+  padding: 0;
+}
+.cinematic .cin-seg select { cursor: pointer; appearance: none; -webkit-appearance: none; }
+.cinematic .cin-seg select option { background: #0c0d12; color: var(--cin-ink); }
+.cinematic .cin-seg input::placeholder { color: var(--cin-faint); }
+.cinematic .cin-seg:focus-within { background: rgba(86, 179, 255, 0.07); }
+.cinematic .cin-seg:focus-within label { color: var(--cin-accent); }
+.cinematic .cin-seg-go {
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(105deg, var(--cin-accent), var(--cin-cyan));
+  color: #04121f;
+  font-family: var(--cin-font-sans);
+  font-weight: 500;
+  font-size: 14px;
+  padding: 0 22px;
+  white-space: nowrap;
+}
+@media (max-width: 560px) {
+  .cinematic .cin-build-console { flex-direction: column; }
+  .cinematic .cin-seg { border-right: none; border-bottom: 1px solid var(--cin-line); }
+  .cinematic .cin-seg-go { padding: 13px; }
+}
+.cinematic .cin-build-hint { margin-top: 14px; font-size: 13px; color: var(--cin-faint); }
+.cinematic .cin-build-hint a { color: var(--cin-accent); text-decoration: none; }
+.cinematic .cin-build-hint a:hover { color: var(--cin-cyan); }
+
+.cinematic .cin-buildout {
+  position: relative;
+  padding: 36px var(--cin-gutter) 84px;
+  display: flex;
+  justify-content: center;
+}
+.cinematic .cin-buildout::before {
+  content: "";
+  position: absolute;
+  inset: -8% 0 18% 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(58% 50% at 50% 28%, rgba(31, 79, 255, 0.16), transparent 70%);
+  filter: blur(50px);
+}
+.cinematic .cin-bo-card {
+  width: 100%;
+  max-width: 940px;
+  border: 1px solid var(--cin-line);
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(13, 14, 20, 0.6);
+  box-shadow: 0 50px 120px -40px rgba(0, 0, 0, 0.85);
+  opacity: 0;
+  transform: translateY(28px) scale(0.985);
+  transition: opacity 1s var(--cin-ease), transform 1s var(--cin-ease);
+}
+.cinematic .cin-bo-card.in { opacity: 1; transform: none; }
+.cinematic .cin-bo-bar {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--cin-line);
+  background: rgba(255, 255, 255, 0.02);
+}
+.cinematic .cin-bo-tl { display: flex; gap: 6px; }
+.cinematic .cin-bo-tl i { width: 10px; height: 10px; border-radius: 50%; background: rgba(255, 255, 255, 0.18); }
+.cinematic .cin-bo-title {
+  font-family: var(--cin-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cin-mut);
+  margin-left: 6px;
+}
+.cinematic .cin-bo-live {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--cin-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--cin-cyan);
+}
+.cinematic .cin-bo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--cin-line);
+}
+.cinematic .cin-bo-panel {
+  background: rgba(8, 9, 13, 0.85);
+  padding: 18px;
+  opacity: 0;
+  transform: translateY(18px) scale(0.96);
+  transition: opacity 0.8s var(--cin-ease), transform 0.8s var(--cin-ease);
+}
+.cinematic .cin-bo-panel.in { opacity: 1; transform: none; }
+.cinematic .cin-bo-hd {
+  font-family: var(--cin-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cin-mut);
+  margin-bottom: 12px;
+}
+.cinematic .cin-bo-line { height: 8px; border-radius: 5px; background: rgba(255, 255, 255, 0.1); margin: 8px 0; }
+.cinematic .cin-bo-line.acc { background: var(--cin-accent); width: 48%; }
+.cinematic .cin-bo-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--cin-mut);
+  padding: 7px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+.cinematic .cin-bo-row:first-of-type { border-top: none; }
+.cinematic .cin-bo-pill {
+  font-size: 9px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: rgba(86, 179, 255, 0.16);
+  color: var(--cin-accent);
+  white-space: nowrap;
+}
+.cinematic .cin-bo-pill.g { background: rgba(57, 230, 212, 0.16); color: var(--cin-cyan); }
+.cinematic .cin-bo-panel svg { display: block; width: 100%; height: 54px; }
+@media (max-width: 680px) {
+  .cinematic .cin-bo-grid { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cinematic .cin-build { animation: none; opacity: 1; transform: none; }
+  .cinematic .cin-bo-card,
+  .cinematic .cin-bo-panel { transition: none; opacity: 1; transform: none; }
+}
+
+/* ============================================================================
+ * Queue item 12 — responsive pass (<=560px) for the hero "Build it" console +
+ * the assembling dashboard, and the hero-CTA clusters shared by the preview
+ * pages. ADDITIVE ONLY: every rule below targets an existing cin-* class and
+ * is gated behind a small-screen media query, so nothing above is altered.
+ *
+ * Preview pages (/preview/[token] + services/about/contact/Proof/Faq) are
+ * inline-styled and already fluid — auto-fit minmax() grids collapse to one
+ * column, type uses clamp(), padding uses vw, rows/nav use flex-wrap — so they
+ * need no new rules of their own down to ~320px; the only cinematic.css hooks
+ * they share are the .cin-hcta CTA clusters, tightened here.
+ * ========================================================================== */
+@media (max-width: 560px) {
+  /* Hero CTA clusters (homepage hero + every preview page): stack the buttons
+     full-width so the pair never crowds or clips on a phone, with a roomier
+     tap target. Scoped to .cin-hcta, so nav/footer buttons are untouched. */
+  .cinematic .cin-hcta { flex-direction: column; align-items: stretch; gap: 10px; }
+  .cinematic .cin-hcta .cin-btn { width: 100%; text-align: center; padding: 13px 20px; }
+
+  /* Build console: it already switches to a vertical stack at 560px; trim the
+     segment padding and lift so the stacked fields read comfortably. */
+  .cinematic .cin-build { margin-top: 26px; }
+  .cinematic .cin-seg { padding: 9px 13px; }
+  .cinematic .cin-build-hint { font-size: 12.5px; }
+
+  /* Assembling dashboard: trim chrome so the single-column card fits cleanly,
+     and let a long business title ellipsize instead of shoving the live badge
+     off-screen (the bar is a non-wrapping flex row). */
+  .cinematic .cin-buildout { padding-top: 22px; padding-bottom: 56px; }
+  .cinematic .cin-bo-card { border-radius: 14px; }
+  .cinematic .cin-bo-bar { padding: 11px 13px; gap: 7px; }
+  .cinematic .cin-bo-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .cinematic .cin-bo-panel { padding: 15px; }
+}
+
+/* ============================================================================
+ * Queue item 13 — accessibility pass for the generator UI (hero builder +
+ * preview pages). ADDITIVE ONLY: every rule targets an existing or newly-added
+ * cin-* hook and adds visible keyboard focus / hover affordances where the
+ * markup previously had none. Nothing above is modified.
+ *
+ * Context: the preview pages reference .cin-proof-card (Proof cards) and
+ * .cin-link (FAQ pricing link) but those classes had NO CSS, so keyboard users
+ * got no focus ring; the shared preview nav links (.cin-pnav) and the hero's
+ * .cin-seg-go / .cin-build-hint links likewise lacked a focus-visible style.
+ * Reduced-motion for the assembling dashboard is already handled above
+ * (.cin-bo-card/.cin-bo-panel reduced-motion block + the Hero IO fallback that
+ * adds `.in` immediately), so no new motion rules are needed here.
+ * ========================================================================== */
+
+/* Skip-to-content link (preview layout.tsx): off-screen until focused, then
+   pinned top-left as a real, visible control. Mirrors .cin-sr-only's hiding. */
+.cinematic.cin-skip,
+.cinematic .cin-skip {
+  position: absolute;
+  left: 8px;
+  top: -56px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: var(--cin-accent);
+  color: #07080c;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: top 0.15s var(--cin-ease, ease);
+}
+.cinematic.cin-skip:focus,
+.cinematic .cin-skip:focus { top: 8px; outline: 2px solid var(--cin-ink); outline-offset: 2px; }
+
+/* Shared preview nav links (layout.tsx brand + Home/Services/About/Contact). */
+.cinematic .cin-pnav { border-radius: 6px; transition: color 0.15s var(--cin-ease, ease); }
+.cinematic .cin-pnav:hover { color: var(--cin-ink) !important; }
+.cinematic .cin-pnav:focus-visible {
+  outline: 2px solid var(--cin-accent);
+  outline-offset: 3px;
+  color: var(--cin-ink) !important;
+}
+
+/* Proof cards (Proof.tsx) — clickable links that had no hover/focus state. */
+.cinematic .cin-proof-card { transition: border-color 0.15s var(--cin-ease, ease), background 0.15s var(--cin-ease, ease); }
+.cinematic .cin-proof-card:hover { border-color: var(--cin-accent); background: rgba(255, 255, 255, 0.04); }
+.cinematic .cin-proof-card:focus-visible { outline: 2px solid var(--cin-accent); outline-offset: 3px; }
+
+/* Inline text link (FAQ pricing → /pricing). */
+.cinematic .cin-link:focus-visible { outline: 2px solid var(--cin-accent); outline-offset: 2px; border-radius: 3px; }
+
+/* Hero builder: the "Build it" submit button + the build-hint links lacked a
+   keyboard focus ring (inputs already show focus via .cin-seg:focus-within). */
+.cinematic .cin-seg-go:focus-visible { outline: 2px solid var(--cin-ink); outline-offset: 3px; }
+.cinematic .cin-build-hint a:focus-visible { outline: 2px solid var(--cin-accent); outline-offset: 2px; border-radius: 3px; }
