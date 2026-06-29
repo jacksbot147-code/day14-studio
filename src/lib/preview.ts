@@ -333,9 +333,9 @@ export interface BrandPalette {
   primary: string;
   /** Secondary accent (highlights, links). */
   accent: string;
-  /** Near-black text color. */
+  /** Body text color — mood-aware: dark on light themes, light on dark themes. */
   ink: string;
-  /** Light surface / background. */
+  /** Card surface color (sits on top of the page `bg`). */
   surface: string;
 }
 
@@ -351,6 +351,12 @@ export interface BrandKit {
   name: string;
   /** One-line description of the vibe. */
   vibe: string;
+  /** Drives default text treatment: light themes = dark ink on light bg; dark themes = light ink on dark bg. */
+  mood: "light" | "dark";
+  /** Page background color (the canvas the cards sit on). */
+  bg: string;
+  /** Hero section background gradient (CSS value). */
+  heroGradient: string;
   palette: BrandPalette;
   fonts: BrandFonts;
 }
@@ -359,73 +365,109 @@ const BRAND_KITS: Record<string, BrandKit> = {
   pool: {
     name: "Coastal Clear",
     vibe: "Fresh, clean, and unmistakably water.",
-    palette: { primary: "#0077B6", accent: "#48CAE4", ink: "#14323F", surface: "#F1FAFE" },
+    mood: "light",
+    bg: "#F1FAFE",
+    heroGradient: "linear-gradient(160deg,#eaf7fd,#bfe6f7)",
+    palette: { primary: "#0077B6", accent: "#48CAE4", ink: "#14323F", surface: "#ffffff" },
     fonts: { heading: "Poppins", body: "Inter" },
   },
   lawn: {
     name: "Fresh Cut",
     vibe: "Green, grounded, and dependable.",
-    palette: { primary: "#2E7D32", accent: "#8BC34A", ink: "#1B2E1B", surface: "#F4FAF1" },
+    mood: "light",
+    bg: "#F4FAF1",
+    heroGradient: "linear-gradient(160deg,#eef7e6,#cfe9b8)",
+    palette: { primary: "#2E7D32", accent: "#8BC34A", ink: "#1B2E1B", surface: "#ffffff" },
     fonts: { heading: "Montserrat", body: "Inter" },
   },
   pressure: {
     name: "Spotless Blue",
     vibe: "Bright, high-contrast, before-and-after clean.",
-    palette: { primary: "#1565C0", accent: "#26C6DA", ink: "#10243A", surface: "#F2F8FD" },
+    mood: "light",
+    bg: "#F2F8FD",
+    heroGradient: "linear-gradient(160deg,#e8f3fc,#bfe0f5)",
+    palette: { primary: "#1565C0", accent: "#26C6DA", ink: "#10243A", surface: "#ffffff" },
     fonts: { heading: "Poppins", body: "Inter" },
   },
   handyman: {
     name: "Toolbox",
     vibe: "Sturdy, friendly, get-it-done.",
-    palette: { primary: "#C75000", accent: "#FFB74D", ink: "#2B1A0E", surface: "#FBF6F0" },
+    mood: "light",
+    bg: "#FBF6F0",
+    heroGradient: "linear-gradient(160deg,#fbeede,#f6d3a8)",
+    palette: { primary: "#C75000", accent: "#FFB74D", ink: "#2B1A0E", surface: "#ffffff" },
     fonts: { heading: "Oswald", body: "Inter" },
   },
   detailing: {
     name: "Showroom",
     vibe: "Sleek, glossy, premium finish.",
-    palette: { primary: "#1A1A1A", accent: "#C0392B", ink: "#0D0D0D", surface: "#F5F5F5" },
+    mood: "dark",
+    bg: "#0E0E10",
+    heroGradient: "linear-gradient(160deg,#161618,#0b0b0c)",
+    palette: { primary: "#E24A3B", accent: "#FF7A6B", ink: "#F5F5F5", surface: "#1a1a1d" },
     fonts: { heading: "Montserrat", body: "Inter" },
   },
   hvac: {
     name: "Comfort Zone",
     vibe: "Cool blue meets warm red — both seasons covered.",
-    palette: { primary: "#1976D2", accent: "#E64A19", ink: "#16242E", surface: "#F3F7FB" },
+    mood: "light",
+    bg: "#F3F7FB",
+    heroGradient: "linear-gradient(160deg,#eaf2fb,#d2e6f7)",
+    palette: { primary: "#1976D2", accent: "#E64A19", ink: "#16242E", surface: "#ffffff" },
     fonts: { heading: "Poppins", body: "Inter" },
   },
   cleaning: {
     name: "Fresh Linen",
     vibe: "Light, airy, and immaculate.",
-    palette: { primary: "#00897B", accent: "#80CBC4", ink: "#15302C", surface: "#F3FBF9" },
+    mood: "light",
+    bg: "#F3FBF9",
+    heroGradient: "linear-gradient(160deg,#e9f7f4,#c7ebe4)",
+    palette: { primary: "#00897B", accent: "#80CBC4", ink: "#15302C", surface: "#ffffff" },
     fonts: { heading: "Quicksand", body: "Inter" },
   },
   pest: {
     name: "All Clear",
     vibe: "Confident, protective, reassuring.",
-    palette: { primary: "#33691E", accent: "#F9A825", ink: "#1E2812", surface: "#F7FAF0" },
+    mood: "light",
+    bg: "#F7FAF0",
+    heroGradient: "linear-gradient(160deg,#f0f6e4,#dceabf)",
+    palette: { primary: "#33691E", accent: "#F9A825", ink: "#1E2812", surface: "#ffffff" },
     fonts: { heading: "Montserrat", body: "Inter" },
   },
   salon: {
     name: "Chair & Mirror",
     vibe: "Stylish, modern, a little bit luxe.",
-    palette: { primary: "#6A1B9A", accent: "#EC407A", ink: "#241029", surface: "#FAF4FB" },
+    mood: "dark",
+    bg: "#1a1018",
+    heroGradient: "linear-gradient(160deg,#2a1530,#160a1c)",
+    palette: { primary: "#EC407A", accent: "#CBA6E0", ink: "#FAF4FB", surface: "#241029" },
     fonts: { heading: "Playfair Display", body: "Inter" },
   },
   roofing: {
     name: "Topline",
     vibe: "Solid, trustworthy, built to last.",
-    palette: { primary: "#37474F", accent: "#FF7043", ink: "#1B2429", surface: "#F4F6F7" },
+    mood: "dark",
+    bg: "#1B2429",
+    heroGradient: "linear-gradient(160deg,#28353c,#161e22)",
+    palette: { primary: "#FF7043", accent: "#FFB199", ink: "#F4F6F7", surface: "#263238" },
     fonts: { heading: "Oswald", body: "Inter" },
   },
   electrician: {
     name: "Live Wire",
     vibe: "Bright, safe, and switched-on.",
-    palette: { primary: "#283593", accent: "#FFC107", ink: "#15192E", surface: "#F4F5FC" },
+    mood: "dark",
+    bg: "#14192E",
+    heroGradient: "linear-gradient(160deg,#1c2342,#10142a)",
+    palette: { primary: "#FFC107", accent: "#7E8CE0", ink: "#F4F5FC", surface: "#1f2540" },
     fonts: { heading: "Rajdhani", body: "Inter" },
   },
   other: {
     name: "Clean Slate",
     vibe: "Modern, neutral, and professional.",
-    palette: { primary: "#1F4FFF", accent: "#39E6D4", ink: "#10131A", surface: "#F4F6FB" },
+    mood: "light",
+    bg: "#F4F6FB",
+    heroGradient: "linear-gradient(160deg,#eef1fb,#d8def5)",
+    palette: { primary: "#1F4FFF", accent: "#39E6D4", ink: "#10131A", surface: "#ffffff" },
     fonts: { heading: "Poppins", body: "Inter" },
   },
 };
@@ -437,4 +479,44 @@ const BRAND_KITS: Record<string, BrandKit> = {
  */
 export function brandKit(trade: string): BrandKit {
   return BRAND_KITS[normalizeTrade(trade)] ?? BRAND_KITS.other!;
+}
+
+/**
+ * Flattened, CSS-var-ready theme for a trade's preview page. Resolves a BrandKit
+ * into the exact token set the preview layout maps onto `--pv-*` custom
+ * properties (item 2's theme plumbing). Pure — no I/O. `line` is a subtle border
+ * tone derived from the mood (hairline dividers/card borders).
+ */
+export interface PreviewTheme {
+  mood: "light" | "dark";
+  /** Page background. */
+  bg: string;
+  primary: string;
+  accent: string;
+  /** Body text color (mood-aware). */
+  ink: string;
+  /** Card surface. */
+  surface: string;
+  /** Hairline/border color, mood-derived. */
+  line: string;
+  /** Hero background gradient (CSS value). */
+  heroGradient: string;
+  headingFont: string;
+  bodyFont: string;
+}
+
+export function previewTheme(trade: string): PreviewTheme {
+  const k = brandKit(trade);
+  return {
+    mood: k.mood,
+    bg: k.bg,
+    primary: k.palette.primary,
+    accent: k.palette.accent,
+    ink: k.palette.ink,
+    surface: k.palette.surface,
+    line: k.mood === "dark" ? "rgba(255,255,255,0.12)" : "rgba(15,23,42,0.10)",
+    heroGradient: k.heroGradient,
+    headingFont: k.fonts.heading,
+    bodyFont: k.fonts.body,
+  };
 }
