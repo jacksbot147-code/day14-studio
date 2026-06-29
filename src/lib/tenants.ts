@@ -71,8 +71,38 @@ function loadRegistry(): TenantRegistry {
   }
 }
 
+/**
+ * Map a `stage` value (newer-schema entries use this) to a dashboard
+ * `status` bucket when an explicit `status` is absent.
+ *   active   → active   ·  launching → active (in-market)
+ *   planning → paused   ·  anything else → active (so it never hides)
+ */
+function stageToStatus(stage: unknown): TenantStatus {
+  if (stage === "active" || stage === "launching") return "active";
+  if (stage === "planning") return "paused";
+  if (stage === "paused" || stage === "archived") return stage;
+  return "active";
+}
+
+/**
+ * Coerce any registry entry into a complete Tenant. Older entries use
+ * `name`/`status`/`billing`; newer ones use `display_name`/`stage` and omit
+ * billing. Without this, an entry missing `status` falls into no dashboard
+ * bucket and silently disappears, and a missing `name` renders blank.
+ */
+function normalizeTenant(raw: Tenant & { display_name?: string; stage?: string }): Tenant {
+  return {
+    ...raw,
+    name: raw.name ?? raw.display_name ?? raw.slug,
+    status: raw.status ?? stageToStatus(raw.stage),
+    owner: raw.owner ?? "jack",
+    enabled_skill_packs: raw.enabled_skill_packs ?? [],
+    billing: raw.billing ?? { stripe_account: "default", tier: null, monthly_amount: 0 },
+  };
+}
+
 export function getTenants(): Tenant[] {
-  return loadRegistry().tenants;
+  return loadRegistry().tenants.map((t) => normalizeTenant(t));
 }
 
 export function getActiveTenants(): Tenant[] {

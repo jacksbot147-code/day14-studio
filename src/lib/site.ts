@@ -189,7 +189,15 @@ export const FAQ: Array<{ q: string; a: string }> = [
   },
 ];
 
-export type VerticalSlug = "mobile-service" | "membership" | "food";
+export type VerticalSlug =
+  | "mobile-service"
+  | "membership"
+  | "food"
+  | "pool-service"
+  | "lawn-care"
+  | "pressure-washing"
+  | "handyman"
+  | "mobile-detailing";
 
 export type Vertical = {
   slug: VerticalSlug;
@@ -322,6 +330,176 @@ export const VERTICALS: Vertical[] = [
     ],
     exemplarSlug: "casamore",
     accent: "ink",
+  },
+  {
+    slug: "pool-service",
+    name: "Pool service companies",
+    shortName: "Pool service",
+    tagline:
+      "Route-based pool care — cleaning, chemistry, repairs — for techs driving job to job across Southwest Florida.",
+    examples: [
+      "Weekly cleaning routes",
+      "Chemical-only service",
+      "Equipment repair",
+      "Green-to-clean",
+      "Commercial pools",
+      "Seasonal openings + closings",
+    ],
+    recommendedSkus: ["portal", "platform"],
+    painPoints: [
+      "Customer chemistry + history live in your head, on paper, or in a Sheet",
+      "Photo proof of each visit is buried in a text thread nobody can find",
+      "Invoices go out by hand and late payments get chased by hand",
+      "Every Sunday is reschedule phone-tag",
+      "There's no site that ranks for “pool service near me”",
+    ],
+    features: [
+      "Branded customer portal — visit history, chemistry, photos, magic-link login",
+      "Auto day-of-week route scheduling (Platform tier)",
+      "GPS + timestamp photo-proof on every visit",
+      "Stripe recurring billing + auto-invoicing",
+      "SMS reminders the day before each visit",
+      "24/7 online quote + service request",
+      "AI chatbot trained on your services and pricing",
+    ],
+    exemplarSlug: "splash-jacks-pools",
+    accent: "ember",
+  },
+  {
+    slug: "lawn-care",
+    name: "Lawn & landscaping crews",
+    shortName: "Lawn care",
+    tagline:
+      "Mowing routes, landscaping, and maintenance contracts — built for crews running a full SWFL schedule.",
+    examples: [
+      "Weekly mowing routes",
+      "Landscape installs",
+      "Fertilization + pest programs",
+      "Irrigation service",
+      "Seasonal cleanups",
+      "Commercial grounds",
+    ],
+    recommendedSkus: ["portal", "platform"],
+    painPoints: [
+      "Customers and schedules live on paper or a Google Sheet",
+      "Quotes go out as texts and voicemails, not a real system",
+      "Rain reschedules turn into a morning of phone-tag",
+      "Maintenance-plan billing is chased by hand",
+      "A Facebook page stands in for an actual website",
+    ],
+    features: [
+      "Day-of-week route scheduling with reschedule notices",
+      "24/7 online quote requests, structured and booked",
+      "Stripe recurring billing for maintenance plans",
+      "Before/after photo proof on every job",
+      "SMS reminders + rain-delay notifications",
+      "Customer portal with full service history",
+      "AI chatbot that quotes and answers FAQs",
+    ],
+    exemplarSlug: "splash-jacks-pools",
+    accent: "shipped",
+  },
+  {
+    slug: "pressure-washing",
+    name: "Pressure & soft-washing companies",
+    shortName: "Pressure washing",
+    tagline:
+      "House, driveway, roof, and commercial washing — the trade where the before/after sells the job.",
+    examples: [
+      "House + driveway washing",
+      "Roof soft-wash",
+      "Paver sealing",
+      "Commercial + fleet washing",
+      "Gutter cleaning",
+      "Rust + stain removal",
+    ],
+    recommendedSkus: ["local", "portal"],
+    painPoints: [
+      "Your best before/afters are trapped on your phone",
+      "Instant-quote jobs go to whoever answers the phone first",
+      "No way for a customer to book or pay a deposit online",
+      "Payments and deposits are collected by hand",
+      "No site to rank for the searches happening in your town",
+    ],
+    features: [
+      "A before/after gallery site that does the selling",
+      "Instant online quote + booking, 24/7",
+      "Stripe deposits + payment to lock the job",
+      "SMS confirmations and reminders",
+      "Customer portal with job history and photos",
+      "Automated review requests after each job",
+      "AI chatbot that quotes and answers FAQs",
+    ],
+    exemplarSlug: "splash-jacks-pools",
+    accent: "ink",
+  },
+  {
+    slug: "handyman",
+    name: "Handyman & home-repair pros",
+    shortName: "Handyman",
+    tagline:
+      "Punch-list repairs, installs, and small projects — booked, quoted, and tracked without the phone-tag.",
+    examples: [
+      "Home repairs",
+      "TV + fixture installs",
+      "Drywall + paint",
+      "Furniture assembly",
+      "Honey-do lists",
+      "Property-manager work",
+    ],
+    recommendedSkus: ["local", "portal"],
+    painPoints: [
+      "Estimates go out as texts; jobs are tracked in your head",
+      "You advertise “free estimates” with no way to request one online",
+      "Payments and deposits get chased by hand",
+      "Scheduling is a running text thread",
+      "There's no real website — just a Facebook page",
+    ],
+    features: [
+      "24/7 online quote + job request, structured on arrival",
+      "Scheduling with automatic reminders",
+      "Stripe invoicing + deposits",
+      "Photo proof + job-history customer portal",
+      "AI chatbot that triages incoming requests",
+      "Automated review requests",
+      "A real site that ranks for local searches",
+    ],
+    exemplarSlug: "splash-jacks-pools",
+    accent: "ember",
+  },
+  {
+    slug: "mobile-detailing",
+    name: "Mobile auto & boat detailing",
+    shortName: "Mobile detailing",
+    tagline:
+      "Car, boat, and fleet detailing that comes to the customer — where the calendar is the whole business.",
+    examples: [
+      "Mobile car detailing",
+      "Boat + yacht detailing",
+      "Ceramic coating",
+      "Fleet detailing",
+      "RV detailing",
+      "Monthly maintenance plans",
+    ],
+    recommendedSkus: ["local", "portal"],
+    painPoints: [
+      "Bookings come in by DM or a “text this keyword” hack",
+      "The calendar is juggled by hand and double-books happen",
+      "No deposits means no-shows eat the day",
+      "Payments are collected by hand",
+      "The whole presence is Instagram + Facebook, no site",
+    ],
+    features: [
+      "Online booking with a real calendar and open slots",
+      "Stripe deposits to kill no-shows",
+      "Package + membership billing",
+      "SMS reminders before each appointment",
+      "Before/after gallery + customer portal",
+      "Automated review requests",
+      "AI chatbot that quotes and books",
+    ],
+    exemplarSlug: "splash-jacks-pools",
+    accent: "shipped",
   },
 ];
 

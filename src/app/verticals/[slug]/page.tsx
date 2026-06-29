@@ -5,6 +5,17 @@ import { CanvasField } from "@/components/cinematic/CanvasField";
 import { Nav } from "@/components/cinematic/Nav";
 import { SiteFooter } from "@/components/cinematic/SiteFooter";
 import { Reveal } from "@/components/cinematic/Reveal";
+import { RoiCalculator } from "@/components/cinematic/RoiCalculator";
+
+/** Maps a vertical slug to the ROI calculator's trade preset, when there's a
+ *  clean 1:1 (the trade-specific pages). Broad lanes fall back to the default. */
+const ROI_TRADE: Record<string, string> = {
+  "pool-service": "pool",
+  "lawn-care": "lawn",
+  "pressure-washing": "pressure",
+  handyman: "handyman",
+  "mobile-detailing": "detailing",
+};
 
 /**
  * /verticals/[slug] — per-vertical landing page, in the cinematic skin.
@@ -231,6 +242,9 @@ export default function VerticalPage({ params }: { params: Params }) {
             </Reveal>
           </section>
         ) : null}
+
+        {/* ROI estimator — defaults to this vertical's trade where there's a match */}
+        <RoiCalculator initialTrade={ROI_TRADE[v.slug]} />
 
         {/* Final CTA */}
         <section className="cin-detail-block cin-detail-final">

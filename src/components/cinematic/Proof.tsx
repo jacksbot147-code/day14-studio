@@ -25,11 +25,13 @@ import { Reveal } from "./Reveal";
 import { CIN_STAGGER, observeReveal, prefersReducedMotion } from "./motion";
 
 interface Tile {
-  variant: "t1" | "t2";
+  variant: "t1" | "t2" | "t3" | "t4";
   tag: string;
   name: string;
   blurb: string;
   href: string;
+  /** When set, opens in the same tab (internal route) rather than a new tab. */
+  internal?: boolean;
 }
 
 const TILES: readonly Tile[] = [
@@ -48,6 +50,26 @@ const TILES: readonly Tile[] = [
     blurb:
       "A live staffing platform — credentialing, matching, ops — proving the engine scales into high-fee work.",
     href: "https://alignmd.vercel.app",
+  },
+  {
+    variant: "t3",
+    tag: "contractor marketplace · preview",
+    name: "BuildBridge",
+    blurb:
+      "Homeowners and contractors — bid, escrow, build, done. The most complex build the engine ships. Walk the guided preview.",
+    // INTERIM LINK: internal guided walkthrough (real, already live). Swap to
+    // the production BuildBridge URL once it's green — change href + drop
+    // `internal` + set tag to "· live" if it's publicly pokeable.
+    href: "/case-studies/buildbridge",
+    internal: true,
+  },
+  {
+    variant: "t4",
+    tag: "silent disco · live",
+    name: "Casamoré",
+    blurb:
+      "A live brand that runs itself — pages, essays, posters, waitlist, kept fresh by scheduled agents. See the real site.",
+    href: "https://houseoflove.co",
   },
 ];
 
@@ -108,8 +130,9 @@ export function Proof() {
         Same engine. Wildly different businesses.
       </Reveal>
       <Reveal as="p" delayStep={1} className="cin-proof-sub">
-        A pool route and a healthcare-staffing platform run on the exact same
-        system. If it can do both, it can run yours.
+        A pool route, a healthcare-staffing platform, a contractor marketplace,
+        and a live brand — all on the exact same system. If it runs these, it
+        can run yours.
       </Reveal>
 
       <div className="cin-tiles" ref={tilesRef}>
@@ -121,8 +144,8 @@ export function Proof() {
               { "--reveal-delay": `${i * CIN_STAGGER}s` } as CSSProperties
             }
             href={tile.href}
-            target="_blank"
-            rel="noopener noreferrer"
+            target={tile.internal ? undefined : "_blank"}
+            rel={tile.internal ? undefined : "noopener noreferrer"}
             data-tilt
           >
             <span className="cin-tile-glow" aria-hidden="true" />

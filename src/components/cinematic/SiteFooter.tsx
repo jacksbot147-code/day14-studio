@@ -8,12 +8,13 @@
  */
 
 import { SITE } from "@/lib/site";
+import { Reveal } from "./Reveal";
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="cin-footer">
+    <Reveal as="footer" className="cin-footer" stagger>
       <div className="cin-foot-brand">
         <b>14</b>
         {SITE.brand}
@@ -25,7 +26,7 @@ export function SiteFooter() {
       <div className="cin-foot-copy">
         © {year} {SITE.brand}
       </div>
-    </footer>
+    </Reveal>
   );
 }
 

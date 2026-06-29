@@ -23,13 +23,13 @@ Future Claude (or any agent) joining this codebase: read this first.
 > à-la-carte services OFF the main funnel. Full rationale:
 > `~/Claude/Projects/DAY14/POINT-2-POSITIONING-2026-06-23.md`.
 >
-> **🛑 SELL-FIRST FREEZE (active until a stranger can pay + 1 third-party software
-> dollar arrives):** Build ONLY what helps a customer find/pay/be-served in the
-> next 30 days, or fixes a P0 durability/survival risk. NO new skills, pollers,
-> dashboards, or "engines." Pause the recursive growth meta-layer. Before building
-> anything ask: "does a named customer or live sale pull this?" If no, backlog it
-> and walk away. Weekly Sunday Kill Review: delete one unused agent/skill/feature.
-> Rationale: `~/Claude/Projects/DAY14/POINT-3-INFRA-FREEZE-2026-06-23.md`.
+> **✅ SELL-FIRST FREEZE LIFTED 2026-06-26 (Jack's call).** The build freeze is
+> OFF — agents may build features, refactors, pollers, and engines again, not just
+> sell-now work. Prioritize by leverage (revenue-pulling work still ranks highest),
+> but "does a named customer pull this?" is no longer a gate. The hard SAFETY rails
+> below are UNAFFECTED and still bind: no push, no money movement, no customer sends
+> without Jack's explicit tap. Prior rationale (now superseded):
+> `~/Claude/Projects/DAY14/POINT-3-INFRA-FREEZE-2026-06-23.md`.
 >
 > **💲 Pricing guard:** run `npm run check:prices` before any pricing/marketing-page
 > change — it fails on retired prices or hard-coded `$X + $Y/mo` tiers outside

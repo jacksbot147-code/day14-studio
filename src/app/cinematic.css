@@ -967,7 +967,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 22px;
   perspective: 1200px;
-  max-width: 1000px;
+  max-width: 1040px;
   margin: 0 auto;
 }
 .cinematic .cin-tile {
@@ -1010,6 +1010,12 @@
 .cinematic .cin-tile-t2 .cin-tile-glow {
   background: radial-gradient(60% 60% at 72% 18%, var(--cin-teal), transparent);
 }
+.cinematic .cin-tile-t3 .cin-tile-glow {
+  background: radial-gradient(60% 60% at 50% 18%, #7c5cff, transparent);
+}
+.cinematic .cin-tile-t4 .cin-tile-glow {
+  background: radial-gradient(60% 60% at 60% 18%, #ef6c33, transparent);
+}
 .cinematic .cin-tile-scan {
   position: absolute;
   inset: 0;
@@ -1044,9 +1050,10 @@
   line-height: 1.6;
   max-width: 34ch;
 }
-@media (max-width: 860px) {
+@media (max-width: 720px) {
   .cinematic .cin-tiles {
     grid-template-columns: 1fr;
+    max-width: 540px;
   }
 }
 
@@ -2757,4 +2764,134 @@
   text-transform: uppercase;
   color: var(--cin-faint);
   font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================================
+ * ROI / savings calculator (.cin-roi*) — homepage estimator + vertical pages.
+ * Added 2026-06-28. Uses existing tokens; honest estimate, no price quoting.
+ * ========================================================================== */
+.cinematic .cin-roi-head {
+  max-width: 60ch;
+  margin: 0 auto 48px;
+  text-align: center;
+}
+.cinematic .cin-roi-card {
+  max-width: 980px;
+  margin: 0 auto;
+  border: 1px solid var(--cin-line);
+  border-radius: var(--cin-radius);
+  background: rgba(255, 255, 255, 0.02);
+  padding: clamp(22px, 3vw, 40px);
+}
+.cinematic .cin-roi-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 26px 36px;
+}
+.cinematic .cin-roi-field {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.cinematic .cin-roi-field label {
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: var(--cin-mut);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+.cinematic .cin-roi-field label b {
+  font-weight: 500;
+  color: var(--cin-accent);
+  font-variant-numeric: tabular-nums;
+}
+.cinematic .cin-roi-select {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--cin-ink);
+  border: 1px solid var(--cin-line);
+  border-radius: var(--cin-radius-sm);
+  padding: 12px 14px;
+  font-family: var(--cin-font-sans);
+  font-size: 15px;
+  cursor: pointer;
+}
+.cinematic .cin-roi-select:focus-visible {
+  outline: none;
+  border-color: var(--cin-accent);
+  box-shadow: 0 0 0 3px rgba(86, 179, 255, 0.4);
+}
+.cinematic .cin-roi-field input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 3px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.14);
+  outline: none;
+}
+.cinematic .cin-roi-field input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--cin-accent);
+  cursor: pointer;
+  box-shadow: 0 0 0 4px rgba(86, 179, 255, 0.18);
+}
+.cinematic .cin-roi-field input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 50%;
+  background: var(--cin-accent);
+  cursor: pointer;
+}
+.cinematic .cin-roi-field input[type="range"]:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px rgba(86, 179, 255, 0.45);
+}
+.cinematic .cin-roi-out {
+  margin-top: 38px;
+  padding-top: 30px;
+  border-top: 1px solid var(--cin-line);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+.cinematic .cin-roi-stat-hero .cin-roi-v {
+  color: var(--cin-accent);
+}
+.cinematic .cin-roi-v {
+  font-size: clamp(26px, 3.4vw, 40px);
+  font-weight: var(--cin-weight-light);
+  letter-spacing: var(--cin-tracking-tight);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.cinematic .cin-roi-l {
+  margin-top: 10px;
+  font-size: 12.5px;
+  color: var(--cin-mut);
+  line-height: 1.4;
+}
+.cinematic .cin-roi-note {
+  margin-top: 26px;
+  font-size: 12.5px;
+  color: var(--cin-faint);
+  line-height: 1.6;
+  max-width: 70ch;
+}
+.cinematic .cin-roi-cta {
+  margin-top: 28px;
+}
+@media (max-width: 720px) {
+  .cinematic .cin-roi-controls {
+    grid-template-columns: 1fr;
+  }
+  .cinematic .cin-roi-out {
+    grid-template-columns: 1fr 1fr;
+  }
 }

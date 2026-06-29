@@ -156,7 +156,7 @@ Automate-and-own is operationally heavy, ties you to each business, and equity i
 A full, honest scope of what Day14 has built and where the profitable pivots are. Companion to [[Day14 — Strategic Direction]]. Written as the challenge-first read, not a victory lap.
 
 ## What's been built (the scope)
-- **The OS itself:** a studio repo (Next.js, day14.us) with ~211 skill specs, a fleet of "employee" agents (CFO, sales, customer-success, compliance, PR, etc.), always-on pollers (Telegram, events, growth-watcher with a recursive skill-drafting layer), a dashboard, and an audit/work-register telemetry spine. See [[Day14 OS — System Map]], [[Agent Roster]].
+- **The OS itself:** a studio repo (Next.js, day14.us) with ~282 skill specs (+ 60 hand-coded TS skills; 2026-06-25 audit) `[Certain]`, a fleet of "employee" agents (CFO, sales, customer-success, compliance, PR, etc.), always-on pollers (Telegram, events, growth-watcher with a recursive skill-drafting layer), a dashboard, and an audit/work-register telemetry spine. See [[Day14 OS — System Map]], [[Agent Roster]].
 - **A live website relaunch:** the cinematic day14.us is live (2026-06-25) — homepage + 8 `/platform` capability pages + CTA analytics.
 - **Businesses:** [[Business — alignmd]] (partner healthcare-staffing SaaS, deployed live), [[Business — Splash Jacks Pools]] (3 live pool customers; the field-service software proof), [[Business — day14-realty]] (county-records deal sourcing), [[Business — life-loophole]] (financial-freedom / tax product, planning). Retired: hot-flash-co + kennum ([[Build Lessons — Retired Brands]]).
 - **A productized agency offer:** Spark → Platform service tiers in `pricing.ts`.
@@ -199,7 +199,7 @@ Agent-run, multi-business system on Jack's Mac mini.
 
 ## Repo & layout
 
-- **Studio repo:** `~/Documents/studio` (Next.js, dev server `:3000`, ~211 skill specs, dashboard at `/dashboard`).
+- **Studio repo:** `~/Documents/studio` (Next.js, dev server `:3000`, ~282 skill specs + 60 hand-coded TS skills per the 2026-06-25 code audit `[Certain]`, dashboard at `/dashboard`, the multi-tenant [[Agent Oversight (Command Deck)|Command Deck]] at `/dashboard/agents`).
 - **Shared state:** `~/Documents/businesses/_shared/`
   - `poller/` — poller heartbeats
   - `telegram/outbox/` — Telegram outbox
@@ -255,12 +255,12 @@ Full detail in [[Businesses — Overview]]. Active portfolio:
 
 # Agent Roster
 
-The full Day14 agent workforce, grounded in a 2026-06-25 code audit. This is the "who's on the team" reference; the coordination design is in [[Agent Org & Orchestration]], oversight in [[Agent Oversight (Command Deck)]].
+The full Day14 agent workforce, grounded in a 2026-06-25 code audit (LLM-stack facts refreshed 2026-06-26 for the C-suite migration). This is the "who's on the team" reference; the coordination design is in [[Agent Org & Orchestration]], oversight in [[Agent Oversight (Command Deck)]].
 
 > **Correction to CLAUDE.md:** it says "211 skills / 6 hand-coded." Actual: **282 SKILL.md specs, 60 hand-coded TS skills** (`src/lib/skills/*.ts`). The doc undercounts the skill layer ~10×. Flag to update — see [[Day14 — Current Open Items]].
 
 ## The C-suite — `scripts/employees/*.mjs` (10 agents)
-All call **Gemini directly** (no Anthropic fallback), all read `tenants.json`, all queue to the Telegram outbox, all run as **independent launchd timers** (no shared run, no handoff).
+All now route model calls through the shared **Claude-first `scripts/_generic/llm-call.mjs`** (Gemini = fallback) after the **2026-06-26 C-suite LLM migration** `[Certain]` — pre-migration they called Gemini directly (see [[Changelog — 2026-06-26]] · [[Agent Org & Orchestration]]). All read `tenants.json`, all queue to the Telegram outbox, all run as **independent launchd timers** (no shared run, no handoff).
 
 | Agent | Role | Cadence | Writes | Top gap |
 |---|---|---|---|---|
@@ -291,7 +291,12 @@ All call **Gemini directly** (no Anthropic fallback), all read `tenants.json`, a
 - `auto-todo-sync` (hourly) — syncs human todos.
 
 ## The skill layer
-282 SKILL.md specs (`docs/seeds/skills/`) + 60 hand-coded `run(ctx)` modules. Events route via `dispatch.ts` → `skill-runner.ts` (hand-coded fast path, else Claude Agent SDK loop with 6 tools: read_file, write_file, queue_telegram_card, log_action, request_jack_tap, finish). Skill loop uses **Anthropic**; the `.mjs` agents use **Gemini** — two stacks.
+282 SKILL.md specs (`docs/seeds/skills/`) + 60 hand-coded `run(ctx)` modules. Events route via `dispatch.ts` → `skill-runner.ts` (hand-coded fast path, else Claude Agent SDK loop with 6 tools: read_file, write_file, queue_telegram_card, log_action, request_jack_tap, finish). Skill loop uses **Anthropic** (Claude Agent SDK); the C-suite `.mjs` agents now route through the shared Claude-first `llm-call.mjs` as well (post-2026-06-26 migration), so the old "two stacks" split is collapsing — though ~21 other `.mjs` scripts still call Gemini directly. See [[Agent Org & Orchestration]] · [[Day14 — Current Open Items]]. `[Certain]`
+
+## Per-agent context notes (`Agents/`)
+One full context note per C-suite employee — purpose, cadence, inputs, outputs, LLM, journal location, handoff protocol, and guardrails — so each agent has its own complete brief (this table is the index; the notes are the detail).
+- [[Agents/cfo-agent]] · [[Agents/performance-analyst]] · [[Agents/sales-director]] · [[Agents/pr-director]] · [[Agents/product-strategist]]
+- [[Agents/customer-success-agent]] · [[Agents/brand-steward]] · [[Agents/compliance-officer]] · [[Agents/devops-sre]] · [[Agents/investor-relations]]
 
 ## Related
 [[Agent Org & Orchestration]] · [[Agent Oversight (Command Deck)]] · [[Day14 OS — System Map]] · [[Role — Dev & Build Agent]]
@@ -338,6 +343,13 @@ The vault → agents path is the compiled context (read-only). This is the **ret
 Where any agent (or Jack) leaves a note for future jobs, other agents, or Jack himself. **Append-only**; resolve an item by striking it through (`~~…~~`), don't delete — the history matters. Newest at the bottom. Protocol: [[Agent Journal & Handoffs]].
 
 - **2026-06-26 00:00** system → `seed`: Write-back channel is live. Agents wrapped in `tryRun` auto-journal; use `handoff()` to post here. This loop feeds back into the compiled context on the next `npm run context:compile`.
+- **2026-06-26** day-sweep → all agents / Jack: Three jobs done, vault-only. (1) Created `Agents/` with one context note per C-suite employee (10: cfo-agent, performance-analyst, sales-director, pr-director, product-strategist, customer-success-agent, brand-steward, compliance-officer, devops-sre, investor-relations) — each covers purpose, cadence, inputs, outputs, LLM (now Claude-first `llm-call.mjs`), `Agent Journal/<name>.md`, handoff protocol, guardrails; uncertain items tagged ⚠ CONFIRM. Linked from [[Agent Roster]] + [[Day14 Vault — Index]]. (2) Applied the two pending hub fixes from [[_sweeps/MORNING-BRIEF-2026-06-26]]: added [[Business — BuildBridge]] to [[Businesses — Overview]] table + Index business-scope; added [[Brand — House of Love Co]] to Overview under a new "Powered by Day14 (non-pillar)" heading (no longer an orphan). (3) Added empty `## Agent log` sections to [[Day14 — Current Open Items]], [[Business — alignmd]], [[Business — day14-realty]] for `appendToNote()` write-backs. All 541 wikilinks verified, 0 broken. **For Jack:** the per-agent notes flag several ⚠ CONFIRM gaps (exact launchd labels, dup guards, heartbeat emission on the C-suite timers) and one norm break to fix — product-strategist still overwrites `product-strategy.md` (no history).
+- **2026-06-26** day-sweep (hub-fixes verify) → all agents / Jack: Hub fixes from [[_sweeps/MORNING-BRIEF-2026-06-26]] confirmed **already in place** (a prior sweep applied them) — [[Business — BuildBridge]] is in the [[Businesses — Overview]] table (with its ⚠ framing-pending note) and the [[Day14 Vault — Index]] business-scope section; [[Brand — House of Love Co]] is reachable from Overview under the "Powered by Day14 (non-pillar)" heading. No re-apply needed (would have duplicated). Re-verified wikilinks: 563 instances, 0 broken (the 3 flagged are intentional `[[Note name]]`/`[[note]]` examples in conventions text). Vault-only, no commits/customer contact.
+- **2026-06-26** day-sweep (stripe+deploy runbook) → Jack: Wrote [[Runbook — Go Live & Get Paid]] — a copy-paste, zero-thinking runbook for the two pure-mechanics blockers that are gated on Jack, not the agents. **Part A (Stripe):** find the `acct_…` id in the dashboard account switcher / Settings → Business → Account details (or `stripe config --list`), `echo` it as `STRIPE_ACCOUNT` into `~/Documents/studio/.env.local`, `set -a && source .env.local && set +a && npx tsx scripts/create-stripe-payment-links.ts`, paste the 3 printed `STRIPE_PAYMENT_LINK_*` lines back, rebuild — noting the key is `sk_org_live` (**real charges**). **Part B (Ship):** kill `next dev` before any build, `git status`, stage the deck+backend+LLM+journal+activation paths, `npm run build` (the real gate), commit local-only, flip Vercel Production Branch `main → redesign`, push. Every command is a bare ```bash block with **no inline `#` comments** (zsh treats `#` as an arg, per [[Shell Handoff Rules (zsh)]]). Linked from [[Day14 — Current Open Items]]. **Jack still executes** — runbook does not push, charge, or contact anyone. Vault-only, no commits/customer contact.
+- **2026-06-26** day-sweep (per-agent notes verify) → all agents / Jack: Confirmed the `Agents/` per-employee context notes already exist and are **complete** — all 10 (cfo-agent, performance-analyst, sales-director, pr-director, product-strategist, customer-success-agent, brand-steward, compliance-officer, devops-sre, investor-relations) carry every required section (purpose · cadence · inputs · outputs · LLM = Claude-first `llm-call.mjs` · journal `Agent Journal/<name>.md` · handoff protocol · guardrails · known gap), and all 10 are linked from [[Agent Roster]]. No re-create (would have duplicated). Re-verified wikilinks: 574 instances, 0 broken (5 flagged are the intentional `[[Note name]]`/`[[note]]` protocol examples). Open ⚠ CONFIRM items still standing for Jack: exact launchd labels, dup guards, and heartbeat emission on the C-suite timers; plus the norm break to fix — product-strategist overwrites `product-strategy.md` (no history). Vault-only, no commits/customer contact.
+- **2026-06-26** `vault-curator` → all agents (DEMO — this is what a good handoff looks like): Three kinds of thing belong here, written so the *next* run can act without re-deriving context. **(1) Blocker:** "`npm run context:compile` skips `Agent Journal/` because the compiler's glob only globs `*.md` at vault root, not subfolders — per-agent run logs never reach `AGENT-CONTEXT.md`. Next devops run: widen the glob in `scripts/context-compile.mjs` to recurse, then re-verify a journal line appears in the compiled output. ⚠ unverified — I read the symptom, not the compiler source." **(2) Question for Jack:** "Should agent-log lines in business notes get pruned after they fold into the compiled context, or accrete forever? Affects whether `appendToNote()` needs a retention cap. Defaulting to accrete-forever until told otherwise." **(3) Changed assumption:** "Previously assumed every agent emits a heartbeat on its launchd timer — the C-suite timers (cfo-agent et al.) do **not** yet, so fleet-health-by-heartbeat will read them as dead. Don't alarm on missing C-suite heartbeats until the emit is wired." Resolve any of these by striking through (`~~…~~`) once handled — don't delete. Vault-only, no commits/customer contact.
+- **2026-06-26 16:50 UTC** `vault-curator` (QA/currency sweep) → all agents / Jack: Comprehensive currency pass done; the only real stale-fact cluster was the C-suite LLM migration not being reflected in [[Agent Roster]] / [[Day14 OS — System Map]] / [[Day14 — Business Scope & Pivot Points]] / [[Glossary & Conventions]] (skill count + Gemini-direct) — all fixed and confidence-tagged. Three items left **unresolved for a human, intentionally**: **(1) Minor frontmatter lag (not fixed, to avoid claiming edits I didn't make):** [[Businesses — Overview]] still reads `updated: 2026-06-22` but its body already carries the BuildBridge row + "Powered by Day14" House-of-Love section added by later sweeps; likewise [[Business — Splash Jacks Pools]], [[Business — life-loophole]], [[Business — BuildBridge]] had `## Agent log` sections appended after their `updated: 2026-06-22` stamp. A future sweep (or whoever next edits the body) should bump those four `updated` fields. **(2) Consolidation watch (not an error):** [[Day14 — Strategic Direction]] ↔ [[Day14 — Business Scope & Pivot Points]] still overlap on wedge/pivots — currently an acceptable thesis-vs-scope split, but keep one fact in one home on future edits (carried from [[_sweeps/vault-health-2026-06-26]]). **(3) Out-of-vault, already tracked:** the stale `211/6` skill counts in `CLAUDE.md` are governance (Jack edits) — logged in [[Day14 — Current Open Items]], not touched here. Vault-only, no commits/customer contact.
+- **2026-06-26** session (tenant registry + homepage proof) → all agents / Jack: **(1) tenants.json completed + bug-fixed.** Five newer-schema entries (`display_name`/`stage`, no `status`) were invisible on `/dashboard/tenants` because the dashboard buckets by `status` and a null status falls into no bucket — this is what hid day14-realty + 4 others. Fixed by hardening `src/lib/tenants.ts` `getTenants()` with `normalizeTenant()` (coalesce name←display_name←slug, derive status from stage, default owner/billing/skill_packs) **and** backfilling explicit `status` in the data. **Added 3 missing real businesses:** splash-jacks-pools, buildbridge, house-of-love-co. Registry now = **9 tenants**, all bucketed (active: day14, alignmd, life-loophole, splash-jacks-pools, buildbridge, house-of-love-co · paused: day14-realty · archived: hot-flash-co, kennum). **(2) House of Love Co = Casamoré** (Jack-confirmed same brand) — merged to one tenant `house-of-love-co` (aliases casamore/Casamoré, domain houseoflove.co); see [[Brand — House of Love Co]]. **(3) Homepage proof** (`src/components/cinematic/Proof.tsx` + `cinematic.css`) expanded 2 → **4 live tiles** (Splash Jacks, AlignMD, BuildBridge, Casamoré) in a 2×2 grid. BuildBridge links to its internal `/case-studies/buildbridge` walkthrough until Jack supplies the production URL (app built, URL pending); the other three link to live sites. **Open for Jack:** (a) BuildBridge prod URL → swap one `href` + flip tag to "· live"; (b) loader + Proof changes are **code, uncommitted** → ship on next build/commit/push (Jack-gated); tenants.json changes are **data, already live** and sit outside git (`_shared`). Vault-only, no commits/customer contact.
 
 
 ---
@@ -352,7 +364,7 @@ The language of the Day14 system, so agents speak it correctly. Terms marked **�
 - **Studio repo** — `~/Documents/studio`, the Next.js codebase: skill specs, dashboard (`/dashboard`), admin (`/admin`), and the business websites. Dev server on `:3000`.
 - **Shared state** — `~/Documents/businesses/_shared/`: the live nervous system. Holds `poller/` (heartbeats), `telegram/outbox/`, and `founder-ops/`.
 - **Founder-ops docs** — `~/Documents/businesses/_shared/founder-ops/`: `punch-list.md`, `today-YYYY-MM-DD.md`, `missed-from-jack.md`.
-- **Skill spec** — one of the ~211 capability definitions in the studio repo that drive what the OS can do. ⚠ CONFIRM exact location/format with Jack.
+- **Skill spec** — one of the ~282 capability definitions (`docs/seeds/skills/`, + 60 hand-coded TS skills) in the studio repo that drive what the OS can do; count per the 2026-06-25 audit in [[Agent Roster]] `[Certain]`. ⚠ CONFIRM exact location/format with Jack.
 - **Poller** — a background job that produces work/updates; its `poller/` heartbeat file's **mtime** is the only valid health signal.
 - **Heartbeat** — a file whose modification time proves a job is alive. **Judge health by mtime only**, never by logs or boot summaries.
 - **The fleet** — the full set of `com.day14.*` LaunchAgents running the OS on the mini.
@@ -423,6 +435,13 @@ The portfolio running on the Day14 OS. Each links to its own profile. Now ground
 | day14-realty | Real estate — county-records deal sourcing + eval | day14-owned | [[Business — day14-realty]] |
 | life-loophole | Financial-freedom brand / tax-optimization product (⚠ 2 framings) | day14-owned; top-of-funnel | [[Business — life-loophole]] |
 | alignmd | Healthcare staffing/recruiting SaaS (live) | **Partner** (Jack + buddy) | [[Business — alignmd]] |
+| BuildBridge | Field-service SaaS — the Splash Jacks software productized (⚠ SaaS-vs-marketplace fork) | day14-owned; framing pending Jack's confirmation | [[Business — BuildBridge]] |
+
+## Powered by Day14 (non-pillar)
+Served by the engine but **not** a strategic portfolio business — supported operationally when asked, no default strategic/growth focus.
+- [[Brand — House of Love Co]] — Jack's music + **silent-disco brand**, live as **Casamoré** at houseoflove.co (same brand, Jack-confirmed 2026-06-26). An internal customer of the content engine; now also a **live proof exemplar on the day14.us homepage** alongside Splash Jacks / AlignMD / BuildBridge.
+
+> **Registry currency (2026-06-26):** `tenants.json` now holds **all 9** businesses — Splash Jacks Pools, BuildBridge, and House of Love Co (Casamoré) were missing and have been added; the five newer entries were also normalized (they'd lost their dashboard rows to a null-`status` schema bug, now fixed). Statuses: Splash Jacks / alignmd / life-loophole / House of Love = active, day14-realty = paused (kill-switched), hot-flash-co / kennum = archived.
 
 ## Retired from the portfolio (2026-06-22)
 - **hot-flash-co** and **kennum-lawn-care** are **out** — not part of Day14 going forward. The build know-how is preserved in [[Build Lessons — Retired Brands]]; the brands are not active businesses or client references. Their live footprint (scripts, pollers, brand sites, `tenants.json` entries) is pending teardown — see [[Day14 — Current Open Items]].
@@ -458,6 +477,9 @@ The portfolio running on the Day14 OS. Each links to its own profile. Now ground
 - Who the buyer is (other pool cos? any field-service vertical?) and how it's sold/priced.
 - Where the platform code lives in the studio repo and its current readiness.
 
+## Agent log
+*Agents append here — one timestamped line per write-back via `appendToNote()` (see [[Agent Journal & Handoffs]]). Append, never overwrite the curated body above.*
+
 ## Related
 [[Businesses — Overview]] · [[Day14 OS — System Map]] · [[Role — Sales & Growth Agent]]
 
@@ -481,6 +503,9 @@ A Day14-owned real-estate segment. **Grounded in `tenants.json` + repo.**
 ## ⚠ CONFIRM with Jack
 - The end goal — wholesale deal flow for Jack, a tool to sell, or lead-gen for an agent partner?
 - Which county/market, and current status of the pipeline.
+
+## Agent log
+*Agents append here — one timestamped line per write-back via `appendToNote()` (see [[Agent Journal & Handoffs]]). Append, never overwrite the curated body above.*
 
 ## Related
 [[Businesses — Overview]] · [[Day14 OS — System Map]] · [[Role — Sales & Growth Agent]]
@@ -512,6 +537,9 @@ Jack's "financial-freedom content hub integrated everywhere" maps onto the regis
 - Which framing leads right now (content-brand-first vs. tax-SaaS-first), and current stage.
 - Primary channels for the content hub; how the "integrated into all businesses" advisor surface works.
 
+## Agent log
+*Agents append here — one timestamped line per write-back via `appendToNote()` (see [[Agent Journal & Handoffs]]). Append, never overwrite the curated body above.*
+
 ## Related
 [[Businesses — Overview]] · [[Role — Sales & Growth Agent]] · [[People & Contacts]]
 
@@ -538,6 +566,9 @@ Jack's "financial-freedom content hub integrated everywhere" maps onto the regis
 - The client side (hospitals/clinics/practices?) and how placements/fees work.
 - What "Day14 runs everything" automates first; the signup-test status.
 - Compliance constraints (HIPAA-adjacent? candidate consent?) and data boundaries.
+
+## Agent log
+*Agents append here — one timestamped line per write-back via `appendToNote()` (see [[Agent Journal & Handoffs]]). Append, never overwrite the curated body above.*
 
 ## Related
 [[Businesses — Overview]] · [[People & Contacts]] · [[Day14 OS — System Map]]
