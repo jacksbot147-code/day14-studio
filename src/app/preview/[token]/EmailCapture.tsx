@@ -83,7 +83,7 @@ export default function EmailCapture({ name, trade, city, token }: Props) {
       <div style={card}>
         {status === "done" ? (
           <p style={{ color: "var(--pv-ink)", fontSize: 18, lineHeight: 1.5, margin: 0 }}>
-            <span style={{ color: "var(--pv-accent)" }}>✦</span> Thanks — we&rsquo;ll
+            <span style={{ color: "var(--pv-label)" }}>✦</span> Thanks — we&rsquo;ll
             reach out about making {name} real. No charge, no spam.
           </p>
         ) : (
@@ -134,7 +134,7 @@ export default function EmailCapture({ name, trade, city, token }: Props) {
                   padding: "12px 24px",
                   borderRadius: 100,
                   background: "var(--pv-primary)",
-                  color: "#fff",
+                  color: "var(--pv-on-primary)",
                 }}
               >
                 {status === "sending" ? "Sending…" : "Make it real →"}

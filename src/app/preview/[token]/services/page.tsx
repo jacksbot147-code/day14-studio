@@ -50,14 +50,14 @@ export default function ServicesPreviewPage({ params }: { params: Params }) {
         <div style={{ ...pad, display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: 14 }}>
           {tc.services.map((s, i) => (
             <div key={s} style={{ background: "var(--pv-surface)", border: "1px solid var(--pv-line)", borderRadius: 16, borderTop: "3px solid var(--pv-accent)", padding: "24px 22px" }}>
-              <div style={{ fontFamily: "var(--pv-head)", fontWeight: 600, fontSize: 12, color: "var(--pv-accent)" }}>{String(i + 1).padStart(2, "0")}</div>
+              <div style={{ fontFamily: "var(--pv-head)", fontWeight: 600, fontSize: 12, color: "var(--pv-label)" }}>{String(i + 1).padStart(2, "0")}</div>
               <h3 style={{ fontFamily: "var(--pv-head)", fontWeight: 600, fontSize: 18, margin: "8px 0 8px", color: "var(--pv-ink)" }}>{s}</h3>
               <p style={{ color: "var(--pv-mut)", fontSize: 14, lineHeight: 1.55, margin: 0 }}>{SUPPORT[i % SUPPORT.length]}</p>
             </div>
           ))}
         </div>
         <div style={{ ...pad, textAlign: "center", marginTop: 44 }}>
-          <a href={SITE.bookingUrl} target="_blank" rel="noopener noreferrer" data-cta="book_preview_services" style={{ display: "inline-block", fontWeight: 600, fontSize: 15, padding: "14px 28px", borderRadius: 12, background: "var(--pv-primary)", color: "#fff", textDecoration: "none" }}>
+          <a href={SITE.bookingUrl} target="_blank" rel="noopener noreferrer" data-cta="book_preview_services" style={{ display: "inline-block", fontWeight: 600, fontSize: 15, padding: "14px 28px", borderRadius: 12, background: "var(--pv-primary)", color: "var(--pv-on-primary)", textDecoration: "none" }}>
             Book {name} →
           </a>
         </div>

@@ -59,7 +59,7 @@ export default function AboutPreviewPage({ params }: { params: Params }) {
           ))}
         </div>
         <div style={{ ...pad, textAlign: "center", marginTop: 44 }}>
-          <a href={SITE.bookingUrl} target="_blank" rel="noopener noreferrer" data-cta="book_preview_about" style={{ display: "inline-block", fontWeight: 600, fontSize: 15, padding: "14px 28px", borderRadius: 12, background: "var(--pv-primary)", color: "#fff", textDecoration: "none" }}>
+          <a href={SITE.bookingUrl} target="_blank" rel="noopener noreferrer" data-cta="book_preview_about" style={{ display: "inline-block", fontWeight: 600, fontSize: 15, padding: "14px 28px", borderRadius: 12, background: "var(--pv-primary)", color: "var(--pv-on-primary)", textDecoration: "none" }}>
             Work with {name} →
           </a>
         </div>

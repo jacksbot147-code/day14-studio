@@ -3187,3 +3187,50 @@
    keyboard focus ring (inputs already show focus via .cin-seg:focus-within). */
 .cinematic .cin-seg-go:focus-visible { outline: 2px solid var(--cin-ink); outline-offset: 3px; }
 .cinematic .cin-build-hint a:focus-visible { outline: 2px solid var(--cin-accent); outline-offset: 2px; border-radius: 3px; }
+
+/* ============================================================================
+ * Preview generator — service cards (.cin-svc-*). Added 2026-06-29.
+ * Premium cards with a gradient top accent + hover lift for /preview pages.
+ * ========================================================================== */
+.cinematic .cin-svc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+}
+.cinematic .cin-svc-card {
+  position: relative;
+  border: 1px solid var(--cin-line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.025);
+  padding: 24px 22px 22px;
+  overflow: hidden;
+  transition: transform 0.25s var(--cin-ease), border-color 0.25s var(--cin-ease);
+}
+.cinematic .cin-svc-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--cin-accent), var(--cin-cyan));
+  opacity: 0.6;
+}
+.cinematic .cin-svc-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+.cinematic .cin-svc-num {
+  display: block;
+  font-family: var(--cin-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--cin-accent);
+  margin-bottom: 10px;
+}
+.cinematic .cin-svc-name {
+  display: block;
+  font-size: 17px;
+  color: var(--cin-ink);
+  line-height: 1.3;
+}

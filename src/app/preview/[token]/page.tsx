@@ -52,7 +52,7 @@ const btnSolid: CSSProperties = {
   borderRadius: 12,
   textDecoration: "none",
   background: "var(--pv-primary)",
-  color: "#fff",
+  color: "var(--pv-on-primary)",
 };
 const btnGhost: CSSProperties = {
   display: "inline-block",
@@ -79,7 +79,7 @@ function Cap({
   return (
     <div style={{ ...card, overflow: "hidden", display: "flex", flexDirection: "column" }}>
       <div style={{ padding: "24px 24px 6px" }}>
-        <div style={{ fontFamily: "var(--pv-head)", fontWeight: 600, fontSize: 11, letterSpacing: "0.14em", color: "var(--pv-accent)" }}>
+        <div style={{ fontFamily: "var(--pv-head)", fontWeight: 600, fontSize: 11, letterSpacing: "0.14em", color: "var(--pv-label)" }}>
           {n}
         </div>
         <h3 style={{ fontFamily: "var(--pv-head)", fontWeight: 600, fontSize: 21, margin: "9px 0 7px", color: "var(--pv-ink)" }}>{title}</h3>
@@ -118,18 +118,22 @@ export default function PreviewPage({ params }: { params: Params }) {
 
   return (
     <div id="top">
+      {/* Responsive plumbing: inline styles can't hold media queries, so the two
+          fixed two-column grids (hero + capabilities) collapse to one column on
+          phones here. */}
+      <style
+        dangerouslySetInnerHTML={{
+          __html:
+            ".pv-hero-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:40px;align-items:center;padding:84px 24px 78px}" +
+            ".pv-cap-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}" +
+            "@media(max-width:760px){" +
+            ".pv-hero-grid{grid-template-columns:1fr;gap:28px;padding:52px 20px 46px}" +
+            ".pv-cap-grid{grid-template-columns:1fr}}",
+        }}
+      />
       {/* HERO */}
       <header style={{ background: "var(--pv-hero)", overflow: "hidden" }}>
-        <div
-          style={{
-            ...pad,
-            display: "grid",
-            gridTemplateColumns: "1.1fr 0.9fr",
-            gap: 40,
-            alignItems: "center",
-            padding: "84px 24px 78px",
-          }}
-        >
+        <div className="pv-hero-grid" style={{ maxWidth: 1120, margin: "0 auto" }}>
           <div>
             <div style={kicker}>
               {tc.label}
@@ -221,17 +225,17 @@ export default function PreviewPage({ params }: { params: Params }) {
               operation, online.
             </p>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div className="pv-cap-grid">
             <Cap n="01 · BOOKING" title="24/7 online booking" body="Customers pick a slot any time — it lands scheduled, not as a voicemail.">
               <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 5 }}>
                 {["M", "T", "W", "T", "F", "S", "S", "2", "3", "4", "5", "6", "7", "8"].map((x, i) => (
-                  <span key={i} style={{ aspectRatio: "1", borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, background: i === 8 || i === 12 ? "var(--pv-primary)" : "var(--pv-line)", color: i === 8 || i === 12 ? "#fff" : "var(--pv-mut)", fontWeight: i === 8 || i === 12 ? 700 : 400 }}>{x}</span>
+                  <span key={i} style={{ aspectRatio: "1", borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, background: i === 8 || i === 12 ? "var(--pv-primary)" : "var(--pv-line)", color: i === 8 || i === 12 ? "var(--pv-on-primary)" : "var(--pv-mut)", fontWeight: i === 8 || i === 12 ? 700 : 400 }}>{x}</span>
                 ))}
               </div>
             </Cap>
             <Cap n="02 · AI ASSISTANT" title="Answers customers for you" body="Trained on your services + pricing. Replies and books while you're on a job.">
               <div style={{ background: "var(--pv-line)", color: "var(--pv-ink)", maxWidth: "82%", padding: "9px 13px", borderRadius: 13, fontSize: 13 }}>Can you come Friday for a green pool?</div>
-              <div style={{ background: "var(--pv-primary)", color: "#fff", maxWidth: "82%", marginLeft: "auto", marginTop: 6, padding: "9px 13px", borderRadius: 13, fontSize: 13 }}>Fri 9:30a works — book it?</div>
+              <div style={{ background: "var(--pv-primary)", color: "var(--pv-on-primary)", maxWidth: "82%", marginLeft: "auto", marginTop: 6, padding: "9px 13px", borderRadius: 13, fontSize: 13 }}>Fri 9:30a works — book it?</div>
             </Cap>
             <Cap n="03 · PAYMENTS" title="Get paid online, on time" body="Card on file, auto-invoices, recurring billing — no chasing checks.">
               <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
@@ -270,7 +274,7 @@ export default function PreviewPage({ params }: { params: Params }) {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 13 }}>
             {tc.services.map((s, i) => (
               <div key={s} style={{ ...card, padding: 22, borderTop: "3px solid var(--pv-accent)" }}>
-                <div style={{ fontFamily: "var(--pv-head)", fontWeight: 600, fontSize: 12, color: "var(--pv-accent)" }}>{String(i + 1).padStart(2, "0")}</div>
+                <div style={{ fontFamily: "var(--pv-head)", fontWeight: 600, fontSize: 12, color: "var(--pv-label)" }}>{String(i + 1).padStart(2, "0")}</div>
                 <span style={{ display: "block", marginTop: 8, fontSize: 16, fontWeight: 500, color: "var(--pv-ink)" }}>{s}</span>
               </div>
             ))}

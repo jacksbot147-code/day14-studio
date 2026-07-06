@@ -123,7 +123,6 @@ export function Hero() {
 
   const biz = name.trim() ? titleCase(name.trim()) : "";
   const cityLabel = city.trim() ? titleCase(city.trim()) : "your area";
-  const noun = (TRADES.find((t) => t.value === trade) ?? TRADES[0]!).noun;
 
   function build(e: FormEvent) {
     e.preventDefault();
@@ -163,9 +162,7 @@ export function Hero() {
                 <span>{biz}.</span>
               </span>
               <span className="cin-ln">
-                <span>
-                  {noun} in {cityLabel}, handled.
-                </span>
+                <span>Booked solid in {cityLabel}.</span>
               </span>
             </>
           ) : (
@@ -270,9 +267,6 @@ export function Hero() {
           </div>
         </form>
 
-        <div className="cin-scrollcue" aria-hidden="true">
-          Scroll
-        </div>
       </header>
 
       <section

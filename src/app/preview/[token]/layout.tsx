@@ -1,5 +1,5 @@
 import type { ReactNode, CSSProperties } from "react";
-import { decodePreview, titleCasePreview, brandKit } from "@/lib/preview";
+import { decodePreview, titleCasePreview, brandKit, readableOn } from "@/lib/preview";
 import CtaAnalytics from "./CtaAnalytics";
 
 /**
@@ -56,7 +56,15 @@ export default function PreviewLayout({
     "--pv-ink": p.ink,
     "--pv-surface": p.surface,
     "--pv-line": dark ? "rgba(255,255,255,0.12)" : "rgba(15,40,55,0.12)",
-    "--pv-mut": dark ? "rgba(255,255,255,0.66)" : "rgba(20,40,50,0.62)",
+    // Muted body text — light-mood value darkened so it clears WCAG 4.5:1 on the
+    // tinted page bg + white cards (was rgba(20,40,50,0.62) ≈ 4.3:1).
+    "--pv-mut": dark ? "rgba(255,255,255,0.66)" : "rgba(17,32,42,0.72)",
+    // Readable foreground for text ON the solid primary (buttons): #fff fails on
+    // light primaries (electrician amber, roofing orange) — pick by contrast.
+    "--pv-on-primary": readableOn(p.primary),
+    // Accent-colored micro-labels ("01 · BOOKING"): the accent reads on dark
+    // surfaces but not on light ones, so light themes use the (darker) primary.
+    "--pv-label": dark ? p.accent : p.primary,
     "--pv-hero": kit.heroGradient,
     "--pv-head": `"${kit.fonts.heading}", system-ui, sans-serif`,
     "--pv-body": `"${kit.fonts.body}", system-ui, sans-serif`,
@@ -135,6 +143,8 @@ export default function PreviewLayout({
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
+            flexWrap: "wrap",
+            rowGap: 8,
             gap: 14,
             maxWidth: 1120,
             margin: "0 auto",

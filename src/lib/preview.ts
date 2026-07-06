@@ -505,6 +505,42 @@ export interface PreviewTheme {
   bodyFont: string;
 }
 
+/**
+ * Pick the more readable foreground (near-black vs white) for text placed ON a
+ * solid hex background — used for solid-`primary` button/label text where a fixed
+ * `#fff` fails WCAG on light primaries (e.g. the electrician amber, roofing
+ * orange). Pure; returns `"#141414"` or `"#ffffff"`, whichever has the higher
+ * WCAG contrast ratio against `bgHex`. Accepts 3- or 6-digit hex.
+ */
+export function readableOn(bgHex: string): "#141414" | "#ffffff" {
+  const parse = (h: string): [number, number, number] => {
+    let s = h.replace(/^#/, "");
+    if (s.length === 3) s = s.split("").map((c) => c + c).join("");
+    return [
+      parseInt(s.slice(0, 2), 16),
+      parseInt(s.slice(2, 4), 16),
+      parseInt(s.slice(4, 6), 16),
+    ];
+  };
+  const lin = (c: number) => {
+    const x = c / 255;
+    return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
+  };
+  const lum = ([r, g, b]: [number, number, number]) =>
+    0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+  const ratio = (a: [number, number, number], b: [number, number, number]) => {
+    const la = lum(a);
+    const lb = lum(b);
+    const hi = Math.max(la, lb);
+    const lo = Math.min(la, lb);
+    return (hi + 0.05) / (lo + 0.05);
+  };
+  const bg = parse(bgHex);
+  const dark: [number, number, number] = [20, 20, 20];
+  const white: [number, number, number] = [255, 255, 255];
+  return ratio(dark, bg) >= ratio(white, bg) ? "#141414" : "#ffffff";
+}
+
 export function previewTheme(trade: string): PreviewTheme {
   const k = brandKit(trade);
   return {
