@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { verifySession, legacyToken } from "@/lib/admin-session";
 
 /**
  * Protects internal surfaces behind ADMIN_PASSWORD env var.
@@ -14,15 +15,19 @@ import { NextResponse, type NextRequest } from "next/server";
  * the local dev loop (Jack's daily surface) stays frictionless, and local
  * /admin no longer 503s when ADMIN_PASSWORD is unset in .env.local.
  *
- * Auth check (unchanged scheme):
+ * Auth check (hardened scheme):
  *   - Reads `admin-session` cookie
- *   - Compares to hash of ADMIN_PASSWORD
+ *   - If ADMIN_SESSION_SECRET is set → cookie must be a valid, NON-EXPIRED
+ *     HMAC-signed session (see src/lib/admin-session.ts). Tokens carry a
+ *     12h TTL minted at login; tampered or stale tokens fail closed.
+ *   - If ADMIN_SESSION_SECRET is UNSET → falls back to the legacy static
+ *     hash of ADMIN_PASSWORD, so nothing breaks before Jack sets the new
+ *     secret. (Internet exposure REQUIRES setting ADMIN_SESSION_SECRET —
+ *     the legacy token is replayable forever and is localhost-only safe.)
  *   - On mismatch → redirect to /admin/login (pages) or 404 (data)
  *
- * The cookie value is set by /api/admin/auth and uses a simple
- * hash-based scheme (not bcrypt — this is a single-user admin, the
- * password never appears in transit after login, and the cookie is
- * httpOnly + secure).
+ * The cookie is set by /api/admin/auth and stays httpOnly + secure +
+ * sameSite=lax.
  */
 
 export const config = {
@@ -38,11 +43,6 @@ export const config = {
 };
 
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "::1"]);
-
-async function sha256Hex(input: string): Promise<string> {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
-  return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
-}
 
 export async function middleware(req: NextRequest) {
   const url = req.nextUrl;
@@ -65,10 +65,19 @@ export async function middleware(req: NextRequest) {
     return new NextResponse("Admin not configured (ADMIN_PASSWORD missing)", { status: 503 });
   }
 
-  const expected = await sha256Hex(password + ":day14-admin");
   const cookie = req.cookies.get("admin-session")?.value;
+  const secret = process.env.ADMIN_SESSION_SECRET;
 
-  if (cookie !== expected) {
+  let valid: boolean;
+  if (secret) {
+    // Hardened path: signed + non-expired session.
+    valid = await verifySession(secret, cookie);
+  } else {
+    // Legacy fallback (localhost-only safe): static hash of the password.
+    valid = !!cookie && cookie === (await legacyToken(password));
+  }
+
+  if (!valid) {
     if (isDataPath) return new NextResponse(null, { status: 404 });
     const loginUrl = new URL("/admin/login", req.url);
     loginUrl.searchParams.set("next", url.pathname);
