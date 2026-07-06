@@ -22,6 +22,7 @@ import { HowItWorks } from "./HowItWorks";
 import { Engine } from "./Engine";
 import { Testimonial } from "./Testimonial";
 import { Proof } from "./Proof";
+import { FeaturedTenant } from "./FeaturedTenant";
 import { RoiCalculator } from "./RoiCalculator";
 import { Pricing } from "./Pricing";
 import { ClosingCTA } from "./ClosingCTA";
@@ -44,6 +45,7 @@ export function CinematicHome() {
         <Engine />
         <Testimonial />
         <Proof />
+        <FeaturedTenant />
         <RoiCalculator />
         <Pricing links={getPaymentLinks()} />
         <ClosingCTA />
