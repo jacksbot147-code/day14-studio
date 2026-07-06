@@ -59,8 +59,8 @@ The codebase has four conceptual layers:
                               ↑
 ┌─────────────────────────────────────────────────────────────────┐
 │ Layer 2 — Registry + Specs (what skills exist)                  │
-│   src/lib/skill-registry.generated.ts  — 211 skills indexed     │
-│   src/lib/skill-graph.generated.ts     — 426 edges between them │
+│   src/lib/skill-registry.generated.ts  — 278 skills indexed     │
+│   src/lib/skill-graph.generated.ts     — 435 edges between them │
 │   docs/seeds/skills/{name}/SKILL.md    — the canonical specs    │
 └─────────────────────────────────────────────────────────────────┘
                               ↑
@@ -94,8 +94,10 @@ Each writes a heartbeat to `_shared/poller/{name}-heartbeat.log` every
 
 ## The hand-coded skills
 
-Most of the 211 skills are specs (SKILL.md only). Six are also fully
-implemented in TypeScript at `src/lib/skills/`:
+Most of the 278 skills are specs (SKILL.md only). 60 are also fully
+implemented in TypeScript at `src/lib/skills/` (run `ls src/lib/skills/*.ts`
+for the full list — index.ts is the dispatcher, not a skill). A representative
+handful:
 
 - `audit-log-generator.ts` — append-only hash-chained audit log
 - `uptime-monitor.ts` — polls customer URLs

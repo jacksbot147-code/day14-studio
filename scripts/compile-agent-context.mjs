@@ -138,6 +138,31 @@ async function main() {
     included++;
   }
 
+  // Auto-include any OTHER root-level vault note not already in the curated list
+  // and not volatile/dated — so new notes (new businesses, specs, designs) reach
+  // agents WITHOUT editing this script. Subfolders (Agents/, _sweeps/, Templates/)
+  // are intentionally not recursed (per-agent run logs + sweep reports are noise
+  // for global context). Volatile/dated notes are denylisted and read fresh.
+  const DENY_PREFIXES = [
+    "Day14 — Current Open Items",
+    "Day14 — Jack's Action Board",
+    "Jack — Confirm These",
+    "Changelog",
+    "Day14 Vault — Index",
+  ];
+  const inList = new Set(FULL_CONTEXT_NOTES);
+  const extra = (await fs.readdir(VAULT_DIR, { withFileTypes: true }))
+    .filter((e) => e.isFile() && e.name.endsWith(".md"))
+    .map((e) => e.name.slice(0, -3))
+    .filter((n) => !inList.has(n))
+    .filter((n) => !DENY_PREFIXES.some((p) => n.startsWith(p)))
+    .sort();
+  for (const note of extra) {
+    const raw = await fs.readFile(path.join(VAULT_DIR, `${note}.md`), "utf8");
+    parts.push(`\n\n---\n\n${stripFrontmatter(raw).trim()}\n`);
+    included++;
+  }
+
   const fullPath = path.join(OUT_DIR, "AGENT-CONTEXT.md");
   const preamblePath = path.join(OUT_DIR, "agent-preamble.md");
   await fs.writeFile(fullPath, parts.join(""), "utf8");

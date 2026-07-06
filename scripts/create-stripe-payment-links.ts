@@ -34,6 +34,9 @@ if (!KEY) {
 }
 
 const mode = KEY.startsWith("sk_live_") ? "LIVE" : "test";
+// Stripe Organization keys must name the target account (acct_…) via the
+// Stripe-Context header. Set STRIPE_ACCOUNT in the env if you use an org key.
+const ACCOUNT = process.env.STRIPE_ACCOUNT;
 
 async function stripe(
   path: string,
@@ -44,6 +47,8 @@ async function stripe(
     headers: {
       Authorization: `Bearer ${KEY}`,
       "Content-Type": "application/x-www-form-urlencoded",
+      "Stripe-Version": "2024-06-20",
+      ...(ACCOUNT ? { "Stripe-Context": ACCOUNT } : {}),
     },
     body: new URLSearchParams(params).toString(),
   });
@@ -92,6 +97,15 @@ async function main() {
 }
 
 main().catch((e: unknown) => {
-  console.error("✗", e instanceof Error ? e.message : e);
+  const msg = e instanceof Error ? e.message : String(e);
+  console.error("✗", msg);
+  if (/Stripe-Context|Organization API key/i.test(msg) && !ACCOUNT) {
+    console.error(
+      "\nYour STRIPE_SECRET_KEY is a Stripe Organization key — it needs a target account.\n" +
+        "Find the account id (acct_…) in Stripe → Settings → Business / the account switcher, then rerun:\n" +
+        "  set -a && source .env.local && set +a && STRIPE_ACCOUNT=acct_xxxxx npx tsx scripts/create-stripe-payment-links.ts\n" +
+        "Or use that account's own secret key (Developers → API keys on the account, not the org) as STRIPE_SECRET_KEY.",
+    );
+  }
   process.exit(1);
 });
