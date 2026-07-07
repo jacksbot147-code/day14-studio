@@ -1,31 +1,31 @@
-import { brandTheme as t, steps, improveLoop, ADFORGE_URL } from "./theme";
+import { brandTheme as t, steps, improveLoop, MARQUE_URL } from "./theme";
 
 /**
- * AdForge — Day14 sister-company page.
+ * Marque (formerly AdForge) — Day14 sister-company page.
  *
- * AdForge is a standalone product with its own site; this page introduces it
+ * Marque is a standalone product with its own site; this page introduces it
  * inside the Day14 brand roster and links out. Content rules:
  *   - The improve-loop numbers are REAL predictor output; the demo brand is
  *     fictional and every stat block says so inline.
- *   - No pricing figures on this page — pricing lives in the AdForge repo's
- *     single source of truth and renders on the AdForge site itself.
- *   - Pre-launch honesty: AdForge isn't taking payments yet; the CTA says
+ *   - No pricing figures on this page — pricing lives in the product repo's
+ *     single source of truth and renders on the Marque site itself.
+ *   - Pre-launch honesty: Marque isn't taking payments yet; the CTA says
  *     "early access", not "buy".
  */
 
-const HOME_TITLE = "AdForge — scored short-form video ads for products & local businesses";
+const HOME_TITLE = "Marque — brand-grade short-form video ads for products & local business";
 
 export const metadata = {
   title: { absolute: HOME_TITLE },
   description:
-    "AdForge generates batches of TikTok, Reels & Shorts video ads and ranks every ad by predicted virality before any media spend. Built and operated on the Day14 OS.",
-  alternates: { canonical: "/brands/adforge" },
+    "Marque turns any link — a product, a service, or a trend — into a batch of TikTok, Reels & Shorts video ads, ready to run and scored before any media spend. Built and operated on the Day14 OS.",
+  alternates: { canonical: "/brands/marque" },
   openGraph: {
     title: HOME_TITLE,
     description:
-      "Know which ad wins before you spend a cent — AI-generated ad batches, each scored for hook strength and retention before launch.",
+      "Brand-grade AI video ads from any link — made in minutes, scored for hook strength and retention before launch.",
     type: "website",
-    url: "/brands/adforge",
+    url: "/brands/marque",
   },
   twitter: { card: "summary_large_image" as const },
 };
@@ -33,11 +33,11 @@ export const metadata = {
 const orgJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  name: "AdForge",
-  url: ADFORGE_URL,
+  name: "Marque",
+  url: MARQUE_URL,
   slogan: t.tagline,
   description:
-    "AI-generated short-form video ad batches for DTC products and local service businesses, each ad ranked by predicted virality before media spend.",
+    "Brand-grade AI short-form video ads for DTC products, local service businesses, and trends — every ad scored by a virality predictor before media spend.",
   parentOrganization: { "@type": "Organization", name: "Day14", url: "https://day14.us" },
   knowsAbout: [
     "Short-form video ads",
@@ -56,7 +56,7 @@ const card: React.CSSProperties = {
   padding: 24,
 };
 
-export default function AdForgeHome() {
+export default function MarqueHome() {
   return (
     <main style={{ background: t.colors.bg, color: t.colors.text, fontFamily: t.fonts.body }}>
       <script
@@ -92,17 +92,16 @@ export default function AdForgeHome() {
             margin: 0,
           }}
         >
-          Know which ad wins <em style={{ fontStyle: "normal", color: t.colors.secondary }}>before</em> you
-          spend a cent.
+          Brand-grade video ads, <em style={{ fontStyle: "normal", color: t.colors.secondary }}>from any link.</em>
         </h1>
         <p style={{ fontSize: 19, color: t.colors.muted, maxWidth: 620, margin: "20px auto 0", lineHeight: 1.6 }}>
-          AdForge turns a product URL — or a local business and one line of copy — into a batch of
-          ready-to-publish TikTok, Reels &amp; Shorts ads, each ranked by predicted virality before
-          any money goes to media.
+          Marque turns a product URL — or a local service, or a rising trend — into a batch of
+          ready-to-publish TikTok, Reels &amp; Shorts ads. Every one scored before a dollar goes to
+          media.
         </p>
         <div style={{ marginTop: 30, display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
           <a
-            href={ADFORGE_URL}
+            href={MARQUE_URL}
             style={{
               background: t.colors.primary,
               color: "#fff",
@@ -112,7 +111,7 @@ export default function AdForgeHome() {
               textDecoration: "none",
             }}
           >
-            Visit adforge for early access
+            Visit Marque for early access
           </a>
         </div>
       </section>

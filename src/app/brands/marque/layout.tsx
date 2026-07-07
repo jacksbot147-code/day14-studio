@@ -1,49 +1,49 @@
 import Link from "next/link";
-import { brandTheme as t, ADFORGE_URL } from "./theme";
+import { brandTheme as t, MARQUE_URL } from "./theme";
 import { BrandLayout } from "@/components/brand/BrandLayout";
 
-const ADFORGE_TITLE = "AdForge — scored short-form video ads";
-const ADFORGE_DESCRIPTION =
-  "AI-generated TikTok, Reels & Shorts ads for products and local businesses — every ad ranked by predicted virality before any media spend. A Day14 sister company.";
+const MARQUE_TITLE = "Marque — brand-grade short-form video ads";
+const MARQUE_DESCRIPTION =
+  "Brand-grade AI video ads from any link — a product, a service, or a trend — cut for TikTok, Reels & Shorts and scored before any media spend. A Day14 sister company.";
 
 export const metadata = {
   title: {
-    default: ADFORGE_TITLE,
-    template: "%s — AdForge",
+    default: MARQUE_TITLE,
+    template: "%s — Marque",
   },
-  description: ADFORGE_DESCRIPTION,
+  description: MARQUE_DESCRIPTION,
   openGraph: {
-    title: "AdForge",
-    description: ADFORGE_DESCRIPTION,
+    title: "Marque",
+    description: MARQUE_DESCRIPTION,
     type: "website",
-    siteName: "AdForge",
+    siteName: "Marque",
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image" as const,
-    title: "AdForge",
-    description: ADFORGE_DESCRIPTION,
+    title: "Marque",
+    description: MARQUE_DESCRIPTION,
   },
 };
 
 const siteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "AdForge",
-  url: "https://day14.us/brands/adforge",
-  description: ADFORGE_DESCRIPTION,
+  name: "Marque",
+  url: "https://day14.us/brands/marque",
+  description: MARQUE_DESCRIPTION,
   inLanguage: "en-US",
 };
 
-export default function AdForgeLayout({ children }: { children: React.ReactNode }) {
+export default function MarqueLayout({ children }: { children: React.ReactNode }) {
   return (
     <BrandLayout
       theme={t}
       fontsHref="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap"
       jsonLd={[siteJsonLd]}
       home={{
-        href: "/brands/adforge",
-        label: "AdForge",
+        href: "/brands/marque",
+        label: "Marque",
         style: {
           color: t.colors.primary,
           fontSize: 21,
@@ -56,8 +56,8 @@ export default function AdForgeLayout({ children }: { children: React.ReactNode 
       links={[
         { href: "/brands", label: "All Day14 brands" },
         {
-          href: ADFORGE_URL,
-          label: "Visit adforge →",
+          href: MARQUE_URL,
+          label: "Visit Marque →",
           style: {
             background: t.colors.primary,
             color: "#fff",
@@ -79,9 +79,9 @@ export default function AdForgeLayout({ children }: { children: React.ReactNode 
       footer={
         <>
           <div style={{ fontFamily: t.fonts.heading, fontWeight: 600, color: t.colors.primary }}>
-            AdForge
+            Marque
           </div>
-          <div style={{ marginTop: 6 }}>Scored short-form video ads · products & local businesses</div>
+          <div style={{ marginTop: 6 }}>Brand-grade short-form video ads · products, services & trends</div>
           <div style={{ marginTop: 6 }}>
             <Link href="/brands" style={{ color: t.colors.secondary }}>
               See every Day14 brand

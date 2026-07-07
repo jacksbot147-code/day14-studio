@@ -2,19 +2,19 @@
 
 /**
  * cinematic/FeaturedTenant — dedicated promo section for the featured product
- * (currently AdForge), slotted between Proof (#work) and the ROI calculator.
+ * (currently Marque), slotted between Proof (#work) and the ROI calculator.
  *
  * Why a separate section instead of a 5th Proof tile (Jack decision 2026-07-06):
- * the Proof grid's claim is "all on the exact same system" — AdForge is a
+ * the Proof grid's claim is "all on the exact same system" — Marque is a
  * STANDALONE repo/brand, so it gets its own section with copy that says
  * "newest product out of the Day14 shop" and never claims same-engine.
  *
  * Honesty rail (binding):
- * - NO prices anywhere in this section — AdForge tiers are not Jack-confirmed.
+ * - NO prices anywhere in this section — Marque tiers are not Jack-confirmed.
  * - The scored-batch card is illustrative UI with fictional hook names/scores,
- *   mirroring AdForge's own labeled-fictional demo convention; the
+ *   mirroring Marque's own labeled-fictional demo convention; the
  *   "illustrative" microcopy must stay.
- * - Primary CTA routes to the on-domain sister page /brands/adforge
+ * - Primary CTA routes to the on-domain sister page /brands/marque
  *   (shipped in 02c4228); the ghost CTA links out to the pre-launch demo.
  *
  * Design source of truth: ~/Claude/Projects/DAY14/adforge-featured-section-preview.html
@@ -41,7 +41,7 @@ const SAMPLE_BATCH: readonly ScoredAd[] = [
 
 export function FeaturedTenant() {
   return (
-    <section className={`cin-section ${styles.featured}`} id="adforge">
+    <section className={`cin-section ${styles.featured}`} id="marque">
       <div className={styles.inner}>
         <Reveal as="p" className={`cin-mono ${styles.kicker}`}>
           <span className={styles.dot} aria-hidden="true" />
@@ -51,10 +51,10 @@ export function FeaturedTenant() {
         <div className={styles.grid}>
           <div>
             <Reveal as="h2" className={styles.h}>
-              AdForge — know which ad wins <em>before</em> you spend.
+              Marque — brand-grade video ads <em>from any link.</em>
             </Reveal>
             <Reveal as="p" delayStep={1} className={styles.lede}>
-              The newest product out of the Day14 shop: give it a product, get
+              The newest product out of the Day14 shop: give it a link, get
               back a batch of short-form video ads — scripted, voiced, cut for
               TikTok, Reels and Shorts — each one scored for predicted virality
               before a dollar of media spend.
@@ -74,8 +74,8 @@ export function FeaturedTenant() {
               </li>
             </Reveal>
             <Reveal as="div" delayStep={3} className={styles.ctas}>
-              <a className={styles.btnPrimary} href="/brands/adforge">
-                See AdForge →
+              <a className={styles.btnPrimary} href="/brands/marque">
+                See Marque →
               </a>
               <a
                 className={styles.btnGhost}
