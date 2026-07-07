@@ -30,8 +30,13 @@ export const brandTheme = {
   },
 } satisfies BrandTheme;
 
-/** The standalone product site (pre-launch: behind Vercel Deployment Protection until Jack ships). */
-export const ADFORGE_URL = "https://ad-forge.vercel.app";
+/**
+ * The standalone product site. IMPORTANT: ad-forge.vercel.app (no suffix) is
+ * NOT ours — it serves a third-party app ("AdsFuel"). Our project's public
+ * domain is ad-forge-amber.vercel.app (verified via Vercel API 2026-07-06).
+ * Swap to the real custom domain once Jack buys one.
+ */
+export const ADFORGE_URL = "https://ad-forge-amber.vercel.app";
 
 export const steps = [
   {
