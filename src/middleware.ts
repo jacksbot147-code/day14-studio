@@ -47,11 +47,16 @@ const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "::1"]);
 export async function middleware(req: NextRequest) {
   const url = req.nextUrl;
 
-  // Local dev: no gate. Read the real Host header — Next dev rewrites
-  // nextUrl.hostname to "localhost" for every request, which would
-  // otherwise bypass the gate for LAN/remote visitors too.
+  // Local dev: no gate — but ONLY in a development process (C1 fix,
+  // security re-verify #11). Host is client-controlled: `next start` binds
+  // 0.0.0.0, so any LAN client sending `Host: localhost` would skip auth,
+  // and a cloudflared `httpHostHeader: localhost` origin config would make
+  // every tunnel request bypass silently. Gating on NODE_ENV keeps the dev
+  // loop frictionless while a production/tunneled process never honors it.
   const realHost = (req.headers.get("host") ?? url.hostname).split(":")[0] ?? "";
-  if (LOCAL_HOSTS.has(realHost)) return NextResponse.next();
+  if (process.env.NODE_ENV === "development" && LOCAL_HOSTS.has(realHost)) {
+    return NextResponse.next();
+  }
 
   // Login page is public
   if (url.pathname === "/admin/login") return NextResponse.next();

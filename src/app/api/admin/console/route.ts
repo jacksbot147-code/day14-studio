@@ -4,6 +4,7 @@ import { existsSync, statSync } from "node:fs";
 import path from "node:path";
 import { homedir } from "node:os";
 import { loadEmpireState } from "@/lib/admin-state";
+import { requireAdmin } from "@/lib/require-admin";
 
 /**
  * /api/admin/console — the API behind the Console page (see
@@ -24,22 +25,6 @@ export const dynamic = "force-dynamic";
 
 const SHARED = path.join(homedir(), "Documents", "businesses", "_shared");
 const PROMPT_MAX = 2000;
-
-async function sha256Hex(input: string): Promise<string> {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
-  return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
-}
-
-async function requireAuth(req: NextRequest): Promise<NextResponse | null> {
-  const password = process.env.ADMIN_PASSWORD;
-  if (password) {
-    const expected = await sha256Hex(password + ":day14-admin");
-    if (req.cookies.get("admin-session")?.value !== expected) {
-      return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
-    }
-  }
-  return null;
-}
 
 function supabase(): { url: string; key: string } | null {
   const url = process.env.SUPABASE_URL;
@@ -109,7 +94,7 @@ async function readWorkRegisterTail(): Promise<string[]> {
 }
 
 export async function GET(req: NextRequest) {
-  const unauthorized = await requireAuth(req);
+  const unauthorized = await requireAdmin(req);
   if (unauthorized) return unauthorized;
 
   const { source, vitals } = await readVitals();
@@ -148,7 +133,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const unauthorized = await requireAuth(req);
+  const unauthorized = await requireAdmin(req);
   if (unauthorized) return unauthorized;
 
   if (!supabase()) {

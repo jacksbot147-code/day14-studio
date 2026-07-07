@@ -3,6 +3,7 @@ import fs from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { homedir } from "node:os";
+import { requireAdmin } from "@/lib/require-admin";
 
 /**
  * POST /api/admin/approvals
@@ -54,13 +55,6 @@ const ACTIONS = ["approve", "skip"] as const;
 type Action = (typeof ACTIONS)[number];
 
 type Result = { ok: boolean; message: string };
-
-async function sha256Hex(input: string): Promise<string> {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
-  return Array.from(new Uint8Array(buf))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-}
 
 /** A safe, single path segment — blocks traversal in any caller-supplied id. */
 function isSafeSegment(s: string): boolean {
@@ -321,13 +315,8 @@ async function handleInbox(id: string, action: Action): Promise<Result> {
 
 export async function POST(req: NextRequest) {
   // Auth — the same admin-session cookie the dashboard is gated behind.
-  const password = process.env.ADMIN_PASSWORD;
-  if (password) {
-    const expected = await sha256Hex(password + ":day14-admin");
-    if (req.cookies.get("admin-session")?.value !== expected) {
-      return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
-    }
-  }
+  const denied = await requireAdmin(req);
+  if (denied) return denied;
 
   let kind = "";
   let id = "";

@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import { homedir } from "node:os";
 import { resolveDeckTap, isKnownTenant } from "@/lib/agent-deck";
+import { requireAdmin } from "@/lib/require-admin";
 
 /**
  * POST /api/app/[tenant]/agents/approve
@@ -23,25 +24,12 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const BIZ = path.join(homedir(), "Documents/businesses");
-const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "::1"]);
 const KINDS = ["todo", "tap"] as const;
 const ACTIONS = ["approve", "deny"] as const;
 
-async function sha256Hex(input: string): Promise<string> {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
-  return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
-}
-
 export async function POST(req: NextRequest, { params }: { params: { tenant: string } }) {
-  const realHost = (req.headers.get("host") ?? "").split(":")[0] ?? "";
-  const isLocal = LOCAL_HOSTS.has(realHost);
-  const password = process.env.ADMIN_PASSWORD;
-  if (password && !isLocal) {
-    const expected = await sha256Hex(password + ":day14-admin");
-    if (req.cookies.get("admin-session")?.value !== expected) {
-      return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
-    }
-  }
+  const denied = await requireAdmin(req);
+  if (denied) return denied;
 
   const tenant = params.tenant;
   if (!/^[a-z0-9][a-z0-9-]*$/i.test(tenant) || !(await isKnownTenant(tenant))) {

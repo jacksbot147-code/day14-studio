@@ -3,6 +3,7 @@ import { spawn } from "node:child_process";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { homedir } from "node:os";
+import { requireAdmin } from "@/lib/require-admin";
 
 /**
  * POST /api/realty/upload-csv  (multipart: file=<csv>, county=<name>)
@@ -18,11 +19,6 @@ export const dynamic = "force-dynamic";
 
 const MAX_BYTES = 120 * 1024 * 1024; // 120 MB
 
-async function sha256Hex(input: string): Promise<string> {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
-  return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
-}
-
 function countySlug(s: string): string {
   return (
     s
@@ -35,13 +31,8 @@ function countySlug(s: string): string {
 
 export async function POST(req: NextRequest) {
   // Auth — same admin-session cookie the dashboard is gated behind.
-  const password = process.env.ADMIN_PASSWORD;
-  if (password) {
-    const expected = await sha256Hex(password + ":day14-admin");
-    if (req.cookies.get("admin-session")?.value !== expected) {
-      return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
-    }
-  }
+  const denied = await requireAdmin(req);
+  if (denied) return denied;
 
   // The realty engine only exists on the Mac. Hosted copy -> 503.
   const scoutScript = path.join(
