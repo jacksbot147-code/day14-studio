@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { AdminPageTransition } from "@/components/motion/admin-page-transition";
+import { FreshnessBar } from "./freshness-bar";
 
 /**
  * Admin shell layout.
@@ -15,5 +16,10 @@ import { AdminPageTransition } from "@/components/motion/admin-page-transition";
  * is the only motion layer running on admin pages.
  */
 export default function AdminLayout({ children }: { children: ReactNode }) {
-  return <AdminPageTransition>{children}</AdminPageTransition>;
+  return (
+    <AdminPageTransition>
+      <FreshnessBar />
+      {children}
+    </AdminPageTransition>
+  );
 }
