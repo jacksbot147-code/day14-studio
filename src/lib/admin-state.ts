@@ -100,13 +100,64 @@ const FALLBACK: EmpireState = {
   bot_username: null,
 };
 
+/**
+ * A published brand site with no synced tenant row yet — rendered as an
+ * honest zero-state, pre-launch tenant so the brand still surfaces in the
+ * admin views. All counts are 0 and audit is empty (no fabricated numbers);
+ * the real type/billing arrive once the brand is registered in
+ * `_shared/tenants.json` and the 15-min empire-state sync overwrites this.
+ */
+function zeroStateTenant(site: BrandSite): EmpireState["tenants"][number] {
+  return {
+    slug: site.slug,
+    display_name: site.display_name,
+    type: "brand-site",
+    stage: "pre-launch",
+    tagline: site.tagline,
+    revenue_cents: 0,
+    orders: 0,
+    streak: 0,
+    recent_audit: [],
+    content_counts: {
+      pinterestPins: 0,
+      tiktokScripts: 0,
+      blogDrafts: 0,
+      newsletterIssues: 0,
+      aiVideos: 0,
+      csDrafts: 0,
+      marketingDrafts: 0,
+      rawFootage: 0,
+      redditDrafts: 0,
+    },
+    queue: { queued: 0, approved: 0, posted: 0, byPlatform: {} },
+  };
+}
+
 export async function loadEmpireState(): Promise<EmpireState> {
   const f = path.join(process.cwd(), "public/data/empire-state.json");
+  let state: EmpireState;
   try {
-    return JSON.parse(await fs.readFile(f, "utf8"));
+    state = JSON.parse(await fs.readFile(f, "utf8"));
   } catch {
     return FALLBACK;
   }
+
+  // Surface brands that have a published site but aren't in the synced tenant
+  // list yet (e.g. Marque — a Day14-owned product registered in brand-sites.json
+  // but pending a `_shared/tenants.json` entry). Append-only: existing synced
+  // tenants are never touched, so once the brand lands in tenants.json the sync
+  // takes over and this merge becomes a no-op for it.
+  try {
+    const sites = await loadBrandSites();
+    const known = new Set(state.tenants.map((t) => t.slug));
+    for (const site of sites) {
+      if (!known.has(site.slug)) state.tenants.push(zeroStateTenant(site));
+    }
+  } catch {
+    // brand-sites unavailable — leave the synced state untouched.
+  }
+
+  return state;
 }
 
 export interface BrandSite {
