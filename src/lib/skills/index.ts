@@ -52,6 +52,7 @@ export * as etsyProductMockupPrompts from "./etsy-product-mockup-prompts";
 export * as etsyShopPoliciesGenerator from "./etsy-shop-policies-generator";
 export * as etsyTagResearcher from "./etsy-tag-researcher";
 export * as feedbackClassifier from "./feedback-classifier";
+export * as geoVisibilityMonitor from "./geo-visibility-monitor";
 export * as growthMetricsDashboard from "./growth-metrics-dashboard";
 export * as imageGenerator from "./image-generator";
 export * as inboundClassifier from "./inbound-classifier";
@@ -138,6 +139,7 @@ import * as etsyProductMockupPrompts from "./etsy-product-mockup-prompts";
 import * as etsyShopPoliciesGenerator from "./etsy-shop-policies-generator";
 import * as etsyTagResearcher from "./etsy-tag-researcher";
 import * as feedbackClassifier from "./feedback-classifier";
+import * as geoVisibilityMonitor from "./geo-visibility-monitor";
 import * as growthMetricsDashboard from "./growth-metrics-dashboard";
 import * as imageGenerator from "./image-generator";
 import * as inboundClassifier from "./inbound-classifier";
@@ -208,6 +210,7 @@ export const SKILL_RUNNERS: Readonly<Record<string, SkillRunner>> = Object.freez
   "etsy-shop-policies-generator": etsyShopPoliciesGenerator.run,
   "etsy-tag-researcher": etsyTagResearcher.run,
   "feedback-classifier": feedbackClassifier.run,
+  "geo-visibility-monitor": geoVisibilityMonitor.run,
   "growth-metrics-dashboard": growthMetricsDashboard.run,
   "image-generator": imageGenerator.run,
   "inbound-classifier": inboundClassifier.run,

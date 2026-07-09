@@ -147,6 +147,103 @@ export const OS_TIERS: OsTier[] = [
   },
 ];
 
+export interface GeoTier {
+  slug: "geo-audit" | "geo-essentials" | "geo-growth";
+  name: string;
+  oneTime: number | null; // one-time USD; null = subscription tier
+  monthly: number | null; // monthly USD; null = one-time only
+  priceLabel: string;
+  tagline: string;
+  bestFor: string;
+  features: string[];
+  paymentLinkEnv: string | null; // env var holding the Stripe payment link
+  featured: boolean;
+}
+
+/**
+ * GEO (Generative Engine Optimization) — the third business line.
+ * Getting local service businesses recommended by ChatGPT, Perplexity,
+ * and Google AI Mode. Completes the trifecta: build presence (web
+ * agency) + buy traffic (AI ads) + own AI-answer visibility (GEO).
+ *
+ * Canonical prices set by Jack 2026-07-09. Stripe links not yet created —
+ * the env vars below are reserved names; /geo CTAs route to /book until
+ * Jack wires them.
+ */
+export const GEO_TIERS: GeoTier[] = [
+  {
+    slug: "geo-audit",
+    name: "AI Visibility Audit",
+    oneTime: 750,
+    monthly: null,
+    priceLabel: "$750 one-time",
+    tagline: "Find out what the AI engines say when someone asks about you.",
+    bestFor:
+      "Any local service business that has never checked whether ChatGPT, Perplexity, or Google AI Mode recommends them — or a competitor.",
+    features: [
+      "20-prompt visibility baseline across ChatGPT, Perplexity, and Google AI Mode",
+      "Your visibility score out of 20, with every transcript included",
+      "Competitor comparison — who the engines name instead of you, and why",
+      "Entity + citation audit: the inconsistencies that keep AI from trusting you",
+      "Ranked fix list — what to change first, in plain English",
+    ],
+    paymentLinkEnv: "STRIPE_PAYMENT_LINK_GEO_AUDIT",
+    featured: false,
+  },
+  {
+    slug: "geo-essentials",
+    name: "GEO Essentials",
+    oneTime: null,
+    monthly: 595,
+    priceLabel: "$595/mo",
+    tagline: "The monthly work that makes AI engines recommend you.",
+    bestFor:
+      "Service businesses that want steady AI-answer visibility handled for them — the GEO equivalent of a retainer.",
+    features: [
+      "Everything in the Audit, re-run monthly with score tracking",
+      "llms.txt + structured data (Organization, Service, FAQ) built and maintained",
+      "Citation + entity cleanup across the directories AI engines actually read",
+      "Answer-ready FAQ and service content, written to be quoted by AI",
+      "Monthly report: score, movement, and what changed",
+    ],
+    paymentLinkEnv: "STRIPE_PAYMENT_LINK_GEO_ESSENTIALS",
+    featured: true,
+  },
+  {
+    slug: "geo-growth",
+    name: "GEO Growth",
+    oneTime: null,
+    monthly: 1250,
+    priceLabel: "$1,250/mo",
+    tagline: "Own the answer across your whole service area.",
+    bestFor:
+      "Businesses competing across multiple cities or service lines that want AI answers, ads, and content working as one system.",
+    features: [
+      "Everything in Essentials",
+      "Per-city and per-service visibility tracking (the full prompt matrix)",
+      "New answer-content published monthly, targeted at the gaps",
+      "Competitor displacement work — the prompts where they beat you get priority",
+      "Quarterly strategy review with the full transcript archive",
+    ],
+    paymentLinkEnv: "STRIPE_PAYMENT_LINK_GEO_GROWTH",
+    featured: false,
+  },
+];
+
+/**
+ * Founding-client rate: replaces GEO Essentials' monthly for the first
+ * three GEO clients, locked 12 months, in exchange for testimonial +
+ * case-study rights. [Assumption 2026-07-09: applies to Essentials —
+ * confirm with Jack before quoting it against Growth.]
+ */
+export const GEO_FOUNDING = {
+  monthly: 495,
+  appliesTo: "geo-essentials" as const,
+  label: "$495/mo founding rate",
+  terms:
+    "Locked for 12 months. First 3 clients only, in exchange for a testimonial and case-study rights.",
+} as const;
+
 export const PRICING_NOTES = {
   founderCap: "Founder pricing locks for the first 100 signups.",
   noGames: "No drip campaign. No upsell calls.",
