@@ -113,7 +113,8 @@ async function buildPnL() {
 
 async function main() {
   const env = await loadEnv();
-  if (!env.GEMINI_API_KEY) throw new Error("GEMINI_API_KEY missing");
+  if (!env.GEMINI_API_KEY && !env.ANTHROPIC_API_KEY)
+    throw new Error("no LLM key: set ANTHROPIC_API_KEY or GEMINI_API_KEY (llm-call.mjs is Claude-first; Gemini optional)");
   await fs.mkdir(FINANCE, { recursive: true });
 
   const isSunday = new Date().getDay() === 0;

@@ -235,21 +235,68 @@ async function loadOpportunities() {
 /**
  * Snapshot each tenant's ops/ data layer into public/data/ops/<slug>.json
  * so the Vercel-hosted ops dashboards can read it (Vercel has no Mac FS).
+ *
+ * HARDENED 2026-07-09 (root cause of the 5-week dead push leg): day14-realty's
+ * ops dir grew a 524MB snapshot (evaluations ~200MB + properties ~184MB) and
+ * `JSON.stringify(snap, null, 2)` blew V8's ~512MiB max-string cap — the
+ * RangeError killed main() at tenant #4 every 15 min, BEFORE the --push block,
+ * while empire-state.json (written earlier) stayed fresh: the "script alive"
+ * illusion. Three defenses now:
+ *   1. per-FILE size cap (default 5MB, DAY14_OPS_FILE_CAP_MB to change) —
+ *      oversized source files are skipped and named in `_skipped_oversize`;
+ *   2. compact JSON (pretty-printing was pure string bloat for a machine file);
+ *   3. per-tenant try/catch — one tenant's bad data can never kill the run
+ *      or the push again.
  */
+const OPS_FILE_CAP_BYTES =
+  (Number(process.env.DAY14_OPS_FILE_CAP_MB) || 5) * 1024 * 1024;
+
 async function snapshotOps(tenantsData) {
   const opsOut = path.join(PUBLIC_DATA, "ops");
   await fs.mkdir(opsOut, { recursive: true });
   for (const t of tenantsData) {
-    const dir = path.join(BIZ, t.slug, "ops");
-    if (!existsSync(dir)) continue;
-    const snap = { slug: t.slug, generated_at: new Date().toISOString() };
-    for (const f of await fs.readdir(dir)) {
-      if (!f.endsWith(".json")) continue;
+    try {
+      const dir = path.join(BIZ, t.slug, "ops");
+      if (!existsSync(dir)) continue;
+      const snap = { slug: t.slug, generated_at: new Date().toISOString() };
+      const skipped = [];
+      for (const f of await fs.readdir(dir)) {
+        if (!f.endsWith(".json")) continue;
+        const fp = path.join(dir, f);
+        try {
+          const st = await fs.stat(fp);
+          if (st.size > OPS_FILE_CAP_BYTES) {
+            skipped.push({ file: f, bytes: st.size });
+            continue;
+          }
+          snap[f.replace(/\.json$/, "")] = JSON.parse(await fs.readFile(fp, "utf8"));
+        } catch {}
+      }
+      if (skipped.length) snap._skipped_oversize = skipped;
+      let json;
       try {
-        snap[f.replace(/\.json$/, "")] = JSON.parse(await fs.readFile(path.join(dir, f), "utf8"));
-      } catch {}
+        json = JSON.stringify(snap); // compact on purpose — see header
+      } catch (err) {
+        // Last-ditch: even capped content overflowed. Ship a stub, not a crash.
+        json = JSON.stringify({
+          slug: t.slug,
+          generated_at: snap.generated_at,
+          _error: `snapshot serialization failed: ${String(err && err.message).slice(0, 160)}`,
+        });
+      }
+      await fs.writeFile(path.join(opsOut, `${t.slug}.json`), json);
+      if (skipped.length) {
+        console.log(
+          `⚠ ops[${t.slug}]: skipped oversized ${skipped
+            .map((s) => `${s.file} (${Math.round(s.bytes / 1024 / 1024)}MB)`)
+            .join(", ")} — cap ${Math.round(OPS_FILE_CAP_BYTES / 1024 / 1024)}MB`
+        );
+      }
+    } catch (err) {
+      console.error(
+        `ops snapshot failed for ${t.slug}: ${String(err && err.message).slice(0, 200)} — continuing`
+      );
     }
-    await fs.writeFile(path.join(opsOut, `${t.slug}.json`), JSON.stringify(snap, null, 2));
   }
 }
 

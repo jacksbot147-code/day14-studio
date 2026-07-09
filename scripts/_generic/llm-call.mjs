@@ -58,7 +58,14 @@ export async function llmCall({
   if (_preamble) systemPrompt = [_preamble, systemPrompt].filter(Boolean).join("\n\n");
   const hasA = !!env.ANTHROPIC_API_KEY;
   const hasG = !!env.GEMINI_API_KEY;
-  const anthropicFirst = preferAnthropic || PREFER === "anthropic";
+  // GROUNDING-AWARE ROUTING (2026-07-09 audit fix): google_search grounding
+  // exists ONLY on the Gemini leg. Under Claude-first, a grounded call that
+  // "succeeds" on Claude silently returns ungrounded, fabrication-prone text
+  // ("real URL" fields become guesses) — pr-director/sales-director's failure
+  // mode. So useGrounding routes Gemini-first regardless of PREFER; Claude
+  // stays the (explicitly degraded, grounded:false) fallback.
+  const wantsGrounding = useGrounding && hasG;
+  const anthropicFirst = !wantsGrounding && (preferAnthropic || PREFER === "anthropic");
 
   // Claude-first (default) — reliable, what Day14 runs on. Gemini is the fallback.
   if (anthropicFirst && hasA) {
@@ -75,7 +82,8 @@ export async function llmCall({
     return r;
   }
 
-  // Gemini-first (opt-in via DAY14_LLM_PREFER=gemini), Claude as fallback.
+  // Gemini-first (opt-in via DAY14_LLM_PREFER=gemini, or forced by a
+  // grounded call — see wantsGrounding above), Claude as fallback.
   if (hasG) {
     try {
       const result = await callGemini({ prompt, systemPrompt, useGrounding, temperature, maxTokens, model, apiKey: env.GEMINI_API_KEY });
@@ -109,7 +117,7 @@ async function callGemini({ prompt, systemPrompt, useGrounding, temperature, max
   }
   const data = await res.json();
   const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
-  return { ok: true, text, provider: "gemini" };
+  return { ok: true, text, provider: "gemini", grounded: !!useGrounding };
 }
 
 async function callAnthropic({ prompt, systemPrompt, temperature, maxTokens, apiKey, model }) {
@@ -137,7 +145,10 @@ async function callAnthropic({ prompt, systemPrompt, temperature, maxTokens, api
   }
   const data = await res.json();
   const text = (data.content || []).filter((b) => b.type === "text").map((b) => b.text || "").join("\n");
-  return { ok: true, text, provider: "anthropic" };
+  // Anthropic has no google_search leg — callers that asked for grounding
+  // and land here are getting ungrounded text. `grounded:false` lets them
+  // (and audits) tell the difference instead of trusting fabricated URLs.
+  return { ok: true, text, provider: "anthropic", grounded: false };
 }
 
 export function parseJsonResponse(raw) {
