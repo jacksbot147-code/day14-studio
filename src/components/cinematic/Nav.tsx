@@ -38,6 +38,7 @@ export function Nav({ linkBase = "" }: { linkBase?: string } = {}) {
         <a href={`${linkBase}#system`}>How it works</a>
         <a href={`${linkBase}#work`}>Work</a>
         <a href={`${linkBase}#pricing`}>Pricing</a>
+        <a href="/geo">GEO</a>
         <MagneticLink
           href={`${linkBase}#book`}
           className="cin-btn cin-btn-glow"

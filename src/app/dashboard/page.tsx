@@ -420,6 +420,13 @@ export default async function DashboardPage() {
           </a>{" "}
           ·{" "}
           <a
+            href="/dashboard/geo"
+            className="text-emerald-400 hover:text-emerald-300 underline"
+          >
+            geo ops
+          </a>{" "}
+          ·{" "}
+          <a
             href="/dashboard/system"
             className="text-emerald-400 hover:text-emerald-300 underline"
           >

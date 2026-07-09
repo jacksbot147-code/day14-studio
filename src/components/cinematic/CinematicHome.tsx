@@ -25,6 +25,7 @@ import { Proof } from "./Proof";
 import { FeaturedTenant } from "./FeaturedTenant";
 import { RoiCalculator } from "./RoiCalculator";
 import { Pricing } from "./Pricing";
+import { GeoCallout } from "./GeoCallout";
 import { ClosingCTA } from "./ClosingCTA";
 import { SiteFooter } from "./SiteFooter";
 import { StickyCTA } from "./StickyCTA";
@@ -48,6 +49,7 @@ export function CinematicHome() {
         <FeaturedTenant />
         <RoiCalculator />
         <Pricing links={getPaymentLinks()} />
+        <GeoCallout />
         <ClosingCTA />
       </main>
       <SiteFooter />

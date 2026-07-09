@@ -123,6 +123,21 @@ export default function PricingPage() {
 
           <section className="cin-detail-block">
             <Reveal as="h2" className="cin-detail-h2">
+              Also: GEO — AI search visibility
+            </Reveal>
+            <div className="cin-prose">
+              <p>
+                Builds get you a front door. GEO gets you named when someone
+                asks ChatGPT, Perplexity, or Google AI who to hire — scored
+                out of 20, re-measured monthly, transcripts included. It has
+                its own page and its own pricing:{" "}
+                <a href="/geo">see how GEO works →</a>
+              </p>
+            </div>
+          </section>
+
+          <section className="cin-detail-block">
+            <Reveal as="h2" className="cin-detail-h2">
               Questions about pricing
             </Reveal>
             <div className="cin-detail-faqs">
