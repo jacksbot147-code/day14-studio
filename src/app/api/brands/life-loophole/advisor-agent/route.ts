@@ -23,6 +23,7 @@
  * API key is configured, and is rate-limited per IP.
  */
 import { NextRequest, NextResponse } from "next/server";
+import { clientIp } from "@/lib/client-ip";
 import { CATALOG } from "@/app/brands/life-loophole/catalog";
 import type { LoopholeEntry } from "@/app/brands/life-loophole/catalog";
 import {
@@ -243,8 +244,7 @@ export async function POST(req: NextRequest) {
   }
 
   const ip =
-    ((req.headers.get("x-forwarded-for") || "").split(",")[0] || "").trim() ||
-    "anon";
+    clientIp(req);
   if (rateLimited(ip)) {
     return NextResponse.json({
       ok: false,

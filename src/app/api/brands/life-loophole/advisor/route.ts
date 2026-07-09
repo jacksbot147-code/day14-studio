@@ -10,6 +10,7 @@
  * configured, and is rate-limited per IP to protect against abuse.
  */
 import { NextRequest, NextResponse } from "next/server";
+import { clientIp } from "@/lib/client-ip";
 import { CATALOG } from "@/app/brands/life-loophole/catalog";
 
 export const runtime = "nodejs";
@@ -51,7 +52,7 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const ip = ((req.headers.get("x-forwarded-for") || "").split(",")[0] || "").trim() || "anon";
+  const ip = clientIp(req);
   if (rateLimited(ip)) {
     return NextResponse.json({
       ok: false,

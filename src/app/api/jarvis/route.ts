@@ -1,8 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import fs from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { homedir } from "node:os";
+import { requireAdmin } from "@/lib/require-admin";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -166,7 +167,12 @@ async function tenantNames(): Promise<string[]> {
   }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  // This endpoint returns internal ops data (telegram previews, tenant names,
+  // work-register, poller logs) — admin only. Was previously unauthenticated
+  // and not covered by the middleware matcher.
+  const denied = await requireAdmin(req);
+  if (denied) return denied;
   const [agents, outbox, deadCount, sentCount, feed, register, circuit, skills, tenants] =
     await Promise.all([
       scanAgents(),
