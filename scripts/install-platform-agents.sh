@@ -289,31 +289,23 @@ if launchctl list 2>/dev/null | grep -q "com.day14.expansion-prompter"; then lau
 launchctl load "$PLIST"
 echo "✓ loaded com.day14.expansion-prompter"
 
-# ----- Growth narrator (continuous, polls 90s) -----
+# ----- Growth narrator — RETIRED 2026-07-10 (absorbed into system-pulse) -----
+# One notifier instead of two: system-pulse now sends money/launch events
+# immediately and batches the rest hourly. Unload + remove any old plist.
 PLIST="$LAUNCH_AGENTS_DIR/com.day14.growth-narrator.plist"
-cat > "$PLIST" <<EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>Label</key><string>com.day14.growth-narrator</string>
-  <key>ProgramArguments</key>
-  <array><string>$NODE_BIN</string><string>$STUDIO/scripts/growth-narrator.mjs</string></array>
-  <key>RunAtLoad</key><true/>
-  <key>KeepAlive</key><dict><key>SuccessfulExit</key><false/><key>Crashed</key><true/></dict>
-  <key>ThrottleInterval</key><integer>60</integer>
-  <key>StandardOutPath</key><string>$HOME/Library/Logs/day14/growth-narrator.stdout.log</string>
-  <key>StandardErrorPath</key><string>$HOME/Library/Logs/day14/growth-narrator.stderr.log</string>
-  <key>EnvironmentVariables</key>
-  <dict><key>PATH</key><string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string></dict>
-</dict>
-</plist>
-EOF
-if launchctl list 2>/dev/null | grep -q "com.day14.growth-narrator"; then launchctl unload "$PLIST" 2>/dev/null || true; fi
-launchctl load "$PLIST"
-echo "✓ loaded com.day14.growth-narrator"
+if launchctl list 2>/dev/null | grep -q "com.day14.growth-narrator"; then
+  launchctl unload "$PLIST" 2>/dev/null || true
+fi
+if [ -f "$PLIST" ]; then
+  rm -f "$PLIST"
+  echo "✓ retired com.day14.growth-narrator (plist removed; narration lives in system-pulse)"
+else
+  echo "· com.day14.growth-narrator already retired"
+fi
 
-# ----- Gamified dashboard (refresh every 15 min) -----
+# ----- Gamified dashboard (refresh hourly — was 15 min; it's an offline
+# mirror of the canonical /admin, and 4x/hour re-renders of RPG HTML for a
+# zero-customer empire was pure heat. 2026-07-10, marathon W1) -----
 PLIST="$LAUNCH_AGENTS_DIR/com.day14.gamified-dashboard.plist"
 cat > "$PLIST" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -327,7 +319,7 @@ cat > "$PLIST" <<EOF
     <string>$NODE_BIN</string>
     <string>$STUDIO/scripts/gamified-dashboard.mjs</string>
   </array>
-  <key>StartInterval</key><integer>900</integer>
+  <key>StartInterval</key><integer>3600</integer>
   <key>RunAtLoad</key><true/>
   <key>StandardOutPath</key><string>$HOME/Library/Logs/day14/gamified-dashboard.stdout.log</string>
   <key>StandardErrorPath</key><string>$HOME/Library/Logs/day14/gamified-dashboard.stderr.log</string>
@@ -348,6 +340,9 @@ echo "  com.day14.recursive-expansion   (hourly self-build)"
 echo "  com.day14.video-pipeline        (watches raw-footage/)"
 echo "  com.day14.skill-multiplier      (daily cross-tenant skill propagation)"
 echo "  com.day14.priority-allocator    (9am/2pm/8pm priority push)"
+echo "  com.day14.system-pulse          (consolidated notifier: immediate money events + hourly digest)"
+echo "  com.day14.gamified-dashboard    (hourly static re-render)"
+echo "  [retired] com.day14.growth-narrator — absorbed into system-pulse 2026-07-10"
 echo
 echo "Logs: $LOG_DIR/"
 echo "Drafts: $STUDIO/docs/seeds/skills/_drafts/"
