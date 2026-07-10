@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Visibility Report — {{CLIENT_NAME}} — {{REPORT_DATE}}</title>
+<!--
+  Day14 GEO client report template (rebuilt natively 2026-07-10; the
+  original from day14-geo-complete.zip was lost). Self-contained: inline
+  CSS, no JS, no external fonts — safe to email as an attachment or print.
+  Filled by scripts/geo-render-report.mjs from geo-visibility-monitor's
+  outputs. Placeholders: {{CLIENT_NAME}} {{CLIENT_CITY}} {{REPORT_DATE}}
+  {{SCORE}} {{SCORE_PCT}} {{DELTA_CHIP}} {{BASELINE_NOTE}} {{CELLS}}
+  {{ENGINE_ROWS}} {{WEAKEST_SECTION}} {{HISTORY_ROWS}} {{COVERAGE_NOTE}}
+-->
+<style>
+  :root{
+    --bg:#0b0b0a; --surface:#141412; --surface-2:#1c1c19;
+    --border:#2a2a26; --text:#f2f1ec; --mut:#a3a196; --faint:#6e6e66;
+    --accent:#e04617; --accent-soft:rgba(224,70,23,.14);
+    --green:#3dd68c; --red:#ff6b5e; --cyan:#4cc3dd;
+    --mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .page{max-width:760px;margin:0 auto;padding:56px 28px 40px}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+  h1{font-size:30px;font-weight:600;letter-spacing:-.02em;line-height:1.2}
+  .sub{color:var(--mut);margin-top:8px;font-size:15px}
+  .rule{height:1px;background:var(--border);margin:32px 0}
+
+  /* Score block */
+  .score-wrap{display:flex;gap:28px;align-items:center;flex-wrap:wrap;
+    background:var(--surface);border:1px solid var(--border);border-radius:6px;
+    padding:28px}
+  .score-num{font-family:var(--mono);font-size:64px;font-weight:700;
+    letter-spacing:-.03em;line-height:1}
+  .score-num small{font-size:22px;color:var(--faint);font-weight:400}
+  .score-meta{flex:1;min-width:220px}
+  .chip{display:inline-block;font-family:var(--mono);font-size:13px;
+    padding:3px 10px;border-radius:999px;border:1px solid var(--border)}
+  .chip.up{color:var(--green);border-color:rgba(61,214,140,.4);background:rgba(61,214,140,.08)}
+  .chip.down{color:var(--red);border-color:rgba(255,107,94,.4);background:rgba(255,107,94,.08)}
+  .chip.flat{color:var(--mut)}
+  .score-note{color:var(--mut);font-size:14px;margin-top:10px}
+  .score-bar{height:8px;border-radius:999px;background:var(--surface-2);
+    overflow:hidden;margin-top:14px}
+  .score-bar b{display:block;height:100%;width:{{SCORE_PCT}}%;
+    background:linear-gradient(90deg,var(--accent),var(--cyan))}
+
+  h2{font-size:19px;font-weight:600;margin:0 0 16px;letter-spacing:-.01em}
+  .section{margin:36px 0}
+
+  /* Engine rows */
+  .engine{display:grid;grid-template-columns:150px 1fr 110px;gap:14px;
+    align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
+  .engine:last-child{border-bottom:none}
+  .engine .name{font-weight:500}
+  .meter{height:7px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+  .meter b{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--cyan))}
+  .engine .stat{font-family:var(--mono);font-size:13px;color:var(--mut);text-align:right}
+
+  /* Weakest cells */
+  .weak{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:20px 24px}
+  .weak ul{list-style:none}
+  .weak li{padding:7px 0;border-bottom:1px solid var(--border);font-size:15px}
+  .weak li:last-child{border-bottom:none}
+  .weak .eng{font-family:var(--mono);font-size:12px;color:var(--faint);margin-left:8px}
+  .weak p.lead{color:var(--mut);font-size:14px;margin-bottom:12px}
+
+  /* History table */
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th{font-family:var(--mono);font-size:11px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--faint);text-align:left;
+    padding:8px 12px 8px 0;border-bottom:1px solid var(--border)}
+  td{padding:9px 12px 9px 0;border-bottom:1px solid var(--border);color:var(--mut)}
+  td.mono{font-family:var(--mono);color:var(--text)}
+
+  .method{font-size:13px;color:var(--faint);line-height:1.7}
+  .method b{color:var(--mut)}
+
+  .foot{margin-top:44px;padding-top:20px;border-top:1px solid var(--border);
+    display:flex;justify-content:space-between;flex-wrap:gap;font-size:13px;color:var(--faint)}
+  .brand{font-weight:600;color:var(--text)}
+  .brand b{color:var(--accent)}
+  @media print{body{background:#fff;color:#111}
+    :root{--bg:#fff;--surface:#f6f6f4;--surface-2:#ebebe7;--border:#ddd;
+      --text:#111;--mut:#444;--faint:#777}}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="kicker">Day14 · GEO — AI search visibility</div>
+  <h1>{{CLIENT_NAME}}</h1>
+  <p class="sub">{{CLIENT_CITY}} · report of {{REPORT_DATE}} · every number below comes from recorded engine transcripts — ask for any of them.</p>
+
+  <div class="rule"></div>
+
+  <div class="score-wrap">
+    <div class="score-num">{{SCORE}}<small>/20</small></div>
+    <div class="score-meta">
+      {{DELTA_CHIP}}
+      <p class="score-note">{{BASELINE_NOTE}} Measured across {{CELLS}} prompt×engine cells with the same fixed question pack every period — movement is real movement.</p>
+      <div class="score-bar"><b></b></div>
+    </div>
+  </div>
+
+  {{COVERAGE_NOTE}}
+
+  <div class="section">
+    <h2>Per engine — how often you're the answer</h2>
+    {{ENGINE_ROWS}}
+  </div>
+
+  {{WEAKEST_SECTION}}
+
+  <div class="section">
+    <h2>Score history</h2>
+    <table>
+      <thead><tr><th>Date</th><th>Score</th><th>Change</th><th>Cells</th></tr></thead>
+      <tbody>
+        {{HISTORY_ROWS}}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section method">
+    <b>How the score works.</b> Each buyer question is asked on each engine
+    (ChatGPT, Perplexity, Google AI Mode) and the answer recorded: not
+    mentioned = 0, mentioned = 1, named in the first three businesses = 2 —
+    normalized to a score out of 20. Unmeasured is reported as unmeasured,
+    never as zero. Nobody controls what these engines say; we control what
+    they read, and we show you the transcripts either way.
+  </div>
+
+  <div class="foot">
+    <span class="brand"><b>14</b> Day14</span>
+    <span>day14.us/geo · prepared for {{CLIENT_NAME}}</span>
+  </div>
+
+</div>
+</body>
+</html>
