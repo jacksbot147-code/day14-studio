@@ -219,7 +219,9 @@ export default function LocalPage() {
                 online, a full admin app? That&rsquo;s{" "}
                 <Link href="/pricing">Portal and Platform</Link>. Want AI
                 engines to recommend you when buyers ask?{" "}
-                <Link href="/geo">That&rsquo;s GEO.</Link>
+                <Link href="/geo">That&rsquo;s GEO.</Link> Want AI video
+                ads scored before you spend?{" "}
+                <Link href="/brands/marque">That&rsquo;s Marque.</Link>
               </p>
             </div>
           </section>

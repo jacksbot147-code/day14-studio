@@ -348,8 +348,9 @@ export default function GeoPage() {
                 GEO works best on a site built to be quoted — which is what{" "}
                 <Link href="/pricing">every Day14 build</Link> ships as. And
                 the visibility baseline doubles as ad intelligence: the
-                prompts where competitors beat you are exactly where paid
-                placement earns its keep. One operator, three motions, one
+                prompts where competitors beat you are exactly where{" "}
+                <Link href="/brands/marque">Marque</Link>, Day14&rsquo;s
+                AI-ads arm, earns its keep. One operator, three motions, one
                 system.
               </p>
             </div>
