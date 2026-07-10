@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-10T12:46:01.195Z",
+  "generated_at": "2026-07-10T13:01:03.489Z",
   "tenants": [
     {
       "slug": "day14",
@@ -38,6 +38,19 @@
       "orders": 0,
       "streak": 0,
       "recent_audit": [
+        {
+          "ts": "2026-07-10T13:00:02.885Z",
+          "tenant": "hot-flash-co",
+          "actor": "daily-engine",
+          "action": "fatal_error",
+          "error": "PRINTIFY_API_KEY missing"
+        },
+        {
+          "ts": "2026-07-10T13:00:02.882Z",
+          "tenant": "hot-flash-co",
+          "actor": "daily-engine",
+          "action": "run_started"
+        },
         {
           "ts": "2026-07-09T15:00:01.421Z",
           "tenant": "hot-flash-co",
@@ -224,19 +237,6 @@
           "actor": "marketing-engine",
           "action": "fatal_error",
           "error": "PRINTIFY_API_KEY missing"
-        },
-        {
-          "ts": "2026-06-28T13:00:04.536Z",
-          "tenant": "hot-flash-co",
-          "actor": "daily-engine",
-          "action": "fatal_error",
-          "error": "PRINTIFY_API_KEY missing"
-        },
-        {
-          "ts": "2026-06-28T13:00:04.533Z",
-          "tenant": "hot-flash-co",
-          "actor": "daily-engine",
-          "action": "run_started"
         }
       ],
       "content_counts": {
@@ -1152,15 +1152,15 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-10T12:45:39.597Z"
+      "lastBeat": "2026-07-10T13:00:39.658Z"
     },
     {
       "name": "auto-restart-watchdog-cycle",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 4,
+      "ageMin": 5,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-10T12:41:32.087Z"
+      "lastBeat": "2026-07-10T12:56:32.082Z"
     },
     {
       "name": "customer-success",
@@ -1168,7 +1168,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-10T12:45:38.582Z"
+      "lastBeat": "2026-07-10T13:00:38.641Z"
     },
     {
       "name": "events-poller",
@@ -1176,7 +1176,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-10T12:45:40.969Z"
+      "lastBeat": "2026-07-10T13:00:41.029Z"
     },
     {
       "name": "expansion-prompter",
@@ -1184,13 +1184,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-10T12:45:38.840Z"
+      "lastBeat": "2026-07-10T13:00:38.898Z"
     },
     {
       "name": "gmail-cs-triage",
       "kind": "daemon",
       "status": "error",
-      "ageMin": 42607,
+      "ageMin": 42622,
       "cadenceMin": 30,
       "lastBeat": "2026-06-10T22:39:26.000Z"
     },
@@ -1200,7 +1200,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-10T12:45:40.277Z"
+      "lastBeat": "2026-07-10T13:00:40.338Z"
     },
     {
       "name": "growth-watcher",
@@ -1208,7 +1208,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-10T12:45:38.815Z"
+      "lastBeat": "2026-07-10T13:00:38.871Z"
     },
     {
       "name": "hot-flash-co-orders",
@@ -1216,13 +1216,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-10T12:45:38.815Z"
+      "lastBeat": "2026-07-10T13:00:38.871Z"
     },
     {
       "name": "lawn-care-gm-kennum-lawn-care",
       "kind": "oneshot",
       "status": "error",
-      "ageMin": 42601,
+      "ageMin": 42616,
       "cadenceMin": 30,
       "lastBeat": "2026-06-10T22:44:58.475Z"
     },
@@ -1232,7 +1232,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-10T12:45:38.718Z"
+      "lastBeat": "2026-07-10T13:00:38.777Z"
     },
     {
       "name": "outbox-deadletter",
@@ -1240,15 +1240,15 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-10T12:45:38.828Z"
+      "lastBeat": "2026-07-10T13:00:38.887Z"
     },
     {
       "name": "outbox-deadletter-cycle",
       "kind": "daemon",
-      "status": "stale",
-      "ageMin": 25,
+      "status": "healthy",
+      "ageMin": 10,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-10T12:21:30.515Z"
+      "lastBeat": "2026-07-10T12:51:30.514Z"
     },
     {
       "name": "proactive-monitor",
@@ -1256,13 +1256,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-10T12:45:39.422Z"
+      "lastBeat": "2026-07-10T13:00:39.481Z"
     },
     {
       "name": "realty-scout-day14-realty",
       "kind": "oneshot",
       "status": "error",
-      "ageMin": 42830,
+      "ageMin": 42845,
       "cadenceMin": 60,
       "lastBeat": "2026-06-10T18:56:30.393Z"
     },
@@ -1272,7 +1272,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-10T12:45:39.422Z"
+      "lastBeat": "2026-07-10T13:00:39.483Z"
     },
     {
       "name": "skill-multiplier",
@@ -1280,13 +1280,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-10T12:45:39.306Z"
+      "lastBeat": "2026-07-10T13:00:39.363Z"
     },
     {
       "name": "stripe-cs-loop",
       "kind": "daemon",
       "status": "error",
-      "ageMin": 42621,
+      "ageMin": 42636,
       "cadenceMin": 60,
       "lastBeat": "2026-06-10T22:24:54.000Z"
     },
@@ -1296,7 +1296,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-10T12:45:38.815Z"
+      "lastBeat": "2026-07-10T13:00:38.871Z"
     },
     {
       "name": "telegram-poller",
@@ -1304,13 +1304,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-10T12:45:38.562Z"
+      "lastBeat": "2026-07-10T13:00:38.617Z"
     },
     {
       "name": "vercel-deploy-monitor",
       "kind": "daemon",
       "status": "error",
-      "ageMin": 42642,
+      "ageMin": 42657,
       "cadenceMin": 60,
       "lastBeat": "2026-06-10T22:04:17.000Z"
     },
@@ -1320,7 +1320,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-10T12:45:38.562Z"
+      "lastBeat": "2026-07-10T13:00:38.617Z"
     }
   ],
   "skill_counts": {
@@ -3674,6 +3674,19 @@
   ],
   "empire_battle_log": [
     {
+      "ts": "2026-07-10T13:00:02.885Z",
+      "tenant": "hot-flash-co",
+      "actor": "daily-engine",
+      "action": "fatal_error",
+      "error": "PRINTIFY_API_KEY missing"
+    },
+    {
+      "ts": "2026-07-10T13:00:02.882Z",
+      "tenant": "hot-flash-co",
+      "actor": "daily-engine",
+      "action": "run_started"
+    },
+    {
       "ts": "2026-07-09T15:00:01.421Z",
       "tenant": "hot-flash-co",
       "actor": "marketing-engine",
@@ -3759,19 +3772,6 @@
       "actor": "marketing-engine",
       "action": "fatal_error",
       "error": "PRINTIFY_API_KEY missing"
-    },
-    {
-      "ts": "2026-07-03T13:00:03.488Z",
-      "tenant": "hot-flash-co",
-      "actor": "daily-engine",
-      "action": "fatal_error",
-      "error": "PRINTIFY_API_KEY missing"
-    },
-    {
-      "ts": "2026-07-03T13:00:03.483Z",
-      "tenant": "hot-flash-co",
-      "actor": "daily-engine",
-      "action": "run_started"
     },
     {
       "ts": "2026-06-10T22:44:58.474Z",
