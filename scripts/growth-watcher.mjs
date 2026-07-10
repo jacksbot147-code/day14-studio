@@ -319,6 +319,12 @@ function groupAdHocByPhrase(entries, metaMode = false) {
   return groups;
 }
 
+// Draft thresholds raised 2026-07-10 (marathon W3 / audit F5): the empire
+// carries 278 specs vs 60 impls — a 218-spec debt — and growth-watcher's job
+// is drafting MORE. Higher bars mean only genuinely-repeated patterns promote.
+// Env-overridable so Jack can retune without a code change.
+const DOMAIN_MIN = Number(process.env.DAY14_GROWTH_DOMAIN_MIN) || 4; // was 2
+const META_MIN = Number(process.env.DAY14_GROWTH_META_MIN) || 5;     // was 3
 // ---- detect promotion candidates ----
 // `minOccurrences` defaults to 2 (domain) — pass 3 for meta layer.
 function detectCandidates(groups, seenPhrases, minOccurrences = 2) {
@@ -688,7 +694,7 @@ async function scanCycle() {
     const domainCandidates = detectCandidates(
       domainGroups,
       seen.proposed_phrases,
-      2
+      DOMAIN_MIN
     );
 
     if (domainCandidates.length > 0) {
@@ -710,7 +716,7 @@ async function scanCycle() {
     const metaCandidates = detectCandidates(
       metaGroups,
       seen.proposed_phrases,
-      3
+      META_MIN
     );
 
     if (metaCandidates.length > 0) {

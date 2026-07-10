@@ -237,7 +237,26 @@ async function processExpansionInbox(env, state) {
       state.skills_generated += 1;
       processed += 1;
     } catch (err) {
-      await log(`error generating skill: ${err.message}`);
+      // FIX 2026-07-10 (marathon W3 / audit): a throwing generateSkill (Gemini
+      // outage → every hourly cycle retried EVERY pending request forever;
+      // ~930 retries observed on one stuck request). Track attempts per file
+      // and PARK after MAX_EXPANSION_ATTEMPTS so a broken request stops looping.
+      const MAX_EXPANSION_ATTEMPTS = Number(process.env.DAY14_EXPANSION_MAX_ATTEMPTS) || 3;
+      state.attempts = state.attempts || {};
+      state.attempts[f] = (state.attempts[f] || 0) + 1;
+      await log(`error generating skill (attempt ${state.attempts[f]}/${MAX_EXPANSION_ATTEMPTS}): ${err.message}`);
+      if (state.attempts[f] >= MAX_EXPANSION_ATTEMPTS) {
+        try {
+          req.status = "parked";
+          req.parked_at = new Date().toISOString();
+          req.parked_reason = `generation failed ${state.attempts[f]}x: ${String(err.message).slice(0, 160)}`;
+          await fs.writeFile(path.join(EXPANSION_PROCESSED, f), JSON.stringify(req, null, 2));
+          await fs.unlink(filePath);
+        } catch {}
+        state.processed_ids.push(f);
+        delete state.attempts[f];
+        await log(`parked stuck request ${f} after ${MAX_EXPANSION_ATTEMPTS} failed attempts — no longer retried`);
+      }
     }
   }
   return processed;
