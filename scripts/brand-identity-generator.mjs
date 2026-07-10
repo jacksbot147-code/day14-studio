@@ -66,7 +66,7 @@ function parseJson(raw) {
 async function main() {
   const { slug, display_name, niche } = args();
   const env = await loadEnv();
-  if (!env.GEMINI_API_KEY) throw new Error("GEMINI_API_KEY missing");
+  if (!env.ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY missing");
 
   const prompt = `Generate a complete brand identity for a new business.
 
@@ -108,7 +108,7 @@ OUTPUT — strict JSON only, no preamble:
 Be ruthlessly specific. No "modern and elegant" — instead "1970s varsity patch aesthetic" or "Brutalist Helvetica + grid". Pick a lane.`;
 
   console.log(`→ Generating brand identity for ${display_name}...`);
-  const raw = await callGemini(prompt, env.GEMINI_API_KEY);
+  const raw = await callGemini(prompt);
   const identity = parseJson(raw);
 
   const outDir = path.join(BIZ, slug);

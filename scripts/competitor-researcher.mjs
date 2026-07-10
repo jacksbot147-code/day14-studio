@@ -65,7 +65,7 @@ function parseJson(raw) {
 async function main() {
   const { slug, niche, archetype } = args();
   const env = await loadEnv();
-  if (!env.GEMINI_API_KEY) throw new Error("GEMINI_API_KEY missing");
+  if (!env.ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY missing");
 
   const prompt = `Research the competitive landscape for a new ${archetype} business targeting: "${niche}"
 
@@ -110,7 +110,7 @@ Return STRICT JSON only, no preamble:
 Be SPECIFIC. Real URLs only. No placeholder competitors.`;
 
   console.log(`→ Researching competitors for "${niche}" (${archetype})...`);
-  const raw = await callGroundedGemini(prompt, env.GEMINI_API_KEY);
+  const raw = await callGroundedGemini(prompt);
   const research = parseJson(raw);
 
   const outDir = path.join(BIZ, slug);

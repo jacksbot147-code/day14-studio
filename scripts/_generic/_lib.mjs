@@ -9,6 +9,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
+import { llmCall } from "./llm-call.mjs";
 
 export const HOME = homedir();
 export const BIZ = path.join(HOME, "Documents/businesses");
@@ -17,6 +18,9 @@ export const SHARED_OUTBOX = path.join(SHARED, "telegram/outbox");
 export const ENV_FILE = path.join(HOME, "Documents/studio/.env.local");
 export const TENANTS_FILE = path.join(SHARED, "tenants.json");
 
+// Retained as exports for call-site compatibility (engines pass these as the
+// `model` opt). They are now vestigial — callGemini routes to Anthropic via
+// llmCall, which ignores Gemini model names. Kept so imports don't break.
 export const GEMINI_MODEL = "gemini-2.5-flash";
 export const GEMINI_GROUNDED = "gemini-2.5-flash";
 export const POLLINATIONS_MODEL = "flux";
@@ -64,22 +68,22 @@ export async function audit(slug, record) {
   await fs.appendFile(f, JSON.stringify({ ts: new Date().toISOString(), tenant: slug, ...record }) + "\n");
 }
 
+// Anthropic-only as of the 2026-06 gemini→anthropic transfer. Name kept for
+// call-site stability; delegates to llmCall (Claude Haiku). `opts.useGrounding`
+// is preserved as intent but is a no-op on Anthropic; `opts.model` (a Gemini
+// name) is intentionally NOT forwarded. `env` is unused now but kept in the
+// signature so existing callers need no edits.
 export async function callGemini(prompt, env, opts = {}) {
-  const model = opts.model || GEMINI_MODEL;
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${env.GEMINI_API_KEY}`;
-  const body = {
-    contents: [{ role: "user", parts: [{ text: prompt }] }],
-    generationConfig: { temperature: opts.temp ?? 0.7, maxOutputTokens: opts.maxTokens ?? 3000 },
-  };
-  if (opts.useGrounding) body.tools = [{ google_search: {} }];
-  if (opts.systemPrompt) body.systemInstruction = { parts: [{ text: opts.systemPrompt }] };
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+  void env;
+  const r = await llmCall({
+    prompt,
+    systemPrompt: opts.systemPrompt,
+    useGrounding: opts.useGrounding,
+    temperature: opts.temp ?? 0.7,
+    maxTokens: opts.maxTokens ?? 3000,
   });
-  if (!res.ok) throw new Error(`gemini ${res.status}: ${(await res.text()).slice(0, 200)}`);
-  return (await res.json())?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+  if (!r.ok) throw new Error(r.error || "llmCall failed");
+  return r.text;
 }
 
 export function parseJson(raw) {

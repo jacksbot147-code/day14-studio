@@ -23,7 +23,7 @@ import {
 async function main() {
   const slug = tenantSlug();
   const env = await loadEnv();
-  if (!env.GEMINI_API_KEY) throw new Error("GEMINI_API_KEY missing");
+  if (!env.ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY missing");
 
   const ctx = await loadTenant(slug);
   if (!ctx.tenant) throw new Error(`tenant ${slug} not registered`);

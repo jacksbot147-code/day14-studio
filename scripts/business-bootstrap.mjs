@@ -286,7 +286,7 @@ async function celebrate(env, args, archetype, results, todoCount = 0) {
 async function main() {
   const a = args();
   const env = await loadEnv();
-  if (!env.GEMINI_API_KEY) throw new Error("GEMINI_API_KEY missing");
+  if (!env.ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY missing");
 
   const archetypes = await loadArchetypes();
   const archetype = archetypes.archetypes[a.archetype];

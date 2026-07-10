@@ -21,6 +21,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
+import { llmCall } from "./_generic/llm-call.mjs";
 
 const HOME = homedir();
 const STUDIO = path.join(HOME, "Documents/studio");
@@ -60,18 +61,12 @@ async function heartbeat() {
   await fs.appendFile(HEARTBEAT_FILE, `${new Date().toISOString()} alive\n`);
 }
 
-async function callGemini(prompt, env) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${env.GEMINI_API_KEY}`;
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.85, maxOutputTokens: 2000 },
-    }),
-  });
-  if (!res.ok) throw new Error(`gemini ${res.status}`);
-  return (await res.json())?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+// Anthropic-only via llmCall (2026-06 gemini→anthropic transfer). `env` kept
+// for call-site compatibility; no longer used.
+async function callGemini(prompt, _env) {
+  const r = await llmCall({ prompt, temperature: 0.85, maxTokens: 2000 });
+  if (!r.ok) throw new Error(r.error || "llmCall failed");
+  return r.text;
 }
 
 async function loadContext() {
@@ -94,7 +89,7 @@ async function loadContext() {
 
 async function cycle() {
   const env = await loadEnv();
-  if (!env.GEMINI_API_KEY) { await log("no GEMINI_API_KEY"); return; }
+  if (!env.ANTHROPIC_API_KEY) { await log("no ANTHROPIC_API_KEY"); return; }
   if (!env.TELEGRAM_CHAT_ID) { await log("no TELEGRAM_CHAT_ID"); return; }
 
   const ctx = await loadContext();

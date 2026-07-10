@@ -19,6 +19,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
+import { llmCall } from "./_generic/llm-call.mjs";
 
 const HOME = homedir();
 const STUDIO = path.join(HOME, "Documents/studio");
@@ -96,18 +97,12 @@ async function groupByPurpose() {
   return groups;
 }
 
-async function callGemini(prompt, key) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${key}`;
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.3, maxOutputTokens: 8000 },
-    }),
-  });
-  if (!res.ok) throw new Error(`gemini ${res.status}: ${(await res.text()).slice(0, 200)}`);
-  return (await res.json())?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+// Anthropic-only via llmCall (2026-06 gemini→anthropic transfer). `key` kept
+// for call-site compatibility; no longer used.
+async function callGemini(prompt, _key) {
+  const r = await llmCall({ prompt, temperature: 0.3, maxTokens: 8000 });
+  if (!r.ok) throw new Error(r.error || "llmCall failed");
+  return r.text;
 }
 
 async function generalizeScript(purpose, sampleFiles, env) {
@@ -142,7 +137,7 @@ Return ONLY the JavaScript code (no markdown fences, no preamble). Must be a com
 
 async function processGroups() {
   const env = await loadEnv();
-  if (!env.GEMINI_API_KEY) { await log("no GEMINI_API_KEY"); return 0; }
+  if (!env.ANTHROPIC_API_KEY) { await log("no ANTHROPIC_API_KEY"); return 0; }
   const state = await loadState();
   await fs.mkdir(GENERIC, { recursive: true });
 

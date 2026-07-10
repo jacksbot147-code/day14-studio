@@ -28,6 +28,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
+import { llmCall } from "./_generic/llm-call.mjs";
 
 const HOME = homedir();
 const STUDIO = path.join(HOME, "Documents/studio");
@@ -81,18 +82,12 @@ async function saveState(s) {
   await fs.writeFile(STATE_FILE, JSON.stringify(s, null, 2));
 }
 
-async function callGemini(prompt, key, temp = 0.5, maxTokens = 3000) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${key}`;
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      generationConfig: { temperature: temp, maxOutputTokens: maxTokens },
-    }),
-  });
-  if (!res.ok) throw new Error(`gemini ${res.status}: ${(await res.text()).slice(0, 200)}`);
-  return (await res.json())?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+// Anthropic-only via llmCall (2026-06 gemini→anthropic transfer). `key` kept
+// for call-site compatibility; no longer used.
+async function callGemini(prompt, _key, temp = 0.5, maxTokens = 3000) {
+  const r = await llmCall({ prompt, temperature: temp, maxTokens });
+  if (!r.ok) throw new Error(r.error || "llmCall failed");
+  return r.text;
 }
 
 async function listExistingSkills() {

@@ -23,6 +23,7 @@ import { compactSnapshot, fullStateSnapshot, listTenants, tenantRevenue, recentA
 import { completeTodo, listOpenTodos } from "./_generic/operator-todos.mjs";
 import { parseTargetRequest } from "./verticals/real-estate/regions.mjs";
 import { addTarget, loadTargets, REALTY_SLUG } from "./verticals/real-estate/targets.mjs";
+import { llmCall } from "./_generic/llm-call.mjs";
 
 const HOME = homedir();
 const ENV_FILE = path.join(HOME, "Documents/studio/.env.local");
@@ -86,21 +87,18 @@ async function logBrain(record) {
   await fs.appendFile(BRAIN_LOG, JSON.stringify({ ts: new Date().toISOString(), ...record }) + "\n");
 }
 
-async function callGemini(systemPrompt, userPrompt, apiKey, opts = {}) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
-  const body = {
-    contents: [{ role: "user", parts: [{ text: userPrompt }] }],
-    systemInstruction: { parts: [{ text: systemPrompt }] },
-    generationConfig: { temperature: opts.temperature || 0.4, maxOutputTokens: opts.maxTokens || 1500 },
-  };
-  if (opts.useGrounding) body.tools = [{ google_search: {} }];
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+// Anthropic-only via llmCall (2026-06 gemini→anthropic transfer). Name + arg
+// shape kept so callLLM and other call-sites need no edits; `apiKey` is unused.
+async function callGemini(systemPrompt, userPrompt, _apiKey, opts = {}) {
+  const r = await llmCall({
+    prompt: userPrompt,
+    systemPrompt,
+    temperature: opts.temperature || 0.4,
+    maxTokens: opts.maxTokens || 1500,
+    useGrounding: opts.useGrounding,
   });
-  if (!res.ok) throw new Error(`gemini ${res.status}: ${(await res.text()).slice(0, 200)}`);
-  return (await res.json())?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+  if (!r.ok) throw new Error(r.error || "llmCall failed");
+  return r.text;
 }
 
 async function callAnthropic(systemPrompt, userPrompt, apiKey, opts = {}) {

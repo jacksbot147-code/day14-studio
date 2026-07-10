@@ -24,6 +24,7 @@ import path from "node:path";
 import { existsSync, createReadStream } from "node:fs";
 import { execSync, spawn } from "node:child_process";
 import { homedir } from "node:os";
+import { llmCall } from "./_generic/llm-call.mjs";
 
 const HOME = homedir();
 const BIZ = path.join(HOME, "Documents/businesses");
@@ -224,18 +225,12 @@ Return STRICT JSON only:
   }
 }`;
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${env.GEMINI_API_KEY}`;
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.6, maxOutputTokens: 2000 },
-    }),
-  });
-  if (!res.ok) throw new Error(`gemini ${res.status}: ${(await res.text()).slice(0, 200)}`);
-  const data = await res.json();
-  const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+  // Anthropic-only via llmCall (2026-06 gemini→anthropic transfer). Text copy
+  // generation only — the audio transcription path (whisperViaOpenAI) is
+  // unchanged. `env` is no longer used here.
+  const r = await llmCall({ prompt, temperature: 0.6, maxTokens: 2000 });
+  if (!r.ok) throw new Error(r.error || "llmCall failed");
+  const raw = r.text;
   const cleaned = raw.replace(/```json\s*/g, "").replace(/```\s*$/g, "").trim();
   const s = cleaned.indexOf("{"), e = cleaned.lastIndexOf("}");
   return JSON.parse(cleaned.slice(s, e + 1));

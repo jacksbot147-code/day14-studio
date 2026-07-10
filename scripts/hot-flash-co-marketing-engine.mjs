@@ -20,6 +20,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
+import { llmCall } from "./_generic/llm-call.mjs";
 
 const HOME = homedir();
 const TENANT = "hot-flash-co";
@@ -78,19 +79,13 @@ async function listProducts(printifyKey, shopId) {
   return (data.data || []).filter((p) => p.visible !== false); // skip hidden/draft-only
 }
 
-async function callGemini(prompt, apiKey) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.7, maxOutputTokens: 1500 },
-    }),
-  });
-  if (!res.ok) throw new Error(`gemini ${res.status}: ${await res.text()}`);
-  const data = await res.json();
-  return data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+// Routed through the shared Claude-first llm-call.mjs (marathon W2,
+// 2026-07-10). `apiKey` kept in the signature for call-site compatibility;
+// keys now come from .env.local inside llmCall.
+async function callGemini(prompt, _apiKey) {
+  const r = await llmCall({ prompt, temperature: 0.7, maxTokens: 1500 });
+  if (!r.ok) throw new Error(r.error || "llmCall failed");
+  return r.text;
 }
 
 async function generateDrafts(env, product) {
@@ -174,7 +169,8 @@ async function main() {
   await fs.mkdir(DRAFTS_DIR, { recursive: true });
 
   const env = await loadEnv();
-  if (!env.GEMINI_API_KEY) throw new Error("GEMINI_API_KEY missing");
+  if (!env.GEMINI_API_KEY && !env.ANTHROPIC_API_KEY)
+    throw new Error("no LLM key: set ANTHROPIC_API_KEY or GEMINI_API_KEY");
   if (!env.PRINTIFY_API_KEY) throw new Error("PRINTIFY_API_KEY missing");
 
   const state = await loadState();
