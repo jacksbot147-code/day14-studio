@@ -47,7 +47,7 @@ EOF
 if launchctl list 2>/dev/null | grep -q "com.day14.recursive-expansion"; then
   launchctl unload "$PLIST" 2>/dev/null || true
 fi
-launchctl load "$PLIST"
+launchctl load "$PLIST" 2>/dev/null || true
 echo "✓ loaded com.day14.recursive-expansion"
 
 # ----- Video pipeline watcher -----
@@ -78,7 +78,7 @@ EOF
 if launchctl list 2>/dev/null | grep -q "com.day14.video-pipeline"; then
   launchctl unload "$PLIST" 2>/dev/null || true
 fi
-launchctl load "$PLIST"
+launchctl load "$PLIST" 2>/dev/null || true
 echo "✓ loaded com.day14.video-pipeline"
 
 # ----- Skill multiplier (daily) -----
@@ -109,7 +109,7 @@ EOF
 if launchctl list 2>/dev/null | grep -q "com.day14.skill-multiplier"; then
   launchctl unload "$PLIST" 2>/dev/null || true
 fi
-launchctl load "$PLIST"
+launchctl load "$PLIST" 2>/dev/null || true
 echo "✓ loaded com.day14.skill-multiplier"
 
 # ----- Priority allocator (3x daily — 9am, 2pm, 8pm) -----
@@ -143,7 +143,7 @@ EOF
 if launchctl list 2>/dev/null | grep -q "com.day14.priority-allocator"; then
   launchctl unload "$PLIST" 2>/dev/null || true
 fi
-launchctl load "$PLIST"
+launchctl load "$PLIST" 2>/dev/null || true
 echo "✓ loaded com.day14.priority-allocator"
 
 # ----- Auto-restart watchdog (every 5 min) -----
@@ -167,7 +167,7 @@ cat > "$PLIST" <<EOF
 </plist>
 EOF
 if launchctl list 2>/dev/null | grep -q "com.day14.auto-restart-watchdog"; then launchctl unload "$PLIST" 2>/dev/null || true; fi
-launchctl load "$PLIST"
+launchctl load "$PLIST" 2>/dev/null || true
 echo "✓ loaded com.day14.auto-restart-watchdog"
 
 # ----- Outbox dead-letter (every 30 min) -----
@@ -191,7 +191,7 @@ cat > "$PLIST" <<EOF
 </plist>
 EOF
 if launchctl list 2>/dev/null | grep -q "com.day14.outbox-deadletter"; then launchctl unload "$PLIST" 2>/dev/null || true; fi
-launchctl load "$PLIST"
+launchctl load "$PLIST" 2>/dev/null || true
 echo "✓ loaded com.day14.outbox-deadletter"
 
 # ----- Opportunity scanner (continuous) -----
@@ -215,7 +215,7 @@ cat > "$PLIST" <<EOF
 </plist>
 EOF
 if launchctl list 2>/dev/null | grep -q "com.day14.opportunity-scanner"; then launchctl unload "$PLIST" 2>/dev/null || true; fi
-launchctl load "$PLIST"
+launchctl load "$PLIST" 2>/dev/null || true
 echo "✓ loaded com.day14.opportunity-scanner"
 
 # ----- Proactive pitcher (daily 7am) -----
@@ -238,7 +238,7 @@ cat > "$PLIST" <<EOF
 </plist>
 EOF
 if launchctl list 2>/dev/null | grep -q "com.day14.proactive-pitcher"; then launchctl unload "$PLIST" 2>/dev/null || true; fi
-launchctl load "$PLIST"
+launchctl load "$PLIST" 2>/dev/null || true
 echo "✓ loaded com.day14.proactive-pitcher"
 
 # ----- System pulse (every 30 min) -----
@@ -262,7 +262,7 @@ cat > "$PLIST" <<EOF
 </plist>
 EOF
 if launchctl list 2>/dev/null | grep -q "com.day14.system-pulse"; then launchctl unload "$PLIST" 2>/dev/null || true; fi
-launchctl load "$PLIST"
+launchctl load "$PLIST" 2>/dev/null || true
 echo "✓ loaded com.day14.system-pulse"
 
 # ----- Expansion prompter (every 2hr) -----
@@ -286,7 +286,7 @@ cat > "$PLIST" <<EOF
 </plist>
 EOF
 if launchctl list 2>/dev/null | grep -q "com.day14.expansion-prompter"; then launchctl unload "$PLIST" 2>/dev/null || true; fi
-launchctl load "$PLIST"
+launchctl load "$PLIST" 2>/dev/null || true
 echo "✓ loaded com.day14.expansion-prompter"
 
 # ----- Growth narrator — RETIRED 2026-07-10 (absorbed into system-pulse) -----
@@ -331,7 +331,7 @@ EOF
 if launchctl list 2>/dev/null | grep -q "com.day14.gamified-dashboard"; then
   launchctl unload "$PLIST" 2>/dev/null || true
 fi
-launchctl load "$PLIST"
+launchctl load "$PLIST" 2>/dev/null || true
 echo "✓ loaded com.day14.gamified-dashboard"
 
 echo
