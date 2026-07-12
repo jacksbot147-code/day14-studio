@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-12T03:56:42.293Z",
+  "generated_at": "2026-07-12T04:11:45.004Z",
   "tenants": [
     {
       "slug": "day14",
@@ -1150,9 +1150,9 @@
       "name": "auto-restart-watchdog",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-12T03:55:42.547Z"
+      "lastBeat": "2026-07-12T04:11:42.570Z"
     },
     {
       "name": "auto-restart-watchdog-cycle",
@@ -1160,7 +1160,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-12T03:56:40.045Z"
+      "lastBeat": "2026-07-12T04:11:40.064Z"
     },
     {
       "name": "customer-success",
@@ -1168,7 +1168,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-12T03:56:41.706Z"
+      "lastBeat": "2026-07-12T04:11:41.727Z"
     },
     {
       "name": "events-poller",
@@ -1176,7 +1176,7 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-12T03:56:01.175Z"
+      "lastBeat": "2026-07-12T04:11:01.192Z"
     },
     {
       "name": "expansion-prompter",
@@ -1184,13 +1184,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-12T03:56:42.118Z"
+      "lastBeat": "2026-07-12T04:11:42.130Z"
     },
     {
       "name": "gmail-cs-triage",
       "kind": "daemon",
       "status": "error",
-      "ageMin": 44957,
+      "ageMin": 44972,
       "cadenceMin": 30,
       "lastBeat": "2026-06-10T22:39:26.000Z"
     },
@@ -1198,7 +1198,7 @@
       "name": "growth-narrator",
       "kind": "daemon",
       "status": "error",
-      "ageMin": 1798,
+      "ageMin": 1813,
       "cadenceMin": 1,
       "lastBeat": "2026-07-10T21:58:41.521Z"
     },
@@ -1208,7 +1208,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-12T03:56:41.750Z"
+      "lastBeat": "2026-07-12T04:11:41.772Z"
     },
     {
       "name": "hot-flash-co-orders",
@@ -1216,13 +1216,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-12T03:56:41.746Z"
+      "lastBeat": "2026-07-12T04:11:41.769Z"
     },
     {
       "name": "lawn-care-gm-kennum-lawn-care",
       "kind": "oneshot",
       "status": "error",
-      "ageMin": 44952,
+      "ageMin": 44967,
       "cadenceMin": 30,
       "lastBeat": "2026-06-10T22:44:58.475Z"
     },
@@ -1232,7 +1232,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-12T03:56:42.116Z"
+      "lastBeat": "2026-07-12T04:11:42.130Z"
     },
     {
       "name": "outbox-deadletter",
@@ -1240,13 +1240,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-12T03:56:42.117Z"
+      "lastBeat": "2026-07-12T04:11:42.130Z"
     },
     {
       "name": "outbox-deadletter-cycle",
       "kind": "daemon",
-      "status": "healthy",
-      "ageMin": 0,
+      "status": "stale",
+      "ageMin": 15,
       "cadenceMin": 1,
       "lastBeat": "2026-07-12T03:56:39.329Z"
     },
@@ -1256,13 +1256,13 @@
       "status": "healthy",
       "ageMin": 1,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-12T03:56:00.882Z"
+      "lastBeat": "2026-07-12T04:11:00.898Z"
     },
     {
       "name": "realty-scout-day14-realty",
       "kind": "oneshot",
       "status": "error",
-      "ageMin": 45180,
+      "ageMin": 45195,
       "cadenceMin": 60,
       "lastBeat": "2026-06-10T18:56:30.393Z"
     },
@@ -1272,7 +1272,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-12T03:56:42.116Z"
+      "lastBeat": "2026-07-12T04:11:42.130Z"
     },
     {
       "name": "skill-multiplier",
@@ -1280,13 +1280,13 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-12T03:56:42.117Z"
+      "lastBeat": "2026-07-12T04:11:42.130Z"
     },
     {
       "name": "stripe-cs-loop",
       "kind": "daemon",
       "status": "error",
-      "ageMin": 44972,
+      "ageMin": 44987,
       "cadenceMin": 60,
       "lastBeat": "2026-06-10T22:24:54.000Z"
     },
@@ -1296,21 +1296,21 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-12T03:56:42.220Z"
+      "lastBeat": "2026-07-12T04:11:42.239Z"
     },
     {
       "name": "telegram-poller",
       "kind": "daemon",
       "status": "healthy",
-      "ageMin": 1,
+      "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-12T03:55:43.906Z"
+      "lastBeat": "2026-07-12T04:11:43.931Z"
     },
     {
       "name": "vercel-deploy-monitor",
       "kind": "daemon",
       "status": "error",
-      "ageMin": 44992,
+      "ageMin": 45007,
       "cadenceMin": 60,
       "lastBeat": "2026-06-10T22:04:17.000Z"
     },
@@ -1320,7 +1320,7 @@
       "status": "healthy",
       "ageMin": 0,
       "cadenceMin": 1,
-      "lastBeat": "2026-07-12T03:56:42.118Z"
+      "lastBeat": "2026-07-12T04:11:42.129Z"
     }
   ],
   "skill_counts": {
