@@ -39,6 +39,7 @@ export function Nav({ linkBase = "" }: { linkBase?: string } = {}) {
         <a href={`${linkBase}#work`}>Work</a>
         <a href={`${linkBase}#pricing`}>Pricing</a>
         <a href="/geo">GEO</a>
+        <a href="/capture">Capture</a>
         <a href="/brands/marque">Marque</a>
         <a href="/local">Local</a>
         <MagneticLink

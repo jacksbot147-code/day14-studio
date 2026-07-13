@@ -249,3 +249,101 @@ export const PRICING_NOTES = {
   noGames: "No drip campaign. No upsell calls.",
   opsIncluded: "Every build includes the first 3 months of ops.",
 } as const;
+
+
+export interface CaptureTier {
+  slug: "capture-audit" | "capture-essentials" | "capture-growth";
+  name: string;
+  oneTime: number | null; // one-time USD; null = subscription tier
+  monthly: number | null; // monthly USD; null = one-time only
+  priceLabel: string;
+  tagline: string;
+  bestFor: string;
+  features: string[];
+  paymentLinkEnv: string | null; // env var holding the Stripe payment link
+  featured: boolean;
+}
+
+/**
+ * Capture — the fourth business line. An AI lead-capture / receptionist for
+ * local service businesses: catches the calls and messages you're already
+ * missing (nights, weekends, on a job) and books them. Closes the funnel:
+ * build presence (web) + buy traffic (ads) + own AI visibility (GEO) +
+ * capture the demand (Capture).
+ *
+ * Canonical prices set 2026-07-11. Stripe links not yet created — the env
+ * vars below are reserved names; /capture CTAs route to /book until wired.
+ * Honesty rail: "catches what you're missing," never "never miss a call."
+ */
+export const CAPTURE_TIERS: CaptureTier[] = [
+  {
+    slug: "capture-audit",
+    name: "Call Leak Audit",
+    oneTime: 250,
+    monthly: null,
+    priceLabel: "$250 one-time",
+    tagline: "See exactly which calls and leads are slipping through today.",
+    bestFor:
+      "Any local service business that suspects it's losing jobs to missed calls — after hours, on a job, or during the lunch rush. Free for active Day14 clients.",
+    features: [
+      "Live missed-call test across your real scenarios: after-hours, on-a-job, second simultaneous caller",
+      "Where each call goes today — ring-out, voicemail, or nowhere — with response times",
+      "An honest estimate of the leads leaking per week and what they're worth",
+      "Recording + AI-identification + Florida two-party disclosure compliance check",
+      "A ranked fix list — what Capture would catch first",
+    ],
+    paymentLinkEnv: "STRIPE_PAYMENT_LINK_CAPTURE_AUDIT",
+    featured: false,
+  },
+  {
+    slug: "capture-essentials",
+    name: "Capture Essentials",
+    oneTime: null,
+    monthly: 395,
+    priceLabel: "$395/mo",
+    tagline: "An AI receptionist that catches what you're missing.",
+    bestFor:
+      "Service businesses losing after-hours and overflow calls that want them caught, identified, and booked — without hiring a receptionist.",
+    features: [
+      "AI voice assistant that answers missed and after-hours calls, always identifying as automated",
+      "Caller details captured and handed to you the moment a call is caught",
+      "Florida-compliant recording disclosure on every greeting",
+      "Missed-call text-back (once A2P is approved) so no lead goes cold",
+      "Monthly report: calls caught, jobs booked, revenue attributed to source",
+    ],
+    paymentLinkEnv: "STRIPE_PAYMENT_LINK_CAPTURE_ESSENTIALS",
+    featured: true,
+  },
+  {
+    slug: "capture-growth",
+    name: "Capture Growth",
+    oneTime: null,
+    monthly: 795,
+    priceLabel: "$795/mo",
+    tagline: "Everything caught, tuned, and booked across every channel.",
+    bestFor:
+      "Higher-volume businesses that want voice, SMS, and web chat working as one capture system with continuous tuning.",
+    features: [
+      "Everything in Essentials",
+      "Website chat + SMS capture wired into the same assistant",
+      "Speed-to-lead on ad and form inquiries",
+      "Monthly transcript review + assistant tuning against the quality rubric",
+      "Booking-attribution reporting: which channel caught which job",
+    ],
+    paymentLinkEnv: "STRIPE_PAYMENT_LINK_CAPTURE_GROWTH",
+    featured: false,
+  },
+];
+
+/**
+ * Founding-client rate: replaces Capture Essentials' monthly for the first
+ * three Capture clients, locked 12 months, in exchange for testimonial +
+ * case-study rights. The $250 Call Leak Audit is free for active Day14 clients.
+ */
+export const CAPTURE_FOUNDING = {
+  monthly: 295,
+  appliesTo: "capture-essentials" as const,
+  label: "$295/mo founding rate",
+  terms:
+    "Locked for 12 months. First 3 clients only, in exchange for a testimonial and case-study rights.",
+} as const;

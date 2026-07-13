@@ -123,6 +123,21 @@ export default function PricingPage() {
 
           <section className="cin-detail-block">
             <Reveal as="h2" className="cin-detail-h2">
+              Also: Capture — the calls you&rsquo;re missing
+            </Reveal>
+            <div className="cin-prose">
+              <p>
+                A build and traffic bring the calls; Capture makes sure they
+                don&rsquo;t walk. It answers what you miss after hours or on a
+                job, says it&rsquo;s automated, and books it — proven monthly in
+                booked jobs. Its own page and pricing:{" "}
+                <a href="/capture">see how Capture works →</a>
+              </p>
+            </div>
+          </section>
+
+          <section className="cin-detail-block">
+            <Reveal as="h2" className="cin-detail-h2">
               Also: GEO — AI search visibility
             </Reveal>
             <div className="cin-prose">

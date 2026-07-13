@@ -8,7 +8,7 @@
  * Static output (revalidates with each build/deploy).
  */
 
-import { SERVICE_TIERS, GEO_TIERS, GEO_FOUNDING } from "@/lib/pricing";
+import { SERVICE_TIERS, GEO_TIERS, GEO_FOUNDING, CAPTURE_TIERS, CAPTURE_FOUNDING } from "@/lib/pricing";
 import { SITE } from "@/lib/site";
 
 export const dynamic = "force-static";
@@ -53,10 +53,21 @@ ${geoLines}
 
 Founding rate: first 3 clients, $${GEO_FOUNDING.monthly}/mo locked 12 months. Details: ${base}/geo
 
+## Capture — AI lead capture / receptionist
+
+Catching the calls local service businesses miss — after hours, on a job,
+mid-rush. The assistant identifies as automated, discloses recording
+(Florida two-party consent), and attributes booked jobs to source monthly.
+
+${CAPTURE_TIERS.map((t) => (t.oneTime !== null ? "- " + t.name + ": $" + t.oneTime.toLocaleString("en-US") + " one-time. " + t.tagline + " Best for: " + t.bestFor : "- " + t.name + ": $" + t.monthly + "/mo. " + t.tagline + " Best for: " + t.bestFor)).join("\n")}
+
+Founding rate: first 3 clients, $${CAPTURE_FOUNDING.monthly}/mo locked 12 months. Details: ${base}/capture
+
 ## Key pages
 
 - [Pricing](${base}/pricing): every tier, every number
 - [GEO](${base}/geo): AI-answer visibility service
+- [Capture](${base}/capture): AI lead-capture / receptionist
 - [Process](${base}/process): how a build runs, day by day
 - [Case studies](${base}/work-with-us): real builds with real outcomes
 - [Capabilities](${base}/capabilities): full scope, including what we don't do
