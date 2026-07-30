@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "_purpose": "Outcome gate for autonomous loops. A loop passes a run only if it changed state in one of its `watch` paths, excluding its own output directory. After max_noop_runs consecutive failures it auto-pauses. See scripts/lib/loop-gate.mjs.",
+  "_seeded": "2026-07-27 — seeded from the five loops already diagnosed as saturated by hand. The point of this file is that the sixth one gets caught automatically.",
+  "default_max_noop_runs": 3,
+  "loops": {
+    "market-research": {
+      "note": "253 briefs in 10 days, ICP dry. Productive means a brief changed a tenant, an opportunity record, or the outreach queue — not that another brief exists.",
+      "max_noop_runs": 2,
+      "watch": [
+        "~/Documents/businesses/_shared/opportunities",
+        "~/Documents/businesses/_shared/customers",
+        "~/Documents/businesses/_shared/tenants.json",
+        "~/Documents/studio/content/outreach"
+      ],
+      "exclude": ["~/Claude/Projects/DAY14/market-research"]
+    },
+    "analytics": {
+      "note": "261 view files on inputs frozen since 2026-06-25. Productive means the underlying business data moved, not that another view was rendered.",
+      "max_noop_runs": 2,
+      "watch": [
+        "~/Documents/businesses/_shared/finance",
+        "~/Documents/businesses/_shared/growth",
+        "~/Documents/businesses/_shared/tenants.json"
+      ],
+      "exclude": ["~/Claude/Projects/DAY14/analytics"]
+    },
+    "vault-deepen": {
+      "note": "108 runs, last 10 true no-ops, all four avenues proven dead ends. Productive means a vault note outside the daemon journal changed.",
+      "max_noop_runs": 3,
+      "watch": ["~/Claude/Projects/DAY14/Obsidian-Vault"],
+      "exclude": [
+        "~/Claude/Projects/DAY14/Obsidian-Vault/Agent Journal",
+        "~/Claude/Projects/DAY14/Obsidian-Vault/_sweeps",
+        "~/Claude/Projects/DAY14/Obsidian-Vault/Metrics"
+      ]
+    },
+    "security-audit": {
+      "note": "~68 consecutive no-drift runs against a frozen HEAD. Productive means the source tree actually changed since the last audit.",
+      "max_noop_runs": 3,
+      "watch": ["~/Documents/studio/src", "~/Documents/studio/scripts", "~/Documents/studio/package.json"],
+      "exclude": ["~/Documents/studio/security"]
+    },
+    "day-build": {
+      "note": "Queue fully checked since ~2026-07-01; every run is a mandated no-op by its own charter.",
+      "max_noop_runs": 1,
+      "watch": ["~/Documents/studio/src", "~/Claude/Projects/DAY14/day-build-queue.md"],
+      "exclude": []
+    },
+    "test-coverage": {
+      "note": "~30+ no-op runs/day since 2026-07-09, all 61 skills tested. Productive means a NEW test file or a source change that needs covering.",
+      "max_noop_runs": 3,
+      "watch": ["~/Documents/studio/src", "~/Documents/studio/scripts/lib/skills"],
+      "exclude": ["~/Documents/studio/tests"]
+    },
+    "tech-radar": {
+      "note": "The weekly scan added 2026-07-27. Productive means the radar itself changed rings — not that a report was written.",
+      "max_noop_runs": 4,
+      "watch": ["~/Documents/studio/public/data/ops/tech-radar.json", "~/Documents/studio/public/data/insights"],
+      "exclude": []
+    }
+  }
+}
