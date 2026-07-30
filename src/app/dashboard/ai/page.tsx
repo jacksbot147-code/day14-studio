@@ -21,6 +21,7 @@
 
 import Link from "next/link";
 import {
+  ADOPT_MIN_PRODUCTION_DAYS,
   RADAR_RINGS,
   RING_LABEL,
   adoptEligibility,
@@ -281,7 +282,9 @@ export default async function AiRadarPage() {
                   <li key={itemSlug(item)} className="border-t border-zinc-800 pt-3 first:border-0 first:pt-0">
                     <div className="flex flex-wrap items-start gap-2">
                       <span className="text-sm font-medium text-zinc-100">{item.item}</span>
-                      {ring === "adopt" && <AdoptBadge item={item} now={now} />}
+                      {(ring === "adopt" || item.in_production_since) && (
+                        <AdoptBadge item={item} ring={ring} now={now} />
+                      )}
                       <RingMoveControl
                         slug={itemSlug(item)}
                         currentRing={ring}
@@ -445,18 +448,53 @@ function ringBlurb(ring: RadarRing): string {
   }
 }
 
-function AdoptBadge({ item, now }: { item: RadarItem; now: Date }) {
+/**
+ * Rule 1, made visible.
+ *
+ * On an Adopt entry this says whether the entry is honest. On anything else
+ * that is already running it shows the clock counting toward eligibility, so
+ * the date is derived from `in_production_since` rather than a hand-written
+ * sentence that goes stale the moment the item changes.
+ */
+function AdoptBadge({
+  item,
+  ring,
+  now,
+}: {
+  item: RadarItem;
+  ring: RadarRing;
+  now: Date;
+}) {
   const elig = adoptEligibility(item, now);
+  const base = "rounded px-1.5 py-0.5 text-[10px] uppercase tracking-wide";
+
+  if (ring === "adopt") {
+    return (
+      <span
+        title={elig.detail}
+        className={`${base} ${
+          elig.eligible
+            ? "bg-emerald-500/15 text-emerald-300"
+            : "bg-red-500/15 text-red-300"
+        }`}
+      >
+        {elig.eligible ? `running ${elig.daysRunning}d` : "not running"}
+      </span>
+    );
+  }
+
   return (
     <span
       title={elig.detail}
-      className={`rounded px-1.5 py-0.5 text-[10px] uppercase tracking-wide ${
+      className={`${base} ${
         elig.eligible
           ? "bg-emerald-500/15 text-emerald-300"
-          : "bg-red-500/15 text-red-300"
+          : "bg-blue-500/15 text-blue-300"
       }`}
     >
-      {elig.eligible ? `running ${elig.daysRunning}d` : "not running"}
+      {elig.eligible
+        ? "adopt-ready"
+        : `running ${elig.daysRunning}d of ${ADOPT_MIN_PRODUCTION_DAYS}d · eligible ${elig.eligibleAt}`}
     </span>
   );
 }
