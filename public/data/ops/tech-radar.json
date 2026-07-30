@@ -1,0 +1,257 @@
+{
+  "schema": 2,
+  "title": "Day14 Tech Radar",
+  "purpose": "Delta baseline for the weekly tech scan. Anything listed here is SETTLED — the scan must not re-report it as new. Mirrored from the vault note 'Tech Radar.md'; the vault note is the human source of truth, this file is the machine-readable copy a headless cloud session can fetch without the device bridge.",
+  "schema_2_notes": "Schema 2 is additive only — every ring item still carries `item`, so any reader that matches on names is unaffected. New optional per-item fields: `slug` (stable id), `capability` (the vault capability note behind it), `next_action` (the one concrete step that would advance it), `effort`, `blocked_by`, and `in_production_since` (null = not running; absent = nobody has verified). `in_production_since` is what rule 1 is checked against, so an Adopt entry without it is flagged rather than trusted. `blocked_by` means the next_action CANNOT be started yet because it waits on something else — it is not a restatement of the next action, and setting it wrongly buries cheap work at the bottom of the queue. Enforced in src/lib/tech-radar.ts and surfaced at /dashboard/ai.",
+  "raw_url": "https://raw.githubusercontent.com/jacksbot147-code/day14-studio/feat/cinematic-rebuild-2026-06/public/data/ops/tech-radar.json",
+  "updated": "2026-07-29",
+  "rules_for_changing_a_ring": [
+    "An item moves to Adopt only after it has run in production for a full week without intervention.",
+    "An item in Hold requires NEW EVIDENCE to move, not a new opinion. Cite the evidence.",
+    "Adding an item requires it to be shipping (not announced), to change a Day14 decision, and to be absent from every ring below.",
+    "Removing an item requires recording why in the changelog array, never a silent delete."
+  ],
+  "rings": {
+    "adopt": [
+      {
+        "item": "Healthchecks.io dead-man's switch",
+        "slug": "healthchecks-io-dead-man-s-switch",
+        "since": "2026-07-27",
+        "why": "External alarm that fires on silence; the only design that survives the mini being the thing that died.",
+        "status": "Built 2026-07-27, NOT armed — awaiting two Jack taps.",
+        "capability": "Reliability & Fleet Health",
+        "next_action": "Create the check at healthchecks.io and paste its ping URL into the fleet-deadman env var. Two taps, then it is real.",
+        "effort": "minutes",
+        "in_production_since": null
+      },
+      {
+        "item": "Cloudflare AI Gateway spend limits + Dynamic Route fallback",
+        "slug": "cloudflare-ai-gateway-spend-limits-dynamic-route-fallback",
+        "since": "2026-07-27",
+        "why": "Dollar-denominated budgets, free, auto-downgrade instead of hard stop. Caveats: best-effort cost estimation, limit-hit notification still in development.",
+        "status": "Decided, not wired — the LLM layer still calls providers directly.",
+        "capability": "LLM Cost & Routing",
+        "next_action": "Point the patched LLM layer's base URL at the gateway and set the dollar cap. Verify one call lands in the gateway's log before trusting the cap.",
+        "effort": "hours",
+        "in_production_since": null
+      },
+      {
+        "item": "Official ads MCP servers (Meta / Google / TikTok)",
+        "slug": "official-ads-mcp-servers-meta-google-tiktok",
+        "since": "2026-07-27",
+        "why": "Makes Marque operationally real. Meta entities land paused by default, which satisfies the no-money-without-a-Jack-tap guardrail for free.",
+        "status": "Evaluated only — no account is connected.",
+        "capability": "Ads & Creative Pipeline",
+        "next_action": "Connect Google first (read-only by design, so it cannot spend) and confirm one real read before touching Meta or TikTok.",
+        "effort": "hours",
+        "in_production_since": null
+      },
+      {
+        "item": "Stripe Payment Links",
+        "slug": "stripe-payment-links",
+        "since": "2026-07-27",
+        "why": "No-code, ~2 min, no premium, supports subscriptions and Tax. The block is almost certainly an account restriction, not code.",
+        "status": "BLOCKED — zero working checkout links across 12 SKUs since June.",
+        "capability": "Commerce & Monetization",
+        "next_action": "Open the Stripe dashboard and look for an account restriction notice. Do not write more checkout code until that question is answered.",
+        "effort": "minutes",
+        "in_production_since": null
+      }
+    ],
+    "trial": [
+      {
+        "item": "Ollama + Mistral Small 3.2 24B local fallback",
+        "slug": "ollama-mistral-small-3-2-24b-local-fallback",
+        "since": "2026-07-27",
+        "why": "Best 24GB Apple Silicon tool-calling pick. Turns total blackout into degraded mode.",
+        "status": "Code shipped; Ollama is not installed on the mini, so there is currently no degraded mode at all.",
+        "capability": "LLM Cost & Routing",
+        "next_action": "brew install ollama && ollama pull mistral-small3.2:24b on the mini. The fallback leg is already in code and inert until the model answers.",
+        "effort": "minutes",
+        "in_production_since": null
+      },
+      {
+        "item": "Anthropic prompt caching + Batch API",
+        "slug": "anthropic-prompt-caching-batch-api",
+        "since": "2026-07-27",
+        "why": "~0.1x cached reads, flat ~50% batch.",
+        "status": "Wired but INERT — the stable preamble is ~300 tokens, below the 2048-token minimum, so no cache can ever hit.",
+        "capability": "LLM Cost & Routing",
+        "next_action": "Grow the stable agent prefix past 2048 tokens, then re-measure cache reads in the ledger. Until the prefix grows this is a no-op, not a saving.",
+        "effort": "hours",
+        "in_production_since": null
+      },
+      {
+        "item": "Scoped agent memory (mem0 / Letta pattern)",
+        "slug": "scoped-agent-memory-mem0-letta-pattern",
+        "since": "2026-07-27",
+        "why": "agent_id / run_id / org_id composed at retrieval. Reported gains cluster on temporal (+29.6) and multi-hop (+23.1) reasoning — the 'did we already do this' faculty.",
+        "status": "Researched, not built.",
+        "capability": "Agent Memory & Loop Gating",
+        "next_action": "Build agent_id/run_id/org_id scoping at retrieval time. This is the direct fix for the pathology that produced 253 briefs in 10 days.",
+        "effort": "days",
+        "in_production_since": null
+      },
+      {
+        "item": "Trace-to-eval loop gating (Braintrust pattern)",
+        "slug": "trace-to-eval-loop-gating-braintrust-pattern",
+        "since": "2026-07-27",
+        "why": "Score one thing: did this run cause a state change outside its own log directory? Auto-pause loops that score zero.",
+        "status": "Shipped 2026-07-27 to scripts/lib/loop-gate.mjs; selftests passing; 7 loops seeded.",
+        "capability": "Agent Memory & Loop Gating",
+        "next_action": "Leave it running and do not touch it. Eligible for Adopt on 2026-08-03 — that is the only thing standing between it and the Adopt ring.",
+        "effort": "minutes",
+        "in_production_since": "2026-07-27"
+      }
+    ],
+    "assess": [
+      {
+        "item": "MCP spec 2026-07-28 migration",
+        "slug": "mcp-spec-2026-07-28-migration",
+        "since": "2026-07-27",
+        "why": "Breaking: handshake removed, Mcp-Session-Id gone, Tasks API demoted, error -32002 to -32602, JSON Schema 2020-12. The spec date has now passed.",
+        "capability": "Agent Memory & Loop Gating",
+        "next_action": "Audit scripts/mcp-server.mjs against the five breaking changes. This is dated work, not optional reading — the spec date is behind us.",
+        "effort": "hours",
+        "in_production_since": null
+      },
+      {
+        "item": "Per-agent effort levels + new webhook events (Managed Agents 2026-07-22)",
+        "slug": "per-agent-effort-levels-new-webhook-events-managed-agents-2026-0",
+        "since": "2026-07-27",
+        "why": "Coordinator high, subagents low. Direct cost lever across a 27-daemon fleet.",
+        "capability": "LLM Cost & Routing",
+        "next_action": "Set subagent effort to low in the fleet's agent config and compare a week of ledger cost against the current week.",
+        "effort": "hours",
+        "in_production_since": null
+      },
+      {
+        "item": "Claude Managed Agents self-hosted sandboxes + MCP Tunnels",
+        "slug": "claude-managed-agents-self-hosted-sandboxes-mcp-tunnels",
+        "since": "2026-07-27",
+        "why": "Outbound-only gateway to private MCP servers; would retire the admin-tunnel runbook. Public beta 2026-05-19.",
+        "capability": "Reliability & Fleet Health",
+        "next_action": "Read the tunnel docs and decide whether it replaces the admin-tunnel runbook. Do not build against a public beta until that call is made.",
+        "effort": "hours",
+        "in_production_since": null
+      },
+      {
+        "item": "LiteLLM self-hosted gateway",
+        "slug": "litellm-self-hosted-gateway",
+        "since": "2026-07-27",
+        "why": "Zero-markup multi-provider routing with virtual-key budgets. Real ops burden; Cloudflare covers it at $0 until volume justifies.",
+        "capability": "LLM Cost & Routing",
+        "next_action": "Nothing until Cloudflare AI Gateway is actually wired and its estimation-only cost tracking has been measured against a real invoice.",
+        "effort": "days",
+        "blocked_by": "Cloudflare AI Gateway is not wired yet, so there is no comparison to make.",
+        "in_production_since": null
+      },
+      {
+        "item": "Pipecat self-hosted voice (13.7k stars, BSD-2)",
+        "slug": "pipecat-self-hosted-voice-13-7k-stars-bsd-2",
+        "since": "2026-07-27",
+        "why": "Credible OSS fallback when Retell/Vapi margin gets squeezed.",
+        "capability": "Lead Capture & Voice",
+        "next_action": "Nothing until there is a paying voice customer whose margin is being squeezed.",
+        "effort": "weeks",
+        "blocked_by": "No voice customers — the margin play has no margin to protect yet.",
+        "in_production_since": null
+      },
+      {
+        "item": "Vercel AI Gateway + AI SDK 5",
+        "slug": "vercel-ai-gateway-ai-sdk-5",
+        "since": "2026-07-27",
+        "why": "One endpoint to ~100 models for client-site AI features. Delivery-cost lever, not a revenue lever.",
+        "capability": "LLM Cost & Routing",
+        "in_production_since": null
+      },
+      {
+        "item": "Semantic caching (GPTCache / gateway-native)",
+        "slug": "semantic-caching-gptcache-gateway-native",
+        "since": "2026-07-27",
+        "why": "Dedups near-identical queries beyond prefix caching. Only after prompt caching is measured.",
+        "capability": "LLM Cost & Routing",
+        "blocked_by": "Prompt caching has never fired, so there is no baseline to improve on.",
+        "in_production_since": null
+      },
+      {
+        "item": "Stripe MCP server",
+        "slug": "stripe-mcp-server",
+        "since": "2026-07-27",
+        "why": "Conversationally provision per-client billing. Useful once there are clients.",
+        "capability": "Commerce & Monetization",
+        "blocked_by": "Checkout does not work yet. After checkout, not before.",
+        "in_production_since": null
+      }
+    ],
+    "hold": [
+      {
+        "item": "Agentic commerce (ACP, AP2, x402, Visa Trusted Agent, Mastercard Agent Pay)",
+        "slug": "agentic-commerce-acp-ap2-x402-visa-trusted-agent-mastercard-agen",
+        "since": "2026-07-27",
+        "reason": "OpenAI KILLED Instant Checkout March 2026; ACP forward-dated; AP2 at FIDO; x402 ~$28k/day at $0.20 avg with ~half wash; card networks enterprise-pilot only. No agent can buy Day14's service on any protocol today.",
+        "revisit": "2027",
+        "capability": "Commerce & Monetization"
+      },
+      {
+        "item": "llms.txt as a citation lever",
+        "slug": "llms-txt-as-a-citation-lever",
+        "since": "2026-07-27",
+        "reason": "8.7% adoption of Tranco top-1,000 but zero evidence any major crawler parses it; a 500-site analysis found zero correlation. Keep the file as hygiene; remove it from the pitch.",
+        "revisit": "on a crawler vendor publicly confirming support",
+        "capability": "GEO & AI Search Visibility"
+      },
+      {
+        "item": "Virality / creative-performance prediction tools",
+        "slug": "virality-creative-performance-prediction-tools",
+        "since": "2026-07-27",
+        "reason": "No independent validation exists for any of them, including Higgsfield's own predictor. Internal heuristic only, never a customer-facing claim.",
+        "revisit": "on a published independent study",
+        "capability": "Ads & Creative Pipeline"
+      },
+      {
+        "item": "Chasing the frontier video model",
+        "slug": "chasing-the-frontier-video-model",
+        "since": "2026-07-27",
+        "reason": "Kling 3.0 Elo 1104 vs Veo 3.1 1094 is noise; every competitor reaches the same models through the same wrappers at ~$1-2/clip. Bottleneck is creative volume and fatigue management, not model choice.",
+        "revisit": "on a step-change, not a leaderboard swap",
+        "capability": "Ads & Creative Pipeline"
+      },
+      {
+        "item": "Open-source ai-visibility repos as a GEO product base",
+        "slug": "open-source-ai-visibility-repos-as-a-geo-product-base",
+        "since": "2026-07-27",
+        "reason": "Star counts and naming patterns look farmed; self-descriptions read as marketing. Read for architecture, do not build on.",
+        "revisit": "on real adoption signal",
+        "capability": "GEO & AI Search Visibility"
+      },
+      {
+        "item": "New multi-agent orchestration frameworks",
+        "slug": "new-multi-agent-orchestration-frameworks",
+        "since": "2026-07-27",
+        "reason": "No breakout durable-execution project with credible traction; Temporal's agent positioning is roadmap language. The problem is loops with no success criterion, not orchestration mechanics.",
+        "revisit": "on a framework with production case studies",
+        "capability": "Agent Memory & Loop Gating"
+      },
+      {
+        "item": "Outbound tooling upgrades",
+        "slug": "outbound-tooling-upgrades",
+        "since": "2026-07-27",
+        "reason": "Reply rates ~3.43% and sender-auth tightening are real but irrelevant: zero emails sent in 31 days is an effort problem, not a tooling problem.",
+        "revisit": "after the first 100 real sends",
+        "capability": "Commerce & Monetization"
+      }
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-07-27",
+      "note": "Radar created from the full landscape scan. Seeded 4 Adopt, 4 Trial, 8 Assess, 7 Hold."
+    },
+    {
+      "date": "2026-07-29",
+      "note": "Schema 2. Added stable slugs, capability links, next_action/effort/blocked_by, and in_production_since so rule 1 is checkable instead of assumed. No ring changed. Recording the first honest reading: all four Adopt entries have in_production_since null — decided or built, none running — so the Adopt ring is currently empty in substance. Surfaced at /dashboard/ai.",
+      "actor": "cowork session via dashboard build"
+    }
+  ]
+}
