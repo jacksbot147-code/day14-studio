@@ -20,6 +20,7 @@ import { existsSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { homedir } from "node:os";
 import { listOpenTodos } from "./_generic/operator-todos.mjs";
+import { diagnose as diagnoseGitLocks } from "./lib/git-lock-doctor.mjs";
 
 const HOME = homedir();
 const BIZ = path.join(HOME, "Documents/businesses");
@@ -27,6 +28,8 @@ const SHARED = path.join(BIZ, "_shared");
 const STUDIO = path.join(HOME, "Documents/studio");
 const TENANTS_FILE = path.join(SHARED, "tenants.json");
 const ENV_FILE = path.join(STUDIO, ".env.local");
+const OUTBOX = path.join(SHARED, "telegram/outbox");
+const SYNC_STATE = path.join(SHARED, "ops/empire-sync.json");
 
 /**
  * Resolve the Telegram bot's @username so the homescreen can render
@@ -34,6 +37,68 @@ const ENV_FILE = path.join(STUDIO, ".env.local");
  * any failure just yields null and the dashboard falls back to showing
  * the `done N` command as copyable text.
  */
+/**
+ * Record the outcome of every push attempt.
+ *
+ * This exists because the failure path below used to be a bare console.error.
+ * A git process died mid-commit on 2026-07-15 and left a stranded index.lock;
+ * every run for the next 15 days failed on it, logged to a file nobody reads,
+ * and exited 0. The state file is the primary signal — a card is only a
+ * courtesy. consecutive_failures > 0 means the cloud dashboard's data is stale.
+ */
+async function recordSyncOutcome(outcome) {
+  try {
+    await fs.mkdir(path.dirname(SYNC_STATE), { recursive: true });
+    let prev = {};
+    try {
+      prev = JSON.parse(await fs.readFile(SYNC_STATE, "utf8"));
+    } catch {}
+    const now = new Date().toISOString();
+    const next = {
+      schema: 1,
+      _purpose:
+        "Outcome of the last empire-state git sync. consecutive_failures > 0 means the cloud dashboard's data has stopped updating. Written by scripts/sync-empire-state.mjs.",
+      updated_at: now,
+      last_ok_at: outcome.ok ? now : prev.last_ok_at ?? null,
+      last_failure_at: outcome.ok ? prev.last_failure_at ?? null : now,
+      last_error: outcome.ok ? null : outcome.error ?? null,
+      consecutive_failures: outcome.ok ? 0 : Number(prev.consecutive_failures || 0) + 1,
+      last_result: outcome.ok ? (outcome.skipped ? `ok:${outcome.skipped}` : "ok:pushed") : "failed",
+    };
+    await fs.writeFile(SYNC_STATE, JSON.stringify(next, null, 2) + "\n");
+    return next;
+  } catch {
+    return null;
+  }
+}
+
+/** Courtesy alarm only — the state file above is the signal of record.
+ *  Throttled so a 15-minute cron cannot produce 96 identical cards a day. */
+async function queueSyncFailureCard(text, streak) {
+  if (!(streak === 1 || streak % 24 === 0)) return;
+  try {
+    await fs.mkdir(OUTBOX, { recursive: true });
+    const f = path.join(OUTBOX, `${Date.now()}-empire-sync-failed.json`);
+    await fs.writeFile(
+      f,
+      JSON.stringify(
+        {
+          text,
+          urgency: "P1",
+          queued_at: new Date().toISOString(),
+          sent_at: null,
+          tap_required: true,
+          source: "sync-empire-state",
+        },
+        null,
+        2
+      )
+    );
+  } catch {
+    /* never let the alarm break the sync */
+  }
+}
+
 async function botUsername() {
   try {
     if (!existsSync(ENV_FILE)) return null;
@@ -370,18 +435,59 @@ async function main() {
 
   // Git commit + push?
   if (process.argv.includes("--push")) {
+    // Preflight. One stranded lock from a crashed git process wedged this
+    // script from 2026-07-15 to 2026-07-30 — 15 days of commits lost, with
+    // the error going to a LaunchAgent log and an exit code of 0.
+    try {
+      const locks = await diagnoseGitLocks({ repo: STUDIO, heal: true });
+      if (locks.cleared.length) {
+        console.log(`✓ cleared ${locks.cleared.length} stranded git lock(s)`);
+        for (const c of locks.cleared) console.log(`    ${c}`);
+      }
+      for (const f of locks.failed) {
+        console.error(`git lock could not be cleared: ${f.path} — ${f.error}`);
+      }
+      for (const h of locks.held) {
+        console.log(`  lock held (not touched): ${h.path} — ${h.why}`);
+      }
+    } catch (e) {
+      console.error(`lock preflight failed, continuing: ${String(e && e.message)}`);
+    }
+
     try {
       execSync("git add public/data", { cwd: STUDIO, stdio: "pipe" });
-      const status = execSync("git status --porcelain public/data", { cwd: STUDIO, encoding: "utf8" });
-      if (!status.trim()) {
+      // `git diff --cached` instead of `git status --porcelain`: it answers the
+      // actual question (is anything staged?) without refreshing the whole index.
+      const staged = execSync("git diff --cached --name-only -- public/data", {
+        cwd: STUDIO,
+        encoding: "utf8",
+      });
+      if (!staged.trim()) {
         console.log("no changes — skip push");
+        await recordSyncOutcome({ ok: true, skipped: "no_changes" });
         return;
       }
       execSync(`git commit -m "sync: empire state ${new Date().toISOString().slice(0, 16)}"`, { cwd: STUDIO, stdio: "pipe" });
       execSync("git push origin HEAD", { cwd: STUDIO, stdio: "inherit" });
-      console.log("✓ pushed to git");
+      console.log(`✓ pushed to git (${staged.trim().split("\n").length} file(s))`);
+      await recordSyncOutcome({ ok: true });
     } catch (e) {
-      console.error(`git push failed: ${e.message.slice(0, 200)}`);
+      // Do NOT swallow this. When it fails, the cloud dashboard's data silently
+      // freezes and nothing else in the system notices.
+      const msg = String((e && e.message) || e).slice(0, 400);
+      console.error(`git push FAILED: ${msg}`);
+      const state = await recordSyncOutcome({ ok: false, error: msg });
+      const streak = state ? state.consecutive_failures : 1;
+      await queueSyncFailureCard(
+        `🔴 *empire-state sync cannot commit* (failure #${streak})\n\n` +
+          "```\n" +
+          msg +
+          "\n```\n" +
+          "The cloud dashboard's data is frozen until this clears.\n" +
+          "Fix: `node scripts/lib/git-lock-doctor.mjs ~/Documents/studio --heal`",
+        streak
+      );
+      process.exitCode = 1;
     }
   }
 }

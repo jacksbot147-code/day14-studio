@@ -159,6 +159,19 @@ of an existing entry — the audit trail matters more than tidiness.
    must respect the caps.
 8. **Always regenerate registry + graph after adding a SKILL.md.**
    `npm run registry:generate && npm run graph:generate` (or `npm run build`).
+9. **Never run git against this repo through a bridge / FUSE mount.** A Cowork
+   or agent session working on a *mounted* path cannot unlink files, so
+   `git status` leaves an un-removable `.git/index.lock`, and git's auto-gc
+   strands one lock *per ref* (HEAD, packed-refs, every branch). Every later
+   git write then dies with "File exists". This is not hypothetical: one
+   stranded lock silently killed `sync-empire-state.mjs --push` from
+   2026-07-15 to 2026-07-30 — 15 days of commits, with the error going to a
+   LaunchAgent log and an exit code of 0. Do git natively on the Mac, or pass
+   `-c gc.auto=0 -c maintenance.auto=0` and sweep locks afterwards. To
+   diagnose or heal:
+   `node scripts/lib/git-lock-doctor.mjs ~/Documents/studio --heal`
+   (`--heal` only clears locks older than 10 minutes with no git process
+   running; a live lock is never touched.)
 
 ## Where to look first
 
@@ -166,6 +179,8 @@ of an existing entry — the audit trail matters more than tidiness.
 - I need to add a skill → `docs/seeds/skills/{name}/SKILL.md` then regen
 - I need to hand-code a skill → `src/lib/skills/{name}.ts` exporting `run(ctx)`
 - I'm reading webhook flow → `src/app/api/webhooks/{stripe,intake,cal,inbound}/route.ts`
+- The dashboard's data stopped updating → `_shared/ops/empire-sync.json`
+  (`consecutive_failures > 0` means the sync cannot commit; /dashboard goes red)
 - The dispatcher routing table → `src/lib/dispatch.ts` `SOURCE_ROUTES` constant
 - The skill-runner LLM tools → `src/lib/skill-runner.ts` `buildAgentTools()`
 

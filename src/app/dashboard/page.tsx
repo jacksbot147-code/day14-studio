@@ -111,6 +111,36 @@ async function gatherStats() {
     });
   }
 
+  // empire-state sync outcome. A git failure in sync-empire-state.mjs freezes
+  // the cloud dashboard's data, and it used to be invisible: one stranded
+  // index.lock on 2026-07-15 silently killed 15 days of commits. The script now
+  // records every attempt here; this surfaces it where Jack actually looks.
+  let sync: {
+    ok: boolean;
+    streak: number;
+    lastOkAt: string | null;
+    error: string | null;
+  } | null = null;
+  const syncText = await readSafe(path.join(SHARED, "ops/empire-sync.json"));
+  if (syncText) {
+    try {
+      const s = JSON.parse(syncText) as {
+        consecutive_failures?: number;
+        last_ok_at?: string | null;
+        last_error?: string | null;
+      };
+      const streak = Number(s.consecutive_failures || 0);
+      sync = {
+        ok: streak === 0,
+        streak,
+        lastOkAt: s.last_ok_at ?? null,
+        error: s.last_error ?? null,
+      };
+    } catch {
+      // unreadable → leave null; the card renders "no sync data"
+    }
+  }
+
   // unsent telegram
   const unsent: Array<{ filename: string; urgency: string; preview: string }> = [];
   for (const f of await lsSafe(path.join(SHARED, "telegram/outbox"))) {
@@ -170,7 +200,7 @@ async function gatherStats() {
   const p0Count = unsent.filter((u) => u.urgency === "P0").length;
   const staleCount = heartbeats.filter((h) => h.stale).length;
   const systemColor =
-    p0Count > 0 || staleCount > 0 || circuit.open
+    p0Count > 0 || staleCount > 0 || circuit.open || (sync !== null && !sync.ok)
       ? "red"
       : unsent.filter((u) => u.urgency === "P1").length > 0 || metaDrafts.length > 2
         ? "yellow"
@@ -187,6 +217,7 @@ async function gatherStats() {
     unsent,
     energy,
     recentInvocations,
+    sync,
     systemColor,
   };
 }
@@ -329,6 +360,7 @@ export default async function DashboardPage() {
                 ))}
               </ul>
             )}
+            <SyncRow sync={stats.sync} />
           </Card>
 
           {/* Unsent telegram */}
@@ -453,6 +485,55 @@ export default async function DashboardPage() {
         </span>
       </footer>
     </main>
+  );
+}
+
+/** Empire-state git sync. Red the moment it stops committing — the whole point
+ *  is that this can never again fail quietly for two weeks. */
+function SyncRow({
+  sync,
+}: {
+  sync: {
+    ok: boolean;
+    streak: number;
+    lastOkAt: string | null;
+    error: string | null;
+  } | null;
+}) {
+  if (!sync) {
+    return (
+      <p className="mt-3 border-t border-zinc-800 pt-3 text-xs text-zinc-500">
+        empire-state sync: no result recorded yet.
+      </p>
+    );
+  }
+  const agoMin = sync.lastOkAt
+    ? Math.round((Date.now() - new Date(sync.lastOkAt).getTime()) / 60000)
+    : null;
+  return (
+    <div className="mt-3 border-t border-zinc-800 pt-3">
+      <div className="flex items-center gap-2 text-sm">
+        <span>{sync.ok ? "🟢" : "🔴"}</span>
+        <span className="font-mono text-zinc-300">empire-state sync</span>
+        <span className="ml-auto text-xs text-zinc-500">
+          {sync.ok
+            ? agoMin === null
+              ? "committing"
+              : `last ok ${agoMin}m ago`
+            : `${sync.streak} consecutive failures`}
+        </span>
+      </div>
+      {!sync.ok && (
+        <p className="mt-1.5 rounded bg-red-500/15 p-2 text-xs text-red-200">
+          The cloud dashboard&rsquo;s data is frozen.
+          {sync.error && <> {sync.error}</>}
+          <br />
+          <code className="text-red-200/80">
+            node scripts/lib/git-lock-doctor.mjs ~/Documents/studio --heal
+          </code>
+        </p>
+      )}
+    </div>
   );
 }
 
