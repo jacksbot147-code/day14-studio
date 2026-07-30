@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "updated_at": "2026-07-30T13:00:09.887Z",
+  "updated_at": "2026-07-30T14:00:03.663Z",
   "last_success_at": null,
   "last_success_provider": null,
-  "last_failure_at": "2026-07-30T13:00:09.887Z",
+  "last_failure_at": "2026-07-30T14:00:03.663Z",
   "last_failure_error": "anthropic 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_i",
-  "consecutive_failures": 80,
+  "consecutive_failures": 90,
   "days": {
     "2026-07-28": {
       "calls": 38,
@@ -56,9 +56,9 @@
       }
     },
     "2026-07-30": {
-      "calls": 26,
+      "calls": 36,
       "ok": 0,
-      "failed": 26,
+      "failed": 36,
       "tokens_in": 0,
       "tokens_out": 0,
       "tokens_cache_read": 0,
@@ -66,19 +66,19 @@
       "est_cost_usd": 0,
       "by_provider": {
         "anthropic": {
-          "calls": 13,
+          "calls": 18,
           "ok": 0,
-          "failed": 13,
+          "failed": 18,
           "est_cost_usd": 0
         },
         "gemini": {
-          "calls": 13,
+          "calls": 18,
           "ok": 0,
-          "failed": 13,
+          "failed": 18,
           "est_cost_usd": 0
         }
       }
     }
   },
-  "last_agent": "pr-director"
+  "last_agent": "sales-director"
 }
