@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "updated_at": "2026-07-30T20:00:03.305Z",
+  "updated_at": "2026-07-31T11:00:07.105Z",
   "last_success_at": null,
   "last_success_provider": null,
-  "last_failure_at": "2026-07-30T20:00:03.305Z",
+  "last_failure_at": "2026-07-31T11:00:07.105Z",
   "last_failure_error": "gemini 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.",
-  "consecutive_failures": 92,
+  "consecutive_failures": 96,
   "days": {
     "2026-07-28": {
       "calls": 38,
@@ -78,7 +78,31 @@
           "est_cost_usd": 0
         }
       }
+    },
+    "2026-07-31": {
+      "calls": 4,
+      "ok": 0,
+      "failed": 4,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "tokens_cache_read": 0,
+      "tokens_cache_write": 0,
+      "est_cost_usd": 0,
+      "by_provider": {
+        "anthropic": {
+          "calls": 2,
+          "ok": 0,
+          "failed": 2,
+          "est_cost_usd": 0
+        },
+        "gemini": {
+          "calls": 2,
+          "ok": 0,
+          "failed": 2,
+          "est_cost_usd": 0
+        }
+      }
     }
   },
-  "last_agent": "product-strategist"
+  "last_agent": "idea-pitcher"
 }
