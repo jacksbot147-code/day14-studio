@@ -40,6 +40,8 @@ import {
   radarLastChanged,
   type LedgerDay,
 } from "@/lib/tech-radar-store";
+import { readPainIndex } from "@/lib/pain-index-store";
+import type { PainEntry, PainIndex } from "@/lib/pain-index";
 import { AddRadarItemForm, QueueTapButton, RingMoveControl } from "./radar-controls";
 
 export const dynamic = "force-dynamic";
@@ -60,11 +62,12 @@ const EFFORT_STYLE: Record<string, string> = {
 };
 
 export default async function AiRadarPage() {
-  const [radar, ledger, loopGate, changedAt] = await Promise.all([
+  const [radar, ledger, loopGate, changedAt, pain] = await Promise.all([
     readRadar(),
     readLedger(),
     readLoopGate(),
     radarLastChanged(),
+    readPainIndex(),
   ]);
 
   if (!radar) {
@@ -203,6 +206,8 @@ export default async function AiRadarPage() {
           )}
         </section>
       )}
+
+      <PainSection pain={pain} />
 
       {/* Recommendations — what to integrate next, cheapest unblocked first. */}
       <section className="mb-8 rounded-xl border border-zinc-800 bg-zinc-900 p-5">
@@ -432,6 +437,94 @@ export default async function AiRadarPage() {
         </span>
       </footer>
     </main>
+  );
+}
+
+/**
+ * What is hurting, before what could be adopted — the first question is the
+ * reason the second one matters. Computed fresh on every request from
+ * public/data/ops/pain-index.json; nothing here is hard-coded.
+ */
+function PainSection({ pain }: { pain: PainIndex | null }) {
+  if (!pain) {
+    return (
+      <section className="mb-8 rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+        <h2 className="text-[11px] font-semibold uppercase tracking-[0.09em] text-zinc-400">
+          Where it hurts
+        </h2>
+        <p className="mt-2 text-sm text-zinc-500">
+          No pain index has been generated yet. Run{" "}
+          <code className="text-zinc-400">npm run pain:index -- --write</code>.
+        </p>
+      </section>
+    );
+  }
+
+  const worst = pain.entries[0];
+  return (
+    <section
+      className={`mb-8 rounded-xl border p-5 ${
+        worst && worst.severity >= 80
+          ? "border-red-900/60 bg-red-500/[0.07]"
+          : pain.entries.length > 0
+            ? "border-amber-900/60 bg-amber-500/[0.06]"
+            : "border-zinc-800 bg-zinc-900"
+      }`}
+    >
+      <h2 className="text-[11px] font-semibold uppercase tracking-[0.09em] text-zinc-400">
+        Where it hurts — {pain.entries.length} above severity {pain.severity_floor}
+      </h2>
+
+      {pain.entries.length === 0 ? (
+        <p className="mt-2 text-sm text-zinc-400">{pain.statement}</p>
+      ) : (
+        <ul className="mt-4 space-y-3.5">
+          {pain.entries.map((e) => (
+            <PainRow key={e.id} entry={e} />
+          ))}
+        </ul>
+      )}
+
+      {pain.unread_sources.length > 0 && (
+        <p className="mt-3.5 border-t border-zinc-800 pt-3 text-xs text-amber-300">
+          {pain.unread_sources.length} source(s) could not be read:{" "}
+          {pain.unread_sources.join(", ")}. A gap is not an all-clear.
+        </p>
+      )}
+      <p className="mt-3 text-[11px] text-zinc-600">
+        Generated {pain.generated_at.slice(0, 16).replace("T", " ")} UTC · severity is
+        derived from the evidence, never assigned.
+      </p>
+    </section>
+  );
+}
+
+function PainRow({ entry }: { entry: PainEntry }) {
+  const tone =
+    entry.severity >= 80
+      ? "bg-red-500/20 text-red-300"
+      : entry.severity >= 50
+        ? "bg-amber-500/20 text-amber-300"
+        : "bg-zinc-600/30 text-zinc-300";
+  return (
+    <li className="border-l-2 border-zinc-700 pl-3.5">
+      <div className="flex flex-wrap items-baseline gap-2">
+        <span className={`rounded px-1.5 py-0.5 text-[10px] font-semibold tabular-nums ${tone}`}>
+          {entry.severity}
+        </span>
+        <span className="text-sm text-zinc-100">{entry.statement}</span>
+      </div>
+      <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] text-zinc-500">
+        {Object.entries(entry.evidence)
+          .filter(([, v]) => v !== null && v !== "")
+          .map(([k, v]) => (
+            <span key={k}>
+              <span className="text-zinc-600">{k}:</span>{" "}
+              <span className="font-mono text-zinc-400">{String(v).slice(0, 90)}</span>
+            </span>
+          ))}
+      </div>
+    </li>
   );
 }
 
