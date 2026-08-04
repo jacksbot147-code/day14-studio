@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "updated_at": "2026-08-04T14:00:08.551Z",
+  "updated_at": "2026-08-04T20:00:06.207Z",
   "last_success_at": null,
   "last_success_provider": null,
-  "last_failure_at": "2026-08-04T14:00:08.551Z",
-  "last_failure_error": "anthropic 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_i",
-  "consecutive_failures": 208,
+  "last_failure_at": "2026-08-04T20:00:06.207Z",
+  "last_failure_error": "gemini 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.",
+  "consecutive_failures": 210,
   "days": {
     "2026-07-28": {
       "calls": 38,
@@ -176,9 +176,9 @@
       }
     },
     "2026-08-04": {
-      "calls": 38,
+      "calls": 40,
       "ok": 0,
-      "failed": 38,
+      "failed": 40,
       "tokens_in": 0,
       "tokens_out": 0,
       "tokens_cache_read": 0,
@@ -186,19 +186,19 @@
       "est_cost_usd": 0,
       "by_provider": {
         "anthropic": {
-          "calls": 19,
+          "calls": 20,
           "ok": 0,
-          "failed": 19,
+          "failed": 20,
           "est_cost_usd": 0
         },
         "gemini": {
-          "calls": 19,
+          "calls": 20,
           "ok": 0,
-          "failed": 19,
+          "failed": 20,
           "est_cost_usd": 0
         }
       }
     }
   },
-  "last_agent": "sales-director"
+  "last_agent": "product-strategist"
 }
