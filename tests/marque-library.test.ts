@@ -334,3 +334,62 @@ describe("marque library — reading it off disk", () => {
     expect(q[0]!.replacement!.hook).not.toBe(v[0]!.hook);
   });
 });
+
+/**
+ * Adversarial pass, 2026-08-06. The library reads arbitrary JSON off disk, so
+ * it must behave under data it did not write.
+ */
+describe("marque library — hostile data", () => {
+  it("never hides a variant whose hook is not in the canonical list", () => {
+    const rows: LibraryVariant[] = [lib(1)[0]!, { ...lib(1)[0]!, id: "odd-1", hook: "made-up-hook" as never }];
+    const totals = summarise(rows);
+    const board = buildBoard(rows);
+
+    // The defect: the odd hook counted in the totals but was absent from the
+    // axes, so its cell existed and could never be rendered. Stat tiles and
+    // board silently disagreed.
+    const renderable = board.hooks
+      .flatMap((h) => board.angles.map((a) => board.cells.get(`${h}|${a}`)?.total ?? 0))
+      .reduce((x, y) => x + y, 0);
+    expect(renderable).toBe(totals.generated);
+    expect(board.hooks).toContain("made-up-hook");
+  });
+
+  it("keeps canonical tags first and unknown ones last, so order stays readable", () => {
+    const rows: LibraryVariant[] = [
+      { ...lib(1)[0]!, id: "odd-1", hook: "zzz-unknown" as never },
+      lib(1)[0]!,
+    ];
+    const board = buildBoard(rows);
+    expect(board.hooks[board.hooks.length - 1]).toBe("zzz-unknown");
+  });
+
+  it("does the same for an unknown angle", () => {
+    const rows: LibraryVariant[] = [lib(1)[0]!, { ...lib(1)[0]!, id: "odd-2", angle: "made-up-angle" as never }];
+    const board = buildBoard(rows);
+    expect(board.angles).toContain("made-up-angle");
+  });
+
+  it("merges batch files newest-last regardless of the order the filesystem lists them", async () => {
+    // readdir order is arbitrary by spec. With date-stamped filenames and a
+    // last-write-wins merge, an unsorted read makes the result depend on the
+    // filesystem rather than on the dates.
+    const seen: Array<string | undefined> = [];
+    for (let run = 0; run < 3; run++) {
+      const root = await fs.mkdtemp(path.join(os.tmpdir(), `marque-order-${run}-`));
+      const dir = path.join(root, "p");
+      await fs.mkdir(dir, { recursive: true });
+      const base = lib(1)[0]!;
+      const files: Array<[string, unknown]> = [
+        ["batch-2026-01-01.json", [{ ...base, live: true }]],
+        ["batch-2026-12-31.json", [{ ...base, live: false, retiredAt: "2026-12-31" }]],
+      ];
+      if (run % 2 === 1) files.reverse();
+      for (const [name, body] of files) await fs.writeFile(path.join(dir, name), JSON.stringify(body));
+      seen.push((await readLibrary(root)).variants[0]?.retiredAt);
+      await fs.rm(root, { recursive: true, force: true });
+    }
+    expect(new Set(seen).size, `merge varied by write order: ${JSON.stringify(seen)}`).toBe(1);
+    expect(seen[0]).toBe("2026-12-31");
+  });
+});

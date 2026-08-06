@@ -105,9 +105,25 @@ export function buildBoard(variants: LibraryVariant[]): {
   }
   const usedHooks = new Set(variants.map((v) => v.hook));
   const usedAngles = new Set(variants.map((v) => v.angle));
+
+  // Canonical order first, then anything unrecognised.
+  //
+  // The library is arbitrary JSON off disk — hand-edited, written by an older
+  // pipeline, or carrying a tag added since. Filtering to the canonical lists
+  // alone dropped such a variant from the axes while its cell stayed in the
+  // map, so it counted in the totals and was impossible to render: the stat
+  // tiles and the board disagreed, silently. An unknown tag is a thing to SEE,
+  // not a thing to hide.
+  const extraHooks = [...usedHooks].filter(
+    (h) => !(HOOK_TYPES as readonly string[]).includes(h),
+  ).sort() as HookType[];
+  const extraAngles = [...usedAngles].filter(
+    (a) => !(OFFER_ANGLES as readonly string[]).includes(a),
+  ).sort() as OfferAngle[];
+
   return {
-    hooks: HOOK_TYPES.filter((h) => usedHooks.has(h)),
-    angles: OFFER_ANGLES.filter((a) => usedAngles.has(a)),
+    hooks: [...HOOK_TYPES.filter((h) => usedHooks.has(h)), ...extraHooks],
+    angles: [...OFFER_ANGLES.filter((a) => usedAngles.has(a)), ...extraAngles],
     cells,
   };
 }
@@ -303,6 +319,10 @@ export async function readLibrary(root = libraryDir()): Promise<LibraryRead> {
       continue;
     }
     productDirs.push(slug);
+    // Sort explicitly. Merge below is last-write-wins, and with date-stamped
+    // filenames that must mean NEWEST-wins — but readdir order is arbitrary by
+    // spec, so relying on it makes the merge silently filesystem-dependent.
+    entries.sort();
     for (const name of entries) {
       if (!name.endsWith(".json")) continue;
       const full = path.join(dir, name);
