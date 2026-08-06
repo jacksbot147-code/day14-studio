@@ -347,3 +347,137 @@ export const CAPTURE_FOUNDING = {
   terms:
     "Locked for 12 months. First 3 clients only, in exchange for a testimonial and case-study rights.",
 } as const;
+
+
+export interface MarqueTier {
+  slug: "marque-starter" | "marque-essentials" | "marque-growth";
+  name: string;
+  oneTime: number | null; // one-time USD; null = subscription tier
+  monthly: number | null; // monthly USD; null = one-time only
+  priceLabel: string;
+  tagline: string;
+  bestFor: string;
+  features: string[];
+  paymentLinkEnv: string | null; // env var holding the Stripe payment link
+  featured: boolean;
+  /**
+   * Minimum monthly MEDIA spend — paid to Meta/Google, never to Day14 — below
+   * which this tier's creative cannot be evaluated. Published on /marque and on
+   * the tier card; disclosed, NOT enforced at checkout. This is a readability
+   * floor, not a performance promise. See MARQUE_SPEND_RULE.
+   */
+  spendFloorMonthly: number;
+  /** Variants generated per month (the bench). */
+  variantsPerMonth: number;
+  /** Variants live in the auction at once (the disciplined number). */
+  variantsLive: number;
+}
+
+/**
+ * The published spend rule — the honest constraint behind every Marque tier.
+ *
+ * Meta's delivery system needs roughly 50 optimization events per AD SET per
+ * week to exit "Learning Limited", and multiple ads inside one ad set SHARE a
+ * single event pool. The working rule of thumb is a daily budget of at least
+ * 5x the target cost-per-action, per live ad set. Below that, results are
+ * noise and no creative — ours or anyone else's — can be told apart from any
+ * other.
+ *
+ * We publish this because the alternative is a client spending $600/mo blaming
+ * the creative for an under-spend problem. It also explains why Marque runs a
+ * SMALL number of variants at once: piling a dozen ads into one ad set
+ * fragments nothing (they share the pool) but spreading them across ad sets
+ * splits the 50-event budget and keeps everything stuck in learning. The bench
+ * is deep; the field is not.
+ */
+export const MARQUE_SPEND_RULE = {
+  eventsPerAdSetPerWeek: 50,
+  dailyBudgetMultipleOfCpa: 5,
+  billing:
+    "Media spend is billed to you by Meta or Google on your own ad account. Day14 never touches it.",
+} as const;
+
+/**
+ * Marque — Day14's creative pipeline for paid ads, the fifth service line and
+ * the "buy" motion in build -> buy -> own -> capture.
+ *
+ * POSITIONING (revised 2026-07-27, Jack): Marque sells a CREATIVE PIPELINE —
+ * generation volume, variant tagging, fatigue detection, and brand consistency
+ * — not ad management. Management survives only at Growth, where the fee can
+ * carry it. Starter and Essentials deliver creative and the discipline around
+ * it; the client runs the account. Every tier publishes a media-spend floor.
+ *
+ * Canonical prices set by Jack 2026-07-20 (his explicit call to price + expose)
+ * and unchanged by the repositioning: $99 / $299 / $799 monthly.
+ */
+export const MARQUE_TIERS: MarqueTier[] = [
+  {
+    slug: "marque-starter",
+    name: "Marque Starter",
+    oneTime: null,
+    monthly: 99,
+    priceLabel: "$99/mo",
+    tagline: "The bench — twelve tagged variants a month, in your brand.",
+    bestFor:
+      "Owners already running their own ads whose real bottleneck is creative going stale faster than they can replace it.",
+    features: [
+      "12 new ad variants a month — static and short-form video, sized for Meta and Google",
+      "Every asset ships tagged: hook type, offer angle, format, aspect ratio — so you learn which angle won, not just which image",
+      "A locked brand kit — palette, type, logo lockups, tone rules — that every generation runs through, so variant #40 still looks like you",
+      "Run four at a time on a fixed swap cadence; the rest are bench depth",
+      "You run them on your own accounts and keep every asset, including after you cancel",
+      "Creative is the deliverable. No campaign management, no performance promise.",
+    ],
+    paymentLinkEnv: "STRIPE_PAYMENT_LINK_MARQUE_STARTER",
+    featured: false,
+    spendFloorMonthly: 900,
+    variantsPerMonth: 12,
+    variantsLive: 4,
+  },
+  {
+    slug: "marque-essentials",
+    name: "Marque Essentials",
+    oneTime: null,
+    monthly: 299,
+    priceLabel: "$299/mo",
+    tagline: "The full pipeline — generate, tag, detect fatigue, replace.",
+    bestFor:
+      "One offer on one channel, where you want the creative supply and the swap decisions handled but the account kept in your own hands.",
+    features: [
+      "24 new variants a month, tagged and filed into a library you can search by angle",
+      "Read access to your ad account so fatigue is caught from real signal — frequency climb, CTR decay, CPM drift — not a calendar",
+      "Four to six live at once; we name the one to retire and hand you its replacement the same week",
+      "Monthly angle report: which hooks and offers held up, which died, and what we're generating next",
+      "Brand consistency enforced across every variant — same kit, same voice, no drift",
+      "You keep the account, the budget, and every asset. We never touch the money.",
+    ],
+    paymentLinkEnv: "STRIPE_PAYMENT_LINK_MARQUE_ESSENTIALS",
+    featured: true,
+    spendFloorMonthly: 1500,
+    variantsPerMonth: 24,
+    variantsLive: 6,
+  },
+  {
+    slug: "marque-growth",
+    name: "Marque Growth",
+    oneTime: null,
+    monthly: 799,
+    priceLabel: "$799/mo",
+    tagline: "The pipeline, plus our hands on the account.",
+    bestFor:
+      "Multiple offers or channels at once, where someone has to own both the creative supply and the campaign structure feeding it.",
+    features: [
+      "40+ variants a month across offers and channels, fully tagged",
+      "Everything in Essentials, plus campaign setup, ad-set structure, and weekly optimization managed for you",
+      "Eight live at a time, sequenced so your ad sets aren't splitting one event pool between them",
+      "Landing-page and Capture handoff so the clicks you pay for actually get caught",
+      "Priority queue and a monthly strategy review",
+      "Spend still billed to you by the platform, still yours to set and pause.",
+    ],
+    paymentLinkEnv: "STRIPE_PAYMENT_LINK_MARQUE_GROWTH",
+    featured: false,
+    spendFloorMonthly: 4500,
+    variantsPerMonth: 40,
+    variantsLive: 8,
+  },
+];

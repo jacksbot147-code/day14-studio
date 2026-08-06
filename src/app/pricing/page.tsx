@@ -153,6 +153,24 @@ export default function PricingPage() {
 
           <section className="cin-detail-block">
             <Reveal as="h2" className="cin-detail-h2">
+              Also: Marque — the creative pipeline behind your ads
+            </Reveal>
+            <div className="cin-prose">
+              <p>
+                Builds and GEO earn attention over time; ads buy it now — and
+                the thing that actually stops working is the creative, not the
+                campaign. Marque generates dozens of on-brand variants a month,
+                tags each one by hook and angle, and swaps them out when the
+                numbers say they&rsquo;re fatiguing. You keep the ad account and
+                the budget; we publish the minimum media spend before you buy.
+                Its own page and pricing:{" "}
+                <a href="/marque">see how Marque works →</a>
+              </p>
+            </div>
+          </section>
+
+          <section className="cin-detail-block">
+            <Reveal as="h2" className="cin-detail-h2">
               Questions about pricing
             </Reveal>
             <div className="cin-detail-faqs">
