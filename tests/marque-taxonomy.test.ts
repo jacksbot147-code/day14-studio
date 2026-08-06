@@ -139,6 +139,26 @@ describe("marque taxonomy — generation matrix", () => {
     expect(new Set(m.map((v) => v.id)).size).toBe(4);
   });
 
+  it("never repeats a (hook, angle) pair while the space still has room", () => {
+    // The angle walk is offset by the hook lap to make the batch a Latin-square
+    // sweep rather than a diagonal. Verify that across every restriction shape
+    // an operator can actually pass, not just the default one.
+    for (const nHooks of [1, 2, 3, 4, 6, 10]) {
+      for (const nAngles of [1, 2, 3, 4, 6, 10]) {
+        const hooks = HOOK_TYPES.slice(0, nHooks);
+        const angles = OFFER_ANGLES.slice(0, nAngles);
+        const space = nHooks * nAngles;
+        const count = Math.min(space, 40);
+        const m = buildMatrix({ product: "p", count, channel: "tiktok", hooks, angles });
+        const pairs = m.map((v) => `${v.hook}|${v.angle}`);
+        expect(
+          new Set(pairs).size,
+          `${nHooks} hooks x ${nAngles} angles: ${new Set(pairs).size} distinct of ${count} drawn from a space of ${space}`,
+        ).toBe(count);
+      }
+    }
+  });
+
   it("generates the bench size each tier promises", () => {
     for (const tier of MARQUE_TIERS) {
       const m = buildMatrix({ product: "p", count: tier.variantsPerMonth, channel: "tiktok" });
@@ -305,6 +325,34 @@ describe("marque taxonomy — consistency with the published offer", () => {
   it("the published spend rule stays the documented 50-event / 5x-CPA shape", () => {
     expect(MARQUE_SPEND_RULE.eventsPerAdSetPerWeek).toBe(50);
     expect(MARQUE_SPEND_RULE.dailyBudgetMultipleOfCpa).toBe(5);
+  });
+
+  it("every published floor IS the formula — 5x its target CPA over 30 days", () => {
+    // The page tells a reader that a $40 lead needs ~$200/day, then publishes a
+    // $900/mo entry floor. That only stops being a contradiction because each
+    // floor names the cheaper optimization event it is derived for. If anyone
+    // edits a floor or a target without the other, this fails — which is the
+    // whole point of the test.
+    for (const t of MARQUE_TIERS) {
+      expect(
+        t.spendFloorMonthly,
+        `${t.name}: ${t.spendFloorMonthly} != 5 x ${t.floorTargetCpa} x 30`,
+      ).toBe(MARQUE_SPEND_RULE.dailyBudgetMultipleOfCpa * t.floorTargetCpa * 30);
+    }
+  });
+
+  it("names a real optimization event for every floor", () => {
+    for (const t of MARQUE_TIERS) {
+      expect(t.floorEvent.trim().length, `${t.name} has no floorEvent`).toBeGreaterThan(5);
+      expect(t.floorTargetCpa).toBeGreaterThan(0);
+    }
+  });
+
+  it("targets escalate with the tier — cheaper event at the bottom of the ladder", () => {
+    const cpas = MARQUE_TIERS.map((t) => t.floorTargetCpa);
+    for (let i = 1; i < cpas.length; i++) {
+      expect(cpas[i]!).toBeGreaterThan(cpas[i - 1]!);
+    }
   });
 
   it("the lowest floor clears 5x a plausible low-end CPA for a full week", () => {

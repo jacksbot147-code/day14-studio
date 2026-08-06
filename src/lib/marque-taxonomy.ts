@@ -431,8 +431,18 @@ export function buildMatrix(opts: {
   const seen = new Map<string, number>();
 
   for (let i = 0; i < opts.count; i++) {
-    const hook = hooks[i % hooks.length] as HookType;
-    const angle = angles[(i + Math.floor(i / hooks.length)) % angles.length] as OfferAngle;
+    // Latin-square sweep: walk the hooks, and shift the angle by one on each
+    // lap. `(hookIndex + lap) % angles.length` covers every (hook, angle) pair
+    // exactly once for any count up to hooks x angles, for ANY list sizes.
+    //
+    // The earlier form offset by `i + floor(i / hooks.length)`, which stalls
+    // when there is exactly one hook: the offset then advances in lockstep with
+    // i, so the angle index is always (2i % angles.length) and every other
+    // angle is skipped. One hook and two angles produced the same pair twice.
+    const lap = Math.floor(i / hooks.length);
+    const hookIndex = i % hooks.length;
+    const hook = hooks[hookIndex] as HookType;
+    const angle = angles[(hookIndex + lap) % angles.length] as OfferAngle;
     const format = formats[i % formats.length] as Format;
     const pairKey = `${hook}|${angle}|${format}`;
     const seq = (seen.get(pairKey) ?? 0) + 1;

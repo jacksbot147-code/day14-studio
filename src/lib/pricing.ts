@@ -361,12 +361,23 @@ export interface MarqueTier {
   paymentLinkEnv: string | null; // env var holding the Stripe payment link
   featured: boolean;
   /**
-   * Minimum monthly MEDIA spend — paid to Meta/Google, never to Day14 — below
+   * Minimum monthly MEDIA spend — paid to TikTok/Meta, never to Day14 — below
    * which this tier's creative cannot be evaluated. Published on /marque and on
    * the tier card; disclosed, NOT enforced at checkout. This is a readability
    * floor, not a performance promise. See MARQUE_SPEND_RULE.
    */
   spendFloorMonthly: number;
+  /**
+   * The optimization event `spendFloorMonthly` is derived FOR, and its target
+   * cost. Without these the floor looks arbitrary — or worse, looks like it
+   * contradicts the 5x rule, because 5x a $40 lead is $6,000/mo, not $900.
+   * The resolution is that the optimization event is a CHOICE: a small budget
+   * gets a readable result by optimising for a cheap upstream event.
+   *
+   * INVARIANT, enforced in tests: spendFloorMonthly === 5 * floorTargetCpa * 30.
+   */
+  floorEvent: string;
+  floorTargetCpa: number;
   /** Variants generated per month (the bench). */
   variantsPerMonth: number;
   /** Variants live in the auction at once (the disciplined number). */
@@ -394,7 +405,16 @@ export const MARQUE_SPEND_RULE = {
   eventsPerAdSetPerWeek: 50,
   dailyBudgetMultipleOfCpa: 5,
   billing:
-    "Media spend is billed to you by Meta or Google on your own ad account. Day14 never touches it.",
+    "Media spend is billed to you by TikTok or Meta on your own ad account. Day14 never touches it.",
+  /**
+   * The lever almost nobody names. 50 events a week optimising for `Purchase`
+   * on a new account is real money; 50 `View Content` events a week is not.
+   * Choosing the event is how a small budget buys a readable answer instead of
+   * noise — and it is why our published floors are far below 5x a finished
+   * lead's cost.
+   */
+  eventChoiceNote:
+    "The optimization event is a choice. Optimising for a purchase means 50 purchases a week before delivery settles; optimising for an upstream event — a landing-page view, an add-to-cart — reaches the same threshold on a fraction of the budget.",
 } as const;
 
 /**
@@ -421,7 +441,7 @@ export const MARQUE_TIERS: MarqueTier[] = [
     bestFor:
       "Owners already running their own ads whose real bottleneck is creative going stale faster than they can replace it.",
     features: [
-      "12 new ad variants a month — static and short-form video, sized for Meta and Google",
+      "12 new ad variants a month — vertical video and static, sized for TikTok and Meta",
       "Every asset ships tagged: hook type, offer angle, format, aspect ratio — so you learn which angle won, not just which image",
       "A locked brand kit — palette, type, logo lockups, tone rules — that every generation runs through, so variant #40 still looks like you",
       "Run four at a time on a fixed swap cadence; the rest are bench depth",
@@ -431,6 +451,8 @@ export const MARQUE_TIERS: MarqueTier[] = [
     paymentLinkEnv: "STRIPE_PAYMENT_LINK_MARQUE_STARTER",
     featured: false,
     spendFloorMonthly: 900,
+    floorEvent: "a landing-page view",
+    floorTargetCpa: 6,
     variantsPerMonth: 12,
     variantsLive: 4,
   },
@@ -454,6 +476,8 @@ export const MARQUE_TIERS: MarqueTier[] = [
     paymentLinkEnv: "STRIPE_PAYMENT_LINK_MARQUE_ESSENTIALS",
     featured: true,
     spendFloorMonthly: 1500,
+    floorEvent: "an add-to-cart or lead-form open",
+    floorTargetCpa: 10,
     variantsPerMonth: 24,
     variantsLive: 6,
   },
@@ -477,6 +501,8 @@ export const MARQUE_TIERS: MarqueTier[] = [
     paymentLinkEnv: "STRIPE_PAYMENT_LINK_MARQUE_GROWTH",
     featured: false,
     spendFloorMonthly: 4500,
+    floorEvent: "a purchase or qualified lead",
+    floorTargetCpa: 30,
     variantsPerMonth: 40,
     variantsLive: 8,
   },

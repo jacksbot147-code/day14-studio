@@ -47,7 +47,7 @@ export async function GET(): Promise<Response> {
 
   const marqueLines = MARQUE_TIERS.map((t) => {
     const price = `$${(t.monthly ?? 0).toLocaleString("en-US")}/mo`;
-    return `- ${t.name}: ${price}. ${t.tagline} Best for: ${t.bestFor} Requires at least $${t.spendFloorMonthly.toLocaleString("en-US")}/mo of media spend; ${t.variantsPerMonth} variants generated per month, ${t.variantsLive} live at a time.`;
+    return `- ${t.name}: ${price}. ${t.tagline} Best for: ${t.bestFor} Requires at least $${t.spendFloorMonthly.toLocaleString("en-US")}/mo of media spend (${MARQUE_SPEND_RULE.dailyBudgetMultipleOfCpa}x a $${t.floorTargetCpa} target on ${t.floorEvent}); ${t.variantsPerMonth} variants generated per month, ${t.variantsLive} live at a time.`;
   }).join("\n");
 
   const body = `# ${SITE.brand}
@@ -105,7 +105,10 @@ spend up front rather than letting a client discover it after three months of
 noise. ${MARQUE_SPEND_RULE.billing} Marque also runs only a small number of
 variants live at once, because ads inside an ad set share one pool of
 optimization events and spreading them thin keeps everything stuck in
-learning — deep bench, small field. No guaranteed leads or cost-per-lead.
+learning — deep bench, small field. ${MARQUE_SPEND_RULE.eventChoiceNote} That
+is why the published floors sit well below 5x a finished lead's cost: each one
+is 5x a stated target on a stated, cheaper event. No guaranteed leads or
+cost-per-lead.
 Pricing and details: ${base}/marque
 
 ## Insights — weekly AI update

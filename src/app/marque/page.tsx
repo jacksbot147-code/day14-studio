@@ -70,7 +70,11 @@ const MARQUE_FAQ = [
       MARQUE_SPEND_RULE.eventsPerAdSetPerWeek
     } optimization events per ad set per week before it stops guessing — that is the "Learning Limited" warning you have probably seen. The working rule of thumb is a daily budget of at least ${
       MARQUE_SPEND_RULE.dailyBudgetMultipleOfCpa
-    }x your target cost per lead, per live ad set. If leads cost you $40, that is roughly $200/day. Below the floor, one variant genuinely cannot be told apart from another — the numbers are noise — and no creative on earth fixes that. We publish this because the alternative is you paying us and blaming the creative for a budget problem.`,
+    }x your target cost per lead, per live ad set. If leads cost you $40, that is roughly $200/day. Below the floor, one variant genuinely cannot be told apart from another — the numbers are noise — and no creative on earth fixes that.
+
+The reason our published floors sit well below that $200/day figure is that ${MARQUE_SPEND_RULE.eventChoiceNote} Each tier's floor is ${MARQUE_SPEND_RULE.dailyBudgetMultipleOfCpa}x a stated target on a stated event, listed on the page. Choose a more expensive event and your floor rises with it — we will tell you by how much before you spend it.
+
+We publish all of this because the alternative is you paying us and blaming the creative for a budget problem.`,
   },
   {
     q: "Do you guarantee leads or a cost-per-lead?",
@@ -86,7 +90,7 @@ const MARQUE_FAQ = [
   },
   {
     q: "Who pays for the ad spend?",
-    a: `You do, billed directly by Meta or Google on your own ad account. ${MARQUE_SPEND_RULE.billing} Our fee covers the creative pipeline. You set the budget and can change or pause it any time.`,
+    a: `You do, billed directly by TikTok or Meta on your own ad account. ${MARQUE_SPEND_RULE.billing} Our fee covers the creative pipeline. You set the budget and can change or pause it any time.`,
   },
   {
     q: "Is the creative actually AI-made?",
@@ -222,8 +226,8 @@ export default function MarquePage() {
                 <div>
                   <h3>Generate the bench</h3>
                   <p>
-                    Dozens of variants a month — static and short-form video,
-                    sized for Meta and Google, human-reviewed before anything
+                    Dozens of variants a month — vertical video and static,
+                    sized for TikTok and Meta, human-reviewed before anything
                     ships. Volume is for the bench, not the field. It exists so
                     the replacement is already made on the day you need it.
                   </p>
@@ -248,11 +252,14 @@ export default function MarquePage() {
                 <div>
                   <h3>Swap on fatigue, not on a calendar</h3>
                   <p>
-                    Frequency climbing, click-through decaying, CPM drifting up
-                    on the same audience — those are the tells. We name the ad
-                    to retire and hand over its replacement the same week. No
-                    guaranteed outcome, no black box: the signal we acted on is
-                    in the report.
+                    Click-through decaying against its own peak, three-second
+                    hold rate collapsing, CPM drifting up on the same audience —
+                    those are the tells, and each one is measured against that
+                    variant&rsquo;s own history rather than against the others,
+                    because budgets move and a variant compared to itself is the
+                    only fair comparison. We name the ad to retire and hand over
+                    its replacement the same week. No guaranteed outcome, no
+                    black box: the number we acted on is in the report.
                   </p>
                 </div>
               </li>
@@ -286,17 +293,34 @@ export default function MarquePage() {
                 Under that number, the results are noise. One variant genuinely
                 cannot be told apart from another, and no creative — ours or
                 anyone else&rsquo;s — changes that. A business paying us{" "}
-                {usd(ENTRY_FEE)} a month while spending
-                nothing on media will blame the ads for a budget problem, and
-                they would be half right: we would have taken the money knowing
-                it could not work.
+                {usd(ENTRY_FEE)} a month while putting {usd(600)} a year behind
+                it will blame the ads for a budget problem, and they would be
+                half right: we would have taken the money knowing it could not
+                work.
+              </p>
+              <p>
+                Which raises the obvious question about the numbers below —{" "}
+                <em>
+                  if a $40 lead needs $200 a day, how is the entry floor{" "}
+                  {usd(LOWEST_FLOOR)} a month?
+                </em>{" "}
+                Because <strong>the optimization event is a choice</strong>, and
+                it is the lever almost nobody names. Fifty <em>purchases</em> a
+                week before delivery settles is real money. Fifty{" "}
+                <em>landing-page views</em> a week is not — and it still buys
+                you a readable answer about which creative works. So each floor
+                below is 5&times; a stated target, on a stated event. Pick a
+                more expensive event and your floor goes up with it; we will
+                tell you by how much before you spend it.
               </p>
               <p>So here are the floors, per tier, before you buy:</p>
               <ul>
                 {MARQUE_TIERS.map((t) => (
                   <li key={t.slug}>
                     <strong>{t.name}</strong> — from{" "}
-                    {usd(t.spendFloorMonthly)}/mo in media spend ·{" "}
+                    {usd(t.spendFloorMonthly)}/mo in media spend, which is{" "}
+                    {MARQUE_SPEND_RULE.dailyBudgetMultipleOfCpa}&times; a{" "}
+                    {usd(t.floorTargetCpa)} target on {t.floorEvent} ·{" "}
                     {t.variantsPerMonth} variants generated, {t.variantsLive}{" "}
                     live at a time
                   </li>
@@ -382,7 +406,7 @@ export default function MarquePage() {
           </div>
 
           <Reveal as="p" className="cin-platform">
-            Media spend is billed to you by Meta or Google directly —
+            Media spend is billed to you by TikTok or Meta directly —
             Marque&rsquo;s fee covers the creative pipeline only. Campaign
             management is included at Growth; at Starter and Essentials you run
             the account and we supply and steer the creative. Start or stop on 30
