@@ -119,7 +119,16 @@ export interface RadarInput {
  * same question independently is how they start disagreeing.
  */
 export interface OpsPulseInput {
-  paying_software_customers?: number;
+  /**
+   * Count of customers on an active paid subscription, or NULL when it could
+   * not be measured (Stripe unreachable, no key). Null is NOT zero — see
+   * ruleRevenueUnmeasurable, which exists so an unreadable till cannot pass as
+   * a quiet one.
+   */
+  paying_software_customers?: number | null;
+  /** False when the count above is an unknown rather than a measurement. */
+  revenue_measurable?: boolean;
+  stripe?: { key_present?: boolean; note?: string | null };
   outreach?: {
     log_exists?: boolean;
     total_sends?: number;
@@ -486,16 +495,57 @@ function ruleNoOutreach(i: PainInputs): PainEntry | null {
   };
 }
 
-/** Zero paying customers. Categorical: zero is not a small number, it is a different state. */
+/**
+ * Zero paying customers. Categorical: zero is not a small number, it is a
+ * different state.
+ *
+ * Fires only on a MEASURED zero. An unmeasurable till is a different and
+ * arguably worse finding — see ruleRevenueUnmeasurable.
+ */
 function ruleNoPayingCustomers(i: PainInputs): PainEntry | null {
   const n = i.opsPulse?.paying_software_customers;
   if (n === undefined || n === null || n > 0) return null;
+  if (i.opsPulse?.revenue_measurable === false) return null;
   return {
     id: "no-paying-customers",
     source: "revenue",
     severity: 90,
     statement: "Zero paying software customers. Every other number on this page is a cost until that changes.",
     evidence: { paying_software_customers: 0 },
+    first_observed: null,
+    still_true: true,
+  };
+}
+
+/**
+ * Revenue cannot be measured at all.
+ *
+ * Severity sits just above `no-paying-customers` deliberately. A business that
+ * knows it has no customers can act on that. A business whose till is
+ * unreadable cannot tell the difference between no customers and its first
+ * sale — so the one event the whole operation is waiting for would arrive
+ * unnoticed. Reporting a confident 0 in that state is the same
+ * heartbeat-instead-of-outcome lie that produced every other entry on this
+ * page, pointed in the direction that flatters nobody and warns nobody.
+ */
+function ruleRevenueUnmeasurable(i: PainInputs): PainEntry | null {
+  const p = i.opsPulse;
+  if (!p) return null;
+  const unknown =
+    p.revenue_measurable === false ||
+    (p.paying_software_customers === null && p.revenue_measurable !== true);
+  if (!unknown) return null;
+  return {
+    id: "revenue-unmeasurable",
+    source: "revenue",
+    severity: 92,
+    statement:
+      "Revenue cannot be read at all — the till is unreachable, not empty. A first sale would land unnoticed.",
+    evidence: {
+      paying_software_customers: null,
+      revenue_measurable: false,
+      stripe_note: p.stripe?.note ?? null,
+    },
     first_observed: null,
     still_true: true,
   };
@@ -524,6 +574,7 @@ function ruleDeadmanNotArmed(i: PainInputs): PainEntry | null {
 
 const RULES = [
   ruleNoOutreach,
+  ruleRevenueUnmeasurable,
   ruleNoPayingCustomers,
   ruleDeadmanNotArmed,
   ruleLlmOutage,

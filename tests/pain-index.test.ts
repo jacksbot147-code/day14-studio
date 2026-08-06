@@ -395,3 +395,94 @@ describe("revenue — the numbers that decide whether Day14 lives", () => {
     expect(llm[0]!.evidence.providers_down).toBe("gemini, anthropic");
   });
 });
+
+/**
+ * An unreadable till is not an empty one.
+ *
+ * ops-pulse published `paying_software_customers: 0` as a HARDCODED literal
+ * while its Stripe leg was returning "fetch failed" — so the single number the
+ * weekly scan is told to rank above every research finding was an assertion
+ * that could never change, in either direction. It would have reported 0 just
+ * as confidently on the day of the first sale.
+ */
+describe("revenue — unknown is not zero", () => {
+  const unreadable = {
+    paying_software_customers: null,
+    revenue_measurable: false,
+    stripe: { key_present: true, note: "stripe error: TypeError: fetch failed" },
+    outreach: { log_exists: false, total_sends: 0 },
+  };
+
+  it("fires revenue-unmeasurable when the till cannot be read", () => {
+    const r = computePainIndex(inputs({ opsPulse: unreadable }));
+    expect(r.entries.map((e) => e.id)).toContain("revenue-unmeasurable");
+  });
+
+  it("does NOT also claim zero customers — it does not know that", () => {
+    const r = computePainIndex(inputs({ opsPulse: unreadable }));
+    expect(r.entries.map((e) => e.id)).not.toContain("no-paying-customers");
+  });
+
+  it("ranks an unreadable till above a confirmed empty one", () => {
+    const unknown = computePainIndex(inputs({ opsPulse: unreadable }));
+    const empty = computePainIndex(
+      inputs({
+        opsPulse: {
+          paying_software_customers: 0,
+          revenue_measurable: true,
+          outreach: { log_exists: false, total_sends: 0 },
+        },
+      }),
+    );
+    const sevOf = (r: ReturnType<typeof computePainIndex>, id: string) =>
+      r.entries.find((e) => e.id === id)?.severity ?? -1;
+    expect(sevOf(unknown, "revenue-unmeasurable")).toBeGreaterThan(
+      sevOf(empty, "no-paying-customers"),
+    );
+  });
+
+  it("carries the reason the till could not be read, not just that it could not", () => {
+    const r = computePainIndex(inputs({ opsPulse: unreadable }));
+    const e = r.entries.find((x) => x.id === "revenue-unmeasurable")!;
+    expect(String(e.evidence.stripe_note)).toMatch(/fetch failed/);
+  });
+
+  it("stays silent once revenue is measurable again", () => {
+    const r = computePainIndex(
+      inputs({
+        opsPulse: {
+          paying_software_customers: 3,
+          revenue_measurable: true,
+          outreach: { log_exists: true, total_sends: 12, days_since_outreach: 1 },
+        },
+      }),
+    );
+    const ids = r.entries.map((e) => e.id);
+    expect(ids).not.toContain("revenue-unmeasurable");
+    expect(ids).not.toContain("no-paying-customers");
+  });
+
+  it("a measured zero still fires the old rule — this must not mask it", () => {
+    const r = computePainIndex(
+      inputs({
+        opsPulse: {
+          paying_software_customers: 0,
+          revenue_measurable: true,
+          outreach: { log_exists: false, total_sends: 0 },
+        },
+      }),
+    );
+    expect(r.entries.map((e) => e.id)).toContain("no-paying-customers");
+  });
+
+  it("legacy pulses with no revenue_measurable field behave exactly as before", () => {
+    // Backwards compatibility: an older ops-pulse.json must not start firing a
+    // new alarm just because the schema grew.
+    const r = computePainIndex(
+      inputs({ opsPulse: { paying_software_customers: 0, outreach: { log_exists: false, total_sends: 0 } } }),
+    );
+    const ids = r.entries.map((e) => e.id);
+    expect(ids).toContain("no-paying-customers");
+    expect(ids).not.toContain("revenue-unmeasurable");
+  });
+});
