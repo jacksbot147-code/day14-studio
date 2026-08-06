@@ -29,6 +29,7 @@ function baseInputs(now: Date): PainInputs {
     heartbeats: null,
     sync: null,
     radar: null,
+    opsPulse: null,
     unreadSources: [],
   };
 }
@@ -108,7 +109,23 @@ function selftest(): number {
     String(merged2.entries[0]?.first_observed)
   );
 
-  // 8. Unread sources are surfaced, never mistaken for health.
+  // 8. Revenue pain outranks operational pain, per the ops-pulse charter.
+  const revenue = computePainIndex({
+    ...baseInputs(now),
+    ledger: { consecutive_failures: 267, days: { d: { calls: 267, ok: 0 } } },
+    opsPulse: {
+      paying_software_customers: 0,
+      outreach: { log_exists: false, total_sends: 0 },
+      fleet_deadman: { armed: false },
+    },
+  });
+  check(
+    "revenue pain lands in the top three without inflating a constant",
+    revenue.entries.slice(0, 3).some((e) => e.id === "outreach-never-sent"),
+    revenue.entries.map((e) => `${e.severity} ${e.id}`).join(" | ")
+  );
+
+  // 9. Unread sources are surfaced, never mistaken for health.
   const blind = computePainIndex({ ...baseInputs(now), unreadSources: ["tech-radar.json"] });
   check("unread sources reported in the empty statement", /unreadable/.test(blind.statement), blind.statement);
 

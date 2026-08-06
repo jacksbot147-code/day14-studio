@@ -22,6 +22,7 @@ function inputs(over: Partial<PainInputs> = {}): PainInputs {
     heartbeats: null,
     sync: null,
     radar: null,
+    opsPulse: null,
     unreadSources: [],
     ...over,
   };
@@ -307,5 +308,90 @@ describe("ordering and history", () => {
   it("uses the documented staleness thresholds", () => {
     expect(STALE_REGISTER_DAYS).toBe(7);
     expect(STALE_HEARTBEAT_MIN).toBe(60);
+  });
+});
+
+/**
+ * A note on ordering, recorded because the first version of this test asserted
+ * the wrong thing.
+ *
+ * I initially asserted that a never-recorded outreach send must outrank the LLM
+ * outage, on the reasoning that ops-pulse lists it first. That was an assumption
+ * dressed as a principle, and making it true would have meant inflating a
+ * constant until the sort came out the way I wanted — the precise "hand-assigned
+ * severity" this module forbids.
+ *
+ * A 267-failure total provider outage genuinely is the single most severe fact,
+ * and it clamps to 100 honestly. Revenue pain lands at 95/90, second and third,
+ * which is where the evidence puts it. What IS worth asserting is the thing that
+ * carries real meaning: doing outranks deciding. A send that never happened
+ * scores above every "decided and never armed" entry on the radar.
+ */
+describe("revenue — the numbers that decide whether Day14 lives", () => {
+  const pulse = {
+    paying_software_customers: 0,
+    outreach: { log_exists: false, total_sends: 0 },
+    fleet_deadman: { armed: false, note: "DAY14_HEALTHCHECK_URL not set" },
+  };
+
+  it("ranks a never-recorded send above every decided-but-never-armed entry", () => {
+    const r = computePainIndex(
+      inputs({
+        ledger: { consecutive_failures: 267, days: { d: { calls: 267, ok: 0 } } },
+        opsPulse: pulse,
+        radar: {
+          rings: {
+            adopt: Array.from({ length: 4 }, (_, n) => ({ item: `a${n}`, in_production_since: null })),
+          },
+        },
+      })
+    );
+    const outreach = r.entries.find((e) => e.id === "outreach-never-sent")!;
+    const debt = r.entries.find((e) => e.id === "adopt-ring-not-running")!;
+    expect(outreach.severity).toBeGreaterThan(debt.severity);
+    // Top three, without pretending it beats a total provider outage.
+    expect(r.entries.slice(0, 3).map((e) => e.id)).toContain("outreach-never-sent");
+  });
+
+  it("treats a missing log as worse than any known gap", () => {
+    const never = computePainIndex(inputs({ opsPulse: pulse })).entries.find(
+      (e) => e.id === "outreach-never-sent"
+    )!;
+    const stalled = computePainIndex(
+      inputs({ opsPulse: { ...pulse, outreach: { log_exists: true, total_sends: 3, days_since_outreach: 20 } } })
+    ).entries.find((e) => e.id === "outreach-stalled")!;
+    expect(never.severity).toBeGreaterThan(stalled.severity);
+  });
+
+  it("goes quiet when outreach is actually flowing", () => {
+    const r = computePainIndex(
+      inputs({ opsPulse: { ...pulse, outreach: { log_exists: true, total_sends: 12, days_since_outreach: 2 } } })
+    );
+    expect(ids(r)).not.toContain("outreach-never-sent");
+    expect(ids(r)).not.toContain("outreach-stalled");
+  });
+
+  it("flags zero paying customers and an unarmed dead-man switch", () => {
+    const r = computePainIndex(inputs({ opsPulse: pulse }));
+    expect(ids(r)).toContain("no-paying-customers");
+    expect(ids(r)).toContain("deadman-not-armed");
+  });
+
+  it("stays silent on revenue when there is no pulse to read", () => {
+    const r = computePainIndex(inputs({ opsPulse: null }));
+    expect(r.entries.filter((e) => e.source === "revenue")).toEqual([]);
+  });
+
+  it("enriches the llm entry with the pulse rather than adding a second row", () => {
+    const r = computePainIndex(
+      inputs({
+        ledger: { consecutive_failures: 267, days: { d: { calls: 267, ok: 0 } } },
+        opsPulse: { ...pulse, llm: { worst_failure_streak: 649, providers_down: ["gemini", "anthropic"] } },
+      })
+    );
+    const llm = r.entries.filter((e) => e.source === "llm-layer");
+    expect(llm).toHaveLength(1);
+    expect(llm[0]!.evidence.worst_provider_streak).toBe(649);
+    expect(llm[0]!.evidence.providers_down).toBe("gemini, anthropic");
   });
 });

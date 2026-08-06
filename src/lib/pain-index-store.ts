@@ -14,6 +14,7 @@ import type {
   LedgerInput,
   LoopGateConfigInput,
   LoopGateStateInput,
+  OpsPulseInput,
   PainIndex,
   PainInputs,
   RadarInput,
@@ -132,6 +133,11 @@ export async function gatherPainInputs(now: Date = new Date()): Promise<PainInpu
   const heartbeats = await readHeartbeats(now);
   if (heartbeats.value === null) unread.push("poller heartbeats");
 
+  // The business pulse. Absent means ops-pulse has never run — reported as
+  // unread so the revenue rules going quiet is never mistaken for good news.
+  const pulse = await readJson<OpsPulseInput>(path.join(OPS_DIR, "ops-pulse.json"));
+  if (pulse.value === null) unread.push("ops-pulse.json (never generated?)");
+
   return {
     now,
     ledger: ledger.value,
@@ -142,6 +148,7 @@ export async function gatherPainInputs(now: Date = new Date()): Promise<PainInpu
     heartbeats: heartbeats.value,
     sync: sync.value,
     radar: radar.value,
+    opsPulse: pulse.value,
     unreadSources: unread,
   };
 }

@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "generated_at": "2026-08-06T21:11:24.899Z",
+  "generated_at": "2026-08-06T21:16:27.258Z",
   "severity_floor": 25,
-  "statement": "6 live pains, worst at severity 100: LLM layer has returned 267 consecutive failures across 10 day(s) and no successful call has ever been recorded.",
+  "statement": "9 live pains, worst at severity 100: LLM layer has returned 267 consecutive failures across 10 day(s) and no successful call has ever been recorded.",
   "entries": [
     {
       "id": "llm-layer-down",
@@ -14,7 +14,9 @@
         "failing_days": 10,
         "calls_total": 267,
         "calls_ok": 0,
-        "last_success_at": null
+        "last_success_at": null,
+        "worst_provider_streak": 649,
+        "providers_down": "gemini, anthropic"
       },
       "first_observed": "2026-07-31T02:37:52.722Z",
       "still_true": true
@@ -38,6 +40,31 @@
       ]
     },
     {
+      "id": "outreach-never-sent",
+      "source": "revenue",
+      "severity": 95,
+      "statement": "No outreach send has ever been recorded — the activity that produces revenue has no log at all.",
+      "evidence": {
+        "log_exists": false,
+        "total_sends": 0,
+        "sends_7d": 0,
+        "days_since_outreach": null
+      },
+      "first_observed": "2026-08-06T21:16:27.258Z",
+      "still_true": true
+    },
+    {
+      "id": "no-paying-customers",
+      "source": "revenue",
+      "severity": 90,
+      "statement": "Zero paying software customers. Every other number on this page is a cost until that changes.",
+      "evidence": {
+        "paying_software_customers": 0
+      },
+      "first_observed": "2026-08-06T21:16:27.258Z",
+      "still_true": true
+    },
+    {
       "id": "pollers-stopped",
       "source": "fleet",
       "severity": 80,
@@ -45,7 +72,7 @@
       "evidence": {
         "stale_count": 6,
         "total": 22,
-        "oldest_age_min": 82215,
+        "oldest_age_min": 82220,
         "names": "gmail-cs-triage, growth-narrator, lawn-care-gm-kennum-lawn-care, realty-scout-day14-realty, stripe-cs-loop, vercel-deploy-monitor"
       },
       "first_observed": "2026-07-31T02:37:52.722Z",
@@ -62,6 +89,18 @@
         "items": "Healthchecks.io dead-man's switch; Cloudflare AI Gateway spend limits + Dynamic Route fallback; Official ads MCP servers (Meta / Google / TikTok); Stripe Payment Links"
       },
       "first_observed": "2026-07-31T02:37:52.722Z",
+      "still_true": true
+    },
+    {
+      "id": "deadman-not-armed",
+      "source": "revenue",
+      "severity": 72,
+      "statement": "The dead-man switch is not armed, so a silent fleet outage has nothing watching for it.",
+      "evidence": {
+        "armed": false,
+        "note": "DAY14_HEALTHCHECK_URL not set — the dead-man switch is not armed"
+      },
+      "first_observed": "2026-08-06T21:16:27.258Z",
       "still_true": true
     },
     {

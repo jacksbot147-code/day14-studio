@@ -34,7 +34,8 @@ export type PainSource =
   | "fleet"
   | "loop-gate"
   | "empire-sync"
-  | "radar";
+  | "radar"
+  | "revenue";
 
 export interface PainEntry {
   /** Stable across runs, so `first_observed` can be carried forward. */
@@ -110,6 +111,25 @@ export interface RadarInput {
   rings?: { adopt?: RadarItemInput[]; trial?: RadarItemInput[]; assess?: RadarItemInput[]; hold?: RadarItemInput[] };
 }
 
+/**
+ * ops-pulse.json — the business pulse. Its own header calls it "the only closed
+ * loop this architecture allows between local reality and a scheduled agent",
+ * and the weekly scan ranks it ABOVE every research finding. Consuming it here
+ * rather than re-reading its raw sources is deliberate: two files answering the
+ * same question independently is how they start disagreeing.
+ */
+export interface OpsPulseInput {
+  paying_software_customers?: number;
+  outreach?: {
+    log_exists?: boolean;
+    total_sends?: number;
+    days_since_outreach?: number | null;
+    sends_7d?: number;
+  };
+  llm?: { worst_failure_streak?: number; providers_down?: string[]; all_providers_down?: boolean };
+  fleet_deadman?: { armed?: boolean; note?: string | null };
+}
+
 export interface PainInputs {
   now: Date;
   ledger: LedgerInput | null;
@@ -121,6 +141,7 @@ export interface PainInputs {
   heartbeats: HeartbeatInput[] | null;
   sync: SyncInput | null;
   radar: RadarInput | null;
+  opsPulse: OpsPulseInput | null;
   unreadSources?: string[];
 }
 
@@ -180,6 +201,11 @@ function ruleLlmOutage(i: PainInputs): PainEntry | null {
       calls_total: totalCalls,
       calls_ok: totalOk,
       last_success_at: l.last_success_at ?? null,
+      // From ops-pulse when available: the ledger's own counter is layer-wide,
+      // while this is the worst single provider. Enriching rather than adding a
+      // second LLM entry keeps one condition to one row.
+      worst_provider_streak: i.opsPulse?.llm?.worst_failure_streak ?? null,
+      providers_down: (i.opsPulse?.llm?.providers_down ?? []).join(", ") || null,
     },
     first_observed: null,
     still_true: true,
@@ -424,7 +450,82 @@ function ruleBlockedItems(i: PainInputs): PainEntry | null {
   };
 }
 
+/**
+ * No outreach has EVER been recorded.
+ *
+ * Scored as a step function on a categorical fact, not an adjective: the total
+ * absence of a log is worse than any known gap, because it means the one
+ * activity that produces revenue has never once been recorded. A known-old date
+ * at least tells you when to count from. The radar's Hold ring already settled
+ * the diagnosis — "zero emails sent is an effort problem, not a tooling
+ * problem" — so this exists to keep the number in front of the ranking.
+ */
+function ruleNoOutreach(i: PainInputs): PainEntry | null {
+  const o = i.opsPulse?.outreach;
+  if (!o) return null;
+  const sends = Number(o.total_sends || 0);
+  if (sends > 0 && (o.days_since_outreach ?? 0) <= 14) return null;
+
+  const never = o.log_exists === false || sends === 0;
+  const severity = never ? 95 : clamp(60 + (o.days_since_outreach ?? 0));
+  return {
+    id: never ? "outreach-never-sent" : "outreach-stalled",
+    source: "revenue",
+    severity,
+    statement: never
+      ? "No outreach send has ever been recorded — the activity that produces revenue has no log at all."
+      : `No outreach sent in ${o.days_since_outreach} days.`,
+    evidence: {
+      log_exists: o.log_exists ?? null,
+      total_sends: sends,
+      sends_7d: o.sends_7d ?? null,
+      days_since_outreach: o.days_since_outreach ?? null,
+    },
+    first_observed: null,
+    still_true: true,
+  };
+}
+
+/** Zero paying customers. Categorical: zero is not a small number, it is a different state. */
+function ruleNoPayingCustomers(i: PainInputs): PainEntry | null {
+  const n = i.opsPulse?.paying_software_customers;
+  if (n === undefined || n === null || n > 0) return null;
+  return {
+    id: "no-paying-customers",
+    source: "revenue",
+    severity: 90,
+    statement: "Zero paying software customers. Every other number on this page is a cost until that changes.",
+    evidence: { paying_software_customers: 0 },
+    first_observed: null,
+    still_true: true,
+  };
+}
+
+/**
+ * The dead-man switch is not armed.
+ *
+ * This compounds the fleet composite rather than duplicating it: the switch is
+ * the one mechanism designed to catch precisely the "green heartbeats, zero
+ * output" condition, so its absence is why that condition ran undetected.
+ */
+function ruleDeadmanNotArmed(i: PainInputs): PainEntry | null {
+  const d = i.opsPulse?.fleet_deadman;
+  if (!d || d.armed !== false) return null;
+  return {
+    id: "deadman-not-armed",
+    source: "revenue",
+    severity: 72,
+    statement: "The dead-man switch is not armed, so a silent fleet outage has nothing watching for it.",
+    evidence: { armed: false, note: (d.note ?? "").slice(0, 140) || null },
+    first_observed: null,
+    still_true: true,
+  };
+}
+
 const RULES = [
+  ruleNoOutreach,
+  ruleNoPayingCustomers,
+  ruleDeadmanNotArmed,
   ruleLlmOutage,
   ruleFleetTheatre,
   ruleWorkRegisterStale,
