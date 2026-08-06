@@ -473,6 +473,13 @@ export default async function DashboardPage() {
           </a>{" "}
           ·{" "}
           <a
+            href="/dashboard/marque"
+            className="text-emerald-400 hover:text-emerald-300 underline"
+          >
+            marque ops
+          </a>{" "}
+          ·{" "}
+          <a
             href="/dashboard/system"
             className="text-emerald-400 hover:text-emerald-300 underline"
           >
