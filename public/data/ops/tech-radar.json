@@ -1,10 +1,10 @@
 {
   "schema": 2,
   "title": "Day14 Tech Radar",
-  "purpose": "Delta baseline for the weekly tech scan. Anything listed here is SETTLED — the scan must not re-report it as new. Mirrored from the vault note 'Tech Radar.md'; the vault note is the human source of truth, this file is the machine-readable copy a headless cloud session can fetch without the device bridge.",
-  "schema_2_notes": "Schema 2 is additive only — every ring item still carries `item`, so any reader that matches on names is unaffected. New optional per-item fields: `slug` (stable id), `capability` (the vault capability note behind it), `next_action` (the one concrete step that would advance it), `effort`, `blocked_by`, and `in_production_since` (null = not running; absent = nobody has verified). `in_production_since` is what rule 1 is checked against, so an Adopt entry without it is flagged rather than trusted. `blocked_by` means the next_action CANNOT be started yet because it waits on something else — it is not a restatement of the next action, and setting it wrongly buries cheap work at the bottom of the queue. Enforced in src/lib/tech-radar.ts and surfaced at /dashboard/ai.",
+  "purpose": "Delta baseline for the weekly tech scan. Anything listed here is SETTLED \u2014 the scan must not re-report it as new. Mirrored from the vault note 'Tech Radar.md'; the vault note is the human source of truth, this file is the machine-readable copy a headless cloud session can fetch without the device bridge.",
+  "schema_2_notes": "Schema 2 is additive only \u2014 every ring item still carries `item`, so any reader that matches on names is unaffected. New optional per-item fields: `slug` (stable id), `capability` (the vault capability note behind it), `next_action` (the one concrete step that would advance it), `effort`, `blocked_by`, and `in_production_since` (null = not running; absent = nobody has verified). `in_production_since` is what rule 1 is checked against, so an Adopt entry without it is flagged rather than trusted. `blocked_by` means the next_action CANNOT be started yet because it waits on something else \u2014 it is not a restatement of the next action, and setting it wrongly buries cheap work at the bottom of the queue. Enforced in src/lib/tech-radar.ts and surfaced at /dashboard/ai.",
   "raw_url": "https://raw.githubusercontent.com/jacksbot147-code/day14-studio/feat/cinematic-rebuild-2026-06/public/data/ops/tech-radar.json",
-  "updated": "2026-07-29",
+  "updated": "2026-08-06",
   "rules_for_changing_a_ring": [
     "An item moves to Adopt only after it has run in production for a full week without intervention.",
     "An item in Hold requires NEW EVIDENCE to move, not a new opinion. Cite the evidence.",
@@ -18,7 +18,7 @@
         "slug": "healthchecks-io-dead-man-s-switch",
         "since": "2026-07-27",
         "why": "External alarm that fires on silence; the only design that survives the mini being the thing that died.",
-        "status": "Built 2026-07-27, NOT armed — awaiting two Jack taps.",
+        "status": "Built 2026-07-27, NOT armed \u2014 awaiting two Jack taps.",
         "capability": "Reliability & Fleet Health",
         "next_action": "Create the check at healthchecks.io and paste its ping URL into the fleet-deadman env var. Two taps, then it is real.",
         "effort": "minutes",
@@ -29,7 +29,7 @@
         "slug": "cloudflare-ai-gateway-spend-limits-dynamic-route-fallback",
         "since": "2026-07-27",
         "why": "Dollar-denominated budgets, free, auto-downgrade instead of hard stop. Caveats: best-effort cost estimation, limit-hit notification still in development.",
-        "status": "Decided, not wired — the LLM layer still calls providers directly.",
+        "status": "Decided, not wired \u2014 the LLM layer still calls providers directly.",
         "capability": "LLM Cost & Routing",
         "next_action": "Point the patched LLM layer's base URL at the gateway and set the dollar cap. Verify one call lands in the gateway's log before trusting the cap.",
         "effort": "hours",
@@ -40,7 +40,7 @@
         "slug": "official-ads-mcp-servers-meta-google-tiktok",
         "since": "2026-07-27",
         "why": "Makes Marque operationally real. Meta entities land paused by default, which satisfies the no-money-without-a-Jack-tap guardrail for free.",
-        "status": "Evaluated only — no account is connected.",
+        "status": "Evaluated only \u2014 no account is connected.",
         "capability": "Ads & Creative Pipeline",
         "next_action": "Connect Google first (read-only by design, so it cannot spend) and confirm one real read before touching Meta or TikTok.",
         "effort": "hours",
@@ -51,7 +51,7 @@
         "slug": "stripe-payment-links",
         "since": "2026-07-27",
         "why": "No-code, ~2 min, no premium, supports subscriptions and Tax. The block is almost certainly an account restriction, not code.",
-        "status": "BLOCKED — zero working checkout links across 12 SKUs since June.",
+        "status": "BLOCKED \u2014 zero working checkout links across 12 SKUs since June.",
         "capability": "Commerce & Monetization",
         "next_action": "Open the Stripe dashboard and look for an account restriction notice. Do not write more checkout code until that question is answered.",
         "effort": "minutes",
@@ -75,7 +75,7 @@
         "slug": "anthropic-prompt-caching-batch-api",
         "since": "2026-07-27",
         "why": "~0.1x cached reads, flat ~50% batch.",
-        "status": "Wired but INERT — the stable preamble is ~300 tokens, below the 2048-token minimum, so no cache can ever hit.",
+        "status": "Wired but INERT \u2014 the stable preamble is ~300 tokens, below the 2048-token minimum, so no cache can ever hit.",
         "capability": "LLM Cost & Routing",
         "next_action": "Grow the stable agent prefix past 2048 tokens, then re-measure cache reads in the ledger. Until the prefix grows this is a no-op, not a saving.",
         "effort": "hours",
@@ -85,7 +85,7 @@
         "item": "Scoped agent memory (mem0 / Letta pattern)",
         "slug": "scoped-agent-memory-mem0-letta-pattern",
         "since": "2026-07-27",
-        "why": "agent_id / run_id / org_id composed at retrieval. Reported gains cluster on temporal (+29.6) and multi-hop (+23.1) reasoning — the 'did we already do this' faculty.",
+        "why": "agent_id / run_id / org_id composed at retrieval. Reported gains cluster on temporal (+29.6) and multi-hop (+23.1) reasoning \u2014 the 'did we already do this' faculty.",
         "status": "Researched, not built.",
         "capability": "Agent Memory & Loop Gating",
         "next_action": "Build agent_id/run_id/org_id scoping at retrieval time. This is the direct fix for the pathology that produced 253 briefs in 10 days.",
@@ -97,11 +97,12 @@
         "slug": "trace-to-eval-loop-gating-braintrust-pattern",
         "since": "2026-07-27",
         "why": "Score one thing: did this run cause a state change outside its own log directory? Auto-pause loops that score zero.",
-        "status": "Shipped 2026-07-27 to scripts/lib/loop-gate.mjs; selftests passing; 7 loops seeded.",
+        "status": "Shipped 2026-07-27 with passing selftests, but NOT running: no loop script imports it and it has recorded 0 runs. The 7 configured loops have no local scripts \u2014 they execute as headless cloud tasks a local Node gate cannot reach.",
         "capability": "Agent Memory & Loop Gating",
-        "next_action": "Leave it running and do not touch it. The Adopt clock is on the card; rule 1's production week is the only thing between it and the Adopt ring.",
-        "effort": "minutes",
-        "in_production_since": "2026-07-27"
+        "next_action": "Decide where the verdict can actually live. Either publish it on the raw-URL path ops-pulse already uses so a headless scan can read it, or retarget the gate at loops that genuinely run locally. Wiring it into more local scripts does not help \u2014 there are none for 5 of the 7 loops.",
+        "effort": "days",
+        "in_production_since": null,
+        "blocked_by": "The loops it names run as cloud scheduled tasks with no access to this Mac; a local gate cannot gate them."
       }
     ],
     "assess": [
@@ -111,7 +112,7 @@
         "since": "2026-07-27",
         "why": "Breaking: handshake removed, Mcp-Session-Id gone, Tasks API demoted, error -32002 to -32602, JSON Schema 2020-12. The spec date has now passed.",
         "capability": "Agent Memory & Loop Gating",
-        "next_action": "Audit scripts/mcp-server.mjs against the five breaking changes. This is dated work, not optional reading — the spec date is behind us.",
+        "next_action": "Audit scripts/mcp-server.mjs against the five breaking changes. This is dated work, not optional reading \u2014 the spec date is behind us.",
         "effort": "hours",
         "in_production_since": null
       },
@@ -154,7 +155,7 @@
         "capability": "Lead Capture & Voice",
         "next_action": "Nothing until there is a paying voice customer whose margin is being squeezed.",
         "effort": "weeks",
-        "blocked_by": "No voice customers — the margin play has no margin to protect yet.",
+        "blocked_by": "No voice customers \u2014 the margin play has no margin to protect yet.",
         "in_production_since": null
       },
       {
@@ -250,8 +251,15 @@
     },
     {
       "date": "2026-07-29",
-      "note": "Schema 2. Added stable slugs, capability links, next_action/effort/blocked_by, and in_production_since so rule 1 is checkable instead of assumed. No ring changed. Recording the first honest reading: all four Adopt entries have in_production_since null — decided or built, none running — so the Adopt ring is currently empty in substance. Surfaced at /dashboard/ai.",
+      "note": "Schema 2. Added stable slugs, capability links, next_action/effort/blocked_by, and in_production_since so rule 1 is checkable instead of assumed. No ring changed. Recording the first honest reading: all four Adopt entries have in_production_since null \u2014 decided or built, none running \u2014 so the Adopt ring is currently empty in substance. Surfaced at /dashboard/ai.",
       "actor": "cowork session via dashboard build"
+    },
+    {
+      "date": "2026-08-06",
+      "item": "Trace-to-eval loop gating (Braintrust pattern)",
+      "note": "Correction, not a ring move: in_production_since 2026-07-27 -> null.",
+      "evidence": "The claim was never true. .loop-gate-state.json does not exist, so the gate has recorded zero runs; the only importer of lib/loop-gate.mjs is its own CLI wrapper (blackboard.mjs defines an unrelated openRun); and 5 of the 7 configured loops have no local script at all. The claim had accrued 10 days toward Adopt and passed its 2026-08-03 eligibility date. Found by public/data/ops/pain-index.json, rule radar-production-claim-unevidenced.",
+      "actor": "cowork session \u2014 pain-index finding"
     }
   ]
 }

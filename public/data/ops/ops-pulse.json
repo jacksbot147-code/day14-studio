@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "_purpose": "Day14 business pulse. Published for headless scheduled agents that cannot read the Mac. The weekly scan ranks these numbers ABOVE every research finding.",
+  "generated_at": "2026-08-06T21:10:54.297Z",
+  "paying_software_customers": 0,
+  "outreach": {
+    "log_exists": false,
+    "total_sends": 0,
+    "last_outreach_sent_at": null,
+    "sends_7d": 0,
+    "days_since_outreach": null
+  },
+  "stripe": {
+    "key_present": true,
+    "checkouts_7d": null,
+    "completed_7d": null,
+    "note": "stripe error: TypeError: fetch failed"
+  },
+  "llm": {
+    "last_success_at": null,
+    "days_since_llm_success": null,
+    "consecutive_failures": 267,
+    "est_spend_today_usd": 0,
+    "providers_down": [
+      "gemini",
+      "anthropic"
+    ],
+    "all_providers_down": true,
+    "worst_failure_streak": 649
+  },
+  "fleet_deadman": {
+    "armed": false,
+    "last_check_at": null,
+    "last_severity": null,
+    "note": "DAY14_HEALTHCHECK_URL not set — the dead-man switch is not armed"
+  },
+  "loop_gate": {
+    "paused": [],
+    "oldest_pause_days": null,
+    "never_productive": []
+  },
+  "insights": {
+    "published_count": 1,
+    "last_published": "2026-07-27",
+    "days_since_published": 10
+  },
+  "ping_urls": {
+    "weekly": null,
+    "secwatch": null
+  },
+  "escalations": [
+    "CRITICAL: no outreach log exists. 14 drafts have sat unsent for over a month. Send one, then record it: node scripts/ops-pulse.mjs --log-send \"<domain>\" \"<sequence>\"",
+    "The dead-man switch is NOT armed. Until it is, a silent fleet outage recurs undetected.",
+    "All LLM providers down (worst streak 649). The daemon fleet is looping without accomplishing anything."
+  ]
+}

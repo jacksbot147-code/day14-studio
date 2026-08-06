@@ -1,18 +1,18 @@
 {
   "schema": 1,
-  "generated_at": "2026-07-31T02:40:59.686Z",
+  "generated_at": "2026-08-06T21:11:24.899Z",
   "severity_floor": 25,
-  "statement": "7 live pains, worst at severity 100: LLM layer has returned 92 consecutive failures across 3 day(s) and no successful call has ever been recorded.",
+  "statement": "6 live pains, worst at severity 100: LLM layer has returned 267 consecutive failures across 10 day(s) and no successful call has ever been recorded.",
   "entries": [
     {
       "id": "llm-layer-down",
       "source": "llm-layer",
       "severity": 100,
-      "statement": "LLM layer has returned 92 consecutive failures across 3 day(s) and no successful call has ever been recorded.",
+      "statement": "LLM layer has returned 267 consecutive failures across 10 day(s) and no successful call has ever been recorded.",
       "evidence": {
-        "consecutive_failures": 92,
-        "failing_days": 3,
-        "calls_total": 92,
+        "consecutive_failures": 267,
+        "failing_days": 10,
+        "calls_total": 267,
         "calls_ok": 0,
         "last_success_at": null
       },
@@ -22,14 +22,14 @@
     {
       "id": "fleet-running-producing-nothing",
       "source": "fleet",
-      "severity": 91,
-      "statement": "16 pollers are heartbeating and no work has been recorded in 35 days and every LLM call is failing — the health signals are green and the output is zero.",
+      "severity": 97,
+      "statement": "16 pollers are heartbeating and no work has been recorded in 41 days and every LLM call is failing — the health signals are green and the output is zero.",
       "evidence": {
         "fresh_pollers": 16,
         "total_pollers": 22,
-        "work_register_age_days": 35,
+        "work_register_age_days": 41,
         "work_register_entries": 85,
-        "llm_consecutive_failures": 92
+        "llm_consecutive_failures": 267
       },
       "first_observed": "2026-07-31T02:37:52.722Z",
       "still_true": true,
@@ -41,11 +41,11 @@
       "id": "pollers-stopped",
       "source": "fleet",
       "severity": 80,
-      "statement": "6 of 22 pollers have stopped heartbeating; the oldest is 1208h silent.",
+      "statement": "6 of 22 pollers have stopped heartbeating; the oldest is 1370h silent.",
       "evidence": {
         "stale_count": 6,
         "total": 22,
-        "oldest_age_min": 72464,
+        "oldest_age_min": 82215,
         "names": "gmail-cs-triage, growth-narrator, lawn-care-gm-kennum-lawn-care, realty-scout-day14-realty, stripe-cs-loop, vercel-deploy-monitor"
       },
       "first_observed": "2026-07-31T02:37:52.722Z",
@@ -79,27 +79,13 @@
       "still_true": true
     },
     {
-      "id": "radar-production-claim-unevidenced",
-      "source": "radar",
-      "severity": 56,
-      "statement": "\"Trace-to-eval loop gating (Braintrust pattern)\" claims 4d in production since 2026-07-27, but its state file records 0 runs — the Adopt clock is counting on an unverified claim.",
-      "evidence": {
-        "item": "Trace-to-eval loop gating (Braintrust pattern)",
-        "in_production_since": "2026-07-27",
-        "claimed_days": 4,
-        "recorded_runs": 0
-      },
-      "first_observed": "2026-07-31T02:37:52.722Z",
-      "still_true": true
-    },
-    {
       "id": "radar-items-blocked",
       "source": "radar",
-      "severity": 39,
-      "statement": "4 radar item(s) are blocked on something outside their own next step.",
+      "severity": 45,
+      "statement": "5 radar item(s) are blocked on something outside their own next step.",
       "evidence": {
-        "blocked_count": 4,
-        "items": "LiteLLM self-hosted gateway; Pipecat self-hosted voice (13.7k stars, BSD-2); Semantic caching (GPTCache / gateway-native); Stripe MCP server"
+        "blocked_count": 5,
+        "items": "Trace-to-eval loop gating (Braintrust pattern); LiteLLM self-hosted gateway; Pipecat self-hosted voice (13.7k stars, BSD-2); Semantic caching (GPTCache / gateway-native); Stripe MCP server"
       },
       "first_observed": "2026-07-31T02:37:52.722Z",
       "still_true": true
