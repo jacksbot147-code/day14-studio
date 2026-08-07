@@ -241,6 +241,87 @@ export function survivalBy(
     .sort((x, y) => y.tried - x.tried || x.tag.localeCompare(y.tag));
 }
 
+/* --------------------------------------------------- the live field */
+
+export interface LiveFieldAssessment {
+  live: number;
+  distinctHooks: number;
+  distinctAngles: number;
+  /** True when every live variant tests a different hook AND a different angle. */
+  wellSpread: boolean;
+  /** Hooks running more than once concurrently, with their counts. */
+  duplicatedHooks: Array<{ hook: HookType; count: number }>;
+  duplicatedAngles: Array<{ angle: OfferAngle; count: number }>;
+  /** Live variants that failed review — these should not be running at all. */
+  liveButNotUsable: string[];
+  warnings: string[];
+}
+
+/**
+ * Is the live field actually a test?
+ *
+ * Four ads running the same hook teach you one thing, expensively. The whole
+ * argument for a small field is that each slot buys a different answer, so the
+ * field has to be chosen for SPREAD rather than for score — two high-scoring
+ * variants of one hook tell you nothing the first one didn't.
+ *
+ * This exists because a field can be well spread by accident of batch order and
+ * then quietly stop being so on the next swap, with nothing anywhere saying it
+ * changed.
+ */
+export function assessLiveField(variants: LibraryVariant[]): LiveFieldAssessment {
+  const live = variants.filter((v) => stateOf(v) === "live");
+
+  const count = <T extends string>(key: (v: LibraryVariant) => T) => {
+    const m = new Map<T, number>();
+    for (const v of live) m.set(key(v), (m.get(key(v)) ?? 0) + 1);
+    return m;
+  };
+  const hooks = count((v) => v.hook);
+  const angles = count((v) => v.angle);
+
+  const duplicatedHooks = [...hooks.entries()]
+    .filter(([, n]) => n > 1)
+    .map(([hook, count]) => ({ hook, count }))
+    .sort((a, b) => b.count - a.count);
+  const duplicatedAngles = [...angles.entries()]
+    .filter(([, n]) => n > 1)
+    .map(([angle, count]) => ({ angle, count }))
+    .sort((a, b) => b.count - a.count);
+
+  const liveButNotUsable = live
+    .filter((v) => v.reviewVerdict && v.reviewVerdict !== "usable")
+    .map((v) => v.id);
+
+  const warnings: string[] = [];
+  for (const d of duplicatedHooks) {
+    warnings.push(
+      `${d.count} live variants share the ${d.hook} hook — that slot is buying an answer you already have.`,
+    );
+  }
+  for (const d of duplicatedAngles) {
+    warnings.push(`${d.count} live variants share the ${d.angle} angle.`);
+  }
+  for (const id of liveButNotUsable) {
+    warnings.push(`${id} is live but did not pass review.`);
+  }
+  if (live.length === 0 && variants.length > 0) {
+    warnings.push("Nothing is live. A bench with no field is a library, not a test.");
+  }
+
+  return {
+    live: live.length,
+    distinctHooks: hooks.size,
+    distinctAngles: angles.size,
+    wellSpread:
+      live.length > 0 && hooks.size === live.length && angles.size === live.length,
+    duplicatedHooks,
+    duplicatedAngles,
+    liveButNotUsable,
+    warnings,
+  };
+}
+
 /* ------------------------------------------------------- the swap queue */
 
 export interface SwapSuggestion {

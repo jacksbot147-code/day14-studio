@@ -22,6 +22,7 @@ import {
   readLibrary,
   summarise,
   summariseSpend,
+  assessLiveField,
   buildBoard,
   survivalBy,
   buildSwapQueue,
@@ -57,6 +58,7 @@ export default async function MarqueDashboard() {
   const { variants, verdicts, productDirs } = await readLibrary();
   const totals = summarise(variants);
   const spend = summariseSpend(variants);
+  const field = assessLiveField(variants);
   const board = buildBoard(variants);
   const hookSurvival = survivalBy(variants, "hook");
   const swaps = buildSwapQueue(variants, verdicts);
@@ -177,6 +179,51 @@ export default async function MarqueDashboard() {
                 <span className="text-zinc-700">·</span> = never tried
               </p>
             </div>
+          )}
+        </Card>
+
+        {/* Is the live field a test, or four slots buying one answer? */}
+        <Card title="Live field">
+          {totals.generated === 0 ? (
+            <p className="text-sm text-zinc-400">Nothing live.</p>
+          ) : (
+            <>
+              <div className="flex items-baseline gap-4 mb-3">
+                <span className="text-2xl font-bold font-mono">{field.live}</span>
+                <span className="text-sm text-zinc-400">
+                  {field.distinctHooks} hook{field.distinctHooks === 1 ? "" : "s"} ·{" "}
+                  {field.distinctAngles} angle{field.distinctAngles === 1 ? "" : "s"}
+                </span>
+                <span
+                  className={`ml-auto text-xs uppercase tracking-wider ${
+                    field.wellSpread ? "text-emerald-400" : "text-amber-400"
+                  }`}
+                >
+                  {field.wellSpread ? "well spread" : "not a clean test"}
+                </span>
+              </div>
+              {field.warnings.length > 0 ? (
+                <ul className="space-y-1.5">
+                  {field.warnings.map((w) => (
+                    <li key={w} className="text-sm text-amber-400/90 flex gap-2">
+                      <span>⚠</span>
+                      <span>{w}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-zinc-400">
+                  Every live slot tests a different hook and a different angle,
+                  so each one buys an answer the others do not.
+                </p>
+              )}
+              <p className="text-xs text-zinc-600 mt-3">
+                The field is chosen for SPREAD, not for score. Two high-scoring
+                variants of the same hook teach you nothing the first one didn&rsquo;t
+                — and a field that is well spread today can stop being so on the
+                next swap with nothing saying it changed.
+              </p>
+            </>
           )}
         </Card>
 

@@ -11,6 +11,7 @@ import {
   buildSwapQueue,
   untriedPairs,
   summariseSpend,
+  assessLiveField,
   readLibrary,
   type LibraryVariant,
 } from "@/lib/marque-library";
@@ -453,5 +454,77 @@ describe("marque library — spend", () => {
   it("an empty library costs nothing and claims nothing", () => {
     const s = summariseSpend([]);
     expect(s).toMatchObject({ creditsRecorded: 0, unpriced: 0, creditsPerUsable: null });
+  });
+});
+
+describe("marque library — is the live field a test?", () => {
+  const v = (hook: string, angle: string, i: number, over: Record<string, unknown> = {}) => ({
+    ...lib(1)[0]!,
+    id: `v-${i}`,
+    hook: hook as never,
+    angle: angle as never,
+    live: true,
+    reviewVerdict: "usable" as const,
+    ...over,
+  });
+
+  it("calls a field well spread when every slot is a different bet", () => {
+    const f = assessLiveField([
+      v("problem-callout", "pain-relief", 1),
+      v("objection-kill", "risk-reversal", 2),
+      v("demo-in-hand", "time-save", 3),
+      v("price-anchor", "money-save", 4),
+    ]);
+    expect(f.wellSpread).toBe(true);
+    expect(f.warnings).toEqual([]);
+  });
+
+  it("flags four slots buying the same answer", () => {
+    const f = assessLiveField([
+      v("problem-callout", "pain-relief", 1),
+      v("problem-callout", "time-save", 2),
+      v("problem-callout", "status", 3),
+    ]);
+    expect(f.wellSpread).toBe(false);
+    expect(f.duplicatedHooks[0]).toEqual({ hook: "problem-callout", count: 3 });
+    expect(f.warnings.join(" ")).toMatch(/already have/);
+  });
+
+  it("flags a duplicated angle even when the hooks differ", () => {
+    const f = assessLiveField([
+      v("problem-callout", "status", 1),
+      v("curiosity-gap", "status", 2),
+    ]);
+    expect(f.wellSpread).toBe(false);
+    expect(f.duplicatedAngles[0]).toEqual({ angle: "status", count: 2 });
+  });
+
+  it("catches a variant that is live despite failing review", () => {
+    const f = assessLiveField([
+      v("problem-callout", "pain-relief", 1),
+      v("objection-kill", "risk-reversal", 2, { reviewVerdict: "miss" }),
+    ]);
+    expect(f.liveButNotUsable).toEqual(["v-2"]);
+    expect(f.warnings.join(" ")).toMatch(/did not pass review/);
+  });
+
+  it("ignores bench and retired variants entirely", () => {
+    const f = assessLiveField([
+      v("problem-callout", "pain-relief", 1),
+      v("problem-callout", "pain-relief", 2, { live: false }),
+      v("problem-callout", "pain-relief", 3, { retiredAt: "2026-08-07" }),
+    ]);
+    expect(f.live).toBe(1);
+    expect(f.wellSpread).toBe(true);
+  });
+
+  it("says so when a library has a bench but nothing running", () => {
+    const f = assessLiveField([v("problem-callout", "pain-relief", 1, { live: false })]);
+    expect(f.live).toBe(0);
+    expect(f.warnings.join(" ")).toMatch(/A bench with no field is a library/);
+  });
+
+  it("stays silent on a completely empty library", () => {
+    expect(assessLiveField([]).warnings).toEqual([]);
   });
 });
