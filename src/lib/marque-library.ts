@@ -139,6 +139,67 @@ export function buildBoard(variants: LibraryVariant[]): {
   };
 }
 
+/* ------------------------------------------------------------------ spend */
+
+export interface SpendSummary {
+  /** Credits recorded against variants. NOT a balance — see the note below. */
+  creditsRecorded: number;
+  /** Variants that cost credits but carry no recorded figure. */
+  unpriced: number;
+  /** Credits per usable variant, or null when nothing has been reviewed yet. */
+  creditsPerUsable: number | null;
+  byProduct: Array<{ product: string; credits: number; variants: number }>;
+  byVerdict: { usable: number; recut: number; miss: number; unreviewed: number };
+}
+
+/**
+ * What the pipeline has actually cost, from the library.
+ *
+ * Deliberately NOT a provider balance. The generator runs in Cowork where the
+ * Higgsfield MCP lives; this backend holds no Higgsfield credential and cannot
+ * query it. Rendering a remembered balance as if it were live would be exactly
+ * the stale-number-dressed-as-current problem that made ops-pulse report a
+ * hardcoded zero. So this reports what was SPENT, which the library does know,
+ * and says nothing about what remains.
+ *
+ * `creditsPerUsable` is the number that matters: spend divided by variants that
+ * survived review, not by variants generated. A pipeline is only as cheap as
+ * its hit rate.
+ */
+export function summariseSpend(variants: LibraryVariant[]): SpendSummary {
+  const byProduct = new Map<string, { credits: number; variants: number }>();
+  const byVerdict = { usable: 0, recut: 0, miss: 0, unreviewed: 0 };
+  let creditsRecorded = 0;
+  let unpriced = 0;
+
+  for (const v of variants) {
+    const c = typeof v.creditsSpent === "number" ? v.creditsSpent : null;
+    if (c === null) unpriced++;
+    else creditsRecorded += c;
+
+    const p = byProduct.get(v.product) ?? { credits: 0, variants: 0 };
+    p.credits += c ?? 0;
+    p.variants += 1;
+    byProduct.set(v.product, p);
+
+    if (v.reviewVerdict === "usable") byVerdict.usable++;
+    else if (v.reviewVerdict === "recut") byVerdict.recut++;
+    else if (v.reviewVerdict === "miss") byVerdict.miss++;
+    else byVerdict.unreviewed++;
+  }
+
+  return {
+    creditsRecorded,
+    unpriced,
+    creditsPerUsable:
+      byVerdict.usable > 0 ? Number((creditsRecorded / byVerdict.usable).toFixed(2)) : null,
+    byProduct: [...byProduct.entries()]
+      .map(([product, x]) => ({ product, ...x }))
+      .sort((a, b) => b.credits - a.credits || a.product.localeCompare(b.product)),
+    byVerdict,
+  };
+}
+
 /* ------------------------------------------------------- what is surviving */
 
 export interface TagSurvival {

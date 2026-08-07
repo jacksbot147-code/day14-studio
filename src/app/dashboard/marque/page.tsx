@@ -21,6 +21,7 @@ import { FATIGUE_RULES } from "@/lib/marque-taxonomy";
 import {
   readLibrary,
   summarise,
+  summariseSpend,
   buildBoard,
   survivalBy,
   buildSwapQueue,
@@ -55,6 +56,7 @@ const WEEKLY_LOOP = [
 export default async function MarqueDashboard() {
   const { variants, verdicts, productDirs } = await readLibrary();
   const totals = summarise(variants);
+  const spend = summariseSpend(variants);
   const board = buildBoard(variants);
   const hookSurvival = survivalBy(variants, "hook");
   const swaps = buildSwapQueue(variants, verdicts);
@@ -348,6 +350,75 @@ export default async function MarqueDashboard() {
                 </li>
               ))}
             </ul>
+          )}
+        </Card>
+
+        {/* What it has cost. Spend, not balance — see summariseSpend. */}
+        <Card title="Generation spend">
+          {totals.generated === 0 ? (
+            <p className="text-sm text-zinc-400">Nothing generated yet.</p>
+          ) : (
+            <>
+              <div className="grid grid-cols-3 gap-3 mb-4">
+                <div>
+                  <div className="text-2xl font-bold font-mono">{spend.creditsRecorded}</div>
+                  <div className="text-xs text-zinc-500 uppercase tracking-wider">credits spent</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold font-mono text-emerald-400">
+                    {spend.creditsPerUsable ?? "—"}
+                  </div>
+                  <div className="text-xs text-zinc-500 uppercase tracking-wider">per usable</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold font-mono">
+                    {spend.byVerdict.usable}
+                    <span className="text-zinc-600 text-base">/{totals.generated}</span>
+                  </div>
+                  <div className="text-xs text-zinc-500 uppercase tracking-wider">hit rate</div>
+                </div>
+              </div>
+              <ul className="space-y-1 text-sm">
+                {spend.byProduct.map((p) => (
+                  <li key={p.product} className="flex justify-between">
+                    <span className="font-mono text-zinc-300 text-xs">{p.product}</span>
+                    <span className="font-mono text-xs text-zinc-400">
+                      {p.credits} credits · {p.variants} variants
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <p className="text-xs text-zinc-600 mt-3">
+                <span className="text-zinc-400">Cost per USABLE variant</span> is the
+                number that matters — spend divided by what survived review, not
+                by what was generated. A pipeline is only as cheap as its hit
+                rate.
+                {spend.byVerdict.unreviewed > 0 && (
+                  <>
+                    {" "}
+                    <span className="text-amber-400/90">
+                      {spend.byVerdict.unreviewed} variant(s) unreviewed — the hit
+                      rate is optimistic until they are looked at.
+                    </span>
+                  </>
+                )}
+                {spend.unpriced > 0 && (
+                  <>
+                    {" "}
+                    <span className="text-amber-400/90">
+                      {spend.unpriced} carry no recorded cost, so the total is a
+                      floor, not a figure.
+                    </span>
+                  </>
+                )}
+              </p>
+              <p className="text-xs text-zinc-600 mt-2">
+                This is spend, not balance. The generator runs where the
+                Higgsfield credential lives; this backend has none and cannot
+                query a balance. Showing a remembered one as current is how a
+                dashboard starts lying.
+              </p>
+            </>
           )}
         </Card>
 

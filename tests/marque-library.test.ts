@@ -10,6 +10,7 @@ import {
   survivalBy,
   buildSwapQueue,
   untriedPairs,
+  summariseSpend,
   readLibrary,
   type LibraryVariant,
 } from "@/lib/marque-library";
@@ -399,5 +400,58 @@ describe("marque library — hostile data", () => {
     }
     expect(new Set(seen).size, `merge varied by write order: ${JSON.stringify(seen)}`).toBe(1);
     expect(seen[0]).toBe("2026-12-31");
+  });
+});
+
+describe("marque library — spend", () => {
+  const priced = (verdict: "usable" | "recut" | "miss" | undefined, credits: number | undefined, i: number) => ({
+    ...lib(1)[0]!,
+    id: `v-${i}`,
+    reviewVerdict: verdict,
+    creditsSpent: credits,
+  });
+
+  it("totals recorded credits", () => {
+    const s = summariseSpend([priced("usable", 2, 1), priced("miss", 2, 2)]);
+    expect(s.creditsRecorded).toBe(4);
+  });
+
+  it("divides by USABLE variants, not by generated ones", () => {
+    // 4 generated, 8 credits, but only 2 survived review: 4 per usable, not 2.
+    const s = summariseSpend([
+      priced("usable", 2, 1), priced("usable", 2, 2),
+      priced("miss", 2, 3), priced("recut", 2, 4),
+    ]);
+    expect(s.creditsRecorded).toBe(8);
+    expect(s.creditsPerUsable).toBe(4);
+  });
+
+  it("returns null per-usable rather than dividing by zero", () => {
+    const s = summariseSpend([priced("miss", 2, 1)]);
+    expect(s.creditsPerUsable).toBeNull();
+  });
+
+  it("counts unreviewed variants so the hit rate is not read as final", () => {
+    const s = summariseSpend([priced("usable", 2, 1), priced(undefined, 2, 2)]);
+    expect(s.byVerdict.unreviewed).toBe(1);
+  });
+
+  it("flags variants with no recorded cost — the total is a floor, not a figure", () => {
+    const s = summariseSpend([priced("usable", 2, 1), priced("usable", undefined, 2)]);
+    expect(s.unpriced).toBe(1);
+    expect(s.creditsRecorded).toBe(2);
+  });
+
+  it("breaks spend down by product, dearest first", () => {
+    const rows = [
+      { ...priced("usable", 2, 1), product: "cheap" },
+      { ...priced("usable", 10, 2), product: "dear" },
+    ];
+    expect(summariseSpend(rows).byProduct[0]!.product).toBe("dear");
+  });
+
+  it("an empty library costs nothing and claims nothing", () => {
+    const s = summariseSpend([]);
+    expect(s).toMatchObject({ creditsRecorded: 0, unpriced: 0, creditsPerUsable: null });
   });
 });
