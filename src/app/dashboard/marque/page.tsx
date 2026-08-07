@@ -178,6 +178,67 @@ export default async function MarqueDashboard() {
           )}
         </Card>
 
+        {/* The actual creative. A pipeline you cannot look at is a spreadsheet. */}
+        <Card title={`Creative (${variants.filter((v) => v.assetRef).length} rendered)`}>
+          {variants.filter((v) => v.assetRef).length === 0 ? (
+            <p className="text-sm text-zinc-400">
+              No rendered assets yet. Variants appear here once a batch carries{" "}
+              <span className="font-mono text-zinc-300">assetRef</span>.
+            </p>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {variants
+                  .filter((v) => v.assetRef)
+                  .map((v) => (
+                    <figure key={v.id} className="m-0">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={v.assetRef!}
+                        alt={`${v.hook} / ${v.angle} — ${v.concept}`}
+                        loading="lazy"
+                        className={`w-full rounded border ${
+                          v.reviewVerdict === "miss"
+                            ? "border-rose-900/70 opacity-40"
+                            : v.reviewVerdict === "recut"
+                              ? "border-amber-900/70 opacity-70"
+                              : "border-zinc-700"
+                        }`}
+                      />
+                      <figcaption className="mt-1.5 text-[11px] leading-snug">
+                        <span className="font-mono text-zinc-400">
+                          {v.hook}/{v.angle}
+                        </span>
+                        {v.reviewVerdict && (
+                          <span
+                            className={
+                              v.reviewVerdict === "usable"
+                                ? " text-emerald-400"
+                                : v.reviewVerdict === "recut"
+                                  ? " text-amber-400"
+                                  : " text-rose-400"
+                            }
+                          >
+                            {" "}
+                            · {v.reviewVerdict}
+                          </span>
+                        )}
+                        {v.reviewNote && (
+                          <span className="block text-zinc-500 mt-0.5">{v.reviewNote}</span>
+                        )}
+                      </figcaption>
+                    </figure>
+                  ))}
+              </div>
+              <p className="text-xs text-zinc-600 mt-3">
+                Generated, not shipped. A batch that reviews 100% usable has not
+                been reviewed — the misses are why the bench is deeper than the
+                field.
+              </p>
+            </>
+          )}
+        </Card>
+
         {/* Needs a swap. */}
         <Card title={`Needs a swap (${swaps.length})`}>
           {swaps.length === 0 ? (

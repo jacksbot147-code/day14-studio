@@ -275,6 +275,14 @@ describe("marque library — reading it off disk", () => {
     expect(r.unreadable).toContain(path.join("broken", "batch-bad.json"));
   });
 
+  it("ignores housekeeping folders — _to_delete is not a product", async () => {
+    await writeProduct("real-product", lib(4, "real-product"));
+    await fs.mkdir(path.join(ROOT, "_to_delete", "old"), { recursive: true });
+    await fs.mkdir(path.join(ROOT, ".hidden"), { recursive: true });
+    const r = await readLibrary(ROOT);
+    expect(r.productDirs).toEqual(["real-product"]);
+  });
+
   it("lists a product folder that has no readable batch, so an empty one is visible", async () => {
     await fs.mkdir(path.join(ROOT, "no-batches"), { recursive: true });
     const r = await readLibrary(ROOT);

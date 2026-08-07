@@ -39,6 +39,17 @@ export interface LibraryVariant extends VariantTag {
   retiredBy?: string;
   /** Optional model score, used only to order a launch queue. */
   viralityScore?: number;
+  /**
+   * Human review after generation. `usable` may run; `recut` means the idea is
+   * fine and the file is not; `miss` means the concept itself was wrong. A
+   * generated batch is not a shipped batch — recording the misses is the point,
+   * because a pipeline that reports 100% usable is not being reviewed.
+   */
+  reviewVerdict?: "usable" | "recut" | "miss";
+  reviewNote?: string;
+  /** e.g. "higgsfield:marketing_studio_image". */
+  generatedBy?: string;
+  creditsSpent?: number;
 }
 
 export type VariantState = "live" | "bench" | "retired";
@@ -310,6 +321,11 @@ export async function readLibrary(root = libraryDir()): Promise<LibraryRead> {
   const unreadable: string[] = [];
 
   for (const slug of await fs.readdir(root).catch(() => [] as string[])) {
+    // Skip housekeeping folders. `_to_delete`, `_archive`, `.DS_Store` and the
+    // like are not products, and listing them as products with zero variants
+    // reads as "a product we generated nothing for" — a false alarm on the one
+    // surface that is supposed to say what is actually happening.
+    if (slug.startsWith("_") || slug.startsWith(".")) continue;
     const dir = path.join(root, slug);
     let entries: string[];
     try {
