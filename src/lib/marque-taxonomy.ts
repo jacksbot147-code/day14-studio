@@ -48,6 +48,31 @@ export const HOOK_TYPES = [
 ] as const;
 export type HookType = (typeof HOOK_TYPES)[number];
 
+/**
+ * Hooks that CANNOT be run honestly by a business without customers yet.
+ *
+ * Found while generating Marque's first real batch for Day14's own offer, which
+ * has zero customers: `social-proof` needs buyers to show, `ugc-testimonial`
+ * needs a customer to have said something, and `founder-direct` puts a real,
+ * identifiable person on camera — a generated stand-in for a named founder is a
+ * misrepresentation, not a creative choice.
+ *
+ * This is a real constraint on the published tier promise: a brand-new business
+ * can honestly reach only 7 of the 10 hooks, so "12 variants a month" has to be
+ * met by pairing those 7 against more angles rather than by quietly fabricating
+ * proof. Say that to a client rather than shipping an invented testimonial.
+ */
+export const HOOKS_REQUIRING_EVIDENCE: readonly HookType[] = [
+  "social-proof",
+  "ugc-testimonial",
+  "founder-direct",
+] as const;
+
+/** Hooks a business with no customers and no on-camera founder can still run. */
+export function hooksAvailableWithoutProof(): HookType[] {
+  return HOOK_TYPES.filter((h) => !HOOKS_REQUIRING_EVIDENCE.includes(h));
+}
+
 export const HOOK_BRIEFS: Record<HookType, string> = {
   "problem-callout":
     "Open on the pain, named specifically, before the product exists. 'Your garage floor is the reason you park outside.'",

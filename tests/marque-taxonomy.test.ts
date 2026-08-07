@@ -4,6 +4,8 @@ import {
   HOOK_TYPES,
   OFFER_ANGLES,
   FORMATS,
+  HOOKS_REQUIRING_EVIDENCE,
+  hooksAvailableWithoutProof,
   CHANNELS,
   ASPECT_RATIOS,
   CHANNEL_SPECS,
@@ -361,5 +363,34 @@ describe("marque taxonomy — consistency with the published offer", () => {
     expect(dailyAtLowestFloor).toBeGreaterThanOrEqual(
       5 * 5, // 5x a $5 target CPA — the cheapest upstream event worth optimising for
     );
+  });
+});
+
+describe("marque taxonomy — hooks that need proof to be honest", () => {
+  it("names the three that a business with no customers cannot run", () => {
+    expect([...HOOKS_REQUIRING_EVIDENCE].sort()).toEqual(
+      ["founder-direct", "social-proof", "ugc-testimonial"].sort(),
+    );
+  });
+
+  it("leaves seven hooks a brand-new business can still use honestly", () => {
+    const usable = hooksAvailableWithoutProof();
+    expect(usable).toHaveLength(HOOK_TYPES.length - HOOKS_REQUIRING_EVIDENCE.length);
+    for (const h of HOOKS_REQUIRING_EVIDENCE) expect(usable).not.toContain(h);
+  });
+
+  it("can still build a full Starter-sized batch from the honest seven", () => {
+    // The published promise is 12 a month. Seven hooks against ten angles is a
+    // space of 70, so the tier is reachable WITHOUT fabricating proof — which
+    // is the whole point of recording the constraint instead of ignoring it.
+    const m = buildMatrix({
+      product: "day14-spark",
+      count: 12,
+      channel: "meta",
+      hooks: hooksAvailableWithoutProof(),
+    });
+    expect(m).toHaveLength(12);
+    expect(new Set(m.map((v) => `${v.hook}|${v.angle}`)).size).toBe(12);
+    for (const v of m) expect(HOOKS_REQUIRING_EVIDENCE).not.toContain(v.hook);
   });
 });
