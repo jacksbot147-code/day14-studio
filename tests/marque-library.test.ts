@@ -12,6 +12,7 @@ import {
   untriedPairs,
   summariseSpend,
   assessLiveField,
+  detectFieldWipe,
   readLibrary,
   type LibraryVariant,
 } from "@/lib/marque-library";
@@ -526,5 +527,50 @@ describe("marque library — is the live field a test?", () => {
 
   it("stays silent on a completely empty library", () => {
     expect(assessLiveField([]).warnings).toEqual([]);
+  });
+});
+
+describe("marque library — whole-field wipe guard", () => {
+  const live = (hook: string, i: number, over: Record<string, unknown> = {}) => ({
+    ...lib(1)[0]!, id: `v-${i}`, hook: hook as never, live: true, ...over,
+  });
+  const verdict = (id: string, action: "retire" | "refresh" | "keep") =>
+    ({ variantId: id, action, fired: [], reasons: [] }) as never;
+
+  const FIELD = [live("problem-callout", 1), live("objection-kill", 2), live("demo-in-hand", 3), live("price-anchor", 4)];
+
+  it("fires when every live variant comes back retire", () => {
+    const w = detectFieldWipe(FIELD, FIELD.map((v) => verdict(v.id, "retire")));
+    expect(w).not.toBeNull();
+    expect(w!.retiring).toBe(4);
+    expect(w!.message).toMatch(/almost\s+never real/);
+    // The units mistake that caused this must be named, not just hinted at.
+    expect(w!.checks.join(" ")).toMatch(/FRACTIONS/);
+  });
+
+  it("stays silent when even one variant survives", () => {
+    const v = FIELD.map((x, i) => verdict(x.id, i === 0 ? "keep" : "retire"));
+    expect(detectFieldWipe(FIELD, v)).toBeNull();
+  });
+
+  it("stays silent when the report only covers part of the field", () => {
+    // A partial export is not evidence the whole field died.
+    const v = FIELD.slice(0, 2).map((x) => verdict(x.id, "retire"));
+    expect(detectFieldWipe(FIELD, v)).toBeNull();
+  });
+
+  it("does not fire on a field too small to infer anything from", () => {
+    const small = [live("problem-callout", 1), live("objection-kill", 2)];
+    expect(detectFieldWipe(small, small.map((v) => verdict(v.id, "retire")))).toBeNull();
+  });
+
+  it("ignores verdicts for variants that are not live", () => {
+    const withBench = [...FIELD, { ...lib(1)[0]!, id: "bench-1", live: false }];
+    const v = [...FIELD.map((x) => verdict(x.id, "retire")), verdict("bench-1", "keep")];
+    expect(detectFieldWipe(withBench, v)).not.toBeNull();
+  });
+
+  it("refresh is not retirement — a field being re-cut is not a wipe", () => {
+    expect(detectFieldWipe(FIELD, FIELD.map((v) => verdict(v.id, "refresh")))).toBeNull();
   });
 });

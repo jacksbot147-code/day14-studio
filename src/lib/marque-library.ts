@@ -341,6 +341,54 @@ export interface SwapSuggestion {
  * bet that just lost, which is how "we refreshed the creative" becomes a
  * treadmill instead of a test.
  */
+export interface WipeWarning {
+  retiring: number;
+  live: number;
+  message: string;
+  checks: string[];
+}
+
+/**
+ * Refuse to let a whole-field wipe pass as a normal week.
+ *
+ * Found in the first live fatigue drill: a hand-written history file used the
+ * percentages the ad platform DISPLAYS (1.02) where the rules expect fractions
+ * (0.0102). Every real CTR then looked like a 99% collapse and all four live
+ * variants were marked retire — including a demonstrably healthy one. Acted on,
+ * that empties a client's ad account on our advice, and the report gives no hint
+ * anything is wrong: four confident retirements read exactly like four dead ads.
+ *
+ * A whole live field does not fatigue in the same week. When it appears to, the
+ * input is far likelier to be wrong than the ads, so say so BEFORE the list.
+ */
+export function detectFieldWipe(
+  variants: LibraryVariant[],
+  verdicts: FatigueVerdict[],
+): WipeWarning | null {
+  const live = variants.filter((v) => stateOf(v) === "live");
+  if (live.length < 3) return null; // too small a field to infer anything
+
+  const liveIds = new Set(live.map((v) => v.id));
+  const judged = verdicts.filter((v) => liveIds.has(v.variantId));
+  if (judged.length < live.length) return null; // partial report, not a wipe
+
+  const retiring = judged.filter((v) => v.action === "retire");
+  if (retiring.length !== judged.length) return null;
+
+  return {
+    retiring: retiring.length,
+    live: live.length,
+    message:
+      `Every live variant (${retiring.length}) came back "retire". That is almost ` +
+      "never real — check the input before acting on any of it.",
+    checks: [
+      "History units: ctrBest7d and holdRate3sLaunch are FRACTIONS (0.0102 = 1.02%), not the percentages the platform shows.",
+      "The CTR column: a bare 0.98 meaning 0.98% must not be read as 98%.",
+      "The date range: a partial week of data understates every rate at once.",
+    ],
+  };
+}
+
 export function buildSwapQueue(
   variants: LibraryVariant[],
   verdicts: FatigueVerdict[],

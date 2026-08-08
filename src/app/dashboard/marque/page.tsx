@@ -23,6 +23,7 @@ import {
   summarise,
   summariseSpend,
   assessLiveField,
+  detectFieldWipe,
   buildBoard,
   survivalBy,
   buildSwapQueue,
@@ -59,6 +60,7 @@ export default async function MarqueDashboard() {
   const totals = summarise(variants);
   const spend = summariseSpend(variants);
   const field = assessLiveField(variants);
+  const wipe = detectFieldWipe(variants, verdicts);
   const board = buildBoard(variants);
   const hookSurvival = survivalBy(variants, "hook");
   const swaps = buildSwapQueue(variants, verdicts);
@@ -181,6 +183,28 @@ export default async function MarqueDashboard() {
             </div>
           )}
         </Card>
+
+        {/* A whole-field wipe is a data problem until proven otherwise. */}
+        {wipe && (
+          <div className="md:col-span-2 rounded border border-rose-800 bg-rose-950/40 p-4">
+            <p className="text-sm font-semibold text-rose-300 uppercase tracking-wider mb-1">
+              Stop — check the input before acting
+            </p>
+            <p className="text-sm text-rose-100/90">{wipe.message}</p>
+            <ul className="mt-2 space-y-1">
+              {wipe.checks.map((c) => (
+                <li key={c} className="text-xs text-rose-200/80 flex gap-2">
+                  <span>·</span>
+                  <span>{c}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="text-xs text-rose-300/70 mt-2">
+              A whole live field does not fatigue in the same week. Acting on
+              this empties the account.
+            </p>
+          </div>
+        )}
 
         {/* Is the live field a test, or four slots buying one answer? */}
         <Card title="Live field">
