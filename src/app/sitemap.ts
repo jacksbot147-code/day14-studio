@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { blogPosts } from "./brands/kennum-lawn-care/blog-posts";
+import { loadInsights } from "@/lib/insights";
 
 const BASE = "https://day14.us";
 
@@ -39,6 +40,22 @@ function lifeLoopholeUrls(now: Date): MetadataRoute.Sitemap {
   return [
     { url: `${LIFELOOP}/advisor`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
   ];
+}
+
+/**
+ * /insights — the weekly AI-update series. Registered from the manifest
+ * (public/data/insights/index.json) so publishing a post is a content edit,
+ * not a sitemap edit. Posts are dated and rarely revised, so lastModified is
+ * the publish date rather than the build time.
+ */
+async function insightUrls(): Promise<MetadataRoute.Sitemap> {
+  const posts = await loadInsights();
+  return posts.map((p) => ({
+    url: `${BASE}/insights/${p.slug}`,
+    lastModified: new Date(`${p.date}T12:00:00Z`),
+    changeFrequency: "yearly" as const,
+    priority: 0.6,
+  }));
 }
 
 async function brandSiteUrls(now: Date): Promise<MetadataRoute.Sitemap> {
@@ -86,8 +103,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // coverage doesn't regress. Not part of the T7 primary-route spec.
   const secondary: MetadataRoute.Sitemap = [
     { url: `${BASE}/builds`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
+    { url: `${BASE}/insights`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${BASE}/geo`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     { url: `${BASE}/capture`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${BASE}/marque`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     { url: `${BASE}/newsletter`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     { url: `${BASE}/tools`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE}/verticals/mobile-service`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
@@ -105,5 +124,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...hotFlashCoUrls(now),
     ...lifeLoopholeUrls(now),
     ...(await brandSiteUrls(now)),
+    ...(await insightUrls()),
   ];
 }

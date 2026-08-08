@@ -34,3 +34,8 @@ public/data/ops/day14-realty.json
 # by scripts/lib/budget-gate.mjs. The seed config (.budget.json) is
 # tracked; the counters file is runtime-only.
 public/data/ops/.budget-counters.json
+
+# editor/agent backups — never commit these (a .env.local.bak was found loose in this repo)
+*.bak
+*.bak-*
+*.orig
