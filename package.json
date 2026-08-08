@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run registry:generate && npm run graph:generate && next build",
+    "build": "npm run check:imports && npm run registry:generate && npm run graph:generate && next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit && tsc -p tsconfig.test.json --noEmit",
@@ -19,7 +19,8 @@
     "briefing": "node scripts/morning-briefing.mjs",
     "pain:index": "tsx scripts/pain-index.mts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "check:imports": "node scripts/check-untracked-imports.mjs"
   },
   "dependencies": {
     "@anthropic-ai/claude-agent-sdk": "^0.3.170",
