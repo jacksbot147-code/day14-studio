@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "updated_at": "2026-10-01T13:00:09.462Z",
+  "updated_at": "2026-10-01T13:06:06.327Z",
   "last_success_at": "2026-10-01T12:00:16.732Z",
   "last_success_provider": "gemini",
-  "last_failure_at": "2026-10-01T13:00:09.462Z",
+  "last_failure_at": "2026-10-01T13:06:06.327Z",
   "last_failure_error": "local unreachable: fetch failed (http://127.0.0.1:11434)",
-  "consecutive_failures": 30,
+  "consecutive_failures": 33,
   "days": {
     "2026-09-15": {
       "calls": 57,
@@ -398,9 +398,9 @@
       }
     },
     "2026-10-01": {
-      "calls": 53,
+      "calls": 56,
       "ok": 1,
-      "failed": 52,
+      "failed": 55,
       "tokens_in": 897,
       "tokens_out": 1033,
       "tokens_cache_read": 0,
@@ -408,25 +408,25 @@
       "est_cost_usd": 0.002852,
       "by_provider": {
         "anthropic": {
-          "calls": 18,
+          "calls": 19,
           "ok": 0,
-          "failed": 18,
+          "failed": 19,
           "est_cost_usd": 0
         },
         "gemini": {
-          "calls": 18,
+          "calls": 19,
           "ok": 1,
-          "failed": 17,
+          "failed": 18,
           "est_cost_usd": 0.002852
         },
         "local": {
-          "calls": 17,
+          "calls": 18,
           "ok": 0,
-          "failed": 17,
+          "failed": 18,
           "est_cost_usd": 0
         }
       }
     }
   },
-  "last_agent": "pr-director"
+  "last_agent": "expansion-prompter"
 }
