@@ -1,42 +1,12 @@
 {
   "schema": 1,
-  "updated_at": "2026-10-10T03:06:10.358Z",
+  "updated_at": "2026-10-10T05:06:10.471Z",
   "last_success_at": "2026-10-01T12:00:16.732Z",
   "last_success_provider": "gemini",
-  "last_failure_at": "2026-10-10T03:06:10.358Z",
+  "last_failure_at": "2026-10-10T05:06:10.471Z",
   "last_failure_error": "local unreachable: fetch failed (http://127.0.0.1:11434)",
-  "consecutive_failures": 652,
+  "consecutive_failures": 655,
   "days": {
-    "2026-09-23": {
-      "calls": 63,
-      "ok": 0,
-      "failed": 63,
-      "tokens_in": 0,
-      "tokens_out": 0,
-      "tokens_cache_read": 0,
-      "tokens_cache_write": 0,
-      "est_cost_usd": 0,
-      "by_provider": {
-        "anthropic": {
-          "calls": 21,
-          "ok": 0,
-          "failed": 21,
-          "est_cost_usd": 0
-        },
-        "gemini": {
-          "calls": 21,
-          "ok": 0,
-          "failed": 21,
-          "est_cost_usd": 0
-        },
-        "local": {
-          "calls": 21,
-          "ok": 0,
-          "failed": 21,
-          "est_cost_usd": 0
-        }
-      }
-    },
     "2026-09-24": {
       "calls": 90,
       "ok": 0,
@@ -423,6 +393,36 @@
           "calls": 21,
           "ok": 0,
           "failed": 21,
+          "est_cost_usd": 0
+        }
+      }
+    },
+    "2026-10-10": {
+      "calls": 3,
+      "ok": 0,
+      "failed": 3,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "tokens_cache_read": 0,
+      "tokens_cache_write": 0,
+      "est_cost_usd": 0,
+      "by_provider": {
+        "anthropic": {
+          "calls": 1,
+          "ok": 0,
+          "failed": 1,
+          "est_cost_usd": 0
+        },
+        "gemini": {
+          "calls": 1,
+          "ok": 0,
+          "failed": 1,
+          "est_cost_usd": 0
+        },
+        "local": {
+          "calls": 1,
+          "ok": 0,
+          "failed": 1,
           "est_cost_usd": 0
         }
       }
