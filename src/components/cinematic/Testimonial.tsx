@@ -18,26 +18,18 @@ import { TESTIMONIAL } from "./testimonialData";
 export function Testimonial() {
   const testimonial = TESTIMONIAL;
 
+  // No placeholder quote. The section appears only with a real, permissioned line.
+  if (!testimonial) return null;
+
   return (
     <section className="cin-section cin-testi">
       <Reveal as="blockquote" className="cin-quote">
-        {testimonial
-          ? testimonial.quote
-          : "It catches the job I used to lose to voicemail."}
+        {testimonial.quote}
       </Reveal>
 
-      {testimonial ? (
-        <Reveal as="figcaption" delayStep={1} className="cin-quote-by">
-          — {testimonial.name}, {testimonial.role}
-        </Reveal>
-      ) : (
-        <Reveal as="figcaption" delayStep={1} className="cin-quote-by">
-          — illustrative
-          <span className="cin-ph cin-mono">
-            placeholder · drop in a real owner quote before launch
-          </span>
-        </Reveal>
-      )}
+      <Reveal as="figcaption" delayStep={1} className="cin-quote-by">
+        — {testimonial.name}, {testimonial.role}
+      </Reveal>
     </section>
   );
 }

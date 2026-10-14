@@ -35,7 +35,6 @@ function stageInfo(stage: string): { cls: string; label: string } {
 
 // Segments with their own dedicated admin page (vs. the generic tenant page).
 const SEGMENT_PAGES: Record<string, string> = {
-  "day14-realty": "/admin/realty",
   alignmd: "/admin/alignmd",
 };
 

@@ -48,7 +48,6 @@ const EXPANSION_INBOX = path.join(BIZ, "_shared/expansion-requests");
 // Match the per-business overrides used elsewhere in the admin, so search
 // links land on the dedicated page when one exists.
 const SEGMENT_PAGES: Record<string, string> = {
-  "day14-realty": "/admin/realty",
   alignmd: "/admin/alignmd",
 };
 

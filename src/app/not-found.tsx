@@ -22,11 +22,11 @@ export const metadata: Metadata = {
 
 const LINKS: Array<{ href: string; label: string }> = [
   { href: "/", label: "Home" },
-  { href: "/work-with-us", label: "Work with us" },
-  { href: "/#pricing", label: "Pricing" },
-  { href: "/case-studies/alignmd", label: "AlignMD case study" },
-  { href: "/process", label: "How we ship" },
-  { href: "/status", label: "Live status" },
+  { href: "/platform", label: "Platform" },
+  { href: "/pricing", label: "Pricing" },
+  { href: "/geo", label: "GEO" },
+  { href: "/book", label: "Book a call" },
+  { href: "/#work", label: "Work" },
 ];
 
 export default function NotFound() {

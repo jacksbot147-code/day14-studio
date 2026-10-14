@@ -380,7 +380,6 @@ export function AdminNav({
     { id: "crew", href: "/admin/mission-control", label: "Crew" },
     { id: "console", href: "/admin/console", label: "Console" },
     { id: "today", href: "/admin/today", label: "Today" },
-    { id: "realty", href: "/admin/realty", label: "Realty" },
     { id: "preview", href: "/admin/preview", label: "Preview" },
     { id: "alignmd", href: "/admin/alignmd", label: "AlignMD" },
     { id: "inbox", href: "/admin/inbox", label: "Inbox" },

@@ -24,7 +24,7 @@ type ChatMsg = { role: "user" | "assistant"; content: string };
 
 const SUGGESTED: string[] = [
   "What's the deposit-back guarantee?",
-  "Which SKU fits a pool service business?",
+  "Which build fits a pool service business?",
   "Do you build for restaurants?",
   "How is this different from Jobber?",
 ];
@@ -69,12 +69,10 @@ export function ChatWidget() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: next }),
       });
-      const data = (await r.json().catch(() => null)) as
-        | { reply?: string; error?: string }
-        | null;
+      const data = (await r.json().catch(() => null)) as { reply?: string } | null;
       const reply =
-        data?.reply ??
-        "I'm in demo mode right now — set ANTHROPIC_API_KEY in the Day14 env to wire me up. In the meantime, hit the Book intro call button up top.";
+        data?.reply ||
+        `I can't answer live right now. Book a 15-minute look at ${SITE.bookingUrl} or email ${SITE.email}.`;
       setMessages((m) => [...m, { role: "assistant", content: reply }]);
     } catch {
       setMessages((m) => [
@@ -82,9 +80,7 @@ export function ChatWidget() {
         {
           role: "assistant",
           content:
-            "Couldn't reach the chat backend — try the Book intro call button up top, or email " +
-            SITE.email +
-            ".",
+            `I can't answer live right now. Book a 15-minute look at ${SITE.bookingUrl} or email ${SITE.email}.`,
         },
       ]);
     } finally {
@@ -133,7 +129,7 @@ export function ChatWidget() {
             <div className="text-sm font-medium">{SITE.brand} assistant</div>
           </div>
           <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--cin-faint)]">
-            Live
+            Ask
           </div>
         </div>
 

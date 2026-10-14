@@ -5,10 +5,9 @@
  * Collects empire state from Jack's Mac filesystem + writes to
  *   studio/public/data/empire-state.json
  *
- * Then optionally git-commits + pushes (only if --push is passed).
- *
- * Runs every 15 minutes via LaunchAgent. The Vercel /admin pages
- * read this JSON file to render the dashboard from the cloud.
+ * --push is disabled. See docs/runbook/EMPIRE-STATE-SYNC.md.
+ * The LaunchAgent on Jack's Mac still invokes this file; it writes the JSON
+ * and then exits without committing.
  *
  * No secrets in this JSON — purely empire state + counts. Safe to
  * commit publicly (but only Jack sees it via /admin auth gate).
@@ -17,10 +16,8 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { existsSync } from "node:fs";
-import { execSync } from "node:child_process";
 import { homedir } from "node:os";
 import { listOpenTodos } from "./_generic/operator-todos.mjs";
-import { diagnose as diagnoseGitLocks } from "./lib/git-lock-doctor.mjs";
 
 const HOME = homedir();
 const BIZ = path.join(HOME, "Documents/businesses");
@@ -28,7 +25,6 @@ const SHARED = path.join(BIZ, "_shared");
 const STUDIO = path.join(HOME, "Documents/studio");
 const TENANTS_FILE = path.join(SHARED, "tenants.json");
 const ENV_FILE = path.join(STUDIO, ".env.local");
-const OUTBOX = path.join(SHARED, "telegram/outbox");
 const SYNC_STATE = path.join(SHARED, "ops/empire-sync.json");
 
 /**
@@ -69,33 +65,6 @@ async function recordSyncOutcome(outcome) {
     return next;
   } catch {
     return null;
-  }
-}
-
-/** Courtesy alarm only — the state file above is the signal of record.
- *  Throttled so a 15-minute cron cannot produce 96 identical cards a day. */
-async function queueSyncFailureCard(text, streak) {
-  if (!(streak === 1 || streak % 24 === 0)) return;
-  try {
-    await fs.mkdir(OUTBOX, { recursive: true });
-    const f = path.join(OUTBOX, `${Date.now()}-empire-sync-failed.json`);
-    await fs.writeFile(
-      f,
-      JSON.stringify(
-        {
-          text,
-          urgency: "P1",
-          queued_at: new Date().toISOString(),
-          sent_at: null,
-          tap_required: true,
-          source: "sync-empire-state",
-        },
-        null,
-        2
-      )
-    );
-  } catch {
-    /* never let the alarm break the sync */
   }
 }
 
@@ -433,62 +402,23 @@ async function main() {
   await snapshotOps(tenantsData);
   console.log(`✓ wrote per-tenant ops snapshots`);
 
-  // Git commit + push?
+  // --push is disabled. The scheduler is NOT in this repo: macOS LaunchAgent
+  // com.day14.admin-sync (scripts/install-admin-sync.sh) runs this file with
+  // --push every 900s from ~/Documents/studio and used to `git commit` +
+  // `git push origin HEAD` onto whatever branch was checked out. Unload it
+  // on the Mac; this guard stops the commit even if the agent is still loaded
+  // and this copy of the script is what it executes.
   if (process.argv.includes("--push")) {
-    // Preflight. One stranded lock from a crashed git process wedged this
-    // script from 2026-07-15 to 2026-07-30 — 15 days of commits lost, with
-    // the error going to a LaunchAgent log and an exit code of 0.
-    try {
-      const locks = await diagnoseGitLocks({ repo: STUDIO, heal: true });
-      if (locks.cleared.length) {
-        console.log(`✓ cleared ${locks.cleared.length} stranded git lock(s)`);
-        for (const c of locks.cleared) console.log(`    ${c}`);
-      }
-      for (const f of locks.failed) {
-        console.error(`git lock could not be cleared: ${f.path} — ${f.error}`);
-      }
-      for (const h of locks.held) {
-        console.log(`  lock held (not touched): ${h.path} — ${h.why}`);
-      }
-    } catch (e) {
-      console.error(`lock preflight failed, continuing: ${String(e && e.message)}`);
-    }
-
-    try {
-      execSync("git add public/data", { cwd: STUDIO, stdio: "pipe" });
-      // `git diff --cached` instead of `git status --porcelain`: it answers the
-      // actual question (is anything staged?) without refreshing the whole index.
-      const staged = execSync("git diff --cached --name-only -- public/data", {
-        cwd: STUDIO,
-        encoding: "utf8",
-      });
-      if (!staged.trim()) {
-        console.log("no changes — skip push");
-        await recordSyncOutcome({ ok: true, skipped: "no_changes" });
-        return;
-      }
-      execSync(`git commit -m "sync: empire state ${new Date().toISOString().slice(0, 16)}"`, { cwd: STUDIO, stdio: "pipe" });
-      execSync("git push origin HEAD", { cwd: STUDIO, stdio: "inherit" });
-      console.log(`✓ pushed to git (${staged.trim().split("\n").length} file(s))`);
-      await recordSyncOutcome({ ok: true });
-    } catch (e) {
-      // Do NOT swallow this. When it fails, the cloud dashboard's data silently
-      // freezes and nothing else in the system notices.
-      const msg = String((e && e.message) || e).slice(0, 400);
-      console.error(`git push FAILED: ${msg}`);
-      const state = await recordSyncOutcome({ ok: false, error: msg });
-      const streak = state ? state.consecutive_failures : 1;
-      await queueSyncFailureCard(
-        `🔴 *empire-state sync cannot commit* (failure #${streak})\n\n` +
-          "```\n" +
-          msg +
-          "\n```\n" +
-          "The cloud dashboard's data is frozen until this clears.\n" +
-          "Fix: `node scripts/lib/git-lock-doctor.mjs ~/Documents/studio --heal`",
-        streak
-      );
-      process.exitCode = 1;
-    }
+    console.log(
+      "sync-empire-state: --push is disabled. " +
+        "Scheduler: LaunchAgent com.day14.admin-sync on Jack's Mac " +
+        "(~/Library/LaunchAgents/com.day14.admin-sync.plist, " +
+        "installed by scripts/install-admin-sync.sh, cwd ~/Documents/studio). " +
+        "Not a GitHub Action. Unload: " +
+        "launchctl unload ~/Library/LaunchAgents/com.day14.admin-sync.plist"
+    );
+    await recordSyncOutcome({ ok: true, skipped: "push_disabled" });
+    return;
   }
 }
 

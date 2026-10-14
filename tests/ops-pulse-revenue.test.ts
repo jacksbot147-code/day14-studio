@@ -14,6 +14,8 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+// ops-pulse is a LaunchAgent script (.mjs) with no declaration file.
+// @ts-expect-error TS7016 — runtime import of the script under test.
 import { stripeState } from "../scripts/ops-pulse.mjs";
 
 const KEY = { STRIPE_SECRET_KEY: "sk_test_pinned" };

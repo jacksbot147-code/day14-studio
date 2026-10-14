@@ -159,9 +159,9 @@ export function IntakeForm({
         </h2>
         <p className="mt-3 text-ink-700">
           Build starts now. You&rsquo;ll get a preview URL in your inbox within
-          24 hours. Watch your build log update day-by-day at{" "}
-          <a className="underline font-semibold" href="/builds">
-            day14.us/builds
+          24 hours. Questions go to{" "}
+          <a className="underline font-semibold" href="/book">
+            the booking page
           </a>
           .
         </p>

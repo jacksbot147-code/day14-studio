@@ -11,12 +11,13 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import fs from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
+import { NextRequest } from "next/server";
 
 let ROOT: string;
-let GET: (req: Request, ctx: { params: Promise<{ path?: string[] }> }) => Promise<Response>;
+let GET: (req: NextRequest, ctx: { params: Promise<{ path?: string[] }> }) => Promise<Response>;
 
 const call = (segments: string[]) =>
-  GET(new Request("http://localhost/api/marque/asset/" + segments.join("/")), {
+  GET(new NextRequest("http://localhost/api/marque/asset/" + segments.join("/")), {
     params: Promise.resolve({ path: segments }),
   });
 

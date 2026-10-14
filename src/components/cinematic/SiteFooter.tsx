@@ -23,6 +23,10 @@ export function SiteFooter() {
         One platform for service businesses · built by an operator ·{" "}
         {SITE.location}
       </div>
+      <div className="cin-foot-line">
+        Also from Day14:{" "}
+        <a href="https://ad-forge-amber.vercel.app">Marque / AdForge</a>
+      </div>
       <div className="cin-foot-copy">
         © {year} {SITE.brand}
       </div>

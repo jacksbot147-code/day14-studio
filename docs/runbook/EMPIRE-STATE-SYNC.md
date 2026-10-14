@@ -1,6 +1,14 @@
 # Empire-State Sync — Runbook
 
-_Last updated: 2026-06-08 (innovation-t8). Status: **PROPOSED, not yet live.**_
+**DISABLED in-repo (2026-10-14).** `scripts/sync-empire-state.mjs --push` no longer commits or pushes. `scripts/install-admin-sync.sh` unloads the agent instead of installing it.
+
+The job that writes `sync: empire state` commits is **not a GitHub Action**. It is macOS LaunchAgent `com.day14.admin-sync` on Jack's Mac, installed by `scripts/install-admin-sync.sh`, running `node scripts/sync-empire-state.mjs --push` every 900 seconds from `~/Documents/studio` and pushing `origin HEAD` (whatever branch is checked out — currently `feat/cinematic-rebuild-2026-06`). This cloud branch cannot stop the agent until that Mac is running this copy of the script. Unload it there:
+
+```bash
+launchctl unload ~/Library/LaunchAgents/com.day14.admin-sync.plist
+```
+
+_Last updated: 2026-06-08 (innovation-t8). The proposal below was never promoted. The live behavior was the LaunchAgent above._
 
 ## TL;DR
 

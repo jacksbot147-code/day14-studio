@@ -346,12 +346,9 @@ export default function GeoPage() {
             <div className="cin-prose">
               <p>
                 GEO works best on a site built to be quoted — which is what{" "}
-                <Link href="/pricing">every Day14 build</Link> ships as. And
-                the visibility baseline doubles as ad intelligence: the
-                prompts where competitors beat you are exactly where{" "}
-                <Link href="/brands/marque">Marque</Link>, Day14&rsquo;s
-                AI-ads arm, earns its keep. One operator, three motions, one
-                system.
+                <Link href="/pricing">every Day14 build</Link> ships as. Ads
+                are a separate product:{" "}
+                <a href="https://ad-forge-amber.vercel.app">Marque / AdForge</a>.
               </p>
             </div>
           </section>

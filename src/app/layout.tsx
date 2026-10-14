@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono, Newsreader } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import { SITE, PITCH } from "@/lib/site";
@@ -24,16 +24,6 @@ const mono = JetBrains_Mono({
   variable: "--font-mono",
   // Cinematic uses 400/500; 600 retained for the light theme's bold mono labels.
   weight: ["400", "500", "600"],
-});
-
-// Newsreader — italic-only optical-size axis, for the cinematic theme's
-// editorial accents (e.g. <em> phrases). Italic is the single style requested.
-const newsreader = Newsreader({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-newsreader",
-  style: ["italic"],
-  weight: ["300", "400"],
 });
 
 const TITLE = `${SITE.brand} — ${SITE.tagline}`;
@@ -85,7 +75,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${mono.variable} ${newsreader.variable}`}
+      className={`${inter.variable} ${mono.variable}`}
     >
       <body>
         <RouteTransition>{children}</RouteTransition>
