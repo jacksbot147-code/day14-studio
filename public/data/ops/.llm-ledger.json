@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "updated_at": "2026-10-14T20:00:02.216Z",
-  "last_success_at": "2026-10-01T12:00:16.732Z",
+  "updated_at": "2026-10-14T21:06:22.597Z",
+  "last_success_at": "2026-10-14T21:06:22.597Z",
   "last_success_provider": "gemini",
-  "last_failure_at": "2026-10-14T20:00:02.216Z",
-  "last_failure_error": "local unreachable: fetch failed (http://127.0.0.1:11434)",
-  "consecutive_failures": 990,
+  "last_failure_at": "2026-10-14T21:06:12.706Z",
+  "last_failure_error": "anthropic 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_i",
+  "consecutive_failures": 0,
   "days": {
     "2026-10-01": {
       "calls": 95,
@@ -398,26 +398,26 @@
       }
     },
     "2026-10-14": {
-      "calls": 51,
-      "ok": 0,
-      "failed": 51,
-      "tokens_in": 0,
-      "tokens_out": 0,
+      "calls": 53,
+      "ok": 1,
+      "failed": 52,
+      "tokens_in": 861,
+      "tokens_out": 157,
       "tokens_cache_read": 0,
       "tokens_cache_write": 0,
-      "est_cost_usd": 0,
+      "est_cost_usd": 0.000651,
       "by_provider": {
         "anthropic": {
-          "calls": 17,
+          "calls": 18,
           "ok": 0,
-          "failed": 17,
+          "failed": 18,
           "est_cost_usd": 0
         },
         "gemini": {
-          "calls": 17,
-          "ok": 0,
+          "calls": 18,
+          "ok": 1,
           "failed": 17,
-          "est_cost_usd": 0
+          "est_cost_usd": 0.000651
         },
         "local": {
           "calls": 17,
@@ -428,5 +428,5 @@
       }
     }
   },
-  "last_agent": "product-strategist"
+  "last_agent": "expansion-prompter"
 }
