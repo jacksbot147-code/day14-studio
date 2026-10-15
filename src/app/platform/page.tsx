@@ -23,7 +23,7 @@ export default function PlatformIndexPage() {
   return (
     <div className="cinematic" id="top">
       <CanvasField />
-      <Nav linkBase="/preview/cinematic" />
+      <Nav linkBase="/" />
       <main>
         <Capabilities />
       </main>

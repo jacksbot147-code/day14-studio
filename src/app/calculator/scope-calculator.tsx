@@ -306,10 +306,10 @@ export function ScopeCalculator() {
           )}
 
           <div className="mt-7 flex flex-col gap-2">
-            <Link href="/#book" className="btn-ember text-center">
+            <Link href="/book" className="btn-ember text-center">
               Book a 15-min intro call
             </Link>
-            <Link href="/capabilities" className="btn-ghost text-center">
+            <Link href="/platform" className="btn-ghost text-center">
               See what&rsquo;s included
             </Link>
           </div>

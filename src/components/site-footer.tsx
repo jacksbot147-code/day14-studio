@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { SITE, STARTING_PRICE_LABEL } from "@/lib/site";
-import { NewsletterSignup } from "./NewsletterSignup";
 
 export function SiteFooter() {
   return (
@@ -15,28 +14,17 @@ export function SiteFooter() {
               <span>{SITE.brand}</span>
             </Link>
             <p className="max-w-xs text-sm text-ink-500">
-              The build studio that runs on its own OS. Custom sites and apps from {SITE.location}, shipped in days &mdash; from {STARTING_PRICE_LABEL}.
+              Software that runs a local service business, live in 14 days. From {STARTING_PRICE_LABEL}. {SITE.location}.
             </p>
-            <div className="pt-2 max-w-xs">
-              <div className="eyebrow mb-2">One email a week</div>
-              <NewsletterSignup source="site-footer" variant="minimal" placeholder="hello@you.com" />
-            </div>
           </div>
 
           <div>
             <div className="eyebrow mb-3">Product</div>
             <ul className="space-y-2 text-sm text-ink-500">
-              <li><a href="/#pricing" className="transition-colors duration-150 hover:text-ink">Pricing</a></li>
-              <li><Link href="/calculator" className="transition-colors duration-150 hover:text-ink">Scope calculator</Link></li>
-              <li><Link href="/capabilities" className="transition-colors duration-150 hover:text-ink">Capabilities</Link></li>
-              <li><Link href="/process" className="transition-colors duration-150 hover:text-ink">The 14-day process</Link></li>
-              <li><Link href="/voice-check" className="transition-colors duration-150 hover:text-ink">Voice checker</Link></li>
-              <li><Link href="/changelog" className="transition-colors duration-150 hover:text-ink">Changelog</Link></li>
-              <li><Link href="/honest" className="transition-colors duration-150 hover:text-ink">Honest objections</Link></li>
-              <li><Link href="/stack" className="transition-colors duration-150 hover:text-ink">The stack</Link></li>
-              <li><Link href="/compare" className="transition-colors duration-150 hover:text-ink">Compare</Link></li>
-              <li><a href="/#how" className="transition-colors duration-150 hover:text-ink">How it works</a></li>
-              <li><Link href="/tools" className="transition-colors duration-150 hover:text-ink">Free tools</Link></li>
+              <li><Link href="/platform" className="transition-colors duration-150 hover:text-ink">Platform</Link></li>
+              <li><Link href="/pricing" className="transition-colors duration-150 hover:text-ink">Pricing</Link></li>
+              <li><Link href="/geo" className="transition-colors duration-150 hover:text-ink">GEO</Link></li>
+              <li><Link href="/calculator" className="transition-colors duration-150 hover:text-ink">ROI calculator</Link></li>
               <li><Link href="/faq" className="transition-colors duration-150 hover:text-ink">FAQ</Link></li>
             </ul>
           </div>
@@ -44,25 +32,18 @@ export function SiteFooter() {
           <div>
             <div className="eyebrow mb-3">Proof</div>
             <ul className="space-y-2 text-sm text-ink-500">
-              <li><Link href="/status" className="transition-colors duration-150 hover:text-ink">Status</Link></li>
-              <li><Link href="/brands" className="transition-colors duration-150 hover:text-ink">Brands</Link></li>
-              <li><Link href="/builds" className="transition-colors duration-150 hover:text-ink">Active builds</Link></li>
+              <li><Link href="/#work" className="transition-colors duration-150 hover:text-ink">Work</Link></li>
+              <li><Link href="/case-studies/splash-jacks-pools" className="transition-colors duration-150 hover:text-ink">Splash Jacks Pools</Link></li>
               <li><Link href="/case-studies/alignmd" className="transition-colors duration-150 hover:text-ink">AlignMD</Link></li>
-              <li><Link href="/case-studies/splash-jacks-pools" className="transition-colors duration-150 hover:text-ink">Splash Jacks</Link></li>
-              <li><Link href="/case-studies/casamore" className="transition-colors duration-150 hover:text-ink">Casamoré</Link></li>
-              <li><Link href="/case-studies/buildbridge" className="transition-colors duration-150 hover:text-ink">Buildbridge</Link></li>
-              <li><Link href="/case-studies/hot-flash-co" className="transition-colors duration-150 hover:text-ink">Hot Flash Co</Link></li>
+              <li><a href="https://ad-forge-amber.vercel.app" className="transition-colors duration-150 hover:text-ink">Marque / AdForge</a></li>
             </ul>
           </div>
 
           <div>
             <div className="eyebrow mb-3">Talk</div>
             <ul className="space-y-2 text-sm text-ink-500">
-              <li><a href={SITE.bookingUrl} className="transition-colors duration-150 hover:text-ink">Book intro call</a></li>
+              <li><Link href="/book" className="transition-colors duration-150 hover:text-ink">Book a call</Link></li>
               <li><a href={`mailto:${SITE.email}`} className="transition-colors duration-150 hover:text-ink">{SITE.email}</a></li>
-              <li><Link href="/newsletter" className="transition-colors duration-150 hover:text-ink">Newsletter</Link></li>
-              <li><Link href="/press" className="transition-colors duration-150 hover:text-ink">Press kit</Link></li>
-              <li><a href="/api/feed.xml" className="transition-colors duration-150 hover:text-ink">RSS feed</a></li>
             </ul>
           </div>
 

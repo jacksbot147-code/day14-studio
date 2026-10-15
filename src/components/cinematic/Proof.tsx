@@ -51,26 +51,6 @@ const TILES: readonly Tile[] = [
       "A live staffing platform — credentialing, matching, ops — proving the engine scales into high-fee work.",
     href: "https://alignmd.vercel.app",
   },
-  {
-    variant: "t3",
-    tag: "contractor marketplace · preview",
-    name: "BuildBridge",
-    blurb:
-      "Homeowners and contractors — bid, escrow, build, done. The most complex build the engine ships. Walk the guided preview.",
-    // INTERIM LINK: internal guided walkthrough (real, already live). Swap to
-    // the production BuildBridge URL once it's green — change href + drop
-    // `internal` + set tag to "· live" if it's publicly pokeable.
-    href: "/case-studies/buildbridge",
-    internal: true,
-  },
-  {
-    variant: "t4",
-    tag: "silent disco · live",
-    name: "Casamoré",
-    blurb:
-      "A live brand that runs itself — pages, essays, posters, waitlist, kept fresh by scheduled agents. See the real site.",
-    href: "https://houseoflove.co",
-  },
 ];
 
 const TILT_MAX = 8; // degrees

@@ -1,23 +1,18 @@
 "use client";
 
 /**
- * cinematic/Nav — fixed top nav (task 2/8).
+ * cinematic/Nav — fixed top nav.
  *
- * Transparent over the hero; gains a blurred background + border after 40px of
- * scroll. Brand mark, section anchors, and a magnetic glow CTA. Anchors hide on
- * narrow viewports (the CTA stays). Reuses the .cin-btn classes from task 6.
+ * Platform, Work, Pricing, GEO, Book. Section anchors on the homepage;
+ * subpages pass linkBase="/" so Work jumps back to /#work.
  */
 
 import { useEffect, useRef } from "react";
 import { MagneticLink } from "./MagneticLink";
 
-/**
- * `linkBase` prefixes the section anchors so the nav works from sub-pages too:
- * on the homepage it's "" (same-page #anchors); on /platform/* pages pass
- * "/preview/cinematic" so "Pricing" etc. jump back to the homepage section.
- */
 export function Nav({ linkBase = "" }: { linkBase?: string } = {}) {
   const ref = useRef<HTMLElement>(null);
+  const workHref = linkBase ? `${linkBase}#work` : "#work";
 
   useEffect(() => {
     const onScroll = () => {
@@ -34,21 +29,12 @@ export function Nav({ linkBase = "" }: { linkBase?: string } = {}) {
         <b aria-hidden="true">14</b>Day14
       </a>
       <div className="cin-nlinks">
-        <a href={`${linkBase}#capabilities`}>Platform</a>
-        <a href={`${linkBase}#system`}>How it works</a>
-        <a href={`${linkBase}#work`}>Work</a>
-        <a href={`${linkBase}#pricing`}>Pricing</a>
+        <a href="/platform">Platform</a>
+        <a href={workHref}>Work</a>
+        <a href="/pricing">Pricing</a>
         <a href="/geo">GEO</a>
-        <a href="/capture">Capture</a>
-        <a href="/marque">Marque</a>
-        <a href="/local">Local</a>
-        <a href="/insights">Insights</a>
-        <MagneticLink
-          href={`${linkBase}#book`}
-          className="cin-btn cin-btn-glow"
-          dataCta="book_nav"
-        >
-          Book a 15-min look
+        <MagneticLink href="/book" className="cin-btn cin-btn-glow" dataCta="book_nav">
+          Book
         </MagneticLink>
       </div>
     </nav>

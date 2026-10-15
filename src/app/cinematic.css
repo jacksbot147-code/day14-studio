@@ -45,13 +45,14 @@
   --cin-stagger: 0.1s;
 
   /* --- Type families ---------------------------------------------------- */
-  /* Inter (body/display 300-600), JetBrains Mono (labels), Newsreader (italic
-   * editorial accents). The --font-* CSS vars are injected by next/font in
-   * layout.tsx, each with a metric-matched system fallback baked in. */
+  /* Inter and JetBrains Mono come from next/font. Editorial italics use a
+   * system serif so the build does not depend on a Google font next/font
+   * cannot metric-override (Newsreader). */
   --cin-font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI",
     sans-serif;
   --cin-font-mono: var(--font-mono), ui-monospace, "SF Mono", Menlo, monospace;
-  --cin-font-serif: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  --cin-font-serif: Georgia, "Iowan Old Style", "Palatino Linotype", Palatino,
+    "Times New Roman", serif;
 
   /* --- Fluid type scale (clamps lifted from the prototype) -------------- */
   --cin-fs-hero: clamp(40px, 7.2vw, 104px); /* hero h1            */

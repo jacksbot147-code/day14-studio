@@ -1,21 +1,18 @@
 /**
  * /api/chat — backs the floating ChatWidget on day14.us.
  *
- * Calls Anthropic when ANTHROPIC_API_KEY is configured; otherwise returns
- * a friendly demo-mode message so the widget still feels alive on local
- * dev and on prod-without-keys.
+ * Calls Anthropic when ANTHROPIC_API_KEY is configured. Model comes from
+ * ANTHROPIC_MODEL. If the key is missing or Anthropic rejects the call,
+ * the route still returns 200 with a customer-facing reply.
  *
- * Edge runtime for snappy first-byte. Non-streaming for now; switch to
- * streaming once the wire-format is settled (see workers/chat.js in
- * studio-template-site for the streaming variant).
+ * Node runtime. Non-streaming.
  */
 
 import { NextResponse } from "next/server";
-import { SERVICE_TIERS, OS_TIERS } from "@/lib/pricing";
+import { SERVICE_TIERS } from "@/lib/pricing";
+import { SITE } from "@/lib/site";
 
-export const runtime = "edge";
-
-const MODEL = "claude-haiku-4-5-20251001";
+const MODEL = process.env.ANTHROPIC_MODEL || "claude-haiku-4-5-20251001";
 const MAX_TOKENS = 600;
 
 // All prices derive from pricing.ts — never hard-code a price in this prompt.
@@ -28,55 +25,40 @@ const ENTRY_TIER = SERVICE_TIERS[0]!;
 const TOP_TIER = SERVICE_TIERS[SERVICE_TIERS.length - 1]!;
 const PRICE_RANGE = `$${(ENTRY_TIER.setup ?? 0).toLocaleString()}–${TOP_TIER.setupLabel.replace(/^from\s+/i, "")}+`;
 const TIER_NAMES = SERVICE_TIERS.map((t) => t.name).join(", ");
-const OS_LINE = OS_TIERS.map((t) => `${t.name} $${t.monthly}/mo`).join(", ");
 
-const SYSTEM = `You are the Day14 assistant — a chatbot on day14.us.
+const SYSTEM = `You are the Day14 assistant on day14.us.
 
-Day14 is a productized AI-leveraged build studio. One operator + Claude
-agents ship full business platforms (marketing site + customer portal +
-billing + admin app + AI chatbot + SMS/email) for small businesses, with
-builds ranging ${PRICE_RANGE}. ${SERVICE_TIERS.length} service tiers:
+Day14 builds the software that runs a local service business, live in 14 days:
+site, booking and quoting, customer portal, Stripe payments, scheduling, admin,
+an AI assistant, and SMS/email. Builds range ${PRICE_RANGE}. ${SERVICE_TIERS.length} tiers:
 ${TIER_LINES}
 
-Day-14-or-deposit-back guarantee: if not live and accepting payments by
-day 14, the deposit refunds in full and the customer keeps everything
-shipped.
+If the build is not live and accepting payments by day 14, the deposit refunds
+in full and the customer keeps everything shipped.
 
-There is also a Day14 OS (run multiple businesses on the same engine) —
-waitlist-only founder pricing (${OS_LINE}), NOT purchasable yet. Only mention
-it if the user asks about running more than one business.
+Proof you can name: Splash Jacks Pools (pool service, splashjackspools.com) and
+AlignMD (alignmd.vercel.app). GEO is a separate AI-search visibility service.
+Marque / AdForge is a separate product at https://ad-forge-amber.vercel.app —
+mention it only if they ask about ads.
 
-Live case studies: Splash Jacks Pools (pool service, Platform,
-splashjackspools.com), Casamoré (silent disco events, Local,
-houseoflove.co), Buildbridge (contractor marketplace, Platform, preview).
-
-Three target verticals: mobile-service (pool, lawn, HVAC, cleaning,
-detailing, grooming), membership (salons, gyms, yoga, med spas, coaching),
-food (restaurants, cafés, food trucks, bakeries).
-
-Voice: plain, confident, slightly cocky, builder-y. Never consultant-y.
-Short answers. Concrete details. If a prospect asks something off-topic
-(weather, philosophy), redirect to whether they're considering a build.
-
-If the user wants to book, send them to https://cal.com/day14/intro. A
-deposit holds the build slot via Stripe; the exact amount depends on the
-tier — confirm specifics on the call. Never quote a price that is not in
-the tier list above. If they ask about something not in this prompt, say
-you'll have Jack follow up and suggest emailing hello@day14.us.
+Voice: plain, confident, short. If they want to book, send ${SITE.bookingUrl}.
+Never quote a price that is not in the tier list above. If you don't know,
+say Jack will follow up and give ${SITE.email}.
 
 Keep responses under 4 sentences unless the user explicitly asks for more
 detail.`;
 
+function fallbackReply(): string {
+  return (
+    `I can't answer live right now. Builds run ${PRICE_RANGE} across ${SERVICE_TIERS.length} tiers ` +
+    `(${TIER_NAMES}), live in 14 days or the deposit comes back. ` +
+    `Book a 15-minute look at ${SITE.bookingUrl} or email ${SITE.email}.`
+  );
+}
+
 type ChatRequest = {
   messages?: Array<{ role: "user" | "assistant"; content: string }>;
 };
-
-const EMOJI_NO_KEY =
-  "Demo mode — I'm not wired to the AI backend right now. " +
-  `What I can tell you: builds run ${PRICE_RANGE} across ${SERVICE_TIERS.length} tiers ` +
-  `(${TIER_NAMES}). Live by day 14 or your deposit refunds. ` +
-  "Book an intro call at https://cal.com/day14/intro to walk " +
-  "through which one fits your business.";
 
 export async function POST(req: Request) {
   let body: ChatRequest;
@@ -109,7 +91,8 @@ export async function POST(req: Request) {
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    return NextResponse.json({ reply: EMOJI_NO_KEY }, { status: 200 });
+    console.error("/api/chat: ANTHROPIC_API_KEY unset");
+    return NextResponse.json({ reply: fallbackReply() }, { status: 200 });
   }
 
   try {
@@ -129,17 +112,14 @@ export async function POST(req: Request) {
     });
     if (!r.ok) {
       const detail = await r.text().catch(() => "");
-      console.error("Anthropic upstream error", r.status, detail);
-      return NextResponse.json({ error: "upstream_failed" }, { status: 502 });
+      console.error("Anthropic upstream error", r.status, detail.slice(0, 300));
+      return NextResponse.json({ reply: fallbackReply() }, { status: 200 });
     }
     const data = (await r.json()) as { content?: Array<{ text?: string }> };
-    const text =
-      data?.content?.[0]?.text ??
-      "Sorry — couldn't generate a response. Try again, or book a call at " +
-        "https://cal.com/day14/intro.";
+    const text = data?.content?.[0]?.text?.trim() || fallbackReply();
     return NextResponse.json({ reply: text }, { status: 200 });
   } catch (err) {
     console.error("/api/chat exception", err);
-    return NextResponse.json({ error: "exception" }, { status: 500 });
+    return NextResponse.json({ reply: fallbackReply() }, { status: 200 });
   }
 }

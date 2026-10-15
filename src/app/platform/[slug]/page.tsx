@@ -20,7 +20,7 @@ import {
  * metadata. Wrapped in `.cinematic` with the shared nav, backdrop, and footer.
  */
 
-const HOME = "/preview/cinematic";
+const HOME = "/";
 
 export function generateStaticParams() {
   return CAPABILITY_DETAILS.map((d) => ({ slug: d.id }));
