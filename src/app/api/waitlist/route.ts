@@ -5,8 +5,9 @@
  *   1. Basic email validation (regex). Bad email → 400.
  *   2. Rate-limit by IP — 5 requests per minute, in-memory counter.
  *      Hot reloads in dev will clear the counter; that's fine.
- *   3. Atomic append to public/data/waitlist.json (temp-then-rename).
- *      Idempotent — same email twice is a no-op, no duplicates.
+ *   3. Insert into Supabase `events` (kind `waitlist-submitted`).
+ *      Idempotent — same email twice is a no-op, no duplicate row.
+ *      Missing Supabase env → 500, never a silent drop.
  *   4. If MAILERLITE_API_KEY is configured, also POST to MailerLite.
  *      Idempotent there too (MailerLite returns 200 on re-subscribe).
  *
@@ -14,27 +15,23 @@
  *   200 { ok: true, alreadyOnList?: boolean }   on success
  *   400 { ok: false, error: "invalid email" }
  *   429 { ok: false, error: "rate limited" }
- *   500 { ok: false, error: "..." }             on write failure
+ *   500 { ok: false, error: "..." }             on write / config failure
+ *
+ * Production env: NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY.
+ * Optional mirror: MAILERLITE_API_KEY, MAILERLITE_DAY14_OS_GROUP_ID.
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import fs from "node:fs/promises";
-import path from "node:path";
-import crypto from "node:crypto";
 import { subscribe } from "@/lib/mailerlite";
+import { supabaseAdmin } from "@/lib/supabase-server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const WAITLIST_PATH = path.join(
-  process.cwd(),
-  "public",
-  "data",
-  "waitlist.json",
-);
-
 // Same regex used by /api/subscribe — keep them in sync.
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+const EVENT_KIND = "waitlist-submitted";
 
 // ---------- in-memory rate limit ---------------------------------------------
 
@@ -70,56 +67,50 @@ function clientIp(req: NextRequest): string {
   return "unknown";
 }
 
-// ---------- atomic waitlist.json writer --------------------------------------
-
-interface WaitlistEntry {
-  email: string;
-  ts: string;
-  source: string;
+function supabaseConfigured(): boolean {
+  return Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
 }
 
-interface WaitlistFile {
-  entries: WaitlistEntry[];
-}
-
-async function readWaitlist(): Promise<WaitlistFile> {
-  try {
-    const raw = await fs.readFile(WAITLIST_PATH, "utf8");
-    const parsed = JSON.parse(raw) as Partial<WaitlistFile>;
-    return { entries: Array.isArray(parsed.entries) ? parsed.entries : [] };
-  } catch (err) {
-    const e = err as NodeJS.ErrnoException;
-    if (e && e.code === "ENOENT") return { entries: [] };
-    throw err;
-  }
-}
-
-async function atomicWrite(filePath: string, contents: string): Promise<void> {
-  const dir = path.dirname(filePath);
-  await fs.mkdir(dir, { recursive: true });
-  const suffix = crypto.randomBytes(4).toString("hex");
-  const tmp = path.join(dir, `.${path.basename(filePath)}.tmp.${process.pid}.${suffix}`);
-  await fs.writeFile(tmp, contents, "utf8");
-  await fs.rename(tmp, filePath);
-}
+// ---------- Supabase events writer -------------------------------------------
 
 /**
- * Append an entry to the waitlist file if the email is new.
- * Returns alreadyOnList: true if the email was a duplicate.
+ * Insert the email if it is new.
+ * Returns alreadyOnList: true if a prior waitlist-submitted event exists.
  */
-async function recordLocal(email: string, source: string): Promise<{ alreadyOnList: boolean }> {
-  const current = await readWaitlist();
+async function recordLead(
+  email: string,
+  source: string,
+): Promise<{ alreadyOnList: boolean }> {
+  const sb = supabaseAdmin();
   const normalized = email.toLowerCase().trim();
-  const dup = current.entries.some((e) => e.email.toLowerCase() === normalized);
-  if (dup) return { alreadyOnList: true };
 
-  const next: WaitlistFile = {
-    entries: [
-      ...current.entries,
-      { email: normalized, ts: new Date().toISOString(), source },
-    ],
-  };
-  await atomicWrite(WAITLIST_PATH, JSON.stringify(next, null, 2) + "\n");
+  const { data: existing, error: lookupError } = await sb
+    .from("events")
+    .select("id")
+    .eq("kind", EVENT_KIND)
+    .filter("payload->>email", "eq", normalized)
+    .limit(1);
+
+  if (lookupError) {
+    throw new Error(lookupError.message);
+  }
+  if (existing && existing.length > 0) {
+    return { alreadyOnList: true };
+  }
+
+  const { error: insertError } = await sb.from("events").insert({
+    kind: EVENT_KIND,
+    payload: {
+      email: normalized,
+      ts: new Date().toISOString(),
+      source,
+    },
+  });
+  if (insertError) {
+    throw new Error(insertError.message);
+  }
   return { alreadyOnList: false };
 }
 
@@ -163,9 +154,16 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  if (!supabaseConfigured()) {
+    return NextResponse.json(
+      { ok: false, error: "supabase not configured" },
+      { status: 500 },
+    );
+  }
+
   let alreadyOnList = false;
   try {
-    const result = await recordLocal(email, source);
+    const result = await recordLead(email, source);
     alreadyOnList = result.alreadyOnList;
   } catch (err) {
     const msg = err instanceof Error ? err.message : "write failed";
@@ -173,7 +171,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Best-effort MailerLite mirror. Failure here doesn't fail the
-  // request — the local JSON write is the source of truth.
+  // request — the Supabase events row is the source of truth.
   if (process.env.MAILERLITE_API_KEY) {
     try {
       await subscribe({
@@ -182,7 +180,7 @@ export async function POST(req: NextRequest) {
         groupId: process.env.MAILERLITE_DAY14_OS_GROUP_ID,
       });
     } catch {
-      // Swallow; the local write succeeded, that's the contract.
+      // Swallow; the events insert succeeded, that's the contract.
     }
   }
 
