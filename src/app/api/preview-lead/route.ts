@@ -3,16 +3,16 @@
  *
  * The instant-preview generator renders a real branded one-pager at
  * /preview/[token]. When a prospect says "I want this for real," the preview's
- * email-capture island (built separately, queue item 2) POSTs here.
+ * email-capture island POSTs here.
  *
- * POST { name, trade, city, email, token } → append ONE JSON line to
- *   ~/Documents/businesses/_shared/growth/preview-leads.jsonl
+ * POST { name, trade, city, email, token } → one row in Supabase `events`
+ *   (kind `preview-lead-submitted`). Same helper as /api/intake.
  *
  * Behaviors, in order:
  *   1. Rate-limit by IP — 5 requests/minute, in-memory (matches /api/waitlist).
  *   2. Basic email validation (regex). Bad/oversized email → 400.
- *   3. Append-only JSONL write (auto-creates file + dir). No dedup — the log
- *      is an event stream; Jack/CRM dedup downstream.
+ *   3. Insert the lead. No dedup — the table is an event stream; Jack/CRM
+ *      dedup downstream. Missing Supabase env → 500, never a silent drop.
  *
  * NO autonomous send. This endpoint only records the lead; outreach is a
  * Jack-tap later (per the hard rules — never contact a customer autonomously).
@@ -21,19 +21,16 @@
  *   200 { ok: true }
  *   400 { ok: false, error: "invalid email" | "invalid body" }
  *   429 { ok: false, error: "rate limited" }
- *   500 { ok: false, error: "..." }            on write failure
+ *   500 { ok: false, error: "..." }            on write / config failure
+ *
+ * Production env: NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY.
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import fs from "node:fs/promises";
-import path from "node:path";
-import { homedir } from "node:os";
+import { supabaseAdmin } from "@/lib/supabase-server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-const GROWTH_DIR = path.join(homedir(), "Documents/businesses/_shared/growth");
-const LEADS_PATH = path.join(GROWTH_DIR, "preview-leads.jsonl");
 
 // Same regex used by /api/waitlist and /api/subscribe — keep them in sync.
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
@@ -71,7 +68,13 @@ function clientIp(req: NextRequest): string {
   return "unknown";
 }
 
-// ---------- append-only JSONL writer -----------------------------------------
+function supabaseConfigured(): boolean {
+  return Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
+}
+
+// ---------- event writer -----------------------------------------------------
 
 interface PreviewLead {
   name: string;
@@ -83,9 +86,15 @@ interface PreviewLead {
   ip: string;
 }
 
-async function appendLead(lead: PreviewLead): Promise<void> {
-  await fs.mkdir(GROWTH_DIR, { recursive: true });
-  await fs.appendFile(LEADS_PATH, JSON.stringify(lead) + "\n", "utf8");
+async function persistLead(lead: PreviewLead): Promise<void> {
+  const sb = supabaseAdmin();
+  const { error } = await sb.from("events").insert({
+    kind: "preview-lead-submitted",
+    payload: lead,
+  });
+  if (error) {
+    throw new Error(error.message);
+  }
 }
 
 // ---------- POST handler -----------------------------------------------------
@@ -142,6 +151,13 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  if (!supabaseConfigured()) {
+    return NextResponse.json(
+      { ok: false, error: "supabase not configured" },
+      { status: 500 },
+    );
+  }
+
   const lead: PreviewLead = {
     // Clamp free-form fields so a hostile client can't bloat the log.
     name: name.slice(0, 120),
@@ -154,7 +170,7 @@ export async function POST(req: NextRequest) {
   };
 
   try {
-    await appendLead(lead);
+    await persistLead(lead);
   } catch (err) {
     const msg = err instanceof Error ? err.message : "write failed";
     return NextResponse.json({ ok: false, error: msg }, { status: 500 });
